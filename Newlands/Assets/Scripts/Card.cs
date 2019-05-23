@@ -36,5 +36,11 @@ public class Card : ScriptableObject {
 	public bool moneyFlag;
 
 	public CardEnums.FooterOp footerOp;
+
+	public Card() { }
+
+	public Card(string path) {
+		this.Equals(Resources.Load<Card>(path));
+	}
 	
 } // end Card class

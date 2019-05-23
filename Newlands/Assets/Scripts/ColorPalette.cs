@@ -2,7 +2,7 @@
 
 using UnityEngine;
 
-public class ColorPalette : MonoBehaviour {
+public class ColorPalette {
 
 	// Ink Colors - Based on the original tabletop cards
 	public static Color inkBlack = new Color32(r: 17, g: 17, b: 17, a: 255);

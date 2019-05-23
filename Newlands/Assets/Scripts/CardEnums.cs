@@ -5,7 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CardEnums : MonoBehaviour {
+public class CardEnums {
 
 	// Categories of Tiles
 	public enum Category {GameCard, PriceCard, LandTile}; 

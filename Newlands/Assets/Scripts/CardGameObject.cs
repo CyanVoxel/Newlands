@@ -21,9 +21,15 @@ public class CardGameObject : MonoBehaviour {
 	float rot = -90f;
 	float timer = 0f;
 
+	Deck newDeck;
+
 	void Start() {
 
-		card = Resources.Load<Card>("Cards/MarketMods/Investment/add_20_perc");
+		//card = Resources.Load<Card>("Cards/MarketMods/Investment/add_20_perc");
+
+		newDeck = new Deck("standard");
+
+		card = newDeck[0];
 
 		// TODO: Convert this class to create Card GameObjects with
 
@@ -78,13 +84,13 @@ public class CardGameObject : MonoBehaviour {
 
 		//Debug.Log(timer);
 		if (timer >= 180 && timer <= 360) {
-			card = Resources.Load<Card>("Cards/TileMods/Resource/cashcrops_add_1");
+			card = newDeck[1];
 			//Debug.Log("Switch to 2!");
 		} else if (timer >= 540 && timer <= 720) {
-			card = Resources.Load<Card>("Cards/MarketMods/Sabotage/sub_10_perc");
+			card = newDeck[2];
 			//Debug.Log("Switch to 3!");
 		} else if (timer > 1080) {
-			card = Resources.Load<Card>("Cards/MarketMods/Investment/add_20_perc");
+			card = newDeck[0];
 			timer = 0;
 			//Debug.Log("Switch to 1!");
 		}
