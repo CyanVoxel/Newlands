@@ -9,15 +9,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 252e8b19c3229d843a76e098201409a6, type: 3}
-  m_Name: tilemod_resource_gems_1
+  m_Name: sub_10_perc
   m_EditorClassIdentifier: 
   category: 0
-  title: 0
-  subtitle: 2
-  bodyText: Place this under any **Quarry** tile
-  footerText: '**<x>** Gems'
-  footerValue: 1
-  FooterColor: 3
-  percFlag: 0
+  title: 2
+  subtitle: 1
+  bodyText: Place this under any **Price Card.** This decreases the **Base Price**
+    of the **Resource.**
+  footerText: '**<x>** in Price'
+  footerValue: 10
+  FooterColor: 1
+  percFlag: 1
   moneyFlag: 0
-  footerOp: 1
+  footerOp: 2

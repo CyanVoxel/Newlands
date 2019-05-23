@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Card", menuName = "Card")]
-public class CardScriptableObject : ScriptableObject {
+public class Card : ScriptableObject {
 
 	// The overall category of the Card (ex. Game Card, Price Card)
 	public CardEnums.Category category; 

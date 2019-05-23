@@ -15,12 +15,83 @@ public class CardGameObject : MonoBehaviour {
 	public TMP_Text footer;
 	public Image footerBorder;
 
-	// The Card GameObject
-	public CardScriptableObject card;
+	// The local Card scriptable object
+	private Card card;
+
+	float rot = -90f;
+	float timer = 0f;
 
 	void Start() {
 
+		card = Resources.Load<Card>("Cards/MarketMods/Investment/add_20_perc");
+
 		// TODO: Convert this class to create Card GameObjects with
+
+		// // Set the TMP subtitle text based on the card object's enum
+		// if (card.title == CardEnums.Title.MarketMod) {			// Market Mod
+		// 	title.text = "\u2013Market Mod\u2013";
+		// } else if (card.title == CardEnums.Title.PriceCard) {	// Price Card
+		// 	title.text = "\u2013Price Card\u2013";
+		// } else if (card.title == CardEnums.Title.Resource) {	// Resource
+		// 	title.text = "\u2013Resource\u2013";
+		// } else if (card.title == CardEnums.Title.TileMod) {		// Tile Mod
+		// 	title.text = "\u2013Tile Mod\u2013";
+		// }
+
+		// // Set the TMP subtitle text based on the card object's enum
+		// if (card.subtitle == CardEnums.Subtitle.Investment) {		// Investment
+		// 	subtitle.text = "Investment";
+		// } else if (card.subtitle == CardEnums.Subtitle.Sabotage) {	// Sabotage
+		// 	subtitle.text = "Sabotage";
+		// } else if (card.subtitle == CardEnums.Subtitle.Resource) {	// Resource
+		// 	subtitle.text = "Resource";
+		// }
+
+		// // Color the footer border
+		// if (card.FooterColor == CardEnums.FooterColor.Black) { 			// Black
+		// 	footerBorder.color = ColorPalette.inkBlack;
+		// } else if (card.FooterColor == CardEnums.FooterColor.Red) {		// Red
+		// 	footerBorder.color = ColorPalette.inkRed;
+		// } else if (card.FooterColor == CardEnums.FooterColor.Green) {	// Green
+		// 	footerBorder.color = ColorPalette.inkGreen;
+		// } else if (card.FooterColor == CardEnums.FooterColor.Blue) {	// Blue
+		// 	footerBorder.color = ColorPalette.inkBlue;
+		// }
+
+		// // String members are assigned to the text labels after being formatted
+		// body.text = mdToTag(card.bodyText);
+		// footer.text = insertFooterValue(card.footerText, card.percFlag, 
+		// 									card.moneyFlag, card.footerOp);
+		// footer.text = mdToTag(footer.text);
+
+	} // Start()
+	
+	void Update() {
+
+		// Simple rotation code, used for testings/looking friggin sweet
+		rot += Time.deltaTime * 50;
+		timer += Time.deltaTime * 50;
+		//Debug.Log(rot);
+		if (rot >= 360f) {
+			rot = 0f;
+		}
+
+		Debug.Log(timer);
+		if (timer >= 180 && timer <= 360) {
+			card = Resources.Load<Card>("Cards/TileMods/Resource/cashcrops_add_1");
+			Debug.Log("Switch to 2!");
+		} else if (timer >= 540 && timer <= 720) {
+			card = Resources.Load<Card>("Cards/MarketMods/Sabotage/sub_10_perc");
+			Debug.Log("Switch to 3!");
+		} else if (timer > 720) {
+			card = Resources.Load<Card>("Cards/MarketMods/Investment/add_20_perc");
+			timer = 0;
+		}
+
+		Quaternion newRotation = Quaternion.Euler(30, rot, -15);
+		transform.rotation = newRotation;
+
+
 
 		// Set the TMP subtitle text based on the card object's enum
 		if (card.title == CardEnums.Title.MarketMod) {			// Market Mod
@@ -59,10 +130,6 @@ public class CardGameObject : MonoBehaviour {
 											card.moneyFlag, card.footerOp);
 		footer.text = mdToTag(footer.text);
 
-	} // Start()
-	
-	void Update() {
-
 	} // Update()
 
 	// Converts a string with bold and italic markdown into html-like tags
@@ -73,18 +140,14 @@ public class CardGameObject : MonoBehaviour {
 		//While there's still BOLD markdown left in input string
 		while (outputText.IndexOf("**") >= 0) {
 			int index = outputText.IndexOf("**");								// Set known index
-			Debug.Log("Index: " + index);
 			outputText = outputText.Remove(startIndex: index, count: 2);		// Remove markdown
-			Debug.Log(outputText);
 			outputText = outputText.Insert(startIndex: index, value: "<b>");	// Insert start tag
-			Debug.Log(outputText);
 
 			//Making sure there's a place to insert an end tag
 			if (outputText.IndexOf("**") >= 0) {
 				index = outputText.IndexOf("**");								// Reset the index
 				outputText = outputText.Remove(startIndex: index, count: 2);	// Remove markdown
 			outputText =  outputText.Insert(startIndex: index, value: "</b>");	// Insert end tag
-			Debug.Log(outputText);
 			} else {
 				Debug.Log("Error parsing markdown: No closing statement found!");
 			}
@@ -94,18 +157,14 @@ public class CardGameObject : MonoBehaviour {
 		//While there's still ITALIC markdown left in input string
 		while (outputText.IndexOf('*') >= 0) {
 			int index = outputText.IndexOf('*');								// Set known index
-			Debug.Log("Index: " + index);
 			outputText = outputText.Remove(startIndex: index, count: 1);		// Remove markdown
-			Debug.Log(outputText);
 			outputText = outputText.Insert(startIndex: index, value: "<i>");	// Insert start tag
-			Debug.Log(outputText);
 
 			//Making sure there's a place to insert an end tag
 			if (outputText.IndexOf('*') >= 0) {
 				index = outputText.IndexOf('*');								// Reset the index
 				outputText = outputText.Remove(startIndex: index, count: 1);	// Remove markdown
 			outputText =  outputText.Insert(startIndex: index, value: "</i>");	// Insert end tag
-			Debug.Log(outputText);
 			} else {
 				Debug.Log("Error parsing markdown: No closing statement found!");
 			}
@@ -127,10 +186,8 @@ public class CardGameObject : MonoBehaviour {
 		while (outputText.IndexOf("<x>") >= 0) {
 			// Set known index
 			int index = outputText.IndexOf("<x>");								
-			Debug.Log("Index: " + index);
 			// Remove markdown
 			outputText = outputText.Remove(startIndex: index, count: 3);
-			Debug.Log(outputText);
 
 			// If the value is a percentage, add a %
 			if (percFlag) {
@@ -150,7 +207,6 @@ public class CardGameObject : MonoBehaviour {
 		
 			// Insert start tag
 			outputText = outputText.Insert(startIndex: index, value: footerValueStr);	
-			Debug.Log(outputText);
 
 		} //while ITALIC left
 
