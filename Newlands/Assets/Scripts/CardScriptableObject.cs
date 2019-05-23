@@ -23,7 +23,7 @@ public class CardScriptableObject : ScriptableObject {
 	// The footer text of the Card
 	public string footerText;
 
-	// The raw nummber value that is presented in the Card footer
+	// The raw number value that is presented in the Card footer
 	public int footerValue;
 
 	// Is the footerValue a percentage?
@@ -31,5 +31,7 @@ public class CardScriptableObject : ScriptableObject {
 
 	// Is the footerValue a monetary value?
 	public bool moneyFlag;
+
+	public CardEnums.FooterOp footerOp;
 	
 } // end Card class

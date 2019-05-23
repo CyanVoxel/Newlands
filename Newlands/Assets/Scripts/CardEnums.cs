@@ -14,6 +14,9 @@ public class CardEnums : MonoBehaviour {
 	public enum Title {TileMod, Resource, MarketMod, PriceCard};
 
 	// The Title of the Card, specifying its type in its category
-	public enum Subtitle {Investment, Sabotage};
+	public enum Subtitle {Investment, Sabotage, Resource};
+
+	// How the footer value on the Card is supposed to be applied
+	public enum FooterOp {None, Add, Sub};
 
 } // CardEnums class

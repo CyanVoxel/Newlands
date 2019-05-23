@@ -20,23 +20,33 @@ public class CardGameObject : MonoBehaviour {
 
 	void Start() {
 
-		card.title = CardEnums.Title.MarketMod;
-		card.subtitle = CardEnums.Subtitle.Investment;
-		card.footerText = "+**<x>** in Price";
-		card.bodyText = "Place this under any **Price Card.** This increases the **Base Price** of the **Resource.**";
+		// TODO: Convert this class to create Card GameObjects with
 
+		// Set the TMP subtitle text based on the card object's enum
 		if (card.title == CardEnums.Title.MarketMod) {
 			title.text = "\u2013Market Mod\u2013";
+		} else if (card.title == CardEnums.Title.PriceCard) {
+			title.text = "\u2013Price Card\u2013";
+		} else if (card.title == CardEnums.Title.Resource) {
+			title.text = "\u2013Resource\u2013";
+		} else if (card.title == CardEnums.Title.TileMod) {
+			title.text = "\u2013Tile Mod\u2013";
 		}
 
+		// Set the TMP subtitle text based on the card object's enum
 		if (card.subtitle == CardEnums.Subtitle.Investment) {
 			subtitle.text = "Investment";
+		} else if (card.subtitle == CardEnums.Subtitle.Sabotage) {
+			subtitle.text = "Sabotage";
+		} else if (card.subtitle == CardEnums.Subtitle.Resource) {
+			subtitle.text = "Resource";
 		}
 
-		// String members are assinged to the text labels after being formatted
+		// String members are assigned to the text labels after being formatted
 		body.text = mdToTag(card.bodyText);
-		card.footerText = insertFooterValue(card.footerText, card.percFlag, card.moneyFlag);
-		footer.text = mdToTag(card.footerText);
+		footer.text = insertFooterValue(card.footerText, card.percFlag, 
+											card.moneyFlag, card.footerOp);
+		footer.text = mdToTag(footer.text);
 
 	} // Start()
 	
@@ -96,7 +106,8 @@ public class CardGameObject : MonoBehaviour {
 	} // mdToTag()
 
 	// Inserts the footerValue into a string meant for the footer text
-	private string insertFooterValue(string inputText, bool percFlag, bool moneyFlag) {
+	private string insertFooterValue(string inputText, bool percFlag, 
+									 bool moneyFlag, CardEnums.FooterOp op) {
 
 		string outputText = inputText;							// String to output
 		string footerValueStr = card.footerValue.ToString();	// The formatted footer value
@@ -117,6 +128,13 @@ public class CardGameObject : MonoBehaviour {
 			// If the value is a percentage, add a $
 			if (moneyFlag) {
 				footerValueStr = ("$" + footerValueStr);
+			}
+
+			// Add the appropriate operator to the string
+			if (op == CardEnums.FooterOp.Add) {
+				footerValueStr = ("+" + footerValueStr);
+			} else if (op == CardEnums.FooterOp.Sub) {
+				footerValueStr = ("\u2013" + footerValueStr);
 			}
 		
 			// Insert start tag
