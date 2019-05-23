@@ -11,7 +11,8 @@ public class CardEnums {
 	public enum Category {GameCard, PriceCard, LandTile}; 
 
 	// The Title of the Card, specifying its type in its category
-	public enum Title {TileMod, Resource, MarketMod, PriceCard};
+	public enum Title {TileMod, Resource, MarketMod, PriceCard,
+					   Forest, Plains, Quarry};
 
 	// The Title of the Card, specifying its type in its category
 	public enum Subtitle {Investment, Sabotage, Resource};
@@ -20,6 +21,6 @@ public class CardEnums {
 	public enum FooterOp {None, Add, Sub};
 
 	// The color of the footer border
-	public enum FooterColor {Black, Red, Green, Blue};
+	public enum FooterColor {Black, Red, Blue, Green, Cyan, Magenta, Yellow};
 
 } // CardEnums class

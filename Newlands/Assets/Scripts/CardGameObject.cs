@@ -77,6 +77,10 @@ public class CardGameObject : MonoBehaviour {
 		// Simple rotation code, used for testings/looking friggin sweet
 		rot += Time.deltaTime * 50;
 		timer += Time.deltaTime * 50;
+
+		// Alternate PingPong code
+		rot = 0;
+		rot = Mathf.PingPong(Time.time * 12.5f, 30f);
 		//Debug.Log(rot);
 		if (rot >= 360f) {
 			rot = 0f;
@@ -127,6 +131,12 @@ public class CardGameObject : MonoBehaviour {
 			footerBorder.color = ColorPalette.inkRed;
 		} else if (card.FooterColor == CardEnums.FooterColor.Green) {	// Green
 			footerBorder.color = ColorPalette.inkGreen;
+		} else if (card.FooterColor == CardEnums.FooterColor.Cyan) {	// Cyan
+			footerBorder.color = ColorPalette.inkCyan;
+		} else if (card.FooterColor == CardEnums.FooterColor.Yellow) {	// Yellow
+			footerBorder.color = ColorPalette.inkYellow;
+		} else if (card.FooterColor == CardEnums.FooterColor.Magenta) {	// Magenta
+			footerBorder.color = ColorPalette.inkMagenta;
 		} else if (card.FooterColor == CardEnums.FooterColor.Blue) {	// Blue
 			footerBorder.color = ColorPalette.inkBlue;
 		}
