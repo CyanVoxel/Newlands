@@ -2008,7 +2008,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 11fcdec7f8527c14b8d039fc37cbc3e4, type: 3}
       propertyPath: m_LocalScale.z
-      value: 200
+      value: 400
       objectReference: {fileID: 0}
     - target: {fileID: 2300000, guid: 11fcdec7f8527c14b8d039fc37cbc3e4, type: 3}
       propertyPath: m_Enabled

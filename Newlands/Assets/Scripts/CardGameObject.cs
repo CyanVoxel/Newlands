@@ -76,16 +76,17 @@ public class CardGameObject : MonoBehaviour {
 			rot = 0f;
 		}
 
-		Debug.Log(timer);
+		//Debug.Log(timer);
 		if (timer >= 180 && timer <= 360) {
 			card = Resources.Load<Card>("Cards/TileMods/Resource/cashcrops_add_1");
-			Debug.Log("Switch to 2!");
+			//Debug.Log("Switch to 2!");
 		} else if (timer >= 540 && timer <= 720) {
 			card = Resources.Load<Card>("Cards/MarketMods/Sabotage/sub_10_perc");
-			Debug.Log("Switch to 3!");
-		} else if (timer > 720) {
+			//Debug.Log("Switch to 3!");
+		} else if (timer > 1080) {
 			card = Resources.Load<Card>("Cards/MarketMods/Investment/add_20_perc");
 			timer = 0;
+			//Debug.Log("Switch to 1!");
 		}
 
 		Quaternion newRotation = Quaternion.Euler(30, rot, -15);
