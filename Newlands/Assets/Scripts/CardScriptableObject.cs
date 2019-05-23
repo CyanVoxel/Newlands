@@ -26,6 +26,9 @@ public class CardScriptableObject : ScriptableObject {
 	// The raw number value that is presented in the Card footer
 	public int footerValue;
 
+	// The color of the footer border
+	public CardEnums.FooterColor FooterColor;
+
 	// Is the footerValue a percentage?
 	public bool percFlag;
 

@@ -19,4 +19,7 @@ public class CardEnums : MonoBehaviour {
 	// How the footer value on the Card is supposed to be applied
 	public enum FooterOp {None, Add, Sub};
 
+	// The color of the footer border
+	public enum FooterColor {Black, Red, Green, Blue};
+
 } // CardEnums class

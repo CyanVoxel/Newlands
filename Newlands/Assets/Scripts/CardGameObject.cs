@@ -6,7 +6,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-
 public class CardGameObject : MonoBehaviour {
 
 	// Textmesh Pro text objects
@@ -14,6 +13,7 @@ public class CardGameObject : MonoBehaviour {
 	public TMP_Text subtitle;
 	public TMP_Text body;
 	public TMP_Text footer;
+	public Image footerBorder;
 
 	// The Card GameObject
 	public CardScriptableObject card;
@@ -23,23 +23,34 @@ public class CardGameObject : MonoBehaviour {
 		// TODO: Convert this class to create Card GameObjects with
 
 		// Set the TMP subtitle text based on the card object's enum
-		if (card.title == CardEnums.Title.MarketMod) {
+		if (card.title == CardEnums.Title.MarketMod) {			// Market Mod
 			title.text = "\u2013Market Mod\u2013";
-		} else if (card.title == CardEnums.Title.PriceCard) {
+		} else if (card.title == CardEnums.Title.PriceCard) {	// Price Card
 			title.text = "\u2013Price Card\u2013";
-		} else if (card.title == CardEnums.Title.Resource) {
+		} else if (card.title == CardEnums.Title.Resource) {	// Resource
 			title.text = "\u2013Resource\u2013";
-		} else if (card.title == CardEnums.Title.TileMod) {
+		} else if (card.title == CardEnums.Title.TileMod) {		// Tile Mod
 			title.text = "\u2013Tile Mod\u2013";
 		}
 
 		// Set the TMP subtitle text based on the card object's enum
-		if (card.subtitle == CardEnums.Subtitle.Investment) {
+		if (card.subtitle == CardEnums.Subtitle.Investment) {		// Investment
 			subtitle.text = "Investment";
-		} else if (card.subtitle == CardEnums.Subtitle.Sabotage) {
+		} else if (card.subtitle == CardEnums.Subtitle.Sabotage) {	// Sabotage
 			subtitle.text = "Sabotage";
-		} else if (card.subtitle == CardEnums.Subtitle.Resource) {
+		} else if (card.subtitle == CardEnums.Subtitle.Resource) {	// Resource
 			subtitle.text = "Resource";
+		}
+
+		// Color the footer border
+		if (card.FooterColor == CardEnums.FooterColor.Black) { 			// Black
+			footerBorder.color = ColorPalette.inkBlack;
+		} else if (card.FooterColor == CardEnums.FooterColor.Red) {		// Red
+			footerBorder.color = ColorPalette.inkRed;
+		} else if (card.FooterColor == CardEnums.FooterColor.Green) {	// Green
+			footerBorder.color = ColorPalette.inkGreen;
+		} else if (card.FooterColor == CardEnums.FooterColor.Blue) {	// Blue
+			footerBorder.color = ColorPalette.inkBlue;
 		}
 
 		// String members are assigned to the text labels after being formatted

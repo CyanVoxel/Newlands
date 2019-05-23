@@ -18,6 +18,7 @@ MonoBehaviour:
     of the **Resource.**
   footerText: '**<x>** in Price'
   footerValue: 20
+  FooterColor: 2
   percFlag: 1
   moneyFlag: 0
-  footerOp: 0
+  footerOp: 1
