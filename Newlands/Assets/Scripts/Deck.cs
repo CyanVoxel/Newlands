@@ -11,6 +11,12 @@ public class Deck {
 	private List<Card> deck = new List<Card>();
 	private TileDeck tileDeck;
 
+	// Resource Directories -------------------------------
+	protected string dirGcMmI = "Cards/GameCards/MarketMods/Investment";
+	protected string dirGcMmS = "Cards/GameCards/MarketMods/Sabotage";
+	protected string dirGcTmI = "Cards/GameCards/TileMods/Investment";
+	protected string dirGcTmS = "Cards/GameCards/TileMods/Sabotage";
+	protected string dirGcTmR = "Cards/GameCards/TileMods/Resource";
 
 	// METHODS ----------------------------------------------------------------
 
@@ -59,13 +65,13 @@ public class Deck {
 			Card cardToAdd;							// Card variable to hold loaded data
 			tileDeck = new TileDeck("standard");	// Creates a premade TileDeck
 			
-			cardToAdd = Resources.Load<Card>("Cards/MarketMods/Investment/add_20_perc");
+			cardToAdd = Resources.Load<Card>(dirGcMmI + "/add_20_perc");
 			this.deck.Add(cardToAdd);
 
-			cardToAdd = Resources.Load<Card>("Cards/MarketMods/Sabotage/sub_10_perc");
+			cardToAdd = Resources.Load<Card>(dirGcMmS + "/sub_10_perc");
 			this.deck.Add(cardToAdd);
 
-			cardToAdd = Resources.Load<Card>("Cards/TileMods/Resource/gems_add_1");
+			cardToAdd = Resources.Load<Card>(dirGcTmR + "/cashcrops_add_4");
 			this.deck.Add(cardToAdd);
 		} // if standard
 

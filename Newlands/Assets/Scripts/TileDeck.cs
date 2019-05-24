@@ -18,14 +18,14 @@ public class TileDeck : Deck {
 		// The Standard Deck's Land Tiles
 		if (flavor == "standard") {
 			Card cardToAdd;
-			
-			cardToAdd = Resources.Load<Card>("Cards/MarketMods/Investment/add_20_perc");
+
+			cardToAdd = Resources.Load<Card>(dirGcMmI + "/add_20_perc");
 			this.Add(cardToAdd);
 
-			cardToAdd = Resources.Load<Card>("Cards/MarketMods/Sabotage/sub_10_perc");
+			cardToAdd = Resources.Load<Card>(dirGcMmS + "/sub_10_perc");
 			this.Add(cardToAdd);
 
-			cardToAdd = Resources.Load<Card>("Cards/MarketMods/Investment/add_20_perc");
+			cardToAdd = Resources.Load<Card>(dirGcTmR + "/cashcrops_add_4");
 			this.Add(cardToAdd);
 		} // if standard
 

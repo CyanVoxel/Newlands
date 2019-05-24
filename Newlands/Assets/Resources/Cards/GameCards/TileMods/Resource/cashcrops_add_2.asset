@@ -9,15 +9,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 252e8b19c3229d843a76e098201409a6, type: 3}
-  m_Name: gems_add_1
+  m_Name: cashcrops_add_2
   m_EditorClassIdentifier: 
   category: 0
   title: 0
   subtitle: 2
-  bodyText: Place this under any **Quarry** tile.
-  footerText: '**<x>** Gems'
-  footerValue: 1
-  FooterColor: 3
+  bodyText: Place this under any **Plains** tile.
+  footerText: '**<x>** Cash Crops'
+  footerValue: 2
+  FooterColor: 4
   percFlag: 0
   moneyFlag: 0
   footerOp: 1
