@@ -17,19 +17,21 @@ public class CardGameObject : MonoBehaviour {
 
 	// The local Card scriptable object
 	private Card card;
+	private Deck deck;
 
 	float rot = -90f;
 	float timer = 0f;
+	int displayIndex = 0;
 
-	Deck newDeck;
+	
 
 	void Start() {
 
 		//card = Resources.Load<Card>("Cards/MarketMods/Investment/add_20_perc");
 
-		newDeck = new Deck("standard");
+		deck = new Deck(CardEnums.Decks.VanillaStandard);
 
-		card = newDeck[0];
+		card = deck.tileDeck[0];
 
 		// TODO: Convert this class to create Card GameObjects with
 
@@ -76,7 +78,7 @@ public class CardGameObject : MonoBehaviour {
 
 		// Simple rotation code, used for testings/looking friggin sweet
 		rot += Time.deltaTime * 50;
-		timer += Time.deltaTime * 50;
+		timer += Time.deltaTime * 60;
 
 		// Alternate PingPong code
 		rot = 0;
@@ -86,22 +88,20 @@ public class CardGameObject : MonoBehaviour {
 			rot = 0f;
 		}
 
-		//Debug.Log(timer);
-		if (timer >= 180 && timer <= 360) {
-			card = newDeck[1];
-			//Debug.Log("Switch to 2!");
-		} else if (timer >= 540 && timer <= 720) {
-			card = newDeck[2];
-			//Debug.Log("Switch to 3!");
-		} else if (timer > 1080) {
-			card = newDeck[0];
+		// Cycles though each card of the tileDeck
+		card = deck.tileDeck[displayIndex];
+		if (timer >= 100) {
+			displayIndex++;
+
+			if (displayIndex >= deck.tileDeck.Count()) {
+				displayIndex = 0;
+			}
+
 			timer = 0;
-			//Debug.Log("Switch to 1!");
 		}
 
 		Quaternion newRotation = Quaternion.Euler(30, rot, -15);
 		transform.rotation = newRotation;
-
 
 
 		// Set the TMP subtitle text based on the card object's enum
@@ -122,6 +122,22 @@ public class CardGameObject : MonoBehaviour {
 			subtitle.text = "Sabotage";
 		} else if (card.subtitle == CardEnums.Subtitle.Resource) {	// Resource
 			subtitle.text = "Resource";
+		} else if (card.subtitle == CardEnums.Subtitle.Lumber) {	// Lumber
+			subtitle.text = "Lumber";
+		} else if (card.subtitle == CardEnums.Subtitle.Oil) {		// Oil
+			subtitle.text = "Oil";
+		} else if (card.subtitle == CardEnums.Subtitle.CashCrops) {	// Cash Crops
+			subtitle.text = "Cash Crops";
+		} else if (card.subtitle == CardEnums.Subtitle.Iron) {		// Iron
+			subtitle.text = "Iron";
+		} else if (card.subtitle == CardEnums.Subtitle.Silver) {	// Silver
+			subtitle.text = "Silver";
+		} else if (card.subtitle == CardEnums.Subtitle.Gold) {		// Gold
+			subtitle.text = "Gold";
+		} else if (card.subtitle == CardEnums.Subtitle.Gems) {		// Gems
+			subtitle.text = "Gems";
+		} else if (card.subtitle == CardEnums.Subtitle.Platinum) {	// Platinum
+			subtitle.text = "Platinum";
 		}
 
 		// Color the footer border
@@ -196,10 +212,10 @@ public class CardGameObject : MonoBehaviour {
 	private string insertFooterValue(string inputText, bool percFlag, 
 									 bool moneyFlag, CardEnums.FooterOp op) {
 
-		string outputText = inputText;							// String to output
-		string footerValueStr = card.footerValue.ToString();	// The formatted footer value
+		string outputText = inputText;								// String to output
+		string footerValueStr = card.footerValue.ToString("n0");	// The formatted footer value
 
-		//While there's still ITALIC markdown left in input string
+		// While there's still ITALIC markdown left in input string
 		while (outputText.IndexOf("<x>") >= 0) {
 			// Set known index
 			int index = outputText.IndexOf("<x>");								
@@ -225,7 +241,7 @@ public class CardGameObject : MonoBehaviour {
 			// Insert start tag
 			outputText = outputText.Insert(startIndex: index, value: footerValueStr);	
 
-		} //while ITALIC left
+		} // while ITALIC left
 
 		return outputText;
 	}

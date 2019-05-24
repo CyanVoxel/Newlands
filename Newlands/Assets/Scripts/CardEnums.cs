@@ -15,12 +15,16 @@ public class CardEnums {
 					   Forest, Plains, Quarry};
 
 	// The Title of the Card, specifying its type in its category
-	public enum Subtitle {Investment, Sabotage, Resource};
+	public enum Subtitle {Investment, Sabotage, Resource,
+						  Lumber, CashCrops, Oil, Iron, Gold, Silver, Gems, Platinum};
 
 	// How the footer value on the Card is supposed to be applied
 	public enum FooterOp {None, Add, Sub};
 
 	// The color of the footer border
 	public enum FooterColor {Black, Red, Blue, Green, Cyan, Magenta, Yellow};
+
+	// Deck names
+	public enum Decks {VanillaStandard};
 
 } // CardEnums class

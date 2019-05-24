@@ -19,6 +19,7 @@ MonoBehaviour:
   footerText: '**<x>** in Price'
   footerValue: 10
   FooterColor: 1
+  onlyColorCorners: 1
   percFlag: 1
   moneyFlag: 0
   footerOp: 2

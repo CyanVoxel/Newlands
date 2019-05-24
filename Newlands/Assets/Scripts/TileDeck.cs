@@ -9,23 +9,38 @@ public class TileDeck : Deck {
 
 	// CONSTRUCTORS -----------------------------------------------------------
 
-	// No-arg constructor
+	// Default no-arg constructor
 	public TileDeck() { }
 
 	// Constructor that takes in a string representing the name of premade deck
-	public TileDeck(string flavor) {
+	public TileDeck(CardEnums.Decks flavor) {
 		
 		// The Standard Deck's Land Tiles
-		if (flavor == "standard") {
+		if (flavor == CardEnums.Decks.VanillaStandard) {
 			Card cardToAdd;
 
-			cardToAdd = Resources.Load<Card>(dirGcMmI + "/add_20_perc");
+			cardToAdd = Resources.Load<Card>(dirPc + "/lumber");
 			this.Add(cardToAdd);
 
-			cardToAdd = Resources.Load<Card>(dirGcMmS + "/sub_10_perc");
+			cardToAdd = Resources.Load<Card>(dirPc + "/cashcrops");
 			this.Add(cardToAdd);
 
-			cardToAdd = Resources.Load<Card>(dirGcTmR + "/cashcrops_add_4");
+			cardToAdd = Resources.Load<Card>(dirPc + "/oil");
+			this.Add(cardToAdd);
+
+			cardToAdd = Resources.Load<Card>(dirPc + "/iron");
+			this.Add(cardToAdd);
+
+			cardToAdd = Resources.Load<Card>(dirPc + "/silver");
+			this.Add(cardToAdd);
+
+			cardToAdd = Resources.Load<Card>(dirPc + "/gold");
+			this.Add(cardToAdd);
+
+			cardToAdd = Resources.Load<Card>(dirPc + "/gems");
+			this.Add(cardToAdd);
+
+			cardToAdd = Resources.Load<Card>(dirPc + "/platinum");
 			this.Add(cardToAdd);
 		} // if standard
 

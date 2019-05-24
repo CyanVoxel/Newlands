@@ -9,16 +9,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 252e8b19c3229d843a76e098201409a6, type: 3}
-  m_Name: iron_add_4
+  m_Name: platinum
   m_EditorClassIdentifier: 
-  category: 0
-  title: 0
-  subtitle: 2
-  bodyText: Place this under any **Quarry** tile.
-  footerText: '**<x>** Iron'
-  footerValue: 4
-  FooterColor: 4
+  category: 1
+  title: 3
+  subtitle: 10
+  bodyText: An extremely rare resource that can be placed under **Quarry** TIles.
+  footerText: '**<x>**'
+  footerValue: 2000
+  FooterColor: 0
   onlyColorCorners: 0
   percFlag: 0
-  moneyFlag: 0
-  footerOp: 1
+  moneyFlag: 1
+  footerOp: 0

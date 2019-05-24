@@ -9,7 +9,7 @@ public class Deck {
 	// DATA FIELDS ------------------------------------------------------------
 
 	private List<Card> deck = new List<Card>();
-	private TileDeck tileDeck;
+	public TileDeck tileDeck;
 
 	// Resource Directories -------------------------------
 	protected string dirGcMmI = "Cards/GameCards/MarketMods/Investment";
@@ -17,6 +17,7 @@ public class Deck {
 	protected string dirGcTmI = "Cards/GameCards/TileMods/Investment";
 	protected string dirGcTmS = "Cards/GameCards/TileMods/Sabotage";
 	protected string dirGcTmR = "Cards/GameCards/TileMods/Resource";
+	protected string dirPc = "Cards/PriceCards";
 
 	// METHODS ----------------------------------------------------------------
 
@@ -58,12 +59,14 @@ public class Deck {
 	public Deck() { } // Deck() constructor
 
 	// Constructor that takes in a string representing the name of premade deck
-	public Deck(string flavor) {
+	public Deck(CardEnums.Decks flavor) {
 
-		// The Standard Deck ------------------------------
-		if (flavor == "standard") {
-			Card cardToAdd;							// Card variable to hold loaded data
-			tileDeck = new TileDeck("standard");	// Creates a premade TileDeck
+		// The Vanilla Standard Deck ----------------------
+		if (flavor == CardEnums.Decks.VanillaStandard) {
+			// Card variable to hold loaded data
+			Card cardToAdd;
+			// Creates a premade TileDeck
+			tileDeck = new TileDeck(CardEnums.Decks.VanillaStandard);
 			
 			cardToAdd = Resources.Load<Card>(dirGcMmI + "/add_20_perc");
 			this.deck.Add(cardToAdd);
