@@ -1,109 +1,47 @@
-﻿// A driver class to test the functionality of the Card object.
-
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class CardGameObject : MonoBehaviour {
+public class CreateCardObj : MonoBehaviour {
 
 	// Textmesh Pro text objects
-	public TMP_Text title;
-	public TMP_Text subtitle;
-	public TMP_Text body;
-	public TMP_Text footer;
-	public Image footerBorder;
+	private TMP_Text title;
+	private TMP_Text subtitle;
+	private TMP_Text body;
+	private TMP_Text footer;
+	private Image footerBorder;
+
+	private GameObject titleObj;
+	private GameObject subtitleObj;
+	private GameObject bodyObj;
+	private GameObject footerObj;
+	private GameObject footerBorderObj;
 
 	// The local Card scriptable object
 	private Card card;
 	private MasterDeck masterDeck;
 
-	float rot = -90f;
-	float timer = 0f;
-	int displayIndex = 0;
-
-	
-
 	void Start() {
 
-		//card = Resources.Load<Card>("Cards/MarketMods/Investment/add_20_perc");
-
 		masterDeck = new MasterDeck(CardEnums.Decks.VanillaStandard);
+		card = masterDeck.gameCardDeck[2];
 
-		card = masterDeck.priceCardDeck[0];
-
-		// TODO: Convert this class to create Card GameObjects with
-
-		// // Set the TMP subtitle text based on the card object's enum
-		// if (card.title == CardEnums.Title.MarketMod) {			// Market Mod
-		// 	title.text = "\u2013Market Mod\u2013";
-		// } else if (card.title == CardEnums.Title.PriceCard) {	// Price Card
-		// 	title.text = "\u2013Price Card\u2013";
-		// } else if (card.title == CardEnums.Title.Resource) {	// Resource
-		// 	title.text = "\u2013Resource\u2013";
-		// } else if (card.title == CardEnums.Title.TileMod) {		// Tile Mod
-		// 	title.text = "\u2013Tile Mod\u2013";
-		// }
-
-		// // Set the TMP subtitle text based on the card object's enum
-		// if (card.subtitle == CardEnums.Subtitle.Investment) {		// Investment
-		// 	subtitle.text = "Investment";
-		// } else if (card.subtitle == CardEnums.Subtitle.Sabotage) {	// Sabotage
-		// 	subtitle.text = "Sabotage";
-		// } else if (card.subtitle == CardEnums.Subtitle.Resource) {	// Resource
-		// 	subtitle.text = "Resource";
-		// }
-
-		// // Color the footer border
-		// if (card.FooterColor == CardEnums.FooterColor.Black) { 			// Black
-		// 	footerBorder.color = ColorPalette.inkBlack;
-		// } else if (card.FooterColor == CardEnums.FooterColor.Red) {		// Red
-		// 	footerBorder.color = ColorPalette.inkRed;
-		// } else if (card.FooterColor == CardEnums.FooterColor.Green) {	// Green
-		// 	footerBorder.color = ColorPalette.inkGreen;
-		// } else if (card.FooterColor == CardEnums.FooterColor.Blue) {	// Blue
-		// 	footerBorder.color = ColorPalette.inkBlue;
-		// }
-
-		// // String members are assigned to the text labels after being formatted
-		// body.text = mdToTag(card.bodyText);
-		// footer.text = insertFooterValue(card.footerText, card.percFlag, 
-		// 									card.moneyFlag, card.footerOp);
-		// footer.text = mdToTag(footer.text);
-
-	} // Start()
-	
-	void Update() {
-
-		// Simple rotation code, used for testings/looking friggin sweet
-		rot += Time.deltaTime * 50;
-		timer += Time.deltaTime * 60;
-
-		// Alternate PingPong code
-		rot = 0;
-		rot = Mathf.PingPong(Time.time * 12.5f, 30f);
-		//Debug.Log(rot);
-		if (rot >= 360f) {
-			rot = 0f;
-		}
-
-		// Cycles though each card of the tileDeck
-		card = masterDeck.priceCardDeck[displayIndex];
-		if (timer >= 100) {
-			displayIndex++;
-
-			if (displayIndex >= masterDeck.priceCardDeck.Count()) {
-				displayIndex = 0;
-			}
-
-			timer = 0;
-		}
-
-		Quaternion newRotation = Quaternion.Euler(30, rot, -15);
-		transform.rotation = newRotation;
+		GameObject titleObj = GameObject.Find("Title");
+		GameObject subtitleObj = GameObject.Find("Subtitle");
+		GameObject bodyObj = GameObject.Find("Body");
+		GameObject footerObj = GameObject.Find("Footer");
+		GameObject footerBorderObj = GameObject.Find("Footer Border");
 
 
+		TMP_Text title = titleObj.GetComponent<TMP_Text>();
+		TMP_Text subtitle = subtitleObj.GetComponent<TMP_Text>();
+		TMP_Text body = bodyObj.GetComponent<TMP_Text>();
+		TMP_Text footer = footerObj.GetComponent<TMP_Text>();
+		Image footerBorder = footerBorderObj.GetComponent<Image>();
+
+		
 		// Set the TMP subtitle text based on the card object's enum
 		if (card.title == CardEnums.Title.MarketMod) {			// Market Mod
 			title.text = "\u2013Market Mod\u2013";
@@ -162,8 +100,9 @@ public class CardGameObject : MonoBehaviour {
 		footer.text = insertFooterValue(card.footerText, card.percFlag, 
 											card.moneyFlag, card.footerOp);
 		footer.text = mdToTag(footer.text);
+	} // Start()
+	
 
-	} // Update()
 
 	// Converts a string with bold and italic markdown into html-like tags
 	private string mdToTag(string inputText) {
@@ -244,6 +183,7 @@ public class CardGameObject : MonoBehaviour {
 		} // while ITALIC left
 
 		return outputText;
-	}
 
-} // TileGameObject()
+	} // insertFooterValue()
+
+} // CreateCardObj class
