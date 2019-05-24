@@ -56,6 +56,7 @@ GameObject:
   - component: {fileID: 223775626817075526}
   - component: {fileID: 114999477788554304}
   - component: {fileID: 114639061348808982}
+  - component: {fileID: 225556426567897098}
   m_Layer: 0
   m_Name: Front Canvas
   m_TagString: Untagged
@@ -109,6 +110,7 @@ GameObject:
   - component: {fileID: 4138493021721980}
   - component: {fileID: 33795526206495388}
   - component: {fileID: 23843339978194992}
+  - component: {fileID: 65340729472751406}
   m_Layer: 0
   m_Name: Model
   m_TagString: Untagged
@@ -409,6 +411,18 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1259190305510696}
   m_Mesh: {fileID: 4300000, guid: 11fcdec7f8527c14b8d039fc37cbc3e4, type: 3}
+--- !u!65 &65340729472751406
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1259190305510696}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.025000006, y: 0.017500002, z: 0.00049999997}
+  m_Center: {x: 0.0000000018626451, y: 9.313226e-10, z: 0.00024999998}
 --- !u!114 &114004518387318834
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1743,3 +1757,14 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: -46}
   m_SizeDelta: {x: 450, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!225 &225556426567897098
+CanvasGroup:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1093813917115174}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 0
+  m_IgnoreParentGroups: 0
