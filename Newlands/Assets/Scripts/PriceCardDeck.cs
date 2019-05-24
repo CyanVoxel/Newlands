@@ -1,21 +1,20 @@
-// A class designed to hold and manage "decks" of Land Tile Card objects.
-// To be used along with a main Deck.
+// A class designed to hold various Price Cards in a Deck
 
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TileDeck : Deck {
+public class PriceCardDeck : Deck {
 
 	// CONSTRUCTORS -----------------------------------------------------------
 
 	// Default no-arg constructor
-	public TileDeck() { }
+	public PriceCardDeck() { }
 
 	// Constructor that takes in a string representing the name of premade deck
-	public TileDeck(CardEnums.Decks flavor) {
+	public PriceCardDeck(CardEnums.Decks flavor) {
 		
-		// The Standard Deck's Land Tiles
+		// The Standard Deck's Price Cards
 		if (flavor == CardEnums.Decks.VanillaStandard) {
 			Card cardToAdd;
 
@@ -42,8 +41,8 @@ public class TileDeck : Deck {
 
 			cardToAdd = Resources.Load<Card>(dirPc + "/platinum");
 			this.Add(cardToAdd);
-		} // if standard
+		} // if Vanilla Standard deck
 
-	} // TileDeck(flavor) constructor
+	} // PriceCardDeck(flavor) constructor
 
-}
+} //PriceCardDeck class

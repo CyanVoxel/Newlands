@@ -17,7 +17,7 @@ public class CardGameObject : MonoBehaviour {
 
 	// The local Card scriptable object
 	private Card card;
-	private Deck deck;
+	private MasterDeck masterDeck;
 
 	float rot = -90f;
 	float timer = 0f;
@@ -29,9 +29,9 @@ public class CardGameObject : MonoBehaviour {
 
 		//card = Resources.Load<Card>("Cards/MarketMods/Investment/add_20_perc");
 
-		deck = new Deck(CardEnums.Decks.VanillaStandard);
+		masterDeck = new MasterDeck(CardEnums.Decks.VanillaStandard);
 
-		card = deck.tileDeck[0];
+		card = masterDeck.priceCardDeck[0];
 
 		// TODO: Convert this class to create Card GameObjects with
 
@@ -89,11 +89,11 @@ public class CardGameObject : MonoBehaviour {
 		}
 
 		// Cycles though each card of the tileDeck
-		card = deck.tileDeck[displayIndex];
+		card = masterDeck.priceCardDeck[displayIndex];
 		if (timer >= 100) {
 			displayIndex++;
 
-			if (displayIndex >= deck.tileDeck.Count()) {
+			if (displayIndex >= masterDeck.priceCardDeck.Count()) {
 				displayIndex = 0;
 			}
 

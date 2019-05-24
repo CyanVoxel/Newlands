@@ -9,7 +9,6 @@ public class Deck {
 	// DATA FIELDS ------------------------------------------------------------
 
 	private List<Card> deck = new List<Card>();
-	public TileDeck tileDeck;
 
 	// Resource Directories -------------------------------
 	protected string dirGcMmI = "Cards/GameCards/MarketMods/Investment";
@@ -58,26 +57,26 @@ public class Deck {
 	// No-arg constructor
 	public Deck() { } // Deck() constructor
 
-	// Constructor that takes in a string representing the name of premade deck
-	public Deck(CardEnums.Decks flavor) {
+	// // Constructor that takes in a string representing the name of premade deck
+	// public Deck(CardEnums.Decks flavor) {
 
-		// The Vanilla Standard Deck ----------------------
-		if (flavor == CardEnums.Decks.VanillaStandard) {
-			// Card variable to hold loaded data
-			Card cardToAdd;
-			// Creates a premade TileDeck
-			tileDeck = new TileDeck(CardEnums.Decks.VanillaStandard);
+	// 	// The Vanilla Standard Deck ----------------------
+	// 	if (flavor == CardEnums.Decks.VanillaStandard) {
+	// 		// Card variable to hold loaded data
+	// 		Card cardToAdd;
+	// 		// Creates a premade TileDeck
+	// 		tileDeck = new TileDeck(CardEnums.Decks.VanillaStandard);
 			
-			cardToAdd = Resources.Load<Card>(dirGcMmI + "/add_20_perc");
-			this.deck.Add(cardToAdd);
+	// 		cardToAdd = Resources.Load<Card>(dirGcMmI + "/add_20_perc");
+	// 		this.deck.Add(cardToAdd);
 
-			cardToAdd = Resources.Load<Card>(dirGcMmS + "/sub_10_perc");
-			this.deck.Add(cardToAdd);
+	// 		cardToAdd = Resources.Load<Card>(dirGcMmS + "/sub_10_perc");
+	// 		this.deck.Add(cardToAdd);
 
-			cardToAdd = Resources.Load<Card>(dirGcTmR + "/cashcrops_add_4");
-			this.deck.Add(cardToAdd);
-		} // if standard
+	// 		cardToAdd = Resources.Load<Card>(dirGcTmR + "/cashcrops_add_4");
+	// 		this.deck.Add(cardToAdd);
+	// 	} // if standard
 
-	} // Deck(flavor) constructor
+	// } // Deck(flavor) constructor
 	
 } // Deck class

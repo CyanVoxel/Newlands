@@ -25,6 +25,6 @@ public class CardEnums {
 	public enum FooterColor {Black, Red, Blue, Green, Cyan, Magenta, Yellow};
 
 	// Deck names
-	public enum Decks {VanillaStandard};
+	public enum Decks {VanillaStandard, Corny};
 
 } // CardEnums class
