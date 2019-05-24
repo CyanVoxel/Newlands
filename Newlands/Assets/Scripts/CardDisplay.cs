@@ -1,46 +1,54 @@
-﻿using System.Collections;
+﻿// This class acts as a bridge between the internal Card scriptable object data
+// and the display components of the Card prefab.
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class CreateCardObj : MonoBehaviour {
+public class CardDisplay : MonoBehaviour {
 
-	// Textmesh Pro text objects
+	// DATA FIELDS ------------------------------------------------------------
+
+	// Textmesh Pro text objects --------------------------
 	private TMP_Text title;
 	private TMP_Text subtitle;
 	private TMP_Text body;
 	private TMP_Text footer;
 	private Image footerBorder;
 
+	// GameObject containers ------------------------------
 	private GameObject titleObj;
 	private GameObject subtitleObj;
 	private GameObject bodyObj;
 	private GameObject footerObj;
 	private GameObject footerBorderObj;
 
+	// Long directories stored as strings
+	private string dirFooterBorder = "Front Canvas/Footer Mask/Footer Border Mask/Footer Border";
+
 	// The local Card scriptable object
 	private Card card;
-	private MasterDeck masterDeck;
 
 	void Start() {
 
-		masterDeck = new MasterDeck(CardEnums.Decks.VanillaStandard);
-		card = masterDeck.gameCardDeck[2];
+		// TEMP: Set the Card prefab to display one of the known Game Cards
+		card = GridManager.masterDeck.gameCardDeck[Random.Range(0, 3)];
 
-		GameObject titleObj = GameObject.Find("Title");
-		GameObject subtitleObj = GameObject.Find("Subtitle");
-		GameObject bodyObj = GameObject.Find("Body");
-		GameObject footerObj = GameObject.Find("Footer");
-		GameObject footerBorderObj = GameObject.Find("Footer Border");
+		// Grab the display elements from this parent object
+		GameObject titleObj = transform.Find("Front Canvas/Title").gameObject;
+		GameObject subtitleObj = transform.Find("Front Canvas/Subtitle").gameObject;
+		GameObject bodyObj = transform.Find("Front Canvas/Body").gameObject;
+		GameObject footerObj = transform.Find("Front Canvas/Footer").gameObject;
+		GameObject footerBorderObj = transform.Find(dirFooterBorder).gameObject;
 
-
+		// Pick out the appropriate elements from the GameObjects that were grabbed
 		TMP_Text title = titleObj.GetComponent<TMP_Text>();
 		TMP_Text subtitle = subtitleObj.GetComponent<TMP_Text>();
 		TMP_Text body = bodyObj.GetComponent<TMP_Text>();
 		TMP_Text footer = footerObj.GetComponent<TMP_Text>();
 		Image footerBorder = footerBorderObj.GetComponent<Image>();
-
 		
 		// Set the TMP subtitle text based on the card object's enum
 		if (card.title == CardEnums.Title.MarketMod) {			// Market Mod
@@ -107,7 +115,7 @@ public class CreateCardObj : MonoBehaviour {
 	// Converts a string with bold and italic markdown into html-like tags
 	private string mdToTag(string inputText) {
 
-		string outputText = inputText;
+		string outputText = inputText;	// String to output
 
 		//While there's still BOLD markdown left in input string
 		while (outputText.IndexOf("**") >= 0) {
@@ -186,4 +194,4 @@ public class CreateCardObj : MonoBehaviour {
 
 	} // insertFooterValue()
 
-} // CreateCardObj class
+} // CardDisplay class
