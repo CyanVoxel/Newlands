@@ -13,7 +13,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   category: 1
   title: 3
-  subtitle: 6
+  subtitle: 7
   bodyText: The most common resource found on **Quarry** Tiles.
   footerText: '**<x>**'
   footerValue: 100

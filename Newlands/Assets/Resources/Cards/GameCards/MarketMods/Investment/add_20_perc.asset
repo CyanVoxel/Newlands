@@ -13,7 +13,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   category: 0
   title: 2
-  subtitle: 0
+  subtitle: 1
   bodyText: Place this under any **Price Card.** This increases the **Base Price**
     of the **Resource.**
   footerText: '**<x>** in Price'

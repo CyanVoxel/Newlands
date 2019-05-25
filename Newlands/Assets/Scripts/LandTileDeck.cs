@@ -16,18 +16,58 @@ public class LandTileDeck : Deck {
 		
 		// The Standard Deck's Land Tiles
 		if (flavor == CardEnums.Decks.VanillaStandard) {
-			// Card cardToAdd;
+			Card cardToAdd;
 
-			// TODO: Implement Land Tile objects
+			cardToAdd = Resources.Load<Card>(dirLt + "/forest_oil_1");
+			this.Add(cardToAdd);
+			this.Add(cardToAdd);
+			this.Add(cardToAdd);
 
-			// cardToAdd = Resources.Load<Card>(dirGcMmI + "/add_20_perc");
-			// this.Add(cardToAdd);
+			cardToAdd = Resources.Load<Card>(dirLt + "/forest_lumber_1");
+			for (int i = 0; i < 8; i++) {
+				this.Add(cardToAdd);
+			}
 
-			// cardToAdd = Resources.Load<Card>(dirGcMmS + "/sub_10_perc");
-			// this.Add(cardToAdd);
+			cardToAdd = Resources.Load<Card>(dirLt + "/forest_lumber_2");
+			for (int i = 0; i < 5; i++) {
+				this.Add(cardToAdd);
+			}
 
-			// cardToAdd = Resources.Load<Card>(dirGcTmR + "/cashcrops_add_4");
-			// this.Add(cardToAdd);
+			cardToAdd = Resources.Load<Card>(dirLt + "/forest_lumber_3");
+			this.Add(cardToAdd);
+			this.Add(cardToAdd);
+
+			cardToAdd = Resources.Load<Card>(dirLt + "/plains_oil_1");
+			for (int i = 0; i < 6; i++) {
+				this.Add(cardToAdd);
+			}
+
+			cardToAdd = Resources.Load<Card>(dirLt + "/plains_empty");
+			for (int i = 0; i < 12; i++) {
+				this.Add(cardToAdd);
+				Debug.Log("Added empty plains!");
+			}
+
+			cardToAdd = Resources.Load<Card>(dirLt + "/quarry_iron_1");
+			for (int i = 0; i < 6; i++) {
+				this.Add(cardToAdd);
+			}
+
+			cardToAdd = Resources.Load<Card>(dirLt + "/quarry_iron_2");
+			for (int i = 0; i < 6; i++) {
+				this.Add(cardToAdd);
+			}
+
+			cardToAdd = Resources.Load<Card>(dirLt + "/quarry_silver_1");
+			for (int i = 0; i < 4; i++) {
+				this.Add(cardToAdd);
+			}
+
+			cardToAdd = Resources.Load<Card>(dirLt + "/quarry_gold_1");
+			this.Add(cardToAdd);
+			this.Add(cardToAdd);
+			Debug.Log("Added gold!");
+
 		} // if standard
 
 	} // LandTileDeck(flavor) constructor

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   category: 1
   title: 3
-  subtitle: 4
+  subtitle: 5
   bodyText: A generic mix of crops grown for profit. Can be placed under any **Plains**
     Tile.
   footerText: '**<x>**'

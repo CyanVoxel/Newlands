@@ -13,7 +13,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   category: 1
   title: 3
-  subtitle: 10
+  subtitle: 11
   bodyText: An extremely rare resource that can be placed under **Quarry** TIles.
   footerText: '**<x>**'
   footerValue: 2000

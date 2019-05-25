@@ -15,7 +15,7 @@ public class CardEnums {
 					   Forest, Plains, Quarry};
 
 	// The Title of the Card, specifying its type in its category
-	public enum Subtitle {Investment, Sabotage, Resource,
+	public enum Subtitle {None, Investment, Sabotage, Resource,
 						  Lumber, CashCrops, Oil, Iron, Gold, Silver, Gems, Platinum};
 
 	// How the footer value on the Card is supposed to be applied

@@ -12,12 +12,13 @@ MonoBehaviour:
   m_Name: forest_oil_1
   m_EditorClassIdentifier: 
   category: 2
-  title: 0
+  title: 4
   subtitle: 0
-  bodyText: 
-  footerText: 
-  footerValue: 0
+  bodyText: Holds compatible **Modifier** Cards.
+  footerText: '**<x>** Oil'
+  footerValue: 1
   FooterColor: 0
+  onlyColorCorners: 0
   percFlag: 0
   moneyFlag: 0
   footerOp: 0

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   category: 1
   title: 3
-  subtitle: 5
+  subtitle: 6
   bodyText: Common on **Plains** Tiles and can be placed under **Any** Tile.
   footerText: '**<x>**'
   footerValue: 100

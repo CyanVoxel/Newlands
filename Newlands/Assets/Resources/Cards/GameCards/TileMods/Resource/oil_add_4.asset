@@ -13,11 +13,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   category: 0
   title: 0
-  subtitle: 2
+  subtitle: 3
   bodyText: Place this under **Any** tile.
   footerText: '**<x>** Oil'
   footerValue: 4
   FooterColor: 4
+  onlyColorCorners: 0
   percFlag: 0
   moneyFlag: 0
   footerOp: 1

@@ -34,7 +34,9 @@ public class CardDisplay : MonoBehaviour {
 	void Start() {
 
 		// TEMP: Set the Card prefab to display one of the known Game Cards
-		card = GridManager.masterDeck.gameCardDeck[Random.Range(0, 3)];
+		// TODO: Don't let the same card be drawn more than its amount in the deck
+		int landTileCount = GridManager.masterDeck.landTileDeck.Count();
+		card = GridManager.masterDeck.landTileDeck[Random.Range(0, landTileCount)];
 
 		// Grab the display elements from this parent object
 		GameObject titleObj = transform.Find("Front Canvas/Title").gameObject;
@@ -59,6 +61,12 @@ public class CardDisplay : MonoBehaviour {
 			title.text = "\u2013Resource\u2013";
 		} else if (card.title == CardEnums.Title.TileMod) {		// Tile Mod
 			title.text = "\u2013Tile Mod\u2013";
+		} else if (card.title == CardEnums.Title.Forest) {		// Forest Tile
+			title.text = "   Forest";
+		} else if (card.title == CardEnums.Title.Plains) {		// Plains Tile
+			title.text = "   Plains";
+		} else if (card.title == CardEnums.Title.Quarry) {		// Quarry Tile
+			title.text = "   Quarry";
 		}
 
 		// Set the TMP subtitle text based on the card object's enum
@@ -84,6 +92,8 @@ public class CardDisplay : MonoBehaviour {
 			subtitle.text = "Gems";
 		} else if (card.subtitle == CardEnums.Subtitle.Platinum) {	// Platinum
 			subtitle.text = "Platinum";
+		} else if (card.subtitle == CardEnums.Subtitle.None) {		// None
+			subtitle.text = "";
 		}
 
 		// Color the footer border

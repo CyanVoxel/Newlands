@@ -17,6 +17,7 @@ public class Deck {
 	protected string dirGcTmS = "Cards/GameCards/TileMods/Sabotage";
 	protected string dirGcTmR = "Cards/GameCards/TileMods/Resource";
 	protected string dirPc = "Cards/PriceCards";
+	protected string dirLt = "Cards/LandTiles";
 
 	// METHODS ----------------------------------------------------------------
 

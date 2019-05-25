@@ -13,7 +13,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   category: 1
   title: 3
-  subtitle: 3
+  subtitle: 4
   bodyText: A cheap and abunant resource commonly found on **Forest** Tiles.
   footerText: '**<x>**'
   footerValue: 50

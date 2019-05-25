@@ -13,7 +13,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   category: 1
   title: 3
-  subtitle: 7
+  subtitle: 8
   bodyText: A rare resource that can be found on **Quarry** Tiles, but can be placed
     under **Any** Tile.
   footerText: '**<x>**'

@@ -36,6 +36,10 @@ public class MouseManager : MonoBehaviour {
 			float objX = objectHit.transform.parent.position.x;
 			float objY = objectHit.transform.parent.position.y;
 			float objZ = objectHit.transform.parent.position.z;
+
+			float objRotX = objectHit.transform.parent.rotation.x;
+			float objRotY = objectHit.transform.parent.rotation.y;
+			float objRotZ = objectHit.transform.parent.rotation.z;
 			
 
 			if (Input.GetMouseButton(0)) {
@@ -43,7 +47,12 @@ public class MouseManager : MonoBehaviour {
 				objY = objectHit.transform.parent.position.y;
 				objZ = objectHit.transform.parent.position.z;
 
-				objectHit.transform.parent.position = new Vector3(objX, objY, 48f);
+				objRotX = objectHit.transform.parent.rotation.x;
+				objRotY = objectHit.transform.parent.rotation.y;
+				objRotZ = objectHit.transform.parent.rotation.z;
+
+				objectHit.transform.parent.rotation = new Quaternion(0, 0, 0, 0);
+				//objectHit.transform.parent.position = new Vector3(objX, objY, 49f);
 				//objectHit.transform.parent.localScale += new Vector3(1f, 1f, 0f);
 			}
 
@@ -52,7 +61,11 @@ public class MouseManager : MonoBehaviour {
 			}
 
 			if (Input.GetMouseButton(1)) {
-				objectHit.transform.parent.localScale += new Vector3(1f, 1f, 0f);
+				objRotX = objectHit.transform.parent.rotation.x;
+				objRotY = objectHit.transform.parent.rotation.y;
+				objRotZ = objectHit.transform.parent.rotation.z;
+
+				objectHit.transform.parent.rotation = new Quaternion(0, 180, 0, 0);
 			}
 
 		}

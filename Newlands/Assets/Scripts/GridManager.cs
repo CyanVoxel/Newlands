@@ -7,8 +7,8 @@ using UnityEngine;
 public class GridManager : MonoBehaviour {
 
 	// DATA FIELDS ------------------------------------------------------------
-	private int width = 9;
-	private int height = 9;
+	private int width = 7;
+	private int height = 7;
 	public static MasterDeck masterDeck;
 
 	private GameObject card;
@@ -30,6 +30,7 @@ public class GridManager : MonoBehaviour {
 				GameObject cardObj = (GameObject)Instantiate(this.card, new Vector3(xOff, yOff, 50), Quaternion.identity);
 				cardObj.name = ("Card_x" + x + "_y" + y + "_z0");
 				cardObj.transform.SetParent(this.transform);
+				cardObj.transform.rotation = new Quaternion(0, 180, 0, 0);
 
 			} // y
 			

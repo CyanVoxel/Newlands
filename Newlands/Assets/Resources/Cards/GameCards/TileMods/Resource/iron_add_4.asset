@@ -13,7 +13,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   category: 0
   title: 0
-  subtitle: 2
+  subtitle: 3
   bodyText: Place this under any **Quarry** tile.
   footerText: '**<x>** Iron'
   footerValue: 4

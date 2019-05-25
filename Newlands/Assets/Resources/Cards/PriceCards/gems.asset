@@ -13,7 +13,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   category: 1
   title: 3
-  subtitle: 9
+  subtitle: 10
   bodyText: Not naturally occurring on normal tiles, gems can be placed under any
     **Quarry** Tile.
   footerText: '**<x>**'
