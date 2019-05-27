@@ -17,7 +17,7 @@ MonoBehaviour:
   bodyText: Holds compatible **Modifier** Cards.
   footerText: '**<x>** Oil'
   footerValue: 1
-  FooterColor: 0
+  FooterColor: 3
   onlyColorCorners: 0
   percFlag: 0
   moneyFlag: 0

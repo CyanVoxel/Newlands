@@ -316,7 +316,7 @@ GameObject:
   - component: {fileID: 4460451447946022}
   - component: {fileID: 114459191998210526}
   m_Layer: 0
-  m_Name: Card
+  m_Name: LandTile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1533,7 +1533,7 @@ RectTransform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1093813917115174}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -0.000001}
+  m_LocalPosition: {x: 0, y: 0, z: -0.0003}
   m_LocalScale: {x: 0.00005, y: 0.00005, z: 0.0025}
   m_Children:
   - {fileID: 224790571838346752}

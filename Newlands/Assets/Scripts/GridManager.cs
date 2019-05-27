@@ -17,7 +17,7 @@ public class GridManager : MonoBehaviour {
 	// Use this for initialization
 	void Start() {
 		// Populate the Card prefab and create the Master Deck
-		card = Resources.Load<GameObject>("Prefabs/Card");
+		card = Resources.Load<GameObject>("Prefabs/LandTile");
 		masterDeck = new MasterDeck(CardEnums.Decks.VanillaStandard);
 		
 		for (int x = 0; x < width; x++) {
