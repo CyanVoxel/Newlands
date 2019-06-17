@@ -10,6 +10,7 @@ public class GridManager : MonoBehaviour {
 	private int width = 7;
 	private int height = 7;
 	public static MasterDeck masterDeck;
+	public static MasterDeck masterDeckMutable;
 
 	private GameObject card;
 	//public GameObject card;		//For easy testing
@@ -19,6 +20,7 @@ public class GridManager : MonoBehaviour {
 		// Populate the Card prefab and create the Master Deck
 		card = Resources.Load<GameObject>("Prefabs/LandTile");
 		masterDeck = new MasterDeck(CardEnums.Decks.VanillaStandard);
+		masterDeckMutable = masterDeck;	// Sets mutable deck version to internal one
 		
 		for (int x = 0; x < width; x++) {
 

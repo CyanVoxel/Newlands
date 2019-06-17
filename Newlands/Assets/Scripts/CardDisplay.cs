@@ -36,7 +36,8 @@ public class CardDisplay : MonoBehaviour {
 		// TEMP: Set the Card prefab to display one of the known Game Cards
 		// TODO: Don't let the same card be drawn more than its amount in the deck
 		int landTileCount = GridManager.masterDeck.landTileDeck.Count();
-		card = GridManager.masterDeck.landTileDeck[Random.Range(0, landTileCount)];
+		card = GridManager.masterDeckMutable.landTileDeck[Random.Range(0, landTileCount)];
+		GridManager.masterDeckMutable.landTileDeck.Remove(card);
 
 		// Grab the display elements from this parent object
 		GameObject titleObj = transform.Find("Front Canvas/Title").gameObject;
