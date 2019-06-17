@@ -23,21 +23,21 @@ public class PlayerManager : MonoBehaviour {
 		for (int i = 0; i < handSize; i++) {
 
 			// TEMP: Set the Card prefab to display one of the known Game Cards
-			int cardsLeft = GridManager.masterDeckMutable.gameCardDeck.Count();
-			int cardCount = GridManager.masterDeck.gameCardDeck.Count();
+			int cardsLeft = GameManager.masterDeckMutable.gameCardDeck.Count();
+			int cardCount = GameManager.masterDeck.gameCardDeck.Count();
 
 			// Draws a card from the mutable deck, then removes that card from the deck.
 			// If all cards are drawn, draw randomly from the immutable deck.
 			if (cardsLeft > 0 ) {
-				card = GridManager.masterDeckMutable.gameCardDeck[Random.Range(0, cardsLeft)];
-				GridManager.masterDeckMutable.gameCardDeck.Remove(card);
+				card = GameManager.masterDeckMutable.gameCardDeck[Random.Range(0, cardsLeft)];
+				GameManager.masterDeckMutable.gameCardDeck.Remove(card);
 				// Debug.Log("<b>[CardDisplay]</b> " + 
 				// 	landTilesLeft + 
 				// 	" of " + 
 				// 	landTileCount + 
 				// 	" Master Deck cards left");
 			} else {
-				card = GridManager.masterDeck.gameCardDeck[Random.Range(0, cardCount)];
+				card = GameManager.masterDeck.gameCardDeck[Random.Range(0, cardCount)];
 				Debug.LogWarning("<b>[CardDisplay]</b> Warning: " +
 				"All Game Cards were drawn! Now drawing from immutable deck...");
 			} //if else
