@@ -45,7 +45,6 @@ public class LandTileDeck : Deck {
 			cardToAdd = Resources.Load<Card>(dirLt + "/plains_empty");
 			for (int i = 0; i < 12; i++) {
 				this.Add(cardToAdd);
-				Debug.Log("Added empty plains!");
 			}
 
 			cardToAdd = Resources.Load<Card>(dirLt + "/quarry_iron_1");
@@ -66,7 +65,6 @@ public class LandTileDeck : Deck {
 			cardToAdd = Resources.Load<Card>(dirLt + "/quarry_gold_1");
 			this.Add(cardToAdd);
 			this.Add(cardToAdd);
-			Debug.Log("Added gold!");
 
 		} // if standard
 

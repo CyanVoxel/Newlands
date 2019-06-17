@@ -14,7 +14,7 @@ public class GameCardDeck : Deck {
 	// Constructor that takes in a string representing the name of premade deck
 	public GameCardDeck(CardEnums.Decks flavor) {
 		
-		// The Standard Deck's Land Tiles
+		// The Vanilla Standard Deck's Game Cards
 		if (flavor == CardEnums.Decks.VanillaStandard) {
 			Card cardToAdd;
 
@@ -26,7 +26,7 @@ public class GameCardDeck : Deck {
 
 			cardToAdd = Resources.Load<Card>(dirGcTmR + "/cashcrops_add_4");
 			this.Add(cardToAdd);
-		} // if standard
+		} // if Vanilla Standard
 
 	} // GameCardDeck(flavor) constructor
 

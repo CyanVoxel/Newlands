@@ -14,7 +14,7 @@ public class PriceCardDeck : Deck {
 	// Constructor that takes in a string representing the name of premade deck
 	public PriceCardDeck(CardEnums.Decks flavor) {
 		
-		// The Standard Deck's Price Cards
+		// The Vanilla Standard Deck's Price Cards
 		if (flavor == CardEnums.Decks.VanillaStandard) {
 			Card cardToAdd;
 

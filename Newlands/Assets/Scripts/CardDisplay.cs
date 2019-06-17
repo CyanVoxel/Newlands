@@ -34,10 +34,25 @@ public class CardDisplay : MonoBehaviour {
 	void Start() {
 
 		// TEMP: Set the Card prefab to display one of the known Game Cards
-		// TODO: Don't let the same card be drawn more than its amount in the deck
+		int landTilesLeft = GridManager.masterDeckMutable.landTileDeck.Count();
 		int landTileCount = GridManager.masterDeck.landTileDeck.Count();
-		card = GridManager.masterDeckMutable.landTileDeck[Random.Range(0, landTileCount)];
-		GridManager.masterDeckMutable.landTileDeck.Remove(card);
+
+		// Draws a card from the mutable deck, then removes that card from the deck.
+		// If all cards are drawn, draw randomly from the immutable deck.
+		if (landTilesLeft > 0 ) {
+			card = GridManager.masterDeckMutable.landTileDeck[Random.Range(0, landTilesLeft)];
+			GridManager.masterDeckMutable.landTileDeck.Remove(card);
+			// Debug.Log("<b>[CardDisplay]</b> " + 
+			// 	landTilesLeft + 
+			// 	" of " + 
+			// 	landTileCount + 
+			// 	" Master Deck cards left");
+		} else {
+			card = GridManager.masterDeck.landTileDeck[Random.Range(0, landTileCount)];
+			Debug.LogWarning("<b>[CardDisplay]</b> Warning: " +
+			 "All Land Tile cards were drawn! Now drawing from immutable deck...");
+		}
+		
 
 		// Grab the display elements from this parent object
 		GameObject titleObj = transform.Find("Front Canvas/Title").gameObject;
