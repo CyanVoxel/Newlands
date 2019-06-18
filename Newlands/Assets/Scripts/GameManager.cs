@@ -11,14 +11,25 @@ public class GameManager : MonoBehaviour {
 	private int height = 7;
 	public static MasterDeck masterDeck;
 	public static MasterDeck masterDeckMutable;
+	private static int playerCount = 4; //Temp value, real value will be determined at game setup
+	private static int handSize = 5;
+	private static Deck[] playerDecks;
 
 	private GameObject card;
 	//public GameObject card;		//For easy testing
 
 	// Use this for initialization
 	void Start() {
+
+		Deck[] playerDecks = new Deck[playerCount];
 		
-		PopulateGrid();
+		PopulateGrid();	//Sets up the tile grid
+
+		// Draws a hand of cards for each player
+		for (int i = 0; i < playerCount; i++) {
+			playerDecks[i] = DrawHand(handSize);
+		}
+		
 
 
 	} // Start()
@@ -46,5 +57,43 @@ public class GameManager : MonoBehaviour {
 		} // x
 
 	} //PopulateGrid();
+
+	// Draws random GameCards from the masterDeck and returns a deck of a specified size
+	private Deck DrawHand(int handSize) {
+
+		Card card;					// The container variable for drawn cards
+		Deck deck = new Deck();		// The deck of drawn cards to return
+
+		for (int i = 0; i < handSize; i++) {
+
+			int cardsLeft = masterDeckMutable.gameCardDeck.Count();
+			int cardCount = masterDeck.gameCardDeck.Count();
+
+			// Draws a card from the mutable deck, then removes that card from the deck.
+			// If all cards are drawn, draw randomly from the immutable deck.
+			if (cardsLeft > 0 ) {
+				card = masterDeckMutable.gameCardDeck[Random.Range(0, cardsLeft)];
+				GameManager.masterDeckMutable.gameCardDeck.Remove(card);
+				Debug.Log("<b>[GameManager]</b> " + 
+					cardsLeft + 
+					" of " + 
+					cardCount + 
+					" Master Deck cards left");
+			} else {
+				card = masterDeck.gameCardDeck[Random.Range(0, cardCount)];
+				Debug.LogWarning("<b>[GameManager]</b> Warning: " +
+				"All Game Cards were drawn! Now drawing from immutable deck...");
+			} // if else
+
+		} // for
+
+		return deck;
+
+	} // DrawHand()
+
+	// Connects the internal 
+	private void DisplayHands() {
+
+	} // DispalyHands()
 	
 } // GameManager class

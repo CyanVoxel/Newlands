@@ -33,6 +33,9 @@ public class CardDisplay : MonoBehaviour {
 
 	void Start() {
 
+		// TODO: Move Land Tile drawing code to standalone function to be used by GameManager.
+		//	This class should only be used to connect internal card states to game objects.
+
 		// TEMP: Set the Card prefab to display one of the known Game Cards
 		int landTilesLeft = GameManager.masterDeckMutable.landTileDeck.Count();
 		int landTileCount = GameManager.masterDeck.landTileDeck.Count();
@@ -52,6 +55,11 @@ public class CardDisplay : MonoBehaviour {
 			Debug.LogWarning("<b>[CardDisplay]</b> Warning: " +
 			 "All Land Tile cards were drawn! Now drawing from immutable deck...");
 		}
+
+		// TODO: Move display code to a standalone function that takes in a Card object
+		//	and a card prefab.
+
+		
 		
 
 		// Grab the display elements from this parent object
