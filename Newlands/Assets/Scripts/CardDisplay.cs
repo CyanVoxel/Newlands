@@ -11,70 +11,154 @@ public class CardDisplay : MonoBehaviour {
 
 	// DATA FIELDS ------------------------------------------------------------
 
-	// Textmesh Pro text objects --------------------------
-	private TMP_Text title;
-	private TMP_Text subtitle;
-	private TMP_Text body;
-	private TMP_Text footer;
-	private Image footerBorder;
+	// // Textmesh Pro text objects --------------------------
+	// private TMP_Text title;
+	// private TMP_Text subtitle;
+	// private TMP_Text body;
+	// private TMP_Text footer;
+	// private Image footerBorder;
 
-	// GameObject containers ------------------------------
-	private GameObject titleObj;
-	private GameObject subtitleObj;
-	private GameObject bodyObj;
-	private GameObject footerObj;
-	private GameObject footerBorderObj;
+	// // GameObject containers ------------------------------
+	// private GameObject titleObj;
+	// private GameObject subtitleObj;
+	// private GameObject bodyObj;
+	// private GameObject footerObj;
+	// private GameObject footerBorderObj;
 
 	// Long directories stored as strings
 	private string dirFooterBorder = "Front Canvas/Footer Mask/Footer Border Mask/Footer Border";
 
 	// The local Card scriptable object
-	private Card card;
+	// private Card card;
+
+	// An object reference of the GameManager, used for method access
+	//private GameManager gameMan;
 
 	void Start() {
 
-		// TODO: Move Land Tile drawing code to standalone function to be used by GameManager.
-		//	This class should only be used to connect internal card states to game objects.
-
-		// TEMP: Set the Card prefab to display one of the known Game Cards
-		int landTilesLeft = GameManager.masterDeckMutable.landTileDeck.Count();
-		int landTileCount = GameManager.masterDeck.landTileDeck.Count();
-
-		// Draws a card from the mutable deck, then removes that card from the deck.
-		// If all cards are drawn, draw randomly from the immutable deck.
-		if (landTilesLeft > 0 ) {
-			card = GameManager.masterDeckMutable.landTileDeck[Random.Range(0, landTilesLeft)];
-			GameManager.masterDeckMutable.landTileDeck.Remove(card);
-			// Debug.Log("<b>[CardDisplay]</b> " + 
-			// 	landTilesLeft + 
-			// 	" of " + 
-			// 	landTileCount + 
-			// 	" Master Deck cards left");
-		} else {
-			card = GameManager.masterDeck.landTileDeck[Random.Range(0, landTileCount)];
-			Debug.LogWarning("<b>[CardDisplay]</b> Warning: " +
-			 "All Land Tile cards were drawn! Now drawing from immutable deck...");
-		}
+		//  card = GameManager.DrawCard(GameManager.masterDeckMutable.landTileDeck, GameManager.masterDeck.landTileDeck);
+		//  DisplayCard(card);
 
 		// TODO: Move display code to a standalone function that takes in a Card object
 		//	and a card prefab.
 
 		
+	} // Start()
+	
+
+
+	// Converts a string with bold and italic markdown into html-like tags
+	private string MdToTag(string inputText) {
+
+		string outputText = inputText;	// String to output
+
+		//While there's still BOLD markdown left in input string
+		while (outputText.IndexOf("**") >= 0) {
+			int index = outputText.IndexOf("**");								// Set known index
+			outputText = outputText.Remove(startIndex: index, count: 2);		// Remove markdown
+			outputText = outputText.Insert(startIndex: index, value: "<b>");	// Insert start tag
+
+			//Making sure there's a place to insert an end tag
+			if (outputText.IndexOf("**") >= 0) {
+				index = outputText.IndexOf("**");								// Reset the index
+				outputText = outputText.Remove(startIndex: index, count: 2);	// Remove markdown
+			outputText =  outputText.Insert(startIndex: index, value: "</b>");	// Insert end tag
+			} else {
+				Debug.Log("Error parsing markdown: No closing statement found!");
+			}
+
+		} //while BOLD left
+
+		//While there's still ITALIC markdown left in input string
+		while (outputText.IndexOf('*') >= 0) {
+			int index = outputText.IndexOf('*');								// Set known index
+			outputText = outputText.Remove(startIndex: index, count: 1);		// Remove markdown
+			outputText = outputText.Insert(startIndex: index, value: "<i>");	// Insert start tag
+
+			//Making sure there's a place to insert an end tag
+			if (outputText.IndexOf('*') >= 0) {
+				index = outputText.IndexOf('*');								// Reset the index
+				outputText = outputText.Remove(startIndex: index, count: 1);	// Remove markdown
+			outputText =  outputText.Insert(startIndex: index, value: "</i>");	// Insert end tag
+			} else {
+				Debug.Log("Error parsing markdown: No closing statement found!");
+			}
+
+		} //while ITALIC left
+
+		return outputText;
+
+	} // mdToTag()
+
+	// Inserts the footerValue into a string meant for the footer text
+	private string InsertFooterValue(Card card, string inputText, bool percFlag, 
+									 bool moneyFlag, CardEnums.FooterOp op) {
+
+		string outputText = inputText;								// String to output
+		string footerValueStr = card.footerValue.ToString("n0");	// The formatted footer value
+
+		// While there's still ITALIC markdown left in input string
+		while (outputText.IndexOf("<x>") >= 0) {
+			// Set known index
+			int index = outputText.IndexOf("<x>");								
+			// Remove markdown
+			outputText = outputText.Remove(startIndex: index, count: 3);
+
+			// If the value is a percentage, add a %
+			if (percFlag) {
+				footerValueStr = (footerValueStr + "%");
+			}
+			// If the value is a percentage, add a $
+			if (moneyFlag) {
+				footerValueStr = ("$" + footerValueStr);
+			}
+
+			// Add the appropriate operator to the string
+			if (op == CardEnums.FooterOp.Add) {
+				footerValueStr = ("+" + footerValueStr);
+			} else if (op == CardEnums.FooterOp.Sub) {
+				footerValueStr = ("\u2013" + footerValueStr);
+			}
 		
+			// Insert start tag
+			outputText = outputText.Insert(startIndex: index, value: footerValueStr);	
+
+		} // while ITALIC left
+
+		return outputText;
+
+	} // insertFooterValue()
+
+	// Displays card scriptable object data onto a card prefab
+	public void DisplayCard(Card card) {
+
+		// Textmesh Pro text objects --------------------------
+		TMP_Text title;
+		TMP_Text subtitle;
+		TMP_Text body;
+		TMP_Text footer;
+		Image footerBorder;
+
+		// GameObject containers ------------------------------
+		GameObject titleObj;
+		GameObject subtitleObj;
+		GameObject bodyObj;
+		GameObject footerObj;
+		GameObject footerBorderObj;
 
 		// Grab the display elements from this parent object
-		GameObject titleObj = transform.Find("Front Canvas/Title").gameObject;
-		GameObject subtitleObj = transform.Find("Front Canvas/Subtitle").gameObject;
-		GameObject bodyObj = transform.Find("Front Canvas/Body").gameObject;
-		GameObject footerObj = transform.Find("Front Canvas/Footer").gameObject;
-		GameObject footerBorderObj = transform.Find(dirFooterBorder).gameObject;
+		titleObj = transform.Find("Front Canvas/Title").gameObject;
+		subtitleObj = transform.Find("Front Canvas/Subtitle").gameObject;
+		bodyObj = transform.Find("Front Canvas/Body").gameObject;
+		footerObj = transform.Find("Front Canvas/Footer").gameObject;
+		footerBorderObj = transform.Find(dirFooterBorder).gameObject;
 
 		// Pick out the appropriate elements from the GameObjects that were grabbed
-		TMP_Text title = titleObj.GetComponent<TMP_Text>();
-		TMP_Text subtitle = subtitleObj.GetComponent<TMP_Text>();
-		TMP_Text body = bodyObj.GetComponent<TMP_Text>();
-		TMP_Text footer = footerObj.GetComponent<TMP_Text>();
-		Image footerBorder = footerBorderObj.GetComponent<Image>();
+		title = titleObj.GetComponent<TMP_Text>();
+		subtitle = subtitleObj.GetComponent<TMP_Text>();
+		body = bodyObj.GetComponent<TMP_Text>();
+		footer = footerObj.GetComponent<TMP_Text>();
+		footerBorder = footerBorderObj.GetComponent<Image>();
 		
 		// Set the TMP subtitle text based on the card object's enum
 		if (card.title == CardEnums.Title.MarketMod) {			// Market Mod
@@ -86,11 +170,11 @@ public class CardDisplay : MonoBehaviour {
 		} else if (card.title == CardEnums.Title.TileMod) {		// Tile Mod
 			title.text = "\u2013Tile Mod\u2013";
 		} else if (card.title == CardEnums.Title.Forest) {		// Forest Tile
-			title.text = "   Forest";
+			title.text = "Forest";
 		} else if (card.title == CardEnums.Title.Plains) {		// Plains Tile
-			title.text = "   Plains";
+			title.text = "Plains";
 		} else if (card.title == CardEnums.Title.Quarry) {		// Quarry Tile
-			title.text = "   Quarry";
+			title.text = "Quarry";
 		}
 
 		// Set the TMP subtitle text based on the card object's enum
@@ -138,94 +222,11 @@ public class CardDisplay : MonoBehaviour {
 		}
 
 		// String members are assigned to the text labels after being formatted
-		body.text = mdToTag(card.bodyText);
-		footer.text = insertFooterValue(card.footerText, card.percFlag, 
+		body.text = MdToTag(card.bodyText);
+		footer.text = InsertFooterValue(card, card.footerText, card.percFlag, 
 											card.moneyFlag, card.footerOp);
-		footer.text = mdToTag(footer.text);
-	} // Start()
-	
+		footer.text = MdToTag(footer.text);
 
-
-	// Converts a string with bold and italic markdown into html-like tags
-	private string mdToTag(string inputText) {
-
-		string outputText = inputText;	// String to output
-
-		//While there's still BOLD markdown left in input string
-		while (outputText.IndexOf("**") >= 0) {
-			int index = outputText.IndexOf("**");								// Set known index
-			outputText = outputText.Remove(startIndex: index, count: 2);		// Remove markdown
-			outputText = outputText.Insert(startIndex: index, value: "<b>");	// Insert start tag
-
-			//Making sure there's a place to insert an end tag
-			if (outputText.IndexOf("**") >= 0) {
-				index = outputText.IndexOf("**");								// Reset the index
-				outputText = outputText.Remove(startIndex: index, count: 2);	// Remove markdown
-			outputText =  outputText.Insert(startIndex: index, value: "</b>");	// Insert end tag
-			} else {
-				Debug.Log("Error parsing markdown: No closing statement found!");
-			}
-
-		} //while BOLD left
-
-		//While there's still ITALIC markdown left in input string
-		while (outputText.IndexOf('*') >= 0) {
-			int index = outputText.IndexOf('*');								// Set known index
-			outputText = outputText.Remove(startIndex: index, count: 1);		// Remove markdown
-			outputText = outputText.Insert(startIndex: index, value: "<i>");	// Insert start tag
-
-			//Making sure there's a place to insert an end tag
-			if (outputText.IndexOf('*') >= 0) {
-				index = outputText.IndexOf('*');								// Reset the index
-				outputText = outputText.Remove(startIndex: index, count: 1);	// Remove markdown
-			outputText =  outputText.Insert(startIndex: index, value: "</i>");	// Insert end tag
-			} else {
-				Debug.Log("Error parsing markdown: No closing statement found!");
-			}
-
-		} //while ITALIC left
-
-		return outputText;
-
-	} // mdToTag()
-
-	// Inserts the footerValue into a string meant for the footer text
-	private string insertFooterValue(string inputText, bool percFlag, 
-									 bool moneyFlag, CardEnums.FooterOp op) {
-
-		string outputText = inputText;								// String to output
-		string footerValueStr = card.footerValue.ToString("n0");	// The formatted footer value
-
-		// While there's still ITALIC markdown left in input string
-		while (outputText.IndexOf("<x>") >= 0) {
-			// Set known index
-			int index = outputText.IndexOf("<x>");								
-			// Remove markdown
-			outputText = outputText.Remove(startIndex: index, count: 3);
-
-			// If the value is a percentage, add a %
-			if (percFlag) {
-				footerValueStr = (footerValueStr + "%");
-			}
-			// If the value is a percentage, add a $
-			if (moneyFlag) {
-				footerValueStr = ("$" + footerValueStr);
-			}
-
-			// Add the appropriate operator to the string
-			if (op == CardEnums.FooterOp.Add) {
-				footerValueStr = ("+" + footerValueStr);
-			} else if (op == CardEnums.FooterOp.Sub) {
-				footerValueStr = ("\u2013" + footerValueStr);
-			}
-		
-			// Insert start tag
-			outputText = outputText.Insert(startIndex: index, value: footerValueStr);	
-
-		} // while ITALIC left
-
-		return outputText;
-
-	} // insertFooterValue()
+	} // displayCard()
 
 } // CardDisplay class

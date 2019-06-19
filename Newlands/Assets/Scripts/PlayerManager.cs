@@ -5,8 +5,8 @@ using UnityEngine;
 public class PlayerManager : MonoBehaviour {
 
 	// DATA FIELDS ------------------------------------------------------------
-	private static int playerCount = 4; //Temp value, real value will be determined at game setup
-	private static int handSize = 5;
+	// private static int playerCount = 4; //Temp value, real value will be determined at game setup
+	// private static int handSize = 5;
 
 	// VARIABLES --------------------------------------------------------------
 	private Card card;
