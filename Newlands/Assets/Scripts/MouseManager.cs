@@ -51,26 +51,30 @@ public class MouseManager : MonoBehaviour {
 				objRotY = objectHit.transform.parent.rotation.y;
 				objRotZ = objectHit.transform.parent.rotation.z;
 
-				Debug.Log("Y: " + objRotY);
+				//Debug.Log("Y: " + objRotY);
 
 				objectHit.transform.parent.rotation = new Quaternion(objRotX, 1-objRotY, objRotZ, 0);
 
 				switch (GameManager.turn) {
-					case 0: objectHit.GetComponentInChildren<Renderer>().material = Resources.Load("Materials/Cardstock_Cyan", typeof(Material)) as Material;
+					case 1: objectHit.GetComponentInChildren<Renderer>().material = Resources.Load("Materials/Cardstock_Cyan", typeof(Material)) as Material;
 						GameManager.turn++;
+						GameManager.turnNumberText.color = ColorPalette.inkRed;	// One ahead
 						break;
-					case 1: objectHit.GetComponentInChildren<Renderer>().material = Resources.Load("Materials/Cardstock_Red", typeof(Material)) as Material;
+					case 2: objectHit.GetComponentInChildren<Renderer>().material = Resources.Load("Materials/Cardstock_Red", typeof(Material)) as Material;
 						GameManager.turn++;
+						GameManager.turnNumberText.color = ColorPalette.purple500;	// One ahead
 						break;
-					case 2: objectHit.GetComponentInChildren<Renderer>().material = Resources.Load("Materials/Cardstock_Purple", typeof(Material)) as Material;
+					case 3: objectHit.GetComponentInChildren<Renderer>().material = Resources.Load("Materials/Cardstock_Purple", typeof(Material)) as Material;
 						GameManager.turn++;
+						GameManager.turnNumberText.color = ColorPalette.amber500;	// One ahead
 						break;
-					case 3: objectHit.GetComponentInChildren<Renderer>().material = Resources.Load("Materials/Cardstock_Amber", typeof(Material)) as Material;
+					case 4: objectHit.GetComponentInChildren<Renderer>().material = Resources.Load("Materials/Cardstock_Amber", typeof(Material)) as Material;
 						GameManager.turn++;
+						GameManager.turnNumberText.color = ColorPalette.inkCyan;	// One ahead
 						break;
 					default: 
-						if (GameManager.turn >= GameManager.players) {
-							GameManager.turn = 0;
+						if (GameManager.turn > GameManager.players) {
+							GameManager.turn = 1;
 							GameManager.round++;
 						}
 						break;
@@ -78,10 +82,14 @@ public class MouseManager : MonoBehaviour {
 
 				Debug.Log("Turn " + GameManager.turn + " of Round " + GameManager.round);
 
-				if (GameManager.turn >= GameManager.players) {
-					GameManager.turn = 0;
+				if (GameManager.turn > GameManager.players) {
+					GameManager.turn = 1;
 					GameManager.round++;
 				}
+
+				//Update the round/turn display text
+				GameManager.roundNumberText.text = ("Round " + GameManager.round);
+				GameManager.turnNumberText.text = ("Player " + GameManager.turn + "'s Turn");
 					
 
 
@@ -100,6 +108,15 @@ public class MouseManager : MonoBehaviour {
 				objRotZ = objectHit.transform.parent.rotation.z;
 
 				objectHit.transform.parent.rotation = new Quaternion(objRotX, 1+objRotY, objRotZ, 0);
+
+				// Undos the turn
+				if (GameManager.turn > 1) {
+					GameManager.turn--;
+				} else {
+					GameManager.turn = GameManager.players;
+					GameManager.turn--;
+					GameManager.round--;
+				}
 
 				objectHit.GetComponentInChildren<Renderer>().material = Resources.Load("Materials/Cardstock", typeof(Material)) as Material;
 			}

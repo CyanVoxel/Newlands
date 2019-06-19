@@ -12,6 +12,10 @@ public class ColorPalette {
 	public static Color inkCyan = new Color32(r: 0, g: 174, b: 235, a: 255);
 	public static Color inkMagenta = new Color32(r: 236, g: 0, b: 140, a: 255);
 	public static Color inkYellow = new Color32(r: 255, g: 242, b: 0, a: 255);
+
+	// Material Design Colors
+	public static Color amber500 = new Color32(r: 255, g: 152, b: 0, a: 255);
+	public static Color purple500 = new Color32(r: 156, g: 39, b: 176, a: 255);
 	
 	
 	

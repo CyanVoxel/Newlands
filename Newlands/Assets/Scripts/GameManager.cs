@@ -3,16 +3,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class GameManager : MonoBehaviour {
 
-	// VARIABLES ------------------------------------------------------------
+	// VARIABLES --------------------------------------------------------------
 
 	public static MasterDeck masterDeck;
 	public static MasterDeck masterDeckMutable;
-	public static byte players = 2; 	// Number of players in the match
-	public static int round = 0;		// The current round of turns
-	public static byte turn = 0;		// The current turn in the round, == to player index
+	public static byte players = 4; 	// Number of players in the match
+	public static int round = 1;		// The current round of turns
+	public static byte turn = 1;		// The current turn in the round, == to player index
 
 	private static byte width = 7;		// Width of the game grid in cards
 	private static byte height = 7;		// Height of the game grid in cards
@@ -22,8 +23,24 @@ public class GameManager : MonoBehaviour {
 	private GameObject cardContainer;
 	private Card card;
 
+	// UI ELEMENTS ------------------------------------------------------------
+
+	private static GameObject roundNumberObj;
+	private static GameObject turnNumberObj;
+	public static TMP_Text roundNumberText;
+	public static TMP_Text turnNumberText;
+	
+
+
 	// Use this for initialization
 	void Start() {
+
+		//Grab the UI elements
+		roundNumberObj = transform.Find("UI/RoundNumber").gameObject;
+		turnNumberObj = transform.Find("UI/TurnNumber").gameObject;
+		// Pick out the appropriate elements from the GameObjects that were grabbed
+		roundNumberText = roundNumberObj.GetComponent<TMP_Text>();
+		turnNumberText = turnNumberObj.GetComponent<TMP_Text>();
 
 		Deck[] playerDecks = new Deck[players];
 		
@@ -40,6 +57,12 @@ public class GameManager : MonoBehaviour {
 		for (byte i = 0; i < 1; i++) {
 			DisplayHand(deck: playerDecks[i], playerNum: i);
 		}
+
+		// UI DISPLAY ---------------------------------------------------------
+
+		GameManager.roundNumberText.text = ("Round " + GameManager.round);
+		GameManager.turnNumberText.text = ("Player " + GameManager.turn + "'s Turn");
+		GameManager.turnNumberText.color = ColorPalette.inkCyan;
 
 
 	} // Start()
