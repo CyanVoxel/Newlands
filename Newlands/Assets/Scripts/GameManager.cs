@@ -8,31 +8,31 @@ public class GameManager : MonoBehaviour {
 
 	// VARIABLES ------------------------------------------------------------
 
-	public CardDisplay cardDis;
-
-	private int width = 7;
-	private int height = 7;
 	public static MasterDeck masterDeck;
 	public static MasterDeck masterDeckMutable;
-	private static byte playerCount = 4; //Temp value, real value will be determined at game setup
-	private static byte handSize = 5;
-	private static Deck[] playerDecks;
+	public static byte players = 2; 	// Number of players in the match
+	public static int round = 0;		// The current round of turns
+	public static byte turn = 0;		// The current turn in the round, == to player index
+
+	private static byte width = 7;		// Width of the game grid in cards
+	private static byte height = 7;		// Height of the game grid in cards
+	private static byte handSize = 5;	// How many cards the player is dealt
+	private static Deck[] playerDecks;	// The players' hands stored in decks
 
 	private GameObject cardContainer;
 	private Card card;
-	//public GameObject card;		//For easy testing
 
 	// Use this for initialization
 	void Start() {
 
-		Deck[] playerDecks = new Deck[playerCount];
+		Deck[] playerDecks = new Deck[players];
 		
 		PopulateGrid();	//Sets up the tile grid
 
 		// Draws a hand of cards for each player
-		for (byte i = 0; i < playerCount; i++) {
+		for (byte i = 0; i < players; i++) {
 			playerDecks[i] = DrawHand(handSize);
-			Debug.Log("Player " + i + " has a deck of size " + playerDecks[i].Count());
+			//Debug.Log("Player " + i + " has a deck of size " + playerDecks[i].Count());
 		}
 
 		// Displays those hands on screen
@@ -65,7 +65,7 @@ public class GameManager : MonoBehaviour {
 				cardObj.name = ("Card_x" + x + "_y" + y + "_z0");
 
 				cardObj.transform.SetParent(this.transform);
-				cardObj.transform.rotation = new Quaternion(0, 0, 0, 0);	// 0, 180, 0, 0
+				cardObj.transform.rotation = new Quaternion(0, 180, 0, 0);	// 0, 180, 0, 0
 
 				// Connect the drawn card to the prefab that was just created
 				cardObj.SendMessage("DisplayCard", card);
@@ -106,19 +106,19 @@ public class GameManager : MonoBehaviour {
 		// } // for each player
 
 		// Populate the Card prefab
-		cardContainer = Resources.Load<GameObject>("Prefabs/LandTile");
+		cardContainer = Resources.Load<GameObject>("Prefabs/GameCard");
 
 		// Creates card prefabs and places them on the screen
 		for (int i = 0; i < deck.Count(); i++) {
 
-			float xOff = i * 11 + 11;
+			float xOff = i * 11 + (((width - handSize) / 2f) * 11);
 			float yOff = -10;
 
-			GameObject cardObj = (GameObject)Instantiate(this.cardContainer, new Vector3(xOff, yOff, 50), Quaternion.identity);
+			GameObject cardObj = (GameObject)Instantiate(this.cardContainer, new Vector3(xOff, yOff, 40), Quaternion.identity);
 			cardObj.name = ("Card_p" + playerNum + "_i"+ i);
 
 			cardObj.transform.SetParent(this.transform);
-			cardObj.transform.rotation = new Quaternion(0, 0, 0, 0);	// 0, 180, 0, 0
+			cardObj.transform.rotation = new Quaternion(0, 0, 0, 0);
 
 			cardObj.SendMessage("DisplayCard", deck[i]);
 

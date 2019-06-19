@@ -54,6 +54,38 @@ public class MouseManager : MonoBehaviour {
 				Debug.Log("Y: " + objRotY);
 
 				objectHit.transform.parent.rotation = new Quaternion(objRotX, 1-objRotY, objRotZ, 0);
+
+				switch (GameManager.turn) {
+					case 0: objectHit.GetComponentInChildren<Renderer>().material = Resources.Load("Materials/Cardstock_Cyan", typeof(Material)) as Material;
+						GameManager.turn++;
+						break;
+					case 1: objectHit.GetComponentInChildren<Renderer>().material = Resources.Load("Materials/Cardstock_Red", typeof(Material)) as Material;
+						GameManager.turn++;
+						break;
+					case 2: objectHit.GetComponentInChildren<Renderer>().material = Resources.Load("Materials/Cardstock_Purple", typeof(Material)) as Material;
+						GameManager.turn++;
+						break;
+					case 3: objectHit.GetComponentInChildren<Renderer>().material = Resources.Load("Materials/Cardstock_Amber", typeof(Material)) as Material;
+						GameManager.turn++;
+						break;
+					default: 
+						if (GameManager.turn >= GameManager.players) {
+							GameManager.turn = 0;
+							GameManager.round++;
+						}
+						break;
+				}
+
+				Debug.Log("Turn " + GameManager.turn + " of Round " + GameManager.round);
+
+				if (GameManager.turn >= GameManager.players) {
+					GameManager.turn = 0;
+					GameManager.round++;
+				}
+					
+
+
+
 				//objectHit.transform.parent.position = new Vector3(objX, objY, 49f);
 				//objectHit.transform.parent.localScale += new Vector3(1f, 1f, 0f);
 			}
@@ -68,6 +100,8 @@ public class MouseManager : MonoBehaviour {
 				objRotZ = objectHit.transform.parent.rotation.z;
 
 				objectHit.transform.parent.rotation = new Quaternion(objRotX, 1+objRotY, objRotZ, 0);
+
+				objectHit.GetComponentInChildren<Renderer>().material = Resources.Load("Materials/Cardstock", typeof(Material)) as Material;
 			}
 
 		}
