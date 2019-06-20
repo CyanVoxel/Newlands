@@ -91,7 +91,7 @@ public class GameManager : MonoBehaviour {
 				float yOff = y * 8;
 
 				GameObject cardObj = (GameObject)Instantiate(this.cardContainer, new Vector3(xOff, yOff, 50), Quaternion.identity);
-				cardObj.name = ("Card_x" + x + "_y" + y + "_z0");
+				cardObj.name = ("LandTile_x" + x + "_y" + y + "_z0");
 
 				cardObj.transform.SetParent(this.transform);
 				cardObj.transform.rotation = new Quaternion(0, 180, 0, 0);	// 0, 180, 0, 0
@@ -148,7 +148,7 @@ public class GameManager : MonoBehaviour {
 			float yOff = -10;
 
 			GameObject cardObj = (GameObject)Instantiate(this.cardContainer, new Vector3(xOff, yOff, 40), Quaternion.identity);
-			cardObj.name = ("Card_p" + playerNum + "_i"+ i);
+			cardObj.name = ("GameCard_p" + playerNum + "_i"+ i);
 
 			cardObj.transform.SetParent(this.transform);
 			cardObj.transform.rotation = new Quaternion(0, 0, 0, 0);

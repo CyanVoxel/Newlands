@@ -239,6 +239,23 @@ public class CardDisplay : MonoBehaviour {
 				iconImage.sprite = Resources.Load<Sprite>("Sprites/icon_quarry");	// Quarry
 			} // else-if
 
+			// Color the footer border
+			if (card.FooterColor == CardEnums.FooterColor.Black) { 			// Black
+				footerBorder.color = ColorPalette.inkBlack;
+			} else if (card.FooterColor == CardEnums.FooterColor.Red) {		// Red
+				footerBorder.color = ColorPalette.inkRed;
+			} else if (card.FooterColor == CardEnums.FooterColor.Green) {	// Green
+				footerBorder.color = ColorPalette.inkGreen;
+			} else if (card.FooterColor == CardEnums.FooterColor.Cyan) {	// Cyan
+				footerBorder.color = ColorPalette.inkCyan;
+			} else if (card.FooterColor == CardEnums.FooterColor.Yellow) {	// Yellow
+				footerBorder.color = ColorPalette.inkYellow;
+			} else if (card.FooterColor == CardEnums.FooterColor.Magenta) {	// Magenta
+				footerBorder.color = ColorPalette.inkMagenta;
+			} else if (card.FooterColor == CardEnums.FooterColor.Blue) {	// Blue
+				footerBorder.color = ColorPalette.inkBlue;
+			} // if-else
+
 		} // LandTile specifics
 		
 		// Set the TMP title text based on the card object's enum
