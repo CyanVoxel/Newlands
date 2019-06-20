@@ -20,9 +20,9 @@ public class GameManager : MonoBehaviour {
 	private static byte handSize = 5;	// How many cards the player is dealt
 	private static Deck[] playerDecks;	// The players' hands stored in decks
 
-	public GridUnit[,] grid;
+	public static GridUnit[,] grid;
 	private GameObject cardContainer;
-	private Card card;
+	// private Card card;
 
 	// UI ELEMENTS ------------------------------------------------------------
 
@@ -46,7 +46,7 @@ public class GameManager : MonoBehaviour {
 		Deck[] playerDecks = new Deck[players];
 		
 		// Initialize the internal grid
-		GridUnit[,] grid = new GridUnit[GameManager.width,GameManager.height];
+		grid = new GridUnit[width, height];
 
 		// Create tile GameObjects and connect them to internal grid
 		PopulateGrid();	
@@ -84,6 +84,7 @@ public class GameManager : MonoBehaviour {
 			for (int y = 0; y < height; y++) {
 
 				// Draw a card from the Land Tile deck
+				Card card = new Card();
 				card = DrawCard(masterDeckMutable.landTileDeck, masterDeck.landTileDeck);
 
 				float xOff = x * 11;
@@ -96,12 +97,12 @@ public class GameManager : MonoBehaviour {
 				cardObj.transform.rotation = new Quaternion(0, 180, 0, 0);	// 0, 180, 0, 0
 
 				// Connect thr drawn card to the internal grid
-				// grid[x,y] = new GridUnit(card, (float)xOff, (float)yOff);
+				grid[x,y] = new GridUnit(tile: card, posX: xOff, posY: yOff);
 
 				// Connect the drawn card to the prefab that was just created
 				cardObj.SendMessage("DisplayCard", card);
 
-
+				
 			} // y
 		} // x
 

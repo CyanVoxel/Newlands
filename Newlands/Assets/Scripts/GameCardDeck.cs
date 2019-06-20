@@ -16,16 +16,33 @@ public class GameCardDeck : Deck {
 		
 		// The Vanilla Standard Deck's Game Cards
 		if (flavor == CardEnums.Deck.VanillaStandard) {
-			Card cardToAdd;
+			// Card cardToAdd;
 
-			cardToAdd = Resources.Load<Card>(dirGcMmI + "/add_20_perc");
-			this.Add(cardToAdd);
+			// Market Mods
+			this.Add(dirGcMmI + "/add_20_perc", 2);
+			this.Add(dirGcMmI + "/add_10_perc", 3);
+			this.Add(dirGcMmI + "/sub_20_perc", 2);
+			this.Add(dirGcMmI + "/sub_10_perc", 3);
 
-			cardToAdd = Resources.Load<Card>(dirGcMmS + "/sub_10_perc");
-			this.Add(cardToAdd);
+			// Tile Mods
+			this.Add(dirGcTmR + "/oil_add_1", 5);
+			this.Add(dirGcTmR + "/oil_add_2", 4);
+			this.Add(dirGcTmR + "/oil_add_3", 4);
+			this.Add(dirGcTmR + "/oil_add_4", 3);
+			this.Add(dirGcTmR + "/cashcrops_add_1", 7);
+			this.Add(dirGcTmR + "/cashcrops_add_2", 6);
+			this.Add(dirGcTmR + "/cashcrops_add_3", 3);
+			this.Add(dirGcTmR + "/cashcrops_add_4", 2);
+			this.Add(dirGcTmR + "/lumber_add_1", 3);
+			this.Add(dirGcTmR + "/lumber_add_2", 3);
+			this.Add(dirGcTmR + "/lumber_add_3", 3);
+			this.Add(dirGcTmR + "/silver_add_1", 4);
+			this.Add(dirGcTmR + "/silver_add_2", 3);
+			this.Add(dirGcTmR + "/gold_add_1", 3);
+			this.Add(dirGcTmR + "/platinum_add_1", 2);
 
-			cardToAdd = Resources.Load<Card>(dirGcTmR + "/cashcrops_add_4");
-			this.Add(cardToAdd);
+			
+
 		} // if Vanilla Standard
 
 	} // GameCardDeck(flavor) constructor

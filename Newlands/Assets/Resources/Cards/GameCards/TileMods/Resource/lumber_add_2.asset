@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 252e8b19c3229d843a76e098201409a6, type: 3}
-  m_Name: quarry_iron_1
+  m_Name: lumber_add_2
   m_EditorClassIdentifier: 
-  category: 2
-  title: 6
-  subtitle: 0
-  bodyText: Holds compatible **Modifier** Cards.
-  footerText: '**<x>** Iron'
-  resource: 4
-  footerValue: 1
-  FooterColor: 1
+  category: 0
+  title: 0
+  subtitle: 3
+  bodyText: Place this under **Any** tile.
+  footerText: '**<x>** Lumber'
+  resource: 1
+  footerValue: 2
+  FooterColor: 4
   onlyColorCorners: 0
   percFlag: 0
   moneyFlag: 0
-  footerOp: 0
+  footerOp: 1

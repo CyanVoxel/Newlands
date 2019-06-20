@@ -80,19 +80,28 @@ public class MouseManager : MonoBehaviour {
 						break;
 				}
 
-				Debug.Log("Turn " + GameManager.turn + " of Round " + GameManager.round);
+				//Debug.Log("Turn " + GameManager.turn + " of Round " + GameManager.round);
 
 				if (GameManager.turn > GameManager.players) {
 					GameManager.turn = 1;
 					GameManager.round++;
 				}
 
-				//Update the round/turn display text
+				int locX = int.Parse(objectHit.transform.parent.name.Substring(6, 1));
+				int locY = int.Parse(objectHit.transform.parent.name.Substring(9, 1));
+
+				// Debug output
+				Debug.Log("<b>[GameManager]</b> " +
+				 "Card Clicked: " +
+				 GameManager.grid[locX, locY].landType +
+				 " " + 
+				 GameManager.grid[locX, locY].value + 
+				 " " +
+				 GameManager.grid[locX, locY].resource);
+
+				// Update the round/turn display text
 				GameManager.roundNumberText.text = ("Round " + GameManager.round);
 				GameManager.turnNumberText.text = ("Player " + GameManager.turn + "'s Turn");
-					
-
-
 
 				//objectHit.transform.parent.position = new Vector3(objX, objY, 49f);
 				//objectHit.transform.parent.localScale += new Vector3(1f, 1f, 0f);

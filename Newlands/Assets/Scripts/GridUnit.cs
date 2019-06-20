@@ -1,6 +1,6 @@
 // A GridUnit object, used to represent the state and properties
 // of an internal game grid.
-// TODO: Protect some fields after testing is complete; organization
+// TODO: Manage the scope of the data fields after testing
 
 using System.Collections;
 using System.Collections.Generic;
@@ -11,22 +11,27 @@ public class GridUnit {
 	// DATA FIELDS ------------------------------------------------------------
 	public Card tile;
 	public Deck cardStack;
-	private float value;
-	public int posX;
-	public int posY;
+	public float value;
+	public float posX;
+	public float posY;
 
-	private CardEnums.Title landType;
-	private CardEnums.Resource resource;
+	public CardEnums.Title landType;
+	public CardEnums.Resource resource;
 
 	// CONSTRUCTORS -----------------------------------------------------------
 
 	// Constructor that takes in necessary card info and populates the rest
-	public GridUnit(Card tile, int posX, int posY) {
+	public GridUnit(Card tile, float posX, float posY) {
 
 		this.landType = tile.title;
 		this.resource = tile.resource;
 		this.value = tile.footerValue;
+		this.posX = posX;
+		this.posY = posY;
 
 	} // GridUnit constructor
+
+	// Default no-argument constructor
+	// public GridUnit() { }
 
 } // GridUnit class

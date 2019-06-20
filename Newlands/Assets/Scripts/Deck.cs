@@ -26,6 +26,14 @@ public class Deck {
 		this.deck.Add(card);
 	} // Add()
 
+	// Add a card to the deck, taking in a directory and an amount
+	public void Add(string dir, int amount) {
+		//Card cardToAdd = Resources.Load<Card>(dir);
+		for (int i = 0; i < amount; i++) {
+			this.deck.Add(Resources.Load<Card>(dir));
+		} // for
+	} // Add()
+
 	// Remove a card from the deck
 	public void Remove(Card card) {
 		this.deck.Remove(card);

@@ -3,8 +3,9 @@
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
@@ -16,6 +17,7 @@ MonoBehaviour:
   subtitle: 0
   bodyText: Holds compatible **Modifier** Cards.
   footerText: '**<x>** Lumber'
+  resource: 1
   footerValue: 2
   FooterColor: 3
   onlyColorCorners: 0
