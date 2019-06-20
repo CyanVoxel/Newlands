@@ -16,6 +16,8 @@ public class ColorPalette {
 	// Material Design Colors
 	public static Color amber500 = new Color32(r: 255, g: 152, b: 0, a: 255);
 	public static Color purple500 = new Color32(r: 156, g: 39, b: 176, a: 255);
+
+	public static Color alpha = new Color32(r: 0, g: 0, b: 0, a: 0);
 	
 	
 	

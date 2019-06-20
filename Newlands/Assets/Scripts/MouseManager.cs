@@ -29,7 +29,7 @@ public class MouseManager : MonoBehaviour {
 		RaycastHit hitInfo;
 
 		if (Physics.Raycast(ray, out hitInfo)) {
-			GameObject objectHit = hitInfo.collider.transform.gameObject;
+			GameObject objectHit = hitInfo.collider.transform.parent.gameObject;
 
 			//Debug.Log("Raycast Hit: " + hitInfo.collider.transform.parent.name);
 
@@ -55,20 +55,31 @@ public class MouseManager : MonoBehaviour {
 
 				objectHit.transform.parent.rotation = new Quaternion(objRotX, 1-objRotY, objRotZ, 0);
 
+
+				// Changes the material of the card depending on the player who clicked on it.
+				// TODO: Might want to find a way to potentially improve performance here
 				switch (GameManager.turn) {
-					case 1: objectHit.GetComponentInChildren<Renderer>().material = Resources.Load("Materials/Cardstock_Cyan", typeof(Material)) as Material;
+					case 1: 
+						objectHit.GetComponentsInChildren<Renderer>()[0].material = Resources.Load("Materials/Cardstock_Cyan", typeof(Material)) as Material;
+						objectHit.GetComponentsInChildren<Renderer>()[1].material = Resources.Load("Materials/Cardstock_Cyan", typeof(Material)) as Material;
 						GameManager.turn++;
 						GameManager.turnNumberText.color = ColorPalette.inkRed;	// One ahead
 						break;
-					case 2: objectHit.GetComponentInChildren<Renderer>().material = Resources.Load("Materials/Cardstock_Red", typeof(Material)) as Material;
+					case 2: 
+						objectHit.GetComponentsInChildren<Renderer>()[0].material = Resources.Load("Materials/Cardstock_Red", typeof(Material)) as Material;
+						objectHit.GetComponentsInChildren<Renderer>()[1].material = Resources.Load("Materials/Cardstock_Red", typeof(Material)) as Material;
 						GameManager.turn++;
 						GameManager.turnNumberText.color = ColorPalette.purple500;	// One ahead
 						break;
-					case 3: objectHit.GetComponentInChildren<Renderer>().material = Resources.Load("Materials/Cardstock_Purple", typeof(Material)) as Material;
+					case 3: 
+						objectHit.GetComponentsInChildren<Renderer>()[0].material = Resources.Load("Materials/Cardstock_Purple", typeof(Material)) as Material;
+						objectHit.GetComponentsInChildren<Renderer>()[1].material = Resources.Load("Materials/Cardstock_Purple", typeof(Material)) as Material;
 						GameManager.turn++;
 						GameManager.turnNumberText.color = ColorPalette.amber500;	// One ahead
 						break;
-					case 4: objectHit.GetComponentInChildren<Renderer>().material = Resources.Load("Materials/Cardstock_Amber", typeof(Material)) as Material;
+					case 4: 
+						objectHit.GetComponentsInChildren<Renderer>()[0].material = Resources.Load("Materials/Cardstock_Amber", typeof(Material)) as Material;
+						objectHit.GetComponentsInChildren<Renderer>()[1].material = Resources.Load("Materials/Cardstock_Amber", typeof(Material)) as Material;
 						GameManager.turn++;
 						GameManager.turnNumberText.color = ColorPalette.inkCyan;	// One ahead
 						break;

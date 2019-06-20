@@ -30,7 +30,15 @@ public class Deck {
 	public void Add(string dir, int amount) {
 		//Card cardToAdd = Resources.Load<Card>(dir);
 		for (int i = 0; i < amount; i++) {
-			this.deck.Add(Resources.Load<Card>(dir));
+			try {
+				this.deck.Add(Resources.Load<Card>(dir));
+			}
+
+			catch (UnassignedReferenceException e) {
+				Debug.LogError("<b>[Deck]</b> Error: " +
+				"Could not add card to deck: " + e);
+			}
+			
 		} // for
 	} // Add()
 

@@ -16,7 +16,7 @@ MonoBehaviour:
   title: 6
   subtitle: 0
   bodyText: Holds compatible **Modifier** Cards.
-  footerText: '**<x>** Gols'
+  footerText: '**<x>** Gold'
   resource: 5
   footerValue: 1
   FooterColor: 6

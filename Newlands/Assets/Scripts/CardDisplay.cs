@@ -26,7 +26,9 @@ public class CardDisplay : MonoBehaviour {
 	// private GameObject footerBorderObj;
 
 	// Long directories stored as strings
-	private string dirFooterBorder = "Front Canvas/Footer Mask/Footer Border Mask/Footer Border";
+	private string dirFtrBdr = "Front Canvas/Footer Mask/Footer Border Mask/Footer Border";
+	private string dirFtrBdrL = "Front Canvas/Footer Mask Left/Footer Border Mask/Footer Border";
+	private string dirFtrBdrR = "Front Canvas/Footer Mask Right/Footer Border Mask/Footer Border";
 
 	// The local Card scriptable object
 	// private Card card;
@@ -137,7 +139,7 @@ public class CardDisplay : MonoBehaviour {
 		
 		GameObject bodyObj = transform.Find("Front Canvas/Body").gameObject;
 		GameObject footerObj = transform.Find("Front Canvas/Footer").gameObject;
-		GameObject footerBorderObj = transform.Find(dirFooterBorder).gameObject;
+		GameObject footerBorderObj = transform.Find(dirFtrBdr).gameObject;
 
 		// Pick out the appropriate elements from the GameObjects that were grabbed
 		TMP_Text title = titleObj.GetComponent<TMP_Text>();
@@ -146,11 +148,16 @@ public class CardDisplay : MonoBehaviour {
 		TMP_Text footer = footerObj.GetComponent<TMP_Text>();
 		Image footerBorder = footerBorderObj.GetComponent<Image>();
 
-		// GAMECARD SPECIFICS ----------------------------
+		// GAMECARD SPECIFICS -------------------------------------------------
 		if (card.category == CardEnums.Category.GameCard) {
 
 			GameObject subtitleObj = transform.Find("Front Canvas/Subtitle").gameObject;
 			TMP_Text subtitle = subtitleObj.GetComponent<TMP_Text>();
+
+			GameObject footerBorderObjL = transform.Find(dirFtrBdrL).gameObject;
+			GameObject footerBorderObjR = transform.Find(dirFtrBdrR).gameObject;
+			Image footerBorderL = footerBorderObjL.GetComponent<Image>();
+			Image footerBorderR = footerBorderObjR.GetComponent<Image>();
 
 			// Set the TMP subtitle text based on the card object's enum
 			if (card.subtitle == CardEnums.Subtitle.Investment) {		// Investment
@@ -177,11 +184,48 @@ public class CardDisplay : MonoBehaviour {
 				subtitle.text = "Platinum";
 			} else if (card.subtitle == CardEnums.Subtitle.None) {		// None
 				subtitle.text = "";
-			} // else-if
+			} // if-else
+
+			// Color the footer border
+			if (card.title == CardEnums.Title.MarketMod) {
+
+				footerBorder.color = ColorPalette.inkBlack;
+
+				if (card.FooterColor == CardEnums.FooterColor.Red) { 			// Red
+					footerBorderL.color = ColorPalette.inkRed;
+					footerBorderR.color = ColorPalette.inkRed;
+				} else if (card.FooterColor == CardEnums.FooterColor.Green) { 	// Green
+					footerBorderL.color = ColorPalette.inkGreen;
+					footerBorderR.color = ColorPalette.inkGreen;
+				}
+
+			} else {
+
+				footerBorderL.color = ColorPalette.alpha;
+				footerBorderR.color = ColorPalette.alpha;
+
+				// Color the footer border
+				if (card.FooterColor == CardEnums.FooterColor.Black) { 			// Black
+					footerBorder.color = ColorPalette.inkBlack;
+				} else if (card.FooterColor == CardEnums.FooterColor.Red) {		// Red
+					footerBorder.color = ColorPalette.inkRed;
+				} else if (card.FooterColor == CardEnums.FooterColor.Green) {	// Green
+					footerBorder.color = ColorPalette.inkGreen;
+				} else if (card.FooterColor == CardEnums.FooterColor.Cyan) {	// Cyan
+					footerBorder.color = ColorPalette.inkCyan;
+				} else if (card.FooterColor == CardEnums.FooterColor.Yellow) {	// Yellow
+					footerBorder.color = ColorPalette.inkYellow;
+				} else if (card.FooterColor == CardEnums.FooterColor.Magenta) {	// Magenta
+					footerBorder.color = ColorPalette.inkMagenta;
+				} else if (card.FooterColor == CardEnums.FooterColor.Blue) {	// Blue
+					footerBorder.color = ColorPalette.inkBlue;
+				} // if-else
+
+			} // if Market Mod else
 
 		} // GameCard specifics
 
-		// LANDTILE SPECIFICS ----------------------------
+		// LANDTILE SPECIFICS -------------------------------------------------
 		if (card.category == CardEnums.Category.LandTile) {
 
 			GameObject titleIconObj = transform.Find("Front Canvas/Icon").gameObject;
@@ -212,25 +256,7 @@ public class CardDisplay : MonoBehaviour {
 			title.text = " Plains";
 		} else if (card.title == CardEnums.Title.Quarry) {		// Quarry Tile
 			title.text = "    Quarry";
-		} // else-if
-
-
-		// Color the footer border
-		if (card.FooterColor == CardEnums.FooterColor.Black) { 			// Black
-			footerBorder.color = ColorPalette.inkBlack;
-		} else if (card.FooterColor == CardEnums.FooterColor.Red) {		// Red
-			footerBorder.color = ColorPalette.inkRed;
-		} else if (card.FooterColor == CardEnums.FooterColor.Green) {	// Green
-			footerBorder.color = ColorPalette.inkGreen;
-		} else if (card.FooterColor == CardEnums.FooterColor.Cyan) {	// Cyan
-			footerBorder.color = ColorPalette.inkCyan;
-		} else if (card.FooterColor == CardEnums.FooterColor.Yellow) {	// Yellow
-			footerBorder.color = ColorPalette.inkYellow;
-		} else if (card.FooterColor == CardEnums.FooterColor.Magenta) {	// Magenta
-			footerBorder.color = ColorPalette.inkMagenta;
-		} else if (card.FooterColor == CardEnums.FooterColor.Blue) {	// Blue
-			footerBorder.color = ColorPalette.inkBlue;
-		} // else-if
+		} // if-else
 
 		// String members are assigned to the text labels after being formatted
 		body.text = MdToTag(card.bodyText);

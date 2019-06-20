@@ -153,7 +153,15 @@ public class GameManager : MonoBehaviour {
 			cardObj.transform.SetParent(this.transform);
 			cardObj.transform.rotation = new Quaternion(0, 0, 0, 0);
 
-			cardObj.SendMessage("DisplayCard", deck[i]);
+			try {
+				cardObj.SendMessage("DisplayCard", deck[i]);
+			}
+
+			catch (UnassignedReferenceException e) {
+				Debug.LogError("<b>[GameManager]</b> Error: " +
+				"Card error at deck index " + i + ": " + e);
+			}
+			
 
 		} // for
 
