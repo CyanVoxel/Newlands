@@ -109,7 +109,7 @@ public class MouseManager : MonoBehaviour {
 
 				objectHit.transform.parent.rotation = new Quaternion(objRotX, 1+objRotY, objRotZ, 0);
 
-				// Undos the turn
+				// Undoes the turn
 				if (GameManager.turn > 1) {
 					GameManager.turn--;
 				} else {

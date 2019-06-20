@@ -132,35 +132,72 @@ public class CardDisplay : MonoBehaviour {
 	// Displays card scriptable object data onto a card prefab
 	public void DisplayCard(Card card) {
 
-		// Textmesh Pro text objects --------------------------
-		TMP_Text title;
-		TMP_Text subtitle;
-		TMP_Text body;
-		TMP_Text footer;
-		Image footerBorder;
-
-		// GameObject containers ------------------------------
-		GameObject titleObj;
-		GameObject subtitleObj;
-		GameObject bodyObj;
-		GameObject footerObj;
-		GameObject footerBorderObj;
-
 		// Grab the display elements from this parent object
-		titleObj = transform.Find("Front Canvas/Title").gameObject;
-		subtitleObj = transform.Find("Front Canvas/Subtitle").gameObject;
-		bodyObj = transform.Find("Front Canvas/Body").gameObject;
-		footerObj = transform.Find("Front Canvas/Footer").gameObject;
-		footerBorderObj = transform.Find(dirFooterBorder).gameObject;
+		GameObject titleObj = transform.Find("Front Canvas/Title").gameObject;
+		
+		GameObject bodyObj = transform.Find("Front Canvas/Body").gameObject;
+		GameObject footerObj = transform.Find("Front Canvas/Footer").gameObject;
+		GameObject footerBorderObj = transform.Find(dirFooterBorder).gameObject;
 
 		// Pick out the appropriate elements from the GameObjects that were grabbed
-		title = titleObj.GetComponent<TMP_Text>();
-		subtitle = subtitleObj.GetComponent<TMP_Text>();
-		body = bodyObj.GetComponent<TMP_Text>();
-		footer = footerObj.GetComponent<TMP_Text>();
-		footerBorder = footerBorderObj.GetComponent<Image>();
+		TMP_Text title = titleObj.GetComponent<TMP_Text>();
 		
-		// Set the TMP subtitle text based on the card object's enum
+		TMP_Text body = bodyObj.GetComponent<TMP_Text>();
+		TMP_Text footer = footerObj.GetComponent<TMP_Text>();
+		Image footerBorder = footerBorderObj.GetComponent<Image>();
+
+		// GAMECARD SPECIFICS ----------------------------
+		if (card.category == CardEnums.Category.GameCard) {
+
+			GameObject subtitleObj = transform.Find("Front Canvas/Subtitle").gameObject;
+			TMP_Text subtitle = subtitleObj.GetComponent<TMP_Text>();
+
+			// Set the TMP subtitle text based on the card object's enum
+			if (card.subtitle == CardEnums.Subtitle.Investment) {		// Investment
+				subtitle.text = "Investment";
+			} else if (card.subtitle == CardEnums.Subtitle.Sabotage) {	// Sabotage
+				subtitle.text = "Sabotage";
+			} else if (card.subtitle == CardEnums.Subtitle.Resource) {	// Resource
+				subtitle.text = "Resource";
+			} else if (card.subtitle == CardEnums.Subtitle.Lumber) {	// Lumber
+				subtitle.text = "Lumber";
+			} else if (card.subtitle == CardEnums.Subtitle.Oil) {		// Oil
+				subtitle.text = "Oil";
+			} else if (card.subtitle == CardEnums.Subtitle.CashCrops) {	// Cash Crops
+				subtitle.text = "Cash Crops";
+			} else if (card.subtitle == CardEnums.Subtitle.Iron) {		// Iron
+				subtitle.text = "Iron";
+			} else if (card.subtitle == CardEnums.Subtitle.Silver) {	// Silver
+				subtitle.text = "Silver";
+			} else if (card.subtitle == CardEnums.Subtitle.Gold) {		// Gold
+				subtitle.text = "Gold";
+			} else if (card.subtitle == CardEnums.Subtitle.Gems) {		// Gems
+				subtitle.text = "Gems";
+			} else if (card.subtitle == CardEnums.Subtitle.Platinum) {	// Platinum
+				subtitle.text = "Platinum";
+			} else if (card.subtitle == CardEnums.Subtitle.None) {		// None
+				subtitle.text = "";
+			} // else-if
+
+		} // GameCard specifics
+
+		// LANDTILE SPECIFICS ----------------------------
+		if (card.category == CardEnums.Category.LandTile) {
+
+			GameObject titleIconObj = transform.Find("Front Canvas/Icon").gameObject;
+			Image iconImage = titleIconObj.GetComponent<Image>();
+
+			if (card.title == CardEnums.Title.Forest) {
+				iconImage.sprite = Resources.Load<Sprite>("Sprites/icon_forest");	// Forest
+			} else if (card.title == CardEnums.Title.Plains) {
+				iconImage.sprite = Resources.Load<Sprite>("Sprites/icon_plains");	// Plains
+			} else if (card.title == CardEnums.Title.Quarry) {
+				iconImage.sprite = Resources.Load<Sprite>("Sprites/icon_quarry");	// Quarry
+			} // else-if
+
+		} // LandTile specifics
+		
+		// Set the TMP title text based on the card object's enum
 		if (card.title == CardEnums.Title.MarketMod) {			// Market Mod
 			title.text = "\u2013Market Mod\u2013";
 		} else if (card.title == CardEnums.Title.PriceCard) {	// Price Card
@@ -170,39 +207,13 @@ public class CardDisplay : MonoBehaviour {
 		} else if (card.title == CardEnums.Title.TileMod) {		// Tile Mod
 			title.text = "\u2013Tile Mod\u2013";
 		} else if (card.title == CardEnums.Title.Forest) {		// Forest Tile
-			title.text = "Forest";
+			title.text = " Forest";
 		} else if (card.title == CardEnums.Title.Plains) {		// Plains Tile
-			title.text = "Plains";
+			title.text = " Plains";
 		} else if (card.title == CardEnums.Title.Quarry) {		// Quarry Tile
-			title.text = "Quarry";
-		}
+			title.text = "   Quarry";
+		} // else-if
 
-		// Set the TMP subtitle text based on the card object's enum
-		if (card.subtitle == CardEnums.Subtitle.Investment) {		// Investment
-			subtitle.text = "Investment";
-		} else if (card.subtitle == CardEnums.Subtitle.Sabotage) {	// Sabotage
-			subtitle.text = "Sabotage";
-		} else if (card.subtitle == CardEnums.Subtitle.Resource) {	// Resource
-			subtitle.text = "Resource";
-		} else if (card.subtitle == CardEnums.Subtitle.Lumber) {	// Lumber
-			subtitle.text = "Lumber";
-		} else if (card.subtitle == CardEnums.Subtitle.Oil) {		// Oil
-			subtitle.text = "Oil";
-		} else if (card.subtitle == CardEnums.Subtitle.CashCrops) {	// Cash Crops
-			subtitle.text = "Cash Crops";
-		} else if (card.subtitle == CardEnums.Subtitle.Iron) {		// Iron
-			subtitle.text = "Iron";
-		} else if (card.subtitle == CardEnums.Subtitle.Silver) {	// Silver
-			subtitle.text = "Silver";
-		} else if (card.subtitle == CardEnums.Subtitle.Gold) {		// Gold
-			subtitle.text = "Gold";
-		} else if (card.subtitle == CardEnums.Subtitle.Gems) {		// Gems
-			subtitle.text = "Gems";
-		} else if (card.subtitle == CardEnums.Subtitle.Platinum) {	// Platinum
-			subtitle.text = "Platinum";
-		} else if (card.subtitle == CardEnums.Subtitle.None) {		// None
-			subtitle.text = "";
-		}
 
 		// Color the footer border
 		if (card.FooterColor == CardEnums.FooterColor.Black) { 			// Black
@@ -219,7 +230,7 @@ public class CardDisplay : MonoBehaviour {
 			footerBorder.color = ColorPalette.inkMagenta;
 		} else if (card.FooterColor == CardEnums.FooterColor.Blue) {	// Blue
 			footerBorder.color = ColorPalette.inkBlue;
-		}
+		} // else-if
 
 		// String members are assigned to the text labels after being formatted
 		body.text = MdToTag(card.bodyText);
