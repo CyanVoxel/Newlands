@@ -25,9 +25,13 @@ ExportedObj/
 *.pdb
 *.opendb
 
+*.code-workspace
+
 # Unity3D generated meta files
 *.pidb.meta
 *.pdb.meta
+
+*.collabignore
 
 # Unity3D Generated File On Crash Reports
 sysinfo.txt

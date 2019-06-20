@@ -211,7 +211,7 @@ public class CardDisplay : MonoBehaviour {
 		} else if (card.title == CardEnums.Title.Plains) {		// Plains Tile
 			title.text = " Plains";
 		} else if (card.title == CardEnums.Title.Quarry) {		// Quarry Tile
-			title.text = "   Quarry";
+			title.text = "    Quarry";
 		} // else-if
 
 
