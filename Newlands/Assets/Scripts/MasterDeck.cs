@@ -31,7 +31,7 @@ public class MasterDeck {
 	public MasterDeck() { }
 
 	// Constructor that takes in a string representing the name of premade deck
-	public MasterDeck(CardEnums.Decks flavor) {
+	public MasterDeck(CardEnums.Deck flavor) {
 		
 		// Fills in the subdecks with their preset cards for the deck flavor
 		gameCardDeck = new GameCardDeck(flavor);

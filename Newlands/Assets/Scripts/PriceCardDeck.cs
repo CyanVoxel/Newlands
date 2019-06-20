@@ -12,10 +12,10 @@ public class PriceCardDeck : Deck {
 	public PriceCardDeck() { }
 
 	// Constructor that takes in a string representing the name of premade deck
-	public PriceCardDeck(CardEnums.Decks flavor) {
+	public PriceCardDeck(CardEnums.Deck flavor) {
 		
 		// The Vanilla Standard Deck's Price Cards
-		if (flavor == CardEnums.Decks.VanillaStandard) {
+		if (flavor == CardEnums.Deck.VanillaStandard) {
 			Card cardToAdd;
 
 			cardToAdd = Resources.Load<Card>(dirPc + "/lumber");

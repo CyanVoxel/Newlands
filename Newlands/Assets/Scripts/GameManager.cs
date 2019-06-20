@@ -15,11 +15,12 @@ public class GameManager : MonoBehaviour {
 	public static int round = 1;		// The current round of turns
 	public static byte turn = 1;		// The current turn in the round, == to player index
 
-	private static byte width = 7;		// Width of the game grid in cards
-	private static byte height = 7;		// Height of the game grid in cards
+	public static byte width = 7;		// Width of the game grid in cards
+	public static byte height = 7;		// Height of the game grid in cards
 	private static byte handSize = 5;	// How many cards the player is dealt
 	private static Deck[] playerDecks;	// The players' hands stored in decks
 
+	public GridUnit[,] grid;
 	private GameObject cardContainer;
 	private Card card;
 
@@ -35,7 +36,7 @@ public class GameManager : MonoBehaviour {
 	// Use this for initialization
 	void Start() {
 
-		//Grab the UI elements
+		// Grab the UI elements
 		roundNumberObj = transform.Find("UI/RoundNumber").gameObject;
 		turnNumberObj = transform.Find("UI/TurnNumber").gameObject;
 		// Pick out the appropriate elements from the GameObjects that were grabbed
@@ -44,7 +45,11 @@ public class GameManager : MonoBehaviour {
 
 		Deck[] playerDecks = new Deck[players];
 		
-		PopulateGrid();	//Sets up the tile grid
+		// Initialize the internal grid
+		GridUnit[,] grid = new GridUnit[GameManager.width,GameManager.height];
+
+		// Create tile GameObjects and connect them to internal grid
+		PopulateGrid();	
 
 		// Draws a hand of cards for each player
 		for (byte i = 0; i < players; i++) {
@@ -70,8 +75,8 @@ public class GameManager : MonoBehaviour {
 	private void PopulateGrid() {
 		// Populate the Card prefab and create the Master Deck
 		cardContainer = Resources.Load<GameObject>("Prefabs/LandTile");
-		masterDeck = new MasterDeck(CardEnums.Decks.VanillaStandard);
-		masterDeckMutable = new MasterDeck(CardEnums.Decks.VanillaStandard);
+		masterDeck = new MasterDeck(CardEnums.Deck.VanillaStandard);
+		masterDeckMutable = new MasterDeck(CardEnums.Deck.VanillaStandard);
 		//masterDeckMutable = masterDeck;	// Sets mutable deck version to internal one
 		
 		for (int x = 0; x < width; x++) {
@@ -90,8 +95,12 @@ public class GameManager : MonoBehaviour {
 				cardObj.transform.SetParent(this.transform);
 				cardObj.transform.rotation = new Quaternion(0, 180, 0, 0);	// 0, 180, 0, 0
 
+				// Connect thr drawn card to the internal grid
+				// grid[x,y] = new GridUnit(card, (float)xOff, (float)yOff);
+
 				// Connect the drawn card to the prefab that was just created
 				cardObj.SendMessage("DisplayCard", card);
+
 
 			} // y
 		} // x

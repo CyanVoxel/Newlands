@@ -25,7 +25,7 @@ public class CardDriver : MonoBehaviour {
 
 	void Start() {;
 
-		masterDeck = new MasterDeck(CardEnums.Decks.VanillaStandard);
+		masterDeck = new MasterDeck(CardEnums.Deck.VanillaStandard);
 		card = masterDeck.priceCardDeck[0];
 
 	} // Start()

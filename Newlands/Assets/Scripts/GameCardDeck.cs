@@ -12,10 +12,10 @@ public class GameCardDeck : Deck {
 	public GameCardDeck() { }
 
 	// Constructor that takes in a string representing the name of premade deck
-	public GameCardDeck(CardEnums.Decks flavor) {
+	public GameCardDeck(CardEnums.Deck flavor) {
 		
 		// The Vanilla Standard Deck's Game Cards
-		if (flavor == CardEnums.Decks.VanillaStandard) {
+		if (flavor == CardEnums.Deck.VanillaStandard) {
 			Card cardToAdd;
 
 			cardToAdd = Resources.Load<Card>(dirGcMmI + "/add_20_perc");

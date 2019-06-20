@@ -12,10 +12,10 @@ public class LandTileDeck : Deck {
 	public LandTileDeck() { }
 
 	// Constructor that takes in a string representing the name of premade deck
-	public LandTileDeck(CardEnums.Decks flavor) {
+	public LandTileDeck(CardEnums.Deck flavor) {
 		
 		// The Standard Deck's Land Tiles
-		if (flavor == CardEnums.Decks.VanillaStandard) {
+		if (flavor == CardEnums.Deck.VanillaStandard) {
 			Card cardToAdd;
 
 			cardToAdd = Resources.Load<Card>(dirLt + "/forest_oil_1");
