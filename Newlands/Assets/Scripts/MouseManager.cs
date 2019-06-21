@@ -37,83 +37,86 @@ public class MouseManager : MonoBehaviour {
 			// LAND TILES -----------------------------------------------------
 			if (objectHit.transform.parent.name.Contains("LandTile")) {
 
+				// Grab the grid coordinates stored in the object name
+				byte locX = byte.Parse(objectHit.transform.parent.name.Substring(10, 1));
+				byte locY = byte.Parse(objectHit.transform.parent.name.Substring(13, 1));
+
 				// Left Click ---------------------------------
 				if (Input.GetMouseButtonDown(0)) {
-					objX = objectHit.transform.parent.position.x;
-					objY = objectHit.transform.parent.position.y;
-					objZ = objectHit.transform.parent.position.z;
 
-					objRotX = objectHit.transform.parent.rotation.x;
-					objRotY = objectHit.transform.parent.rotation.y;
-					objRotZ = objectHit.transform.parent.rotation.z;
+					// If the tile can be bought
+					if (GameManager.BuyTile(GameManager.turn, locX, locY)) {
 
-					//Debug.Log("Y: " + objRotY);
+						// Debug output
+						Debug.Log("<b>[MouseManager]</b> " +
+						"Card Bought by Player " + GameManager.turn + ": " +
+						GameManager.grid[locX, locY].landType +
+						" " + 
+						GameManager.grid[locX, locY].value + 
+						" " +
+						GameManager.grid[locX, locY].resource);
 
-					objectHit.transform.parent.rotation = new Quaternion(objRotX, 1-objRotY, objRotZ, 0);
+						objX = objectHit.transform.parent.position.x;
+						objY = objectHit.transform.parent.position.y;
+						objZ = objectHit.transform.parent.position.z;
 
+						objRotX = objectHit.transform.parent.rotation.x;
+						objRotY = objectHit.transform.parent.rotation.y;
+						objRotZ = objectHit.transform.parent.rotation.z;
+						
+						// Changes the material of the card depending on the player who clicked on it.
+						// TODO: Might want to find a way to potentially improve performance here
+						// TODO: Nice card flip animation
+						switch (GameManager.turn) {
+							case 1: 
+								objectHit.GetComponentsInChildren<Renderer>()[0].material = Resources.Load("Materials/Cardstock_Cyan", typeof(Material)) as Material;
+								objectHit.GetComponentsInChildren<Renderer>()[1].material = Resources.Load("Materials/Cardstock_Cyan", typeof(Material)) as Material;
+								objectHit.transform.parent.rotation = new Quaternion(objRotX, 1-objRotY, objRotZ, 0);
+								GameManager.AdvanceTurn();
+								// GameManager.turnNumberText.color = ColorPalette.inkRed;	// One ahead
+								break;
+							case 2: 
+								objectHit.GetComponentsInChildren<Renderer>()[0].material = Resources.Load("Materials/Cardstock_Red", typeof(Material)) as Material;
+								objectHit.GetComponentsInChildren<Renderer>()[1].material = Resources.Load("Materials/Cardstock_Red", typeof(Material)) as Material;
+								objectHit.transform.parent.rotation = new Quaternion(objRotX, 1-objRotY, objRotZ, 0);
+								GameManager.AdvanceTurn();
+								// GameManager.turnNumberText.color = ColorPalette.purple500;	// One ahead
+								break;
+							case 3: 
+								objectHit.GetComponentsInChildren<Renderer>()[0].material = Resources.Load("Materials/Cardstock_Purple", typeof(Material)) as Material;
+								objectHit.GetComponentsInChildren<Renderer>()[1].material = Resources.Load("Materials/Cardstock_Purple", typeof(Material)) as Material;
+								objectHit.transform.parent.rotation = new Quaternion(objRotX, 1-objRotY, objRotZ, 0);
+								GameManager.AdvanceTurn();
+								// GameManager.turnNumberText.color = ColorPalette.amber500;	// One ahead
+								break;
+							case 4: 
+								objectHit.GetComponentsInChildren<Renderer>()[0].material = Resources.Load("Materials/Cardstock_Amber", typeof(Material)) as Material;
+								objectHit.GetComponentsInChildren<Renderer>()[1].material = Resources.Load("Materials/Cardstock_Amber", typeof(Material)) as Material;
+								objectHit.transform.parent.rotation = new Quaternion(objRotX, 1-objRotY, objRotZ, 0);
+								GameManager.AdvanceTurn();
+								// GameManager.turnNumberText.color = ColorPalette.inkCyan;	// One ahead
+								break;
+							default: 
+								break;
 
-					// Changes the material of the card depending on the player who clicked on it.
-					// TODO: Might want to find a way to potentially improve performance here
-					switch (GameManager.turn) {
-						case 1: 
-							objectHit.GetComponentsInChildren<Renderer>()[0].material = Resources.Load("Materials/Cardstock_Cyan", typeof(Material)) as Material;
-							objectHit.GetComponentsInChildren<Renderer>()[1].material = Resources.Load("Materials/Cardstock_Cyan", typeof(Material)) as Material;
-							GameManager.turn++;
-							GameManager.turnNumberText.color = ColorPalette.inkRed;	// One ahead
-							break;
-						case 2: 
-							objectHit.GetComponentsInChildren<Renderer>()[0].material = Resources.Load("Materials/Cardstock_Red", typeof(Material)) as Material;
-							objectHit.GetComponentsInChildren<Renderer>()[1].material = Resources.Load("Materials/Cardstock_Red", typeof(Material)) as Material;
-							GameManager.turn++;
-							GameManager.turnNumberText.color = ColorPalette.purple500;	// One ahead
-							break;
-						case 3: 
-							objectHit.GetComponentsInChildren<Renderer>()[0].material = Resources.Load("Materials/Cardstock_Purple", typeof(Material)) as Material;
-							objectHit.GetComponentsInChildren<Renderer>()[1].material = Resources.Load("Materials/Cardstock_Purple", typeof(Material)) as Material;
-							GameManager.turn++;
-							GameManager.turnNumberText.color = ColorPalette.amber500;	// One ahead
-							break;
-						case 4: 
-							objectHit.GetComponentsInChildren<Renderer>()[0].material = Resources.Load("Materials/Cardstock_Amber", typeof(Material)) as Material;
-							objectHit.GetComponentsInChildren<Renderer>()[1].material = Resources.Load("Materials/Cardstock_Amber", typeof(Material)) as Material;
-							GameManager.turn++;
-							GameManager.turnNumberText.color = ColorPalette.inkCyan;	// One ahead
-							break;
-						default: 
-							if (GameManager.turn > GameManager.players) {
-								GameManager.turn = 1;
-								GameManager.round++;
-							}
-							break;
+						} // switch
 
-					} // switch
+						// Debug output
+						Debug.Log("<b>[MouseManager]</b> " +
+						"Card Clicked: " +
+						GameManager.grid[locX, locY].landType +
+						" " + 
+						GameManager.grid[locX, locY].value + 
+						" " +
+						GameManager.grid[locX, locY].resource);
 
-					// If the turn is greater than the number of players, 
-					//	set to 0 and increment round.
-					// TODO: Make this and related blocks into standalone methods
-					if (GameManager.turn > GameManager.players) {
-						GameManager.turn = 1;
-						GameManager.round++;
-					}
+						// Update the round/turn display text
+						GameManager.UpdateUI();
 
-					// Grab the grid coordinates stored in the object name
-					int locX = int.Parse(objectHit.transform.parent.name.Substring(10, 1));
-					int locY = int.Parse(objectHit.transform.parent.name.Substring(13, 1));
-
-					// Debug output
-					Debug.Log("<b>[GameManager]</b> " +
-					"Card Clicked: " +
-					GameManager.grid[locX, locY].landType +
-					" " + 
-					GameManager.grid[locX, locY].value + 
-					" " +
-					GameManager.grid[locX, locY].resource);
-
-					// Update the round/turn display text
-					GameManager.roundNumberText.text = ("Round " + GameManager.round);
-					GameManager.turnNumberText.text = ("Player " + GameManager.turn + "'s Turn");
+					} // if the tile could be bought
 
 				} // if Left Click
+
 
 				// Right Click --------------------------------
 				if (Input.GetMouseButtonDown(1)) {
@@ -123,17 +126,14 @@ public class MouseManager : MonoBehaviour {
 
 					objectHit.transform.parent.rotation = new Quaternion(objRotX, 1+objRotY, objRotZ, 0);
 
-					// Undoes the turn
-					if (GameManager.turn > 1) {
-						GameManager.turn--;
-					} else {
-						GameManager.turn = GameManager.players;
-						GameManager.turn--;
-						GameManager.round--;
-					}
-
 					objectHit.GetComponentsInChildren<Renderer>()[0].material = Resources.Load("Materials/Cardstock", typeof(Material)) as Material;
 					objectHit.GetComponentsInChildren<Renderer>()[1].material = Resources.Load("Materials/Cardstock", typeof(Material)) as Material;
+
+					// "Sells" the tile - NOTE: this is for debugging ONLY
+					GameManager.grid[locX, locY].ownerID = 0;
+
+					GameManager.RollbackTurn();
+					GameManager.UpdateUI();
 
 				} // if Right Click
 
@@ -148,4 +148,5 @@ public class MouseManager : MonoBehaviour {
 		//Debug.Log("World Point: " + worldPoint);
 		
 	} // Update()
-}
+
+} // MouseManager class

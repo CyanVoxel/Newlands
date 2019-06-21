@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour {
 	public static MasterDeck masterDeck;
 	public static MasterDeck masterDeckMutable;
 	public static byte players = 4; 	// Number of players in the match
+	public static byte phase = 1;		// The current phase of the game
 	public static int round = 1;		// The current round of turns
 	public static byte turn = 1;		// The current turn in the round, == to player index
 
@@ -64,11 +65,7 @@ public class GameManager : MonoBehaviour {
 		}
 
 		// UI DISPLAY ---------------------------------------------------------
-
-		GameManager.roundNumberText.text = ("Round " + GameManager.round);
-		GameManager.turnNumberText.text = ("Player " + GameManager.turn + "'s Turn");
-		GameManager.turnNumberText.color = ColorPalette.inkCyan;
-
+		UpdateUI();
 
 	} // Start()
 
@@ -193,5 +190,84 @@ public class GameManager : MonoBehaviour {
 		return card;
 
 	} // DrawCard()
+
+	// Advance to the next turn
+	public static void AdvanceTurn() {
+
+		turn++;
+		if (turn > players) {
+			turn = 1;
+			round++;
+		}
+
+	} //AdvanceTurn()
+
+	// Rollback to the previous turn (for debugging only)
+	public static void RollbackTurn() {
+
+		turn--;
+		if (turn == 0) {
+
+			// If the round is 1 or more, decrement it
+			if (round > 0) {
+				round--;
+			} // if round > 0
+			
+			turn = players;
+
+		} // if turn == 0
+
+	} //RollbackTurn()
+
+	// End the current round, starts at next turn 0
+	public static void EndRound() {
+
+		round++;
+		turn = 0;
+
+	} //EndRound()
+
+	// Attempts to buy an unowned tile. Returns true if successful, or false if already owned.
+	public static bool BuyTile(byte playerID, byte gridX, byte gridY) {
+
+		// TODO: When money is implemented, factor that into the buying process.
+		//	It would also be nice to have a purchase conformation message
+
+		// If the tile is unowned (Had owner ID of 0), assign this owner to it
+		if (grid[gridX, gridY].ownerID == 0) {
+			grid[gridX, gridY].ownerID = playerID;
+			return true;
+		} else {	// 
+			Debug.Log("<b>[GameManager]</b> " +
+						"Tile is already owned!");
+			return false;
+		}
+
+	} // BuyTile()
+
+	// Updates the UI elements 
+	public static void UpdateUI() {
+
+		GameManager.roundNumberText.text = ("Round " + GameManager.round);
+		GameManager.turnNumberText.text = ("Player " + GameManager.turn + "'s Turn");
+
+		switch (turn) {
+			case 1:
+				GameManager.turnNumberText.color = ColorPalette.inkCyan;
+				break;
+			case 2:
+				GameManager.turnNumberText.color = ColorPalette.inkRed;
+				break;
+			case 3:
+				GameManager.turnNumberText.color = ColorPalette.purple500;
+				break;
+			case 4:
+				GameManager.turnNumberText.color = ColorPalette.amber500;
+				break;
+			default:
+				break;
+		}
+
+	} // UpdateUI()
 	
 } // GameManager class

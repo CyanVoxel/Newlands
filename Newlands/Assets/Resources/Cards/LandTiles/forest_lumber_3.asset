@@ -19,7 +19,7 @@ MonoBehaviour:
   footerText: '**<x>** Lumber'
   resource: 1
   footerValue: 3
-  FooterColor: 3
+  FooterColor: 0
   onlyColorCorners: 0
   percFlag: 0
   moneyFlag: 0
