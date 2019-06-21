@@ -52,111 +52,122 @@ public class MouseManager : MonoBehaviour {
 				// PHASE 1 ------------------------------------------
 				if (GameManager.phase == 1) {
 
-					// NOTE: GetNeighbors is currently doing more tasks than it should;
-					//	i.e. things like changing material colors. This is only for testing.
-					gameMan.GetNeighbors(locX, locY);
+						// NOTE: GetNeighbors is currently doing more tasks than it should;
+						//	i.e. things like changing material colors. This is only for testing.
+						// gameMan.GetNeighbors(locX, locY);
+						// gameMan.HighlightNeighbors(GameManager.turn);
+						// gameMan.HighlightNeighbors(GameManager.turn);
 
-				} // Phase 1
+					
 
-				// Left Click ---------------------------------
-				if (Input.GetMouseButtonDown(0)) {
+					// Left Click ---------------------------------
+					if (Input.GetMouseButtonDown(0)) {
 
-					// If the tile can be bought
-					if (gameMan.BuyTile(GameManager.turn, locX, locY)) {
+						gameMan.VerifyHighlight(GameManager.turn);
+						gameMan.HighlightNeighbors(GameManager.turn);
+						gameMan.UpdateUI();
+						
 
-						// Debug output
-						// Debug.Log("<b>[MouseManager]</b> " +
-						// "Card Bought by Player " + GameManager.turn + ": " +
-						// GameManager.grid[locX, locY].landType +
-						// " " + 
-						// GameManager.grid[locX, locY].value + 
-						// " " +
-						// GameManager.grid[locX, locY].resource);
+						// If the tile can be bought
+						if (gameMan.BuyTile(GameManager.turn, locX, locY)) {
 
-						objX = objectHit.transform.parent.position.x;
-						objY = objectHit.transform.parent.position.y;
-						objZ = objectHit.transform.parent.position.z;
+							// Debug output
+							// Debug.Log("<b>[MouseManager]</b> " +
+							// "Card Bought by Player " + GameManager.turn + ": " +
+							// GameManager.grid[locX, locY].landType +
+							// " " + 
+							// GameManager.grid[locX, locY].value + 
+							// " " +
+							// GameManager.grid[locX, locY].resource);
 
+							objX = objectHit.transform.parent.position.x;
+							objY = objectHit.transform.parent.position.y;
+							objZ = objectHit.transform.parent.position.z;
+
+							objRotX = objectHit.transform.parent.rotation.x;
+							objRotY = objectHit.transform.parent.rotation.y;
+							objRotZ = objectHit.transform.parent.rotation.z;
+							
+							// Changes the material of the card depending on the player who clicked on it.
+							// TODO: Might want to find a way to potentially improve performance here
+							// TODO: Nice card flip animation
+							switch (GameManager.turn) {
+								case 1: 
+									objectHit.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.inkCyan90p;
+									objectHit.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.inkCyan90p;
+									objectHit.transform.parent.rotation = new Quaternion(objRotX, 1-objRotY, objRotZ, 0);
+									gameMan.AdvanceTurn();
+									// GameManager.turnNumberText.color = ColorPalette.inkRed;	// One ahead
+									break;
+								case 2: 
+									objectHit.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.inkRed90p;
+									objectHit.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.inkRed90p;
+									objectHit.transform.parent.rotation = new Quaternion(objRotX, 1-objRotY, objRotZ, 0);
+									gameMan.AdvanceTurn();
+									// GameManager.turnNumberText.color = ColorPalette.purple500;	// One ahead
+									break;
+								case 3: 
+									objectHit.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.purple300;
+									objectHit.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.purple300;
+									objectHit.transform.parent.rotation = new Quaternion(objRotX, 1-objRotY, objRotZ, 0);
+									gameMan.AdvanceTurn();
+									// GameManager.turnNumberText.color = ColorPalette.amber500;	// One ahead
+									break;
+								case 4: 
+									objectHit.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.orange300;
+									objectHit.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.orange300;
+									objectHit.transform.parent.rotation = new Quaternion(objRotX, 1-objRotY, objRotZ, 0);
+									gameMan.AdvanceTurn();
+									// GameManager.turnNumberText.color = ColorPalette.inkCyan;	// One ahead
+									break;
+								default: 
+									break;
+
+							} // switch
+
+							// Debug output
+							// Debug.Log("<b>[MouseManager]</b> " +
+							// "Card Clicked: " +
+							// GameManager.grid[locX, locY].landType +
+							// " " + 
+							// GameManager.grid[locX, locY].value + 
+							// " " +
+							// GameManager.grid[locX, locY].resource);
+
+							// Update the round/turn display text
+							gameMan.UpdateUI();
+
+						} // if the tile could be bought
+
+						gameMan.VerifyHighlight(GameManager.turn);
+						gameMan.HighlightNeighbors(GameManager.turn);
+						gameMan.UpdateUI();
+
+					} // if Left Click
+
+
+					// Right Click --------------------------------
+					if (Input.GetMouseButtonDown(1)) {
 						objRotX = objectHit.transform.parent.rotation.x;
 						objRotY = objectHit.transform.parent.rotation.y;
 						objRotZ = objectHit.transform.parent.rotation.z;
-						
-						// Changes the material of the card depending on the player who clicked on it.
-						// TODO: Might want to find a way to potentially improve performance here
-						// TODO: Nice card flip animation
-						switch (GameManager.turn) {
-							case 1: 
-								objectHit.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.inkCyan90p;
-								objectHit.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.inkCyan90p;
-								objectHit.transform.parent.rotation = new Quaternion(objRotX, 1-objRotY, objRotZ, 0);
-								gameMan.AdvanceTurn();
-								// GameManager.turnNumberText.color = ColorPalette.inkRed;	// One ahead
-								break;
-							case 2: 
-								objectHit.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.inkRed90p;
-								objectHit.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.inkRed90p;
-								objectHit.transform.parent.rotation = new Quaternion(objRotX, 1-objRotY, objRotZ, 0);
-								gameMan.AdvanceTurn();
-								// GameManager.turnNumberText.color = ColorPalette.purple500;	// One ahead
-								break;
-							case 3: 
-								objectHit.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.purple300;
-								objectHit.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.purple300;
-								objectHit.transform.parent.rotation = new Quaternion(objRotX, 1-objRotY, objRotZ, 0);
-								gameMan.AdvanceTurn();
-								// GameManager.turnNumberText.color = ColorPalette.amber500;	// One ahead
-								break;
-							case 4: 
-								objectHit.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.orange300;
-								objectHit.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.orange300;
-								objectHit.transform.parent.rotation = new Quaternion(objRotX, 1-objRotY, objRotZ, 0);
-								gameMan.AdvanceTurn();
-								// GameManager.turnNumberText.color = ColorPalette.inkCyan;	// One ahead
-								break;
-							default: 
-								break;
 
-						} // switch
+						objectHit.transform.parent.rotation = new Quaternion(objRotX, 1+objRotY, objRotZ, 0);
 
-						// Debug output
-						// Debug.Log("<b>[MouseManager]</b> " +
-						// "Card Clicked: " +
-						// GameManager.grid[locX, locY].landType +
-						// " " + 
-						// GameManager.grid[locX, locY].value + 
-						// " " +
-						// GameManager.grid[locX, locY].resource);
+						objectHit.GetComponentsInChildren<Renderer>()[0].material.color = Color.white;
+						objectHit.GetComponentsInChildren<Renderer>()[1].material.color = Color.white;
 
-						// // Update the round/turn display text
-						// gameMan.UpdateUI();
+						// "Sells" the tile - NOTE: this is for debugging ONLY
+						GameManager.grid[locX, locY].ownerID = 0;
 
-					} // if the tile could be bought
+						gameMan.RollbackTurn();
+						gameMan.UpdateUI();
 
-				} // if Left Click
+					} // if Right Click
 
+				} // if LandTile
 
-				// Right Click --------------------------------
-				if (Input.GetMouseButtonDown(1)) {
-					objRotX = objectHit.transform.parent.rotation.x;
-					objRotY = objectHit.transform.parent.rotation.y;
-					objRotZ = objectHit.transform.parent.rotation.z;
-
-					objectHit.transform.parent.rotation = new Quaternion(objRotX, 1+objRotY, objRotZ, 0);
-
-					objectHit.GetComponentsInChildren<Renderer>()[0].material.color = Color.white;
-					objectHit.GetComponentsInChildren<Renderer>()[1].material.color = Color.white;
-
-					// "Sells" the tile - NOTE: this is for debugging ONLY
-					GameManager.grid[locX, locY].ownerID = 0;
-
-					gameMan.RollbackTurn();
-					gameMan.UpdateUI();
-
-				} // if Right Click
-
-			} // if LandTile
-
-			
+			} // Phase 1
 			
 			
 

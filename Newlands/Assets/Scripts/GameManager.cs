@@ -240,31 +240,179 @@ public class GameManager : MonoBehaviour {
 
 	} //EndPhase()
 
-	public List<GameObject> GetNeighbors(byte gridX, byte gridY) {
+	public void HighlightNeighbors(byte playerID) {
 
-		List<GameObject> neighbors = new List<GameObject>();
+		// bool needToSkip = false;
+		// int highlightCount = 0;
 
 		WipeSelectionColors();
 
-		for (int i = -1; i <= 1; i++) {
-			for (int j = -1; j <= 1; j++) {
-				if (gridX + i >= 0 && 
-					gridX + i < width && 
-					gridY + j >= 0 && 
-					gridY + j < height) {
-					if (grid[gridX + i, gridY + j].ownerID == 0) {
-						//neighbors.Add(transform.Find("LandTile_x" + gridX + "_y" + gridY + "_y0").gameObject);
-						GameObject temp = transform.Find("LandTile_x" + (gridX + i) + "_y" + (gridY + j) + "_z0").gameObject;
-						temp.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.cyan300;
-						// Debug.Log("Neighbor found: LandTile_x" + (gridX + i) + "_y" + (gridY + j) + "_z0");
-					}
-				}
-			}
-		}
+		// Search through the grid
+		for (byte x = 0; x < width; x++) {
 
-		return neighbors;
+			for (byte y = 0; y < height; y++) {
 
-	} // GetNeighbors()
+				if (grid[x, y].ownerID == playerID) {
+
+					Highlight(x, y);
+
+				} // if Tile is owned by the player
+
+			} // for y
+
+		} // for x
+
+		// Local function that recolors unowned neighbor tiles
+		void Highlight(byte gridX, byte gridY) {
+
+			Color playerColor = GetPlayerColor(playerID, 200);
+			bool[,] highlighted = new bool[width, height];
+			// needToSkip = true;
+
+			// Find each unowned neighbor tiles
+			for (int i = -1; i <= 1; i++) {
+
+				for (int j = -1; j <= 1; j++) {
+
+					if (gridX + i >= 0 && 
+						gridX + i < width && 
+						gridY + j >= 0 && 
+						gridY + j < height) {
+
+						if (grid[gridX + i, gridY + j].ownerID == 0) {
+
+							GameObject temp = transform.Find("LandTile_x" + (gridX + i) + "_y" + (gridY + j) + "_z0").gameObject;
+							temp.GetComponentsInChildren<Renderer>()[0].material.color = playerColor;
+							temp.GetComponentsInChildren<Renderer>()[1].material.color = playerColor;
+							
+						} // if the Tile is unowned
+
+					} // if grid in bounds
+
+				} // for j
+				
+			} // for i
+
+		} // Highlight()
+
+	} // HighlightNeighbors()
+
+	// Verifies that the Tile highlighting used in Phase 1 is correct.
+	// NOTE: This function will skip a players turn if they are unable to buy any more tiles.
+	// Returns TRUE if it needs to go through a recursive iteration.
+	public bool VerifyHighlight(byte playerID) {
+
+		bool[,] highlighted = new bool[width, height];
+		int highlightCount = 0;
+
+		if (round > 1 && phase == 1) {
+
+			// Search through the grid
+			for (byte x = 0; x < width; x++) {
+
+				for (byte y = 0; y < height; y++) {
+
+					if (grid[x, y].ownerID == playerID) {
+
+						Highlight(x, y);
+
+					} // if player owns Tile
+
+				} // for y
+
+			} // for x
+
+			for (int x = 0; x < width; x++) {
+
+				for (int y = 0; y < height; y++) {
+
+					if (highlighted[x,y]) {
+
+						highlightCount++;
+						// Debug.Log("Highlighted:" + x + ", " + y);
+
+					} //if grid location was highlighted
+
+				} // for y
+				
+			} // for x
+
+			// Debug.Log("Highlight Count:" + highlightCount);
+			if (highlightCount == 0) {
+				AdvanceTurn();
+
+				int gridSpaceLeft = 0;
+
+				// Test to see if the grid is full
+				for (int x = 0; x < width; x++) {
+
+					for (int y = 0; y < height; y++) {
+
+						if (grid[x,y].ownerID == 0) {
+
+							gridSpaceLeft++;
+							// Debug.Log("Grid must NOT be full!");
+
+						} // if Tile is unowned
+
+					} // for y
+
+				} // for x
+
+				// If the grid is full, end the phase.
+				// Else, continue recursively checking if this turn should be skipped
+				if (gridSpaceLeft == 0) {
+
+					// Debug.Log("Grid was full!");
+					EndPhase();
+					return false;
+
+				} else {
+
+					// return true;
+					VerifyHighlight(turn);
+
+				} // if-else
+
+			} // if nothing was highlighted
+
+		} else {
+
+			return false;
+
+		} // If the round was greater than 1 during phase 1
+
+		return false;
+
+
+		// Local function that recolors unowned neighbor tiles.
+		void Highlight(byte gridX, byte gridY) {
+
+			// Find each unowned neighbor tiles
+			for (int i = -1; i <= 1; i++) {
+
+				for (int j = -1; j <= 1; j++) {
+
+					if (gridX + i >= 0 && 
+						gridX + i < width && 
+						gridY + j >= 0 && 
+						gridY + j < height) {
+
+						if (grid[gridX + i, gridY + j].ownerID == 0) {
+
+							highlighted[gridX + i, gridY + j] = true;
+							
+						} // if Tile is unowned
+
+					} // if grid in bounds
+
+				} // for j
+
+			} // for i
+
+		} // Highlight()
+
+	} // GetHighlightCount()
 
 	// Attempts to buy an unowned tile. Returns true if successful, or false if already owned.
 	public bool BuyTile(byte playerID, byte gridX, byte gridY) {
@@ -272,18 +420,75 @@ public class GameManager : MonoBehaviour {
 		// TODO: When money is implemented, factor that into the buying process.
 		//	It would also be nice to have a purchase conformation message
 
+		bool followsRules = false;
+
+		// First check is the first round is finished
+		if (round > 1) {
+
+			// Search through the grid
+			for (byte x = 0; x < width; x++) {
+
+				for (byte y = 0; y < height; y++) {
+
+					if (grid[x, y].ownerID == playerID) {
+
+						ValidTile(x, y);
+
+					} // if player owns tile
+
+				} // for y
+
+			} // for x
+
+		} else {
+			followsRules = true;
+		} // if past first round
+
 		// If the tile is unowned (Had owner ID of 0), assign this owner to it
-		if (grid[gridX, gridY].ownerID == 0) {
+		if (grid[gridX, gridY].ownerID == 0 && followsRules) {
 			grid[gridX, gridY].ownerID = playerID;
 			return true;
-		} else {	// 
+		} else if (!followsRules) {
+			Debug.Log("<b>[GameManager]</b> " +
+						"Tile is too far away!");
+			return false;
+		} else {
 			Debug.Log("<b>[GameManager]</b> " +
 						"Tile is already owned!");
 			return false;
 		}
 
+		// Local function that recolors unowned neighbor tiles
+		void ValidTile(byte gridLocX, byte gridLocY) {
+
+			// Find each unowned neighbor tiles
+			for (int i = -1; i <= 1; i++) {
+
+				for (int j = -1; j <= 1; j++) {
+
+					if (gridLocX + i >= 0 && 
+						gridLocX + i < width && 
+						gridLocY + j >= 0 && 
+						gridLocY + j < height) {
+
+						if (grid[gridLocX + i, gridLocY + j].ownerID == 0 &&
+							grid[gridLocX + i, gridLocY + j] == grid[gridX, gridY]) {
+
+							followsRules = true;	// Signal that this is a valid purchase
+
+						} // if tile owned and in a valid spot
+
+					} // if grid in bounds
+
+				} // for j
+
+			} // for i
+
+		} // ValidTile()
+
 	} // BuyTile()
 
+	// Turns all Land Tiles on the grid white.
 	public void WipeSelectionColors() {
 
 		for (int x = 0; x < width; x++) {
@@ -297,6 +502,74 @@ public class GameManager : MonoBehaviour {
 		}
 
 	} // WipeSelectionColors()
+
+	// Turns all Land Tiles on the grid a specified color. (Overload)
+	public void WipeSelectionColors(Color32 color) {
+
+		for (int x = 0; x < width; x++) {
+			for (int y = 0; y < height; y++) {
+				if (grid[x, y].ownerID == 0) {
+					GameObject temp = transform.Find("LandTile_x" + x + "_y" + y + "_z0").gameObject;
+					temp.GetComponentsInChildren<Renderer>()[0].material.color = color;
+					temp.GetComponentsInChildren<Renderer>()[1].material.color = color;
+				}
+			}
+		}
+
+	} // WipeSelectionColors(color)
+
+	// Returns the color associated with a player ID.
+	// Strength paramater refers to a possible brighter color variant.
+	public Color GetPlayerColor(byte playerID, int strength = 100) {
+
+		Color color = Color.white;
+
+		switch (playerID) {
+
+			case 1:
+				if (strength == 70 || strength == 200) {
+					color = ColorPalette.inkCyan70p;
+				} else if (strength == 90 || strength == 300) {
+					color = ColorPalette.inkCyan90p;
+				} else {
+					color = ColorPalette.inkCyan;
+				}
+				break;
+			case 2:
+				if (strength == 70 || strength == 200) {
+					color = ColorPalette.inkRed70p;
+				} else if (strength == 90 || strength == 300) {
+					color = ColorPalette.inkCyan90p;
+				} else {
+					color = ColorPalette.inkRed;
+				}
+				break;
+			case 3:
+				if (strength == 70 || strength == 200) {
+					color = ColorPalette.purple200;
+				} else if (strength == 90 || strength == 300) {
+					color = ColorPalette.inkCyan90p;
+				} else {
+					color = ColorPalette.purple500;
+				}
+				break;
+			case 4:
+				if (strength == 70 || strength == 200) {
+					color = ColorPalette.amber200;
+				} else if (strength == 90 || strength == 300) {
+					color = ColorPalette.inkCyan90p;
+				} else {
+					color = ColorPalette.amber500;
+				}
+				break;
+			default:
+				break;
+
+		} // switch
+
+
+		return color;
+	}
 
 	// Updates the UI elements 
 	public void UpdateUI() {
