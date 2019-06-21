@@ -27,10 +27,12 @@ public class GameManager : MonoBehaviour {
 
 	// UI ELEMENTS ------------------------------------------------------------
 
+	private static GameObject phaseNumberObj;
 	private static GameObject roundNumberObj;
 	private static GameObject turnNumberObj;
-	public static TMP_Text roundNumberText;
-	public static TMP_Text turnNumberText;
+	private static TMP_Text phaseNumberText;
+	private static TMP_Text roundNumberText;
+	private static TMP_Text turnNumberText;
 	
 
 
@@ -38,9 +40,11 @@ public class GameManager : MonoBehaviour {
 	void Start() {
 
 		// Grab the UI elements
+		phaseNumberObj = transform.Find("UI/PhaseNumber").gameObject;
 		roundNumberObj = transform.Find("UI/RoundNumber").gameObject;
 		turnNumberObj = transform.Find("UI/TurnNumber").gameObject;
 		// Pick out the appropriate elements from the GameObjects that were grabbed
+		phaseNumberText = phaseNumberObj.GetComponent<TMP_Text>();
 		roundNumberText = roundNumberObj.GetComponent<TMP_Text>();
 		turnNumberText = turnNumberObj.GetComponent<TMP_Text>();
 
@@ -81,7 +85,7 @@ public class GameManager : MonoBehaviour {
 			for (int y = 0; y < height; y++) {
 
 				// Draw a card from the Land Tile deck
-				Card card = new Card();
+				Card card = Card.CreateInstance<Card>();
 				card = DrawCard(masterDeckMutable.landTileDeck, masterDeck.landTileDeck);
 
 				float xOff = x * 11;
@@ -164,7 +168,7 @@ public class GameManager : MonoBehaviour {
 
 	} // DisplayHand()
 
-	public static Card DrawCard(Deck deckMut, Deck deckPerm) {
+	public Card DrawCard(Deck deckMut, Deck deckPerm) {
 
 		Card card;	// Card to return
 		int cardsLeft = deckMut.Count();	// Number of cards left from mutable deck
@@ -192,7 +196,7 @@ public class GameManager : MonoBehaviour {
 	} // DrawCard()
 
 	// Advance to the next turn
-	public static void AdvanceTurn() {
+	public void AdvanceTurn() {
 
 		turn++;
 		if (turn > players) {
@@ -203,7 +207,7 @@ public class GameManager : MonoBehaviour {
 	} //AdvanceTurn()
 
 	// Rollback to the previous turn (for debugging only)
-	public static void RollbackTurn() {
+	public void RollbackTurn() {
 
 		turn--;
 		if (turn == 0) {
@@ -220,15 +224,32 @@ public class GameManager : MonoBehaviour {
 	} //RollbackTurn()
 
 	// End the current round, starts at next turn 0
-	public static void EndRound() {
+	public void EndRound() {
 
 		round++;
 		turn = 0;
 
 	} //EndRound()
 
+	// End the current phase, starts at next round and turn 0
+	public void EndPhase() {
+
+		phase++;
+		round = 1;
+		turn = 1;
+
+	} //EndPhase()
+
+	public Deck GetNeighbors(byte gridX, byte gridY) {
+
+		Deck neighbors = new Deck();
+
+		return neighbors;
+
+	} // GetNeighbors()
+
 	// Attempts to buy an unowned tile. Returns true if successful, or false if already owned.
-	public static bool BuyTile(byte playerID, byte gridX, byte gridY) {
+	public bool BuyTile(byte playerID, byte gridX, byte gridY) {
 
 		// TODO: When money is implemented, factor that into the buying process.
 		//	It would also be nice to have a purchase conformation message
@@ -246,8 +267,9 @@ public class GameManager : MonoBehaviour {
 	} // BuyTile()
 
 	// Updates the UI elements 
-	public static void UpdateUI() {
+	public void UpdateUI() {
 
+		GameManager.phaseNumberText.text = ("Phase " + GameManager.phase);
 		GameManager.roundNumberText.text = ("Round " + GameManager.round);
 		GameManager.turnNumberText.text = ("Player " + GameManager.turn + "'s Turn");
 

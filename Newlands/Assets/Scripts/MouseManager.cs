@@ -6,9 +6,17 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class MouseManager : MonoBehaviour {
+
+	public GameManager gameMan;
 	
 	// Update is called once per frame
 	void Update() {
+
+		// If 'P' is pressed, end the phase - Debugging only
+		if (Input.GetKeyDown(KeyCode.P)) {
+			gameMan.EndPhase();
+			gameMan.UpdateUI();
+		}
 
 		// If the cursor is over a UI element, return from Update()
 		// NOTE: In order for Canvases on objects such as Cards to be ignored,
@@ -41,11 +49,16 @@ public class MouseManager : MonoBehaviour {
 				byte locX = byte.Parse(objectHit.transform.parent.name.Substring(10, 1));
 				byte locY = byte.Parse(objectHit.transform.parent.name.Substring(13, 1));
 
+				// PHASE 1 ------------------------------------------
+				if (GameManager.phase == 1) {
+
+				} // Phase 1
+
 				// Left Click ---------------------------------
 				if (Input.GetMouseButtonDown(0)) {
 
 					// If the tile can be bought
-					if (GameManager.BuyTile(GameManager.turn, locX, locY)) {
+					if (gameMan.BuyTile(GameManager.turn, locX, locY)) {
 
 						// Debug output
 						Debug.Log("<b>[MouseManager]</b> " +
@@ -69,31 +82,31 @@ public class MouseManager : MonoBehaviour {
 						// TODO: Nice card flip animation
 						switch (GameManager.turn) {
 							case 1: 
-								objectHit.GetComponentsInChildren<Renderer>()[0].material = Resources.Load("Materials/Cardstock_Cyan", typeof(Material)) as Material;
-								objectHit.GetComponentsInChildren<Renderer>()[1].material = Resources.Load("Materials/Cardstock_Cyan", typeof(Material)) as Material;
+								objectHit.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.inkCyan90p;
+								objectHit.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.inkCyan90p;
 								objectHit.transform.parent.rotation = new Quaternion(objRotX, 1-objRotY, objRotZ, 0);
-								GameManager.AdvanceTurn();
+								gameMan.AdvanceTurn();
 								// GameManager.turnNumberText.color = ColorPalette.inkRed;	// One ahead
 								break;
 							case 2: 
-								objectHit.GetComponentsInChildren<Renderer>()[0].material = Resources.Load("Materials/Cardstock_Red", typeof(Material)) as Material;
-								objectHit.GetComponentsInChildren<Renderer>()[1].material = Resources.Load("Materials/Cardstock_Red", typeof(Material)) as Material;
+								objectHit.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.inkRed90p;
+								objectHit.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.inkRed90p;
 								objectHit.transform.parent.rotation = new Quaternion(objRotX, 1-objRotY, objRotZ, 0);
-								GameManager.AdvanceTurn();
+								gameMan.AdvanceTurn();
 								// GameManager.turnNumberText.color = ColorPalette.purple500;	// One ahead
 								break;
 							case 3: 
-								objectHit.GetComponentsInChildren<Renderer>()[0].material = Resources.Load("Materials/Cardstock_Purple", typeof(Material)) as Material;
-								objectHit.GetComponentsInChildren<Renderer>()[1].material = Resources.Load("Materials/Cardstock_Purple", typeof(Material)) as Material;
+								objectHit.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.purple300;
+								objectHit.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.purple300;
 								objectHit.transform.parent.rotation = new Quaternion(objRotX, 1-objRotY, objRotZ, 0);
-								GameManager.AdvanceTurn();
+								gameMan.AdvanceTurn();
 								// GameManager.turnNumberText.color = ColorPalette.amber500;	// One ahead
 								break;
 							case 4: 
-								objectHit.GetComponentsInChildren<Renderer>()[0].material = Resources.Load("Materials/Cardstock_Amber", typeof(Material)) as Material;
-								objectHit.GetComponentsInChildren<Renderer>()[1].material = Resources.Load("Materials/Cardstock_Amber", typeof(Material)) as Material;
+								objectHit.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.orange300;
+								objectHit.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.orange300;
 								objectHit.transform.parent.rotation = new Quaternion(objRotX, 1-objRotY, objRotZ, 0);
-								GameManager.AdvanceTurn();
+								gameMan.AdvanceTurn();
 								// GameManager.turnNumberText.color = ColorPalette.inkCyan;	// One ahead
 								break;
 							default: 
@@ -111,7 +124,7 @@ public class MouseManager : MonoBehaviour {
 						GameManager.grid[locX, locY].resource);
 
 						// Update the round/turn display text
-						GameManager.UpdateUI();
+						gameMan.UpdateUI();
 
 					} // if the tile could be bought
 
@@ -126,14 +139,14 @@ public class MouseManager : MonoBehaviour {
 
 					objectHit.transform.parent.rotation = new Quaternion(objRotX, 1+objRotY, objRotZ, 0);
 
-					objectHit.GetComponentsInChildren<Renderer>()[0].material = Resources.Load("Materials/Cardstock", typeof(Material)) as Material;
-					objectHit.GetComponentsInChildren<Renderer>()[1].material = Resources.Load("Materials/Cardstock", typeof(Material)) as Material;
+					objectHit.GetComponentsInChildren<Renderer>()[0].material.color = Color.white;
+					objectHit.GetComponentsInChildren<Renderer>()[1].material.color = Color.white;
 
 					// "Sells" the tile - NOTE: this is for debugging ONLY
 					GameManager.grid[locX, locY].ownerID = 0;
 
-					GameManager.RollbackTurn();
-					GameManager.UpdateUI();
+					gameMan.RollbackTurn();
+					gameMan.UpdateUI();
 
 				} // if Right Click
 
