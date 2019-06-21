@@ -1,34 +1,26 @@
 ﻿// A collection of enums used by the Card object.
 // These are used to compare and verify that Tile objects have valid info.
 
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+// ENUMS ##########################################################################################
 
-public class CardEnums {
+// Categories of Tiles
+public enum CardCategory {GameCard, PriceCard, LandTile}; 
 
-	// Categories of Tiles
-	public enum Category {GameCard, PriceCard, LandTile}; 
+// The Title of the Card, specifying its type in its category
+public enum CardTitle {TileMod, Resource, MarketMod, PriceCard, Forest, Plains, Quarry};
 
-	// The Title of the Card, specifying its type in its category
-	public enum Title {TileMod, Resource, MarketMod, PriceCard,
-					   Forest, Plains, Quarry};
+// The Title of the Card, specifying its type in its category
+public enum CardSubtitle {None, Investment, Sabotage, Resource, Lumber, CashCrops, Oil, Iron, Gold,
+						  Silver, Gems, Platinum};
 
-	// The Title of the Card, specifying its type in its category
-	public enum Subtitle {None, Investment, Sabotage, Resource,
-						  Lumber, CashCrops, Oil, Iron, Gold, Silver, Gems, Platinum};
+// How the footer value on the Card is supposed to be applied
+public enum CardFtrOpr {None, Add, Sub};
 
-	// How the footer value on the Card is supposed to be applied
-	public enum FooterOp {None, Add, Sub};
+// The color of the footer border
+public enum CardFtrColor {Black, Red, Blue, Green, Cyan, Magenta, Yellow};
 
-	// The color of the footer border
-	public enum FooterColor {Black, Red, Blue, Green, Cyan, Magenta, Yellow};
+// Deck names
+public enum DeckType {VanillaStandard, Corny};
 
-	// Deck names
-	public enum Deck {VanillaStandard, Corny};
-
-	// All resources available
-	public enum Resource {None, Lumber, CashCrops, Oil, Iron, Gold, Silver,
-							 Gems, Platinum};
-
-} // CardEnums class
+// All resources available
+public enum ResourceType {None, Lumber, CashCrops, Oil, Iron, Gold, Silver, Gems, Platinum};

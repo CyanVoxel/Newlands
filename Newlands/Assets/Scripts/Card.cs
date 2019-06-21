@@ -11,13 +11,13 @@ public class Card : ScriptableObject {
 	// DATA FIELDS ------------------------------------------------------------
 
 	// The overall category of the Card (ex. Game Card, Price Card)
-	public CardEnums.Category category; 
+	public CardCategory category; 
 
 	// The Title of the Card, specifying its type in its category
-	public CardEnums.Title title;
+	public CardTitle title;
 
 	// The subtitle of the Card, further specifying the title subcategory
-	public CardEnums.Subtitle subtitle;
+	public CardSubtitle subtitle;
 
 	// The body text of a Card
 	public string bodyText;
@@ -26,13 +26,13 @@ public class Card : ScriptableObject {
 	public string footerText;
 
 	// The resource of the card, if it had one
-	public CardEnums.Resource resource;
+	public ResourceType resource;
 
 	// The raw number value that is presented in the Card footer
 	public int footerValue;
 
 	// The color of the footer border
-	public CardEnums.FooterColor FooterColor;
+	public CardFtrColor FooterColor;
 
 	// Flag indicating if only the corners of the footer should be colored
 	public bool onlyColorCorners;
@@ -44,7 +44,7 @@ public class Card : ScriptableObject {
 	public bool moneyFlag;
 
 	// The operator of the footerValue
-	public CardEnums.FooterOp footerOp;
+	public CardFtrOpr footerOpr;
 
 
 	// CONSTRUCTORS -----------------------------------------------------------

@@ -76,8 +76,8 @@ public class GameManager : MonoBehaviour {
 	private void PopulateGrid() {
 		// Populate the Card prefab and create the Master Deck
 		cardContainer = Resources.Load<GameObject>("Prefabs/LandTile");
-		masterDeck = new MasterDeck(CardEnums.Deck.VanillaStandard);
-		masterDeckMutable = new MasterDeck(CardEnums.Deck.VanillaStandard);
+		masterDeck = new MasterDeck(DeckType.VanillaStandard);
+		masterDeckMutable = new MasterDeck(DeckType.VanillaStandard);
 		//masterDeckMutable = masterDeck;	// Sets mutable deck version to internal one
 		
 		for (int x = 0; x < width; x++) {

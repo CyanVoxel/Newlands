@@ -12,10 +12,10 @@ public class GameCardDeck : Deck {
 	public GameCardDeck() { }
 
 	// Constructor that takes in a string representing the name of premade deck
-	public GameCardDeck(CardEnums.Deck flavor) {
+	public GameCardDeck(DeckType flavor) {
 		
 		// The Vanilla Standard Deck's Game Cards
-		if (flavor == CardEnums.Deck.VanillaStandard) {
+		if (flavor == DeckType.VanillaStandard) {
 			// Card cardToAdd;
 
 			// Market Mods

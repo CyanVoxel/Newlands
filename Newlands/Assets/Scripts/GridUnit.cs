@@ -16,8 +16,8 @@ public class GridUnit {
 	public float posY;
 	public byte ownerID = 0;
 
-	public CardEnums.Title landType;
-	public CardEnums.Resource resource;
+	public CardTitle landType;
+	public ResourceType resource;
 
 	// CONSTRUCTORS -----------------------------------------------------------
 

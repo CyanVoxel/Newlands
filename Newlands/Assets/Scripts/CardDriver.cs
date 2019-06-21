@@ -25,7 +25,7 @@ public class CardDriver : MonoBehaviour {
 
 	void Start() {;
 
-		masterDeck = new MasterDeck(CardEnums.Deck.VanillaStandard);
+		masterDeck = new MasterDeck(DeckType.VanillaStandard);
 		card = masterDeck.priceCardDeck[0];
 
 	} // Start()
@@ -60,62 +60,62 @@ public class CardDriver : MonoBehaviour {
 
 
 		// Set the TMP subtitle text based on the card object's enum
-		if (card.title == CardEnums.Title.MarketMod) {			// Market Mod
+		if (card.title == CardTitle.MarketMod) {			// Market Mod
 			title.text = "\u2013Market Mod\u2013";
-		} else if (card.title == CardEnums.Title.PriceCard) {	// Price Card
+		} else if (card.title == CardTitle.PriceCard) {	// Price Card
 			title.text = "\u2013Price Card\u2013";
-		} else if (card.title == CardEnums.Title.Resource) {	// Resource
+		} else if (card.title == CardTitle.Resource) {	// Resource
 			title.text = "\u2013Resource\u2013";
-		} else if (card.title == CardEnums.Title.TileMod) {		// Tile Mod
+		} else if (card.title == CardTitle.TileMod) {		// Tile Mod
 			title.text = "\u2013Tile Mod\u2013";
 		}
 
 		// Set the TMP subtitle text based on the card object's enum
-		if (card.subtitle == CardEnums.Subtitle.Investment) {		// Investment
+		if (card.subtitle == CardSubtitle.Investment) {		// Investment
 			subtitle.text = "Investment";
-		} else if (card.subtitle == CardEnums.Subtitle.Sabotage) {	// Sabotage
+		} else if (card.subtitle == CardSubtitle.Sabotage) {	// Sabotage
 			subtitle.text = "Sabotage";
-		} else if (card.subtitle == CardEnums.Subtitle.Resource) {	// Resource
+		} else if (card.subtitle == CardSubtitle.Resource) {	// Resource
 			subtitle.text = "Resource";
-		} else if (card.subtitle == CardEnums.Subtitle.Lumber) {	// Lumber
+		} else if (card.subtitle == CardSubtitle.Lumber) {	// Lumber
 			subtitle.text = "Lumber";
-		} else if (card.subtitle == CardEnums.Subtitle.Oil) {		// Oil
+		} else if (card.subtitle == CardSubtitle.Oil) {		// Oil
 			subtitle.text = "Oil";
-		} else if (card.subtitle == CardEnums.Subtitle.CashCrops) {	// Cash Crops
+		} else if (card.subtitle == CardSubtitle.CashCrops) {	// Cash Crops
 			subtitle.text = "Cash Crops";
-		} else if (card.subtitle == CardEnums.Subtitle.Iron) {		// Iron
+		} else if (card.subtitle == CardSubtitle.Iron) {		// Iron
 			subtitle.text = "Iron";
-		} else if (card.subtitle == CardEnums.Subtitle.Silver) {	// Silver
+		} else if (card.subtitle == CardSubtitle.Silver) {	// Silver
 			subtitle.text = "Silver";
-		} else if (card.subtitle == CardEnums.Subtitle.Gold) {		// Gold
+		} else if (card.subtitle == CardSubtitle.Gold) {		// Gold
 			subtitle.text = "Gold";
-		} else if (card.subtitle == CardEnums.Subtitle.Gems) {		// Gems
+		} else if (card.subtitle == CardSubtitle.Gems) {		// Gems
 			subtitle.text = "Gems";
-		} else if (card.subtitle == CardEnums.Subtitle.Platinum) {	// Platinum
+		} else if (card.subtitle == CardSubtitle.Platinum) {	// Platinum
 			subtitle.text = "Platinum";
 		}
 
 		// Color the footer border
-		if (card.FooterColor == CardEnums.FooterColor.Black) { 			// Black
+		if (card.FooterColor == CardFtrColor.Black) { 			// Black
 			footerBorder.color = ColorPalette.inkBlack;
-		} else if (card.FooterColor == CardEnums.FooterColor.Red) {		// Red
+		} else if (card.FooterColor == CardFtrColor.Red) {		// Red
 			footerBorder.color = ColorPalette.inkRed;
-		} else if (card.FooterColor == CardEnums.FooterColor.Green) {	// Green
+		} else if (card.FooterColor == CardFtrColor.Green) {	// Green
 			footerBorder.color = ColorPalette.inkGreen;
-		} else if (card.FooterColor == CardEnums.FooterColor.Cyan) {	// Cyan
+		} else if (card.FooterColor == CardFtrColor.Cyan) {	// Cyan
 			footerBorder.color = ColorPalette.inkCyan;
-		} else if (card.FooterColor == CardEnums.FooterColor.Yellow) {	// Yellow
+		} else if (card.FooterColor == CardFtrColor.Yellow) {	// Yellow
 			footerBorder.color = ColorPalette.inkYellow;
-		} else if (card.FooterColor == CardEnums.FooterColor.Magenta) {	// Magenta
+		} else if (card.FooterColor == CardFtrColor.Magenta) {	// Magenta
 			footerBorder.color = ColorPalette.inkMagenta;
-		} else if (card.FooterColor == CardEnums.FooterColor.Blue) {	// Blue
+		} else if (card.FooterColor == CardFtrColor.Blue) {	// Blue
 			footerBorder.color = ColorPalette.inkBlue;
 		}
 
 		// String members are assigned to the text labels after being formatted
 		body.text = mdToTag(card.bodyText);
 		footer.text = insertFooterValue(card.footerText, card.percFlag, 
-											card.moneyFlag, card.footerOp);
+											card.moneyFlag, card.footerOpr);
 		footer.text = mdToTag(footer.text);
 
 	} // Update()
@@ -165,7 +165,7 @@ public class CardDriver : MonoBehaviour {
 
 	// Inserts the footerValue into a string meant for the footer text
 	private string insertFooterValue(string inputText, bool percFlag, 
-									 bool moneyFlag, CardEnums.FooterOp op) {
+									 bool moneyFlag, CardFtrOpr op) {
 
 		string outputText = inputText;								// String to output
 		string footerValueStr = card.footerValue.ToString("n0");	// The formatted footer value
@@ -187,9 +187,9 @@ public class CardDriver : MonoBehaviour {
 			}
 
 			// Add the appropriate operator to the string
-			if (op == CardEnums.FooterOp.Add) {
+			if (op == CardFtrOpr.Add) {
 				footerValueStr = ("+" + footerValueStr);
-			} else if (op == CardEnums.FooterOp.Sub) {
+			} else if (op == CardFtrOpr.Sub) {
 				footerValueStr = ("\u2013" + footerValueStr);
 			}
 		
