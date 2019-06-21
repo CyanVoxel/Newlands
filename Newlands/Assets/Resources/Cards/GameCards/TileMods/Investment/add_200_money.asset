@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 252e8b19c3229d843a76e098201409a6, type: 3}
+  m_Name: add_200_money
+  m_EditorClassIdentifier: 
+  category: 0
+  title: 0
+  subtitle: 1
+  bodyText: 'Place this under **any** Tile. This increases the **total value** of
+    the Tile. '
+  footerText: '**<x>** in Value'
+  resource: 0
+  footerValue: 200
+  FooterColor: 3
+  onlyColorCorners: 0
+  percFlag: 0
+  moneyFlag: 1
+  footerOp: 1

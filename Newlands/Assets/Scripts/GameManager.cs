@@ -240,9 +240,27 @@ public class GameManager : MonoBehaviour {
 
 	} //EndPhase()
 
-	public Deck GetNeighbors(byte gridX, byte gridY) {
+	public List<GameObject> GetNeighbors(byte gridX, byte gridY) {
 
-		Deck neighbors = new Deck();
+		List<GameObject> neighbors = new List<GameObject>();
+
+		WipeSelectionColors();
+
+		for (int i = -1; i <= 1; i++) {
+			for (int j = -1; j <= 1; j++) {
+				if (gridX + i >= 0 && 
+					gridX + i < width && 
+					gridY + j >= 0 && 
+					gridY + j < height) {
+					if (grid[gridX + i, gridY + j].ownerID == 0) {
+						//neighbors.Add(transform.Find("LandTile_x" + gridX + "_y" + gridY + "_y0").gameObject);
+						GameObject temp = transform.Find("LandTile_x" + (gridX + i) + "_y" + (gridY + j) + "_z0").gameObject;
+						temp.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.cyan300;
+						// Debug.Log("Neighbor found: LandTile_x" + (gridX + i) + "_y" + (gridY + j) + "_z0");
+					}
+				}
+			}
+		}
 
 		return neighbors;
 
@@ -265,6 +283,20 @@ public class GameManager : MonoBehaviour {
 		}
 
 	} // BuyTile()
+
+	public void WipeSelectionColors() {
+
+		for (int x = 0; x < width; x++) {
+			for (int y = 0; y < height; y++) {
+				if (grid[x, y].ownerID == 0) {
+					GameObject temp = transform.Find("LandTile_x" + x + "_y" + y + "_z0").gameObject;
+					temp.GetComponentsInChildren<Renderer>()[0].material.color = Color.white;
+					temp.GetComponentsInChildren<Renderer>()[1].material.color = Color.white;
+				}
+			}
+		}
+
+	} // WipeSelectionColors()
 
 	// Updates the UI elements 
 	public void UpdateUI() {

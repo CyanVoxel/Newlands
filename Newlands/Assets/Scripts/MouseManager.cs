@@ -20,7 +20,7 @@ public class MouseManager : MonoBehaviour {
 
 		// If the cursor is over a UI element, return from Update()
 		// NOTE: In order for Canvases on objects such as Cards to be ignored,
-		// they must contain a "Canvas Group" and have "Block Raycasts" turned off
+		//	they must contain a "Canvas Group" and have "Block Raycasts" turned off
 		if (EventSystem.current.IsPointerOverGameObject()) {
 			return;
 		}
@@ -52,6 +52,10 @@ public class MouseManager : MonoBehaviour {
 				// PHASE 1 ------------------------------------------
 				if (GameManager.phase == 1) {
 
+					// NOTE: GetNeighbors is currently doing more tasks than it should;
+					//	i.e. things like changing material colors. This is only for testing.
+					gameMan.GetNeighbors(locX, locY);
+
 				} // Phase 1
 
 				// Left Click ---------------------------------
@@ -61,13 +65,13 @@ public class MouseManager : MonoBehaviour {
 					if (gameMan.BuyTile(GameManager.turn, locX, locY)) {
 
 						// Debug output
-						Debug.Log("<b>[MouseManager]</b> " +
-						"Card Bought by Player " + GameManager.turn + ": " +
-						GameManager.grid[locX, locY].landType +
-						" " + 
-						GameManager.grid[locX, locY].value + 
-						" " +
-						GameManager.grid[locX, locY].resource);
+						// Debug.Log("<b>[MouseManager]</b> " +
+						// "Card Bought by Player " + GameManager.turn + ": " +
+						// GameManager.grid[locX, locY].landType +
+						// " " + 
+						// GameManager.grid[locX, locY].value + 
+						// " " +
+						// GameManager.grid[locX, locY].resource);
 
 						objX = objectHit.transform.parent.position.x;
 						objY = objectHit.transform.parent.position.y;
@@ -115,16 +119,16 @@ public class MouseManager : MonoBehaviour {
 						} // switch
 
 						// Debug output
-						Debug.Log("<b>[MouseManager]</b> " +
-						"Card Clicked: " +
-						GameManager.grid[locX, locY].landType +
-						" " + 
-						GameManager.grid[locX, locY].value + 
-						" " +
-						GameManager.grid[locX, locY].resource);
+						// Debug.Log("<b>[MouseManager]</b> " +
+						// "Card Clicked: " +
+						// GameManager.grid[locX, locY].landType +
+						// " " + 
+						// GameManager.grid[locX, locY].value + 
+						// " " +
+						// GameManager.grid[locX, locY].resource);
 
-						// Update the round/turn display text
-						gameMan.UpdateUI();
+						// // Update the round/turn display text
+						// gameMan.UpdateUI();
 
 					} // if the tile could be bought
 
