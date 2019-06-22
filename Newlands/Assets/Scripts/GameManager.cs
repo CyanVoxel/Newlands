@@ -11,7 +11,7 @@ public class GameManager : MonoBehaviour {
 
 	public static MasterDeck masterDeck;
 	public static MasterDeck masterDeckMutable;
-	public static byte players = 4; 	// Number of players in the match
+	public static byte playerCount = 4; 	// Number of players in the match
 	public static byte phase = 1;		// The current phase of the game
 	public static int round = 1;		// The current round of turns
 	public static byte turn = 1;		// The current turn in the round, == to player index
@@ -19,7 +19,8 @@ public class GameManager : MonoBehaviour {
 	public static byte width = 7;		// Width of the game grid in cards
 	public static byte height = 7;		// Height of the game grid in cards
 	private static byte handSize = 5;	// How many cards the player is dealt
-	private static Deck[] playerDecks;	// The players' hands stored in decks
+
+	private static Player[] players;	// The players' hands stored in decks
 
 	public static GridUnit[,] grid;
 	private GameObject cardContainer;
@@ -47,8 +48,6 @@ public class GameManager : MonoBehaviour {
 		phaseNumberText = phaseNumberObj.GetComponent<TMP_Text>();
 		roundNumberText = roundNumberObj.GetComponent<TMP_Text>();
 		turnNumberText = turnNumberObj.GetComponent<TMP_Text>();
-
-		Deck[] playerDecks = new Deck[players];
 		
 		// Initialize the internal grid
 		grid = new GridUnit[width, height];
@@ -56,16 +55,18 @@ public class GameManager : MonoBehaviour {
 		// Create tile GameObjects and connect them to internal grid
 		PopulateGrid();	
 
-		// Draws a hand of cards for each player
-		for (byte i = 0; i < players; i++) {
-			playerDecks[i] = DrawHand(handSize);
+		// Initializes each player object and draws a hand for them
+		Player[] players = new Player[playerCount];
+		for (byte i = 0; i < players.Length; i++) {
+			players[i] = new Player();
+			players[i].hand = DrawHand(handSize);
 			//Debug.Log("Player " + i + " has a deck of size " + playerDecks[i].Count());
-		}
+		} // for
 
 		// Displays those hands on screen
 		// NOTE: Change 1 to playerCount in order to view all players' cards.
 		for (byte i = 0; i < 1; i++) {
-			DisplayHand(deck: playerDecks[i], playerNum: i);
+			DisplayHand(deck: players[i].hand, playerNum: i);
 		}
 
 		// UI DISPLAY ---------------------------------------------------------
@@ -199,7 +200,7 @@ public class GameManager : MonoBehaviour {
 	public void AdvanceTurn() {
 
 		turn++;
-		if (turn > players) {
+		if (turn > playerCount) {
 			turn = 1;
 			round++;
 		}
@@ -217,7 +218,7 @@ public class GameManager : MonoBehaviour {
 				round--;
 			} // if round > 0
 			
-			turn = players;
+			turn = playerCount;
 
 		} // if turn == 0
 

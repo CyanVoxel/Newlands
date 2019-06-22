@@ -11,44 +11,16 @@ public class CardDisplay : MonoBehaviour {
 
 	// DATA FIELDS ------------------------------------------------------------
 
-	// // Textmesh Pro text objects --------------------------
-	// private TMP_Text title;
-	// private TMP_Text subtitle;
-	// private TMP_Text body;
-	// private TMP_Text footer;
-	// private Image footerBorder;
-
-	// // GameObject containers ------------------------------
-	// private GameObject titleObj;
-	// private GameObject subtitleObj;
-	// private GameObject bodyObj;
-	// private GameObject footerObj;
-	// private GameObject footerBorderObj;
-
 	// Long directories stored as strings
 	private string dirFtrBdr = "Front Canvas/Footer Mask/Footer Border Mask/Footer Border";
 	private string dirFtrBdrL = "Front Canvas/Footer Mask Left/Footer Border Mask/Footer Border";
 	private string dirFtrBdrR = "Front Canvas/Footer Mask Right/Footer Border Mask/Footer Border";
 
-	// The local Card scriptable object
-	// private Card card;
-
-	// An object reference of the GameManager, used for method access
-	//private GameManager gameMan;
-
 	void Start() {
-
-		//  card = GameManager.DrawCard(GameManager.masterDeckMutable.landTileDeck, GameManager.masterDeck.landTileDeck);
-		//  DisplayCard(card);
-
-		// TODO: Move display code to a standalone function that takes in a Card object
-		//	and a card prefab.
-
 		
 	} // Start()
 	
-
-
+	
 	// Converts a string with bold and italic markdown into html-like tags
 	private string MdToTag(string inputText) {
 
