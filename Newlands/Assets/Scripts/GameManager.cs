@@ -1,32 +1,32 @@
 ﻿// Used to create a grid of Tiles/Cards
 
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
 public class GameManager : MonoBehaviour {
 
-	// VARIABLES --------------------------------------------------------------
+	// VARIABLES ##################################################################################
 
 	public static MasterDeck masterDeck;
 	public static MasterDeck masterDeckMutable;
-	public static byte playerCount = 4; 	// Number of players in the match
-	public static byte phase = 1;		// The current phase of the game
-	public static int round = 1;		// The current round of turns
-	public static byte turn = 1;		// The current turn in the round, == to player index
+	public static readonly byte playerCount = 4; 	// Number of players in the match
+	public static byte phase = 1;					// The current phase of the game
+	public static int round = 1;					// The current round of turns
+	public static byte turn = 1;					// The current turn in the round
 
-	public static byte width = 7;		// Width of the game grid in cards
-	public static byte height = 7;		// Height of the game grid in cards
-	private static byte handSize = 5;	// How many cards the player is dealt
+	public static readonly byte width = 7;			// Width of the game grid in cards
+	public static readonly byte height = 7;			// Height of the game grid in cards
+	private static readonly byte handSize = 5;		// How many cards the player is dealt
 
-	private static Player[] players;	// The players' hands stored in decks
+	private static List<Player> players = new List<Player>();	// The player data objects
 
-	public static GridUnit[,] grid;
-	private GameObject cardContainer;
+	public static GridUnit[,] grid;					// The internal grid, made up of GridUnits
+	
+	private GameObject landTilePrefab;
 	// private Card card;
 
-	// UI ELEMENTS ------------------------------------------------------------
+	// UI ELEMENTS ################################################################################
 
 	private static GameObject phaseNumberObj;
 	private static GameObject roundNumberObj;
@@ -34,11 +34,34 @@ public class GameManager : MonoBehaviour {
 	private static TMP_Text phaseNumberText;
 	private static TMP_Text roundNumberText;
 	private static TMP_Text turnNumberText;
-	
 
+	// private static List<GameObject> playerMoneyObj = new List<GameObject>();
+	// private static List<TMP_Text> playerMoneyText = new List<TMP_Text>();
 
-	// Use this for initialization
+	// Used for initialization
 	void Start() {
+
+		// DECKS ##############################################################
+
+		masterDeck = new MasterDeck(DeckType.VanillaStandard);
+		masterDeckMutable = new MasterDeck(DeckType.VanillaStandard);
+
+		// PLAYERS ############################################################
+
+		// Initializes each player object and draws a hand for them
+		for (byte i = 0; i < playerCount; i++) {
+			players.Add(new Player());
+			players[i].Id = ((byte)(i + 1));
+			players[i].hand = DrawHand(handSize);
+		} // for playerCount
+
+		// Displays those hands on screen
+		// NOTE: Change 1 to playerCount in order to view all players' cards.
+		for (byte i = 0; i < 1; i++) {
+			DisplayHand(deck: players[i].hand, playerNum: i);
+		} // for number of hands
+
+		// UI #################################################################
 
 		// Grab the UI elements
 		phaseNumberObj = transform.Find("UI/PhaseNumber").gameObject;
@@ -48,6 +71,18 @@ public class GameManager : MonoBehaviour {
 		phaseNumberText = phaseNumberObj.GetComponent<TMP_Text>();
 		roundNumberText = roundNumberObj.GetComponent<TMP_Text>();
 		turnNumberText = turnNumberObj.GetComponent<TMP_Text>();
+
+		// Grabbing Money Objects/Text
+		for (byte i = 0; i < playerCount; i++) {
+			// playerMoneyObj.Add(new GameObject());
+			// playerMoneyText.Add(new TMP_Text());
+			// Debug.Log("UI/Money/Player (" + (i + 1) + ")");
+			players[i].moneyObj = transform.Find("UI/Money/Player (" + (i + 1) + ")").gameObject;
+			players[i].moneyText = players[i].moneyObj.GetComponent<TMP_Text>();
+			players[i].moneyText.color = GetPlayerColor((byte)(i + 1), 100);
+		} // for playerCount
+
+		// GRID ###############################################################
 		
 		// Initialize the internal grid
 		grid = new GridUnit[width, height];
@@ -55,36 +90,18 @@ public class GameManager : MonoBehaviour {
 		// Create tile GameObjects and connect them to internal grid
 		PopulateGrid();	
 
-		// Initializes each player object and draws a hand for them
-		Player[] players = new Player[playerCount];
-		for (byte i = 0; i < players.Length; i++) {
-			players[i] = new Player();
-			players[i].hand = DrawHand(handSize);
-			//Debug.Log("Player " + i + " has a deck of size " + playerDecks[i].Count());
-		} // for
-
-		// Displays those hands on screen
-		// NOTE: Change 1 to playerCount in order to view all players' cards.
-		for (byte i = 0; i < 1; i++) {
-			DisplayHand(deck: players[i].hand, playerNum: i);
-		}
-
-		// UI DISPLAY ---------------------------------------------------------
+		// FINAL ##############################################################
 		UpdateUI();
 
 	} // Start()
 
 	private void PopulateGrid() {
 		// Populate the Card prefab and create the Master Deck
-		cardContainer = Resources.Load<GameObject>("Prefabs/LandTile");
-		masterDeck = new MasterDeck(DeckType.VanillaStandard);
-		masterDeckMutable = new MasterDeck(DeckType.VanillaStandard);
+		landTilePrefab = Resources.Load<GameObject>("Prefabs/LandTile");
 		//masterDeckMutable = masterDeck;	// Sets mutable deck version to internal one
 		
 		for (int x = 0; x < width; x++) {
-
 			for (int y = 0; y < height; y++) {
-
 				// Draw a card from the Land Tile deck
 				Card card = Card.CreateInstance<Card>();
 				card = DrawCard(masterDeckMutable.landTileDeck, masterDeck.landTileDeck);
@@ -92,7 +109,7 @@ public class GameManager : MonoBehaviour {
 				float xOff = x * 11;
 				float yOff = y * 8;
 
-				GameObject cardObj = (GameObject)Instantiate(this.cardContainer, new Vector3(xOff, yOff, 50), Quaternion.identity);
+				GameObject cardObj = (GameObject)Instantiate(this.landTilePrefab, new Vector3(xOff, yOff, 50), Quaternion.identity);
 				cardObj.name = ("LandTile_x" + x + "_y" + y + "_z0");
 
 				cardObj.transform.SetParent(this.transform);
@@ -103,8 +120,6 @@ public class GameManager : MonoBehaviour {
 
 				// Connect the drawn card to the prefab that was just created
 				cardObj.SendMessage("DisplayCard", card);
-
-				
 			} // y
 		} // x
 
@@ -116,7 +131,6 @@ public class GameManager : MonoBehaviour {
 		Deck deck = new Deck();		// The deck of drawn cards to return
 
 		for (int i = 0; i < handSize; i++) {
-
 			// Draw a card from the deck provided and add it to the deck to return.
 			// NOTE: In the future, masterDeckMutable might need to be checked for cards
 			// 	before preceding.
@@ -141,7 +155,7 @@ public class GameManager : MonoBehaviour {
 		// } // for each player
 
 		// Populate the Card prefab
-		cardContainer = Resources.Load<GameObject>("Prefabs/GameCard");
+		landTilePrefab = Resources.Load<GameObject>("Prefabs/GameCard");
 
 		// Creates card prefabs and places them on the screen
 		for (int i = 0; i < deck.Count(); i++) {
@@ -149,7 +163,7 @@ public class GameManager : MonoBehaviour {
 			float xOff = i * 11 + (((width - handSize) / 2f) * 11);
 			float yOff = -10;
 
-			GameObject cardObj = (GameObject)Instantiate(this.cardContainer, new Vector3(xOff, yOff, 40), Quaternion.identity);
+			GameObject cardObj = (GameObject)Instantiate(this.landTilePrefab, new Vector3(xOff, yOff, 40), Quaternion.identity);
 			cardObj.name = ("GameCard_p" + playerNum + "_i"+ i);
 
 			cardObj.transform.SetParent(this.transform);
@@ -201,8 +215,8 @@ public class GameManager : MonoBehaviour {
 
 		turn++;
 		if (turn > playerCount) {
-			turn = 1;
 			round++;
+			turn = 1;
 		}
 
 	} //AdvanceTurn()
@@ -241,7 +255,9 @@ public class GameManager : MonoBehaviour {
 
 	} //EndPhase()
 
-	public void HighlightNeighbors(byte playerID) {
+	public void HighlightNeighbors() {
+
+		byte id = (byte)(turn - 1);
 
 		// bool needToSkip = false;
 		// int highlightCount = 0;
@@ -253,7 +269,7 @@ public class GameManager : MonoBehaviour {
 
 			for (byte y = 0; y < height; y++) {
 
-				if (grid[x, y].ownerID == playerID) {
+				if (grid[x, y].ownerId == players[id].Id) {
 
 					Highlight(x, y);
 
@@ -266,42 +282,35 @@ public class GameManager : MonoBehaviour {
 		// Local function that recolors unowned neighbor tiles
 		void Highlight(byte gridX, byte gridY) {
 
-			Color playerColor = GetPlayerColor(playerID, 200);
+			Color playerColor = GetPlayerColor(turn, 200);
 			bool[,] highlighted = new bool[width, height];
 			// needToSkip = true;
 
 			// Find each unowned neighbor tiles
 			for (int i = -1; i <= 1; i++) {
-
 				for (int j = -1; j <= 1; j++) {
-
 					if (gridX + i >= 0 && 
 						gridX + i < width && 
 						gridY + j >= 0 && 
 						gridY + j < height) {
 
-						if (grid[gridX + i, gridY + j].ownerID == 0) {
-
+						if (grid[gridX + i, gridY + j].ownerId == 0) {
 							GameObject temp = transform.Find("LandTile_x" + (gridX + i) + "_y" + (gridY + j) + "_z0").gameObject;
 							temp.GetComponentsInChildren<Renderer>()[0].material.color = playerColor;
 							temp.GetComponentsInChildren<Renderer>()[1].material.color = playerColor;
-							
 						} // if the Tile is unowned
-
 					} // if grid in bounds
-
 				} // for j
-				
 			} // for i
-
 		} // Highlight()
-
 	} // HighlightNeighbors()
 
 	// Verifies that the Tile highlighting used in Phase 1 is correct.
 	// NOTE: This function will skip a players turn if they are unable to buy any more tiles.
 	// Returns TRUE if it needs to go through a recursive iteration.
-	public bool VerifyHighlight(byte playerID) {
+	public bool VerifyHighlight() {
+
+		byte id = (byte)(turn - 1);
 
 		bool[,] highlighted = new bool[width, height];
 		int highlightCount = 0;
@@ -310,152 +319,118 @@ public class GameManager : MonoBehaviour {
 
 			// Search through the grid
 			for (byte x = 0; x < width; x++) {
-
 				for (byte y = 0; y < height; y++) {
-
-					if (grid[x, y].ownerID == playerID) {
-
+					// Debug.Log("[VerifyHighlight] Turn " + turn + ", Player ID (Turn) " + id + ", (Real) " + players[id].Id);
+					if (grid[x, y].ownerId == players[id].Id) {
 						Highlight(x, y);
-
 					} // if player owns Tile
-
 				} // for y
-
 			} // for x
+			// Debug.Log("[VerifyHighlight] Highlights: " + highlightCount);
 
 			for (int x = 0; x < width; x++) {
-
 				for (int y = 0; y < height; y++) {
-
 					if (highlighted[x,y]) {
-
 						highlightCount++;
 						// Debug.Log("Highlighted:" + x + ", " + y);
-
 					} //if grid location was highlighted
-
 				} // for y
-				
 			} // for x
 
 			// Debug.Log("Highlight Count:" + highlightCount);
 			if (highlightCount == 0) {
+				// Debug.Log("[VerifyHighlight] Turn " + turn + ", advancing...");
 				AdvanceTurn();
+				// Debug.Log("[VerifyHighlight] Turn " + turn);
 
 				int gridSpaceLeft = 0;
 
 				// Test to see if the grid is full
 				for (int x = 0; x < width; x++) {
-
 					for (int y = 0; y < height; y++) {
-
-						if (grid[x,y].ownerID == 0) {
-
+						if (grid[x,y].ownerId == 0) {
 							gridSpaceLeft++;
 							// Debug.Log("Grid must NOT be full!");
-
 						} // if Tile is unowned
-
 					} // for y
-
 				} // for x
+				// Debug.Log("Grid Space Left: " + gridSpaceLeft);
 
 				// If the grid is full, end the phase.
 				// Else, continue recursively checking if this turn should be skipped
 				if (gridSpaceLeft == 0) {
-
 					// Debug.Log("Grid was full!");
 					EndPhase();
 					return false;
-
 				} else {
-
 					// return true;
-					VerifyHighlight(turn);
-
+					VerifyHighlight();
+					// Debug.Log("[VerifyHighlight2] Turn " + turn + ", Player ID (Turn) " + id + ", (Real) " + players[id].Id);
 				} // if-else
-
 			} // if nothing was highlighted
-
 		} else {
-
 			return false;
-
 		} // If the round was greater than 1 during phase 1
 
 		return false;
-
 
 		// Local function that recolors unowned neighbor tiles.
 		void Highlight(byte gridX, byte gridY) {
 
 			// Find each unowned neighbor tiles
 			for (int i = -1; i <= 1; i++) {
-
 				for (int j = -1; j <= 1; j++) {
-
 					if (gridX + i >= 0 && 
 						gridX + i < width && 
 						gridY + j >= 0 && 
 						gridY + j < height) {
-
-						if (grid[gridX + i, gridY + j].ownerID == 0) {
-
-							highlighted[gridX + i, gridY + j] = true;
-							
+						if (grid[gridX + i, gridY + j].ownerId == 0) {
+							highlighted[gridX + i, gridY + j] = true;	
 						} // if Tile is unowned
-
 					} // if grid in bounds
-
 				} // for j
-
 			} // for i
-
 		} // Highlight()
-
 	} // GetHighlightCount()
 
 	// Attempts to buy an unowned tile. Returns true if successful, or false if already owned.
-	public bool BuyTile(byte playerID, byte gridX, byte gridY) {
+	public bool BuyTile(byte gridX, byte gridY) {
+
+		byte id = (byte)(turn - 1);
 
 		// TODO: When money is implemented, factor that into the buying process.
 		//	It would also be nice to have a purchase conformation message
 
-		bool followsRules = false;
+		bool followsRules = false;	// Assume rules are not being followed
 
 		// First check is the first round is finished
 		if (round > 1) {
-
 			// Search through the grid
 			for (byte x = 0; x < width; x++) {
-
 				for (byte y = 0; y < height; y++) {
-
-					if (grid[x, y].ownerID == playerID) {
-
+					if (grid[x, y].ownerId == players[id].Id) {
 						ValidTile(x, y);
-
 					} // if player owns tile
-
 				} // for y
-
 			} // for x
-
 		} else {
 			followsRules = true;
 		} // if past first round
 
 		// If the tile is unowned (Had owner ID of 0), assign this owner to it
-		if (grid[gridX, gridY].ownerID == 0 && followsRules) {
-			grid[gridX, gridY].ownerID = playerID;
+		if (grid[gridX, gridY].ownerId == 0 && followsRules) {
+			// players[id].ModifyMoney(-100);
+			players[id].CalcMoney();	//NOTE: Only need this OR ModifyMoney()
+			grid[gridX, gridY].ownerId = players[id].Id;
+			// Debug.Log("Turn " + turn + ", buying for Player " + players[id].Id);
 			return true;
 		} else if (!followsRules) {
 			Debug.Log("<b>[GameManager]</b> " +
-						"Tile is too far away!");
+						"You can't buy this tile, it's too far away!");
 			return false;
 		} else {
 			Debug.Log("<b>[GameManager]</b> " +
-						"Tile is already owned!");
+						"This Tile is already owned!");
 			return false;
 		}
 
@@ -464,29 +439,20 @@ public class GameManager : MonoBehaviour {
 
 			// Find each unowned neighbor tiles
 			for (int i = -1; i <= 1; i++) {
-
 				for (int j = -1; j <= 1; j++) {
-
 					if (gridLocX + i >= 0 && 
 						gridLocX + i < width && 
 						gridLocY + j >= 0 && 
 						gridLocY + j < height) {
 
-						if (grid[gridLocX + i, gridLocY + j].ownerID == 0 &&
+						if (grid[gridLocX + i, gridLocY + j].ownerId == 0 &&
 							grid[gridLocX + i, gridLocY + j] == grid[gridX, gridY]) {
-
 							followsRules = true;	// Signal that this is a valid purchase
-
 						} // if tile owned and in a valid spot
-
 					} // if grid in bounds
-
 				} // for j
-
 			} // for i
-
 		} // ValidTile()
-
 	} // BuyTile()
 
 	// Turns all Land Tiles on the grid white.
@@ -494,7 +460,7 @@ public class GameManager : MonoBehaviour {
 
 		for (int x = 0; x < width; x++) {
 			for (int y = 0; y < height; y++) {
-				if (grid[x, y].ownerID == 0) {
+				if (grid[x, y].ownerId == 0) {
 					GameObject temp = transform.Find("LandTile_x" + x + "_y" + y + "_z0").gameObject;
 					temp.GetComponentsInChildren<Renderer>()[0].material.color = Color.white;
 					temp.GetComponentsInChildren<Renderer>()[1].material.color = Color.white;
@@ -509,7 +475,7 @@ public class GameManager : MonoBehaviour {
 
 		for (int x = 0; x < width; x++) {
 			for (int y = 0; y < height; y++) {
-				if (grid[x, y].ownerID == 0) {
+				if (grid[x, y].ownerId == 0) {
 					GameObject temp = transform.Find("LandTile_x" + x + "_y" + y + "_z0").gameObject;
 					temp.GetComponentsInChildren<Renderer>()[0].material.color = color;
 					temp.GetComponentsInChildren<Renderer>()[1].material.color = color;
@@ -565,14 +531,13 @@ public class GameManager : MonoBehaviour {
 				break;
 			default:
 				break;
-
 		} // switch
 
-
 		return color;
-	}
+	
+	} // GetPlayerColor()
 
-	// Updates the UI elements 
+	// Updates the basic UI elements 
 	public void UpdateUI() {
 
 		GameManager.phaseNumberText.text = ("Phase " + GameManager.phase);
@@ -594,7 +559,15 @@ public class GameManager : MonoBehaviour {
 				break;
 			default:
 				break;
-		}
+		} // switch
+
+
+		// Things that need to be updated for all players go here
+		for (byte i = 0; i < (byte)players.Count; i++) {
+			// Debug.Log(moneyText[i].text);
+			players[i].CalcMoney();
+			players[i].moneyText.text = "Player " + (i + 1) + ": $" + players[i].Money; 
+		} // for array length
 
 	} // UpdateUI()
 	

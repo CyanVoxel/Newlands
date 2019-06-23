@@ -63,13 +63,13 @@ public class MouseManager : MonoBehaviour {
 					// Left Click ---------------------------------
 					if (Input.GetMouseButtonDown(0)) {
 
-						gameMan.VerifyHighlight(GameManager.turn);
-						gameMan.HighlightNeighbors(GameManager.turn);
+						gameMan.VerifyHighlight();
+						gameMan.HighlightNeighbors();
 						gameMan.UpdateUI();
 						
 
 						// If the tile can be bought
-						if (gameMan.BuyTile(GameManager.turn, locX, locY)) {
+						if (gameMan.BuyTile(locX, locY)) {
 
 							// Debug output
 							// Debug.Log("<b>[MouseManager]</b> " +
@@ -139,8 +139,8 @@ public class MouseManager : MonoBehaviour {
 
 						} // if the tile could be bought
 
-						gameMan.VerifyHighlight(GameManager.turn);
-						gameMan.HighlightNeighbors(GameManager.turn);
+						gameMan.VerifyHighlight();
+						gameMan.HighlightNeighbors();
 						gameMan.UpdateUI();
 
 					} // if Left Click
@@ -158,7 +158,7 @@ public class MouseManager : MonoBehaviour {
 						objectHit.GetComponentsInChildren<Renderer>()[1].material.color = Color.white;
 
 						// "Sells" the tile - NOTE: this is for debugging ONLY
-						GameManager.grid[locX, locY].ownerID = 0;
+						GameManager.grid[locX, locY].ownerId = 0;
 
 						gameMan.RollbackTurn();
 						gameMan.UpdateUI();

@@ -14,7 +14,7 @@ public class GridUnit {
 	public float value;
 	public float posX;
 	public float posY;
-	public byte ownerID = 0;
+	public byte ownerId = 0;
 
 	public CardTitle landType;
 	public ResourceType resource;
