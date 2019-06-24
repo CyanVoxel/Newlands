@@ -20,7 +20,7 @@ public class CardDisplay : MonoBehaviour {
 		
 	} // Start()
 	
-	
+
 	// Converts a string with bold and italic markdown into html-like tags
 	private string MdToTag(string inputText) {
 
@@ -132,31 +132,24 @@ public class CardDisplay : MonoBehaviour {
 			Image footerBorderR = footerBorderObjR.GetComponent<Image>();
 
 			// Set the TMP subtitle text based on the card object's enum
-			if (card.subtitle == CardSubtitle.Investment) {			// Investment
-				subtitle.text = "Investment";
-			} else if (card.subtitle == CardSubtitle.Sabotage) {	// Sabotage
-				subtitle.text = "Sabotage";
-			} else if (card.subtitle == CardSubtitle.Resource) {	// Resource
-				subtitle.text = "Resource";
-			} else if (card.subtitle == CardSubtitle.Lumber) {		// Lumber
-				subtitle.text = "Lumber";
-			} else if (card.subtitle == CardSubtitle.Oil) {			// Oil
-				subtitle.text = "Oil";
-			} else if (card.subtitle == CardSubtitle.CashCrops) {	// Cash Crops
-				subtitle.text = "Cash Crops";
-			} else if (card.subtitle == CardSubtitle.Iron) {		// Iron
-				subtitle.text = "Iron";
-			} else if (card.subtitle == CardSubtitle.Silver) {		// Silver
-				subtitle.text = "Silver";
-			} else if (card.subtitle == CardSubtitle.Gold) {		// Gold
-				subtitle.text = "Gold";
-			} else if (card.subtitle == CardSubtitle.Gems) {		// Gems
-				subtitle.text = "Gems";
-			} else if (card.subtitle == CardSubtitle.Platinum) {	// Platinum
-				subtitle.text = "Platinum";
-			} else if (card.subtitle == CardSubtitle.None) {		// None
-				subtitle.text = "";
-			} // if-else
+			switch(card.subtitle) {
+				case CardSubtitle.Investment:		// Investment
+					subtitle.text = "Investment";
+					break;
+				case CardSubtitle.Sabotage:			// Sabotage
+					subtitle.text = "Sabotage";
+					break;
+				case CardSubtitle.Resource:			// Resource
+					subtitle.text = "Resource";
+					break;
+				case CardSubtitle.NamedRes:			// ALL Resource Names
+					subtitle.text = card.resource;
+					break;
+				default:							// Default (Warning)
+					Debug.LogWarning("<b>[CardDisplay]</b> Warning: " + 
+					"A Card's subtitle was not set!");
+					break;
+			} // switch(card.subtitle)
 
 			// Color the footer border
 			if (card.title == CardTitle.MarketMod) {

@@ -34,7 +34,7 @@ public class Player {
 			for (byte x = 0; x < GameManager.width; x++) {
 				for (byte y = 0; y < GameManager.height; y++) {
 					if (GameManager.grid[x, y].ownerId == this.Id) {
-						this.tileMoney += GameManager.grid[x, y].value * 100;
+						this.tileMoney += (GameManager.grid[x, y].value * GameManager.grid[x, y].quantity);
 					} // if player owns tile
 				} // for y
 			} // for x

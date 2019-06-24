@@ -63,8 +63,11 @@ public class MouseManager : MonoBehaviour {
 					// Left Click ---------------------------------
 					if (Input.GetMouseButtonDown(0)) {
 
-						gameMan.VerifyHighlight();
-						gameMan.HighlightNeighbors();
+						// If the grace rounds have passes, start highlighting the neighbors
+						if (GameManager.round > GameManager.graceRounds) {
+							gameMan.VerifyHighlight();
+							gameMan.HighlightNeighbors();
+						} // if
 						gameMan.UpdateUI();
 						
 
@@ -139,8 +142,11 @@ public class MouseManager : MonoBehaviour {
 
 						} // if the tile could be bought
 
-						gameMan.VerifyHighlight();
-						gameMan.HighlightNeighbors();
+						// If the grace rounds have passes, start highlighting the neighbors
+						if (GameManager.round > GameManager.graceRounds) {
+							gameMan.VerifyHighlight();
+							gameMan.HighlightNeighbors();
+						} // if
 						gameMan.UpdateUI();
 
 					} // if Left Click

@@ -26,7 +26,7 @@ public class Card : ScriptableObject {
 	public string footerText;
 
 	// The resource of the card, if it had one
-	public ResourceType resource;
+	public string resource;
 
 	// The raw number value that is presented in the Card footer
 	public int footerValue;

@@ -10,8 +10,7 @@ public enum CardCategory {GameCard, PriceCard, LandTile};
 public enum CardTitle {TileMod, Resource, MarketMod, PriceCard, Forest, Plains, Quarry};
 
 // The Title of the Card, specifying its type in its category
-public enum CardSubtitle {None, Investment, Sabotage, Resource, Lumber, CashCrops, Oil, Iron, Gold,
-						  Silver, Gems, Platinum};
+public enum CardSubtitle {None, Investment, Sabotage, Resource, NamedRes};
 
 // How the footer value on the Card is supposed to be applied
 public enum CardFtrOpr {None, Add, Sub};
@@ -22,5 +21,3 @@ public enum CardFtrColor {Black, Red, Blue, Green, Cyan, Magenta, Yellow};
 // Deck names
 public enum DeckType {VanillaStandard, Corny};
 
-// All resources available
-public enum ResourceType {None, Lumber, CashCrops, Oil, Iron, Gold, Silver, Gems, Platinum};

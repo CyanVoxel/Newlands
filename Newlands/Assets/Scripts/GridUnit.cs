@@ -8,25 +8,45 @@ using UnityEngine;
 
 public class GridUnit {
 
-	// DATA FIELDS ------------------------------------------------------------
-	public Card tile;
+	// DATA FIELDS ################################################################################
+	// public Card tile;
 	public Deck cardStack;
-	public float value;
+	public int quantity;
+	public int value;
 	public float posX;
 	public float posY;
 	public byte ownerId = 0;
 
 	public CardTitle landType;
-	public ResourceType resource;
+	public string resource;
 
-	// CONSTRUCTORS -----------------------------------------------------------
+	// METHODS ####################################################################################
+
+	// Assigns the Tile's value based on its Resource
+	public void AssignTileValue(Card tile) {
+		int test = 0;
+		ResourceInfo.prices.TryGetValue(tile.resource, out test);
+		// If the Tile's resource's price can not be found, log an error
+		if (!ResourceInfo.prices.TryGetValue(tile.resource, out this.value)) {
+			Debug.LogError("<b>[GridUnit]</b> Error: " + 
+			"Could not assign the price for \"" + tile.resource + "\"!");
+		} // If the Tile's resource's price could not be found
+
+	} // AssignTileValue()
+
+	// Assigns the Tile's value based on a passed int value
+	public void AssignTileValue(int newValue) {
+		this.value = newValue;
+	} // AssignTileValue(int newValue)
+
+	// CONSTRUCTORS ###############################################################################
 
 	// Constructor that takes in necessary card info and populates the rest
 	public GridUnit(Card tile, float posX, float posY) {
 
 		this.landType = tile.title;
 		this.resource = tile.resource;
-		this.value = tile.footerValue;
+		this.quantity = tile.footerValue;
 		this.posX = posX;
 		this.posY = posY;
 

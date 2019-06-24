@@ -14,6 +14,7 @@ public class GameManager : MonoBehaviour {
 	public static byte phase = 1;					// The current phase of the game
 	public static int round = 1;					// The current round of turns
 	public static byte turn = 1;					// The current turn in the round
+	public static int graceRounds = 1;				// The # of rounds without neighbor rules
 
 	public static readonly byte width = 7;			// Width of the game grid in cards
 	public static readonly byte height = 7;			// Height of the game grid in cards
@@ -91,6 +92,13 @@ public class GameManager : MonoBehaviour {
 		PopulateGrid();	
 
 		// FINAL ##############################################################
+
+		// Make sure that there is at least 1 Grace Round
+		if (graceRounds < 1) {
+			graceRounds = 1;
+		} // if (graceRounds < 1)
+
+		// Push the first UI Update
 		UpdateUI();
 
 	} // Start()
@@ -116,7 +124,8 @@ public class GameManager : MonoBehaviour {
 				cardObj.transform.rotation = new Quaternion(0, 180, 0, 0);	// 0, 180, 0, 0
 
 				// Connect thr drawn card to the internal grid
-				grid[x,y] = new GridUnit(tile: card, posX: xOff, posY: yOff);
+				grid[x, y] = new GridUnit(tile: card, posX: xOff, posY: yOff);
+				grid[x, y].AssignTileValue(tile: card); // Set Tile's value based on its Resource
 
 				// Connect the drawn card to the prefab that was just created
 				cardObj.SendMessage("DisplayCard", card);
@@ -259,24 +268,15 @@ public class GameManager : MonoBehaviour {
 
 		byte id = (byte)(turn - 1);
 
-		// bool needToSkip = false;
-		// int highlightCount = 0;
-
 		WipeSelectionColors();
 
 		// Search through the grid
 		for (byte x = 0; x < width; x++) {
-
 			for (byte y = 0; y < height; y++) {
-
 				if (grid[x, y].ownerId == players[id].Id) {
-
 					Highlight(x, y);
-
 				} // if Tile is owned by the player
-
 			} // for y
-
 		} // for x
 
 		// Local function that recolors unowned neighbor tiles
@@ -315,7 +315,7 @@ public class GameManager : MonoBehaviour {
 		bool[,] highlighted = new bool[width, height];
 		int highlightCount = 0;
 
-		if (round > 1 && phase == 1) {
+		if (round > graceRounds && phase == 1) {
 
 			// Search through the grid
 			for (byte x = 0; x < width; x++) {
@@ -404,7 +404,7 @@ public class GameManager : MonoBehaviour {
 		bool followsRules = false;	// Assume rules are not being followed
 
 		// First check is the first round is finished
-		if (round > 1) {
+		if (round > graceRounds) {
 			// Search through the grid
 			for (byte x = 0; x < width; x++) {
 				for (byte y = 0; y < height; y++) {
