@@ -84,14 +84,14 @@ public class MouseManager : MonoBehaviour {
 							// TODO: Nice card flip animation
 							switch (GameManager.turn) {
 								case 1: 
-									objectHit.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.inkCyan90p;
-									objectHit.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.inkCyan90p;
+									objectHit.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.lightBlue300;
+									objectHit.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.lightBlue300;
 									objectHit.transform.parent.rotation = new Quaternion(objRotX, 1-objRotY, objRotZ, 0);
 									gameMan.AdvanceTurn();
 									break;
 								case 2: 
-									objectHit.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.inkRed90p;
-									objectHit.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.inkRed90p;
+									objectHit.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.red400;
+									objectHit.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.red400;
 									objectHit.transform.parent.rotation = new Quaternion(objRotX, 1-objRotY, objRotZ, 0);
 									gameMan.AdvanceTurn();
 									break;
@@ -134,8 +134,8 @@ public class MouseManager : MonoBehaviour {
 
 						objectHit.transform.parent.rotation = new Quaternion(objRotX, 1+objRotY, objRotZ, 0);
 
-						objectHit.GetComponentsInChildren<Renderer>()[0].material.color = Color.white;
-						objectHit.GetComponentsInChildren<Renderer>()[1].material.color = Color.white;
+						objectHit.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.cardTintLight;
+						objectHit.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.cardTintLight;
 
 						// "Sells" the tile - NOTE: this is for debugging ONLY
 						GameManager.grid[locX, locY].ownerId = 0;
@@ -161,8 +161,8 @@ public class MouseManager : MonoBehaviour {
 				objY = objectHit.transform.parent.position.y;
 				objZ = objectHit.transform.parent.position.z;
 
-				// PHASE 1 ####################################################
-				if (GameManager.phase == 1) {
+				// PHASES 2+ ##################################################
+				if (GameManager.phase > 1) {
 
 					// Left Click #########################
 					if (Input.GetMouseButtonDown(0)) {
@@ -174,7 +174,7 @@ public class MouseManager : MonoBehaviour {
 						} else {
 							selection = locY;
 							gameMan.WipeSelectionColors("GameCard");
-							objectHit.transform.parent.position = new Vector3(objX, objY, 37.5f);
+							objectHit.transform.parent.position = new Vector3(objX, objY, 38f);
 							objectHit.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.cyan300;
 							objectHit.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.cyan300;
 						} // if already selected
@@ -191,8 +191,8 @@ public class MouseManager : MonoBehaviour {
 					// Right Click ########################
 					if (Input.GetMouseButtonDown(1)) {
 
-						objectHit.GetComponentsInChildren<Renderer>()[0].material.color = Color.white;
-						objectHit.GetComponentsInChildren<Renderer>()[1].material.color = Color.white;
+						objectHit.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.cardTintLight;
+						objectHit.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.cardTintLight;
 
 						gameMan.UpdateUI();
 

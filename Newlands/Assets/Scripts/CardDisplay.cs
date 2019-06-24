@@ -154,14 +154,14 @@ public class CardDisplay : MonoBehaviour {
 			// Color the footer border
 			if (card.title == CardTitle.MarketMod) {
 
-				footerBorder.color = ColorPalette.inkBlack;
+				footerBorder.color = ColorPalette.cardDark;
 
 				if (card.FooterColor == CardFtrColor.Red) { 				// Red
-					footerBorderL.color = ColorPalette.inkRed;
-					footerBorderR.color = ColorPalette.inkRed;
+					footerBorderL.color = ColorPalette.red500;
+					footerBorderR.color = ColorPalette.red500;
 				} else if (card.FooterColor == CardFtrColor.Green) { 	// Green
-					footerBorderL.color = ColorPalette.inkGreen;
-					footerBorderR.color = ColorPalette.inkGreen;
+					footerBorderL.color = ColorPalette.green500;
+					footerBorderR.color = ColorPalette.green500;
 				}
 
 			} else {
@@ -171,19 +171,19 @@ public class CardDisplay : MonoBehaviour {
 
 				// Color the footer border
 				if (card.FooterColor == CardFtrColor.Black) { 			// Black
-					footerBorder.color = ColorPalette.inkBlack;
+					footerBorder.color = ColorPalette.cardDark;
 				} else if (card.FooterColor == CardFtrColor.Red) {		// Red
-					footerBorder.color = ColorPalette.inkRed;
+					footerBorder.color = ColorPalette.red500;
 				} else if (card.FooterColor == CardFtrColor.Green) {		// Green
-					footerBorder.color = ColorPalette.inkGreen;
+					footerBorder.color = ColorPalette.green500;
 				} else if (card.FooterColor == CardFtrColor.Cyan) {		// Cyan
-					footerBorder.color = ColorPalette.inkCyan;
+					footerBorder.color = ColorPalette.lightBlue500;
 				} else if (card.FooterColor == CardFtrColor.Yellow) {	// Yellow
-					footerBorder.color = ColorPalette.inkYellow;
+					footerBorder.color = ColorPalette.yellow500;
 				} else if (card.FooterColor == CardFtrColor.Magenta) {	// Magenta
-					footerBorder.color = ColorPalette.inkMagenta;
+					footerBorder.color = ColorPalette.pink500;
 				} else if (card.FooterColor == CardFtrColor.Blue) {		// Blue
-					footerBorder.color = ColorPalette.inkBlue;
+					footerBorder.color = ColorPalette.lightBlue500;
 				} // if-else
 
 			} // if Market Mod else
@@ -206,19 +206,19 @@ public class CardDisplay : MonoBehaviour {
 
 			// Color the footer border
 			if (card.FooterColor == CardFtrColor.Black) { 			// Black
-				footerBorder.color = ColorPalette.inkBlack;
+				footerBorder.color = ColorPalette.cardDark;
 			} else if (card.FooterColor == CardFtrColor.Red) {		// Red
-				footerBorder.color = ColorPalette.inkRed;
+				footerBorder.color = ColorPalette.red500;
 			} else if (card.FooterColor == CardFtrColor.Green) {		// Green
-				footerBorder.color = ColorPalette.inkGreen;
+				footerBorder.color = ColorPalette.green500;
 			} else if (card.FooterColor == CardFtrColor.Cyan) {		// Cyan
-				footerBorder.color = ColorPalette.inkCyan;
+				footerBorder.color = ColorPalette.lightBlue500;
 			} else if (card.FooterColor == CardFtrColor.Yellow) {	// Yellow
-				footerBorder.color = ColorPalette.inkYellow;
+				footerBorder.color = ColorPalette.yellow500;
 			} else if (card.FooterColor == CardFtrColor.Magenta) {	// Magenta
-				footerBorder.color = ColorPalette.inkMagenta;
+				footerBorder.color = ColorPalette.pink500;
 			} else if (card.FooterColor == CardFtrColor.Blue) {		// Blue
-				footerBorder.color = ColorPalette.inkBlue;
+				footerBorder.color = ColorPalette.lightBlue500;
 			} // if-else
 
 		} // LandTile specifics

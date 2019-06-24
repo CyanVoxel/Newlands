@@ -1,4 +1,5 @@
-﻿// Used to create a grid of Tiles/Cards
+﻿// Manages most UI Elements and game setup tasks.
+// TODO: Will probably want to move all of the UI stuff to a dedicated class.
 
 using System.Collections.Generic;
 using UnityEngine;
@@ -80,7 +81,7 @@ public class GameManager : MonoBehaviour {
 			// Debug.Log("UI/Money/Player (" + (i + 1) + ")");
 			players[i].moneyObj = transform.Find("UI/Money/Player (" + (i + 1) + ")").gameObject;
 			players[i].moneyText = players[i].moneyObj.GetComponent<TMP_Text>();
-			players[i].moneyText.color = GetPlayerColor((byte)(i + 1), 100);
+			players[i].moneyText.color = GetPlayerColor((byte)(i + 1), 500);
 		} // for playerCount
 
 		// GRID ###############################################################
@@ -463,8 +464,8 @@ public class GameManager : MonoBehaviour {
 				for (int y = 0; y < height; y++) {
 					if (grid[x, y].ownerId == 0) {
 						GameObject temp = transform.Find("LandTile_x" + x + "_y" + y + "_z0").gameObject;
-						temp.GetComponentsInChildren<Renderer>()[0].material.color = Color.white;
-						temp.GetComponentsInChildren<Renderer>()[1].material.color = Color.white;
+						temp.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.cardTintLight;
+						temp.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.cardTintLight;
 					} //if tile unowned
 				} // for height
 			} // for width
@@ -474,8 +475,8 @@ public class GameManager : MonoBehaviour {
 				float x = temp.transform.position.x;
 				float y = temp.transform.position.y;
 				temp.transform.position = new Vector3(x, y, 40);
-				temp.GetComponentsInChildren<Renderer>()[0].material.color = Color.white;
-				temp.GetComponentsInChildren<Renderer>()[1].material.color = Color.white;
+				temp.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.cardTintLight;
+				temp.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.cardTintLight;
 			} // for handSize
 		} // if
 
@@ -498,46 +499,54 @@ public class GameManager : MonoBehaviour {
 
 	// Returns the color associated with a player ID.
 	// Strength paramater refers to a possible brighter color variant.
-	public Color GetPlayerColor(byte playerID, int strength = 100) {
+	public Color GetPlayerColor(byte playerID, int strength = 500) {
 
-		Color color = Color.white;
+		Color color = ColorPalette.cardTintLight;
 
 		switch (playerID) {
 
 			case 1:
-				if (strength == 70 || strength == 200) {
-					color = ColorPalette.inkCyan70p;
-				} else if (strength == 90 || strength == 300) {
-					color = ColorPalette.inkCyan90p;
-				} else {
-					color = ColorPalette.inkCyan;
+				if (strength == 500) {
+					color = ColorPalette.lightBlue500;
+				} else if (strength == 400) {
+					color = ColorPalette.lightBlue400;
+				} else if (strength == 300) {
+					color = ColorPalette.lightBlue300;
+				} else if (strength == 200) {
+					color = ColorPalette.lightBlue200;
 				}
 				break;
 			case 2:
-				if (strength == 70 || strength == 200) {
-					color = ColorPalette.inkRed70p;
-				} else if (strength == 90 || strength == 300) {
-					color = ColorPalette.inkCyan90p;
-				} else {
-					color = ColorPalette.inkRed;
+				if (strength == 500) {
+					color = ColorPalette.red500;
+				} else if (strength == 400) {
+					color = ColorPalette.red400;
+				} else if (strength == 300) {
+					color = ColorPalette.red300;
+				} else if (strength == 200) {
+					color = ColorPalette.red300;
 				}
 				break;
 			case 3:
-				if (strength == 70 || strength == 200) {
-					color = ColorPalette.purple200;
-				} else if (strength == 90 || strength == 300) {
-					color = ColorPalette.inkCyan90p;
-				} else {
+				if (strength == 500) {
 					color = ColorPalette.purple500;
+				} else if (strength == 400) {
+					color = ColorPalette.purple400;
+				} else if (strength == 300) {
+					color = ColorPalette.purple300;
+				} else if (strength == 200) {
+					color = ColorPalette.purple200;
 				}
 				break;
 			case 4:
-				if (strength == 70 || strength == 200) {
-					color = ColorPalette.amber200;
-				} else if (strength == 90 || strength == 300) {
-					color = ColorPalette.inkCyan90p;
-				} else {
+				if (strength == 500) {
 					color = ColorPalette.amber500;
+				} else if (strength == 400) {
+					color = ColorPalette.amber400;
+				} else if (strength == 300) {
+					color = ColorPalette.amber300;
+				} else if (strength == 200) {
+					color = ColorPalette.amber200;
 				}
 				break;
 			default:
@@ -555,12 +564,17 @@ public class GameManager : MonoBehaviour {
 		GameManager.roundNumberText.text = ("Round " + GameManager.round);
 		GameManager.turnNumberText.text = ("Player " + GameManager.turn + "'s Turn");
 
+		// Tacks on "Grace Period" text if the round is a grace round
+		if (phase == 1 && round <= graceRounds) {
+			GameManager.roundNumberText.text += (" (Grace Period)");
+		} // if
+
 		switch (turn) {
 			case 1:
-				GameManager.turnNumberText.color = ColorPalette.inkCyan;
+				GameManager.turnNumberText.color = ColorPalette.lightBlue500;
 				break;
 			case 2:
-				GameManager.turnNumberText.color = ColorPalette.inkRed;
+				GameManager.turnNumberText.color = ColorPalette.red500;
 				break;
 			case 3:
 				GameManager.turnNumberText.color = ColorPalette.purple500;
