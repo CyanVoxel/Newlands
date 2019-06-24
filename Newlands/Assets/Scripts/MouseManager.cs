@@ -8,6 +8,7 @@ using UnityEngine.EventSystems;
 public class MouseManager : MonoBehaviour {
 
 	public GameManager gameMan;
+	int selection = -1;
 	
 	// Update is called once per frame
 	void Update() {
@@ -42,25 +43,18 @@ public class MouseManager : MonoBehaviour {
 			float objRotY = objectHit.transform.parent.rotation.y;
 			float objRotZ = objectHit.transform.parent.rotation.z;
 
-			// LAND TILES -----------------------------------------------------
+			// LAND TILES #########################################################################
+
 			if (objectHit.transform.parent.name.Contains("LandTile")) {
 
 				// Grab the grid coordinates stored in the object name
 				byte locX = byte.Parse(objectHit.transform.parent.name.Substring(10, 1));
 				byte locY = byte.Parse(objectHit.transform.parent.name.Substring(13, 1));
 
-				// PHASE 1 ------------------------------------------
-				if (GameManager.phase == 1) {
+				// PHASE 1 ####################################################
+				if (GameManager.phase == 1) {		
 
-						// NOTE: GetNeighbors is currently doing more tasks than it should;
-						//	i.e. things like changing material colors. This is only for testing.
-						// gameMan.GetNeighbors(locX, locY);
-						// gameMan.HighlightNeighbors(GameManager.turn);
-						// gameMan.HighlightNeighbors(GameManager.turn);
-
-					
-
-					// Left Click ---------------------------------
+					// Left Click #########################
 					if (Input.GetMouseButtonDown(0)) {
 
 						// If the grace rounds have passes, start highlighting the neighbors
@@ -68,20 +62,13 @@ public class MouseManager : MonoBehaviour {
 							gameMan.VerifyHighlight();
 							gameMan.HighlightNeighbors();
 						} // if
+
+						gameMan.WipeSelectionColors("GameCard");	//Deselect any GameCards
+						selection = -1;
 						gameMan.UpdateUI();
-						
 
 						// If the tile can be bought
 						if (gameMan.BuyTile(locX, locY)) {
-
-							// Debug output
-							// Debug.Log("<b>[MouseManager]</b> " +
-							// "Card Bought by Player " + GameManager.turn + ": " +
-							// GameManager.grid[locX, locY].landType +
-							// " " + 
-							// GameManager.grid[locX, locY].value + 
-							// " " +
-							// GameManager.grid[locX, locY].resource);
 
 							objX = objectHit.transform.parent.position.x;
 							objY = objectHit.transform.parent.position.y;
@@ -92,7 +79,8 @@ public class MouseManager : MonoBehaviour {
 							objRotZ = objectHit.transform.parent.rotation.z;
 							
 							// Changes the material of the card depending on the player who clicked on it.
-							// TODO: Might want to find a way to potentially improve performance here
+							// TODO: Create a method somewhere that changes the desired materials
+							//	based on an object given and a playerId/turn
 							// TODO: Nice card flip animation
 							switch (GameManager.turn) {
 								case 1: 
@@ -100,42 +88,29 @@ public class MouseManager : MonoBehaviour {
 									objectHit.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.inkCyan90p;
 									objectHit.transform.parent.rotation = new Quaternion(objRotX, 1-objRotY, objRotZ, 0);
 									gameMan.AdvanceTurn();
-									// GameManager.turnNumberText.color = ColorPalette.inkRed;	// One ahead
 									break;
 								case 2: 
 									objectHit.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.inkRed90p;
 									objectHit.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.inkRed90p;
 									objectHit.transform.parent.rotation = new Quaternion(objRotX, 1-objRotY, objRotZ, 0);
 									gameMan.AdvanceTurn();
-									// GameManager.turnNumberText.color = ColorPalette.purple500;	// One ahead
 									break;
 								case 3: 
 									objectHit.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.purple300;
 									objectHit.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.purple300;
 									objectHit.transform.parent.rotation = new Quaternion(objRotX, 1-objRotY, objRotZ, 0);
 									gameMan.AdvanceTurn();
-									// GameManager.turnNumberText.color = ColorPalette.amber500;	// One ahead
 									break;
 								case 4: 
 									objectHit.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.orange300;
 									objectHit.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.orange300;
 									objectHit.transform.parent.rotation = new Quaternion(objRotX, 1-objRotY, objRotZ, 0);
 									gameMan.AdvanceTurn();
-									// GameManager.turnNumberText.color = ColorPalette.inkCyan;	// One ahead
 									break;
 								default: 
 									break;
 
 							} // switch
-
-							// Debug output
-							// Debug.Log("<b>[MouseManager]</b> " +
-							// "Card Clicked: " +
-							// GameManager.grid[locX, locY].landType +
-							// " " + 
-							// GameManager.grid[locX, locY].value + 
-							// " " +
-							// GameManager.grid[locX, locY].resource);
 
 							// Update the round/turn display text
 							gameMan.UpdateUI();
@@ -151,8 +126,7 @@ public class MouseManager : MonoBehaviour {
 
 					} // if Left Click
 
-
-					// Right Click --------------------------------
+					// Right Click ########################
 					if (Input.GetMouseButtonDown(1)) {
 						objRotX = objectHit.transform.parent.rotation.x;
 						objRotY = objectHit.transform.parent.rotation.y;
@@ -171,11 +145,62 @@ public class MouseManager : MonoBehaviour {
 
 					} // if Right Click
 
-				} // if LandTile
+				} // if Phase 1
 
-			} // Phase 1
+			} // if LandTile
+
+			// GAME CARDS #########################################################################
 			
-			
+			if (objectHit.transform.parent.name.Contains("GameCard")) {
+
+				// Grab the grid coordinates stored in the object name
+				byte locX = byte.Parse(objectHit.transform.parent.name.Substring(10, 1));
+				byte locY = byte.Parse(objectHit.transform.parent.name.Substring(13, 1));
+
+				objX = objectHit.transform.parent.position.x;
+				objY = objectHit.transform.parent.position.y;
+				objZ = objectHit.transform.parent.position.z;
+
+				// PHASE 1 ####################################################
+				if (GameManager.phase == 1) {
+
+					// Left Click #########################
+					if (Input.GetMouseButtonDown(0)) {
+						
+						// If the object clicked was already selected, deselect it
+						if (selection == locY) {
+							selection = -1;
+							objectHit.transform.parent.position = new Vector3(objX, objY, 40f);
+						} else {
+							selection = locY;
+							gameMan.WipeSelectionColors("GameCard");
+							objectHit.transform.parent.position = new Vector3(objX, objY, 37.5f);
+							objectHit.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.cyan300;
+							objectHit.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.cyan300;
+						} // if already selected
+
+						if (selection == -1) {
+							gameMan.WipeSelectionColors("GameCard");
+						}
+					
+						gameMan.UpdateUI();
+
+					} // if Left Click
+
+
+					// Right Click ########################
+					if (Input.GetMouseButtonDown(1)) {
+
+						objectHit.GetComponentsInChildren<Renderer>()[0].material.color = Color.white;
+						objectHit.GetComponentsInChildren<Renderer>()[1].material.color = Color.white;
+
+						gameMan.UpdateUI();
+
+					} // if Right Click
+
+				} // Phase 1
+
+			} // if GameCard
 
 		} // if object hit
 

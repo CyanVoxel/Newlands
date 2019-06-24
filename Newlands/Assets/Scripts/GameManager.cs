@@ -18,7 +18,7 @@ public class GameManager : MonoBehaviour {
 
 	public static readonly byte width = 7;			// Width of the game grid in cards
 	public static readonly byte height = 7;			// Height of the game grid in cards
-	private static readonly byte handSize = 5;		// How many cards the player is dealt
+	public static readonly byte handSize = 5;		// How many cards the player is dealt
 
 	private static List<Player> players = new List<Player>();	// The player data objects
 
@@ -268,7 +268,7 @@ public class GameManager : MonoBehaviour {
 
 		byte id = (byte)(turn - 1);
 
-		WipeSelectionColors();
+		WipeSelectionColors("LandTile");
 
 		// Search through the grid
 		for (byte x = 0; x < width; x++) {
@@ -456,22 +456,33 @@ public class GameManager : MonoBehaviour {
 	} // BuyTile()
 
 	// Turns all Land Tiles on the grid white.
-	public void WipeSelectionColors() {
+	public void WipeSelectionColors(string cardType) {
 
-		for (int x = 0; x < width; x++) {
-			for (int y = 0; y < height; y++) {
-				if (grid[x, y].ownerId == 0) {
-					GameObject temp = transform.Find("LandTile_x" + x + "_y" + y + "_z0").gameObject;
-					temp.GetComponentsInChildren<Renderer>()[0].material.color = Color.white;
-					temp.GetComponentsInChildren<Renderer>()[1].material.color = Color.white;
-				}
-			}
-		}
+		if (cardType == "LandTile") {
+			for (int x = 0; x < width; x++) {
+				for (int y = 0; y < height; y++) {
+					if (grid[x, y].ownerId == 0) {
+						GameObject temp = transform.Find("LandTile_x" + x + "_y" + y + "_z0").gameObject;
+						temp.GetComponentsInChildren<Renderer>()[0].material.color = Color.white;
+						temp.GetComponentsInChildren<Renderer>()[1].material.color = Color.white;
+					} //if tile unowned
+				} // for height
+			} // for width
+		} else if (cardType == "GameCard") {
+			for (int i = 0; i < handSize; i++) {
+				GameObject temp = transform.Find("GameCard_p0_i" + i).gameObject;
+				float x = temp.transform.position.x;
+				float y = temp.transform.position.y;
+				temp.transform.position = new Vector3(x, y, 40);
+				temp.GetComponentsInChildren<Renderer>()[0].material.color = Color.white;
+				temp.GetComponentsInChildren<Renderer>()[1].material.color = Color.white;
+			} // for handSize
+		} // if
 
 	} // WipeSelectionColors()
 
 	// Turns all Land Tiles on the grid a specified color. (Overload)
-	public void WipeSelectionColors(Color32 color) {
+	public void WipeSelectionColors(string cardType, Color32 color) {
 
 		for (int x = 0; x < width; x++) {
 			for (int y = 0; y < height; y++) {
