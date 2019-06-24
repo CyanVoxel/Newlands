@@ -17,10 +17,10 @@ MonoBehaviour:
   subtitle: 3
   bodyText: Place this under any **Quarry** tile.
   footerText: '**<x>** Iron'
-  resource: 4
+  resource: Iron
   footerValue: 1
   FooterColor: 4
   onlyColorCorners: 0
   percFlag: 0
   moneyFlag: 0
-  footerOp: 1
+  footerOpr: 0

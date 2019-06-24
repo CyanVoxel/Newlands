@@ -3,8 +3,9 @@
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
@@ -13,12 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   category: 1
   title: 3
-  subtitle: 6
+  subtitle: 4
   bodyText: Common on **Plains** Tiles and can be placed under **Any** Tile.
   footerText: '**<x>**'
-  footerValue: 100
+  resource: Oil
+  footerValue: -1
   FooterColor: 0
   onlyColorCorners: 0
   percFlag: 0
   moneyFlag: 1
-  footerOp: 0
+  footerOpr: 0
