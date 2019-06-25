@@ -10,11 +10,10 @@ public class GridUnit {
 
 	// DATA FIELDS ################################################################################
 	// public Card tile;
-	public Deck cardStack;
+	public List<GameObject> cardStack;
 	public int quantity;
 	public int value;
-	public float posX;
-	public float posY;
+	public GameObject tile;
 	public byte ownerId = 0;
 
 	public CardTitle landType;
@@ -42,13 +41,12 @@ public class GridUnit {
 	// CONSTRUCTORS ###############################################################################
 
 	// Constructor that takes in necessary card info and populates the rest
-	public GridUnit(Card tile, float posX, float posY) {
+	public GridUnit(Card card, GameObject tileObj, float posX, float posY) {
 
-		this.landType = tile.title;
-		this.resource = tile.resource;
-		this.quantity = tile.footerValue;
-		this.posX = posX;
-		this.posY = posY;
+		this.landType = card.title;
+		this.resource = card.resource;
+		this.quantity = card.footerValue;
+		this.tile = tileObj;
 
 	} // GridUnit constructor
 

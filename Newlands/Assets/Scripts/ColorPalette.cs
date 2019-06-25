@@ -72,12 +72,28 @@ public class ColorPalette {
 
 	// Newlands ===================================================================================
 
-	// Theme Colors -----------------------------
+	// Main Colors ------------------------------
 	public static readonly Color cardLight = new Color32(r: 250, g: 245, b: 234, a: 255);
 	public static readonly Color cardDark = new Color32(r: 17, g: 17, b: 17, a: 255);
 
-	// Cardstock Texture Tints ------------------
-	public static readonly Color cardTintLight = new Color32(r: 252, g: 250, b: 245, a: 255);
+	// 500 Tint Colors --------------------------
+	public static readonly Color tintCard = new Color32(r: 252, g: 250, b: 245, a: 255);
+	public static readonly Color tintRed500 = new Color32();
+	public static readonly Color tintOrangeD500 = new Color32();
+	public static readonly Color tintOrange500 = new Color32();
+	public static readonly Color tintAmber500 = new Color32();
+	public static readonly Color tintYellow500 = new Color32();
+	public static readonly Color tintGreenL500 = new Color32();
+	public static readonly Color tintGreen500 = new Color32();
+	public static readonly Color tintTeal500 = new Color32();
+	public static readonly Color tintCyan500 = new Color32();
+	public static readonly Color tintBlueL500 = new Color32();
+	public static readonly Color tintBlue500 = new Color32();
+	public static readonly Color tintBlueD500 = new Color32();
+	public static readonly Color tintPurpleD500 = new Color32();
+	public static readonly Color tintPurple500 = new Color32();
+	public static readonly Color tintPink500 = new Color32();
+	public static readonly Color tintGray500 = new Color32();
 
 	// Other ======================================================================================
 	public static readonly Color alpha = new Color32(r: 0, g: 0, b: 0, a: 0);

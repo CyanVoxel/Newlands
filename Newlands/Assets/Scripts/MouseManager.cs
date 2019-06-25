@@ -52,7 +52,7 @@ public class MouseManager : MonoBehaviour {
 				byte locY = byte.Parse(objectHit.transform.parent.name.Substring(13, 1));
 
 				// PHASE 1 ####################################################
-				if (GameManager.phase == 1) {		
+				if (GameManager.phase == 1) {
 
 					// Left Click #########################
 					if (Input.GetMouseButtonDown(0)) {
@@ -134,8 +134,8 @@ public class MouseManager : MonoBehaviour {
 
 						objectHit.transform.parent.rotation = new Quaternion(objRotX, 1+objRotY, objRotZ, 0);
 
-						objectHit.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.cardTintLight;
-						objectHit.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.cardTintLight;
+						objectHit.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.tintCard;
+						objectHit.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.tintCard;
 
 						// "Sells" the tile - NOTE: this is for debugging ONLY
 						GameManager.grid[locX, locY].ownerId = 0;
@@ -145,7 +145,22 @@ public class MouseManager : MonoBehaviour {
 
 					} // if Right Click
 
-				} // if Phase 1
+				} else if (GameManager.phase == 2) {
+				// PHASE 2 ########################################################################
+
+					// Left Click #########################
+					if (Input.GetMouseButtonDown(0)) {
+
+						if (selection >= 0) {
+							Debug.Log("Using GameCard " + selection + 
+									  " on LandTile " + locX + ", " + locY);
+						} else {
+							return;
+						} // if a GameCard is selected
+
+					} // Left Click
+
+				} // Phase
 
 			} // if LandTile
 
@@ -189,14 +204,14 @@ public class MouseManager : MonoBehaviour {
 
 
 					// Right Click ########################
-					if (Input.GetMouseButtonDown(1)) {
+					// if (Input.GetMouseButtonDown(1)) {
 
-						objectHit.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.cardTintLight;
-						objectHit.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.cardTintLight;
+					// 	objectHit.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.cardTintLight;
+					// 	objectHit.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.cardTintLight;
 
-						gameMan.UpdateUI();
+					// 	gameMan.UpdateUI();
 
-					} // if Right Click
+					// } // if Right Click
 
 				} // Phase 1
 

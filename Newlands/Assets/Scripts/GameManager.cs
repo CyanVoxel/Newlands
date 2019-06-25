@@ -23,7 +23,13 @@ public class GameManager : MonoBehaviour {
 
 	private static List<Player> players = new List<Player>();	// The player data objects
 
+	// Grid specific
 	public static GridUnit[,] grid;					// The internal grid, made up of GridUnits
+	public static float[] rowPos;					// Row position
+	private static float cardThickness = 0.2f;
+	private static float shiftUnit = 1.2f;
+	private static float cardOffX = 11f;
+	private static float cardOffY = 8f;
 	
 	private GameObject landTilePrefab;
 	// private Card card;
@@ -88,9 +94,11 @@ public class GameManager : MonoBehaviour {
 		
 		// Initialize the internal grid
 		grid = new GridUnit[width, height];
+		rowPos = new float[height];
 
 		// Create tile GameObjects and connect them to internal grid
 		PopulateGrid();	
+		// ShiftRow(row: 4, units: 2);
 
 		// FINAL ##############################################################
 
@@ -115,8 +123,8 @@ public class GameManager : MonoBehaviour {
 				Card card = Card.CreateInstance<Card>();
 				card = DrawCard(masterDeckMutable.landTileDeck, masterDeck.landTileDeck);
 
-				float xOff = x * 11;
-				float yOff = y * 8;
+				float xOff = x * cardOffX;
+				float yOff = y * cardOffY;
 
 				GameObject cardObj = (GameObject)Instantiate(this.landTilePrefab, new Vector3(xOff, yOff, 50), Quaternion.identity);
 				cardObj.name = ("LandTile_x" + x + "_y" + y + "_z0");
@@ -125,8 +133,10 @@ public class GameManager : MonoBehaviour {
 				cardObj.transform.rotation = new Quaternion(0, 180, 0, 0);	// 0, 180, 0, 0
 
 				// Connect thr drawn card to the internal grid
-				grid[x, y] = new GridUnit(tile: card, posX: xOff, posY: yOff);
-				grid[x, y].AssignTileValue(tile: card); // Set Tile's value based on its Resource
+				grid[x, y] = new GridUnit(card: card, tileObj: cardObj, posX: xOff, posY: yOff);
+				rowPos[y] = cardObj.transform.position.y;	// Row position
+				// Set Tile's value based on its Resource
+				grid[x, y].AssignTileValue(tile: card);
 
 				// Connect the drawn card to the prefab that was just created
 				cardObj.SendMessage("DisplayCard", card);
@@ -464,8 +474,8 @@ public class GameManager : MonoBehaviour {
 				for (int y = 0; y < height; y++) {
 					if (grid[x, y].ownerId == 0) {
 						GameObject temp = transform.Find("LandTile_x" + x + "_y" + y + "_z0").gameObject;
-						temp.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.cardTintLight;
-						temp.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.cardTintLight;
+						temp.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.tintCard;
+						temp.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.tintCard;
 					} //if tile unowned
 				} // for height
 			} // for width
@@ -475,8 +485,8 @@ public class GameManager : MonoBehaviour {
 				float x = temp.transform.position.x;
 				float y = temp.transform.position.y;
 				temp.transform.position = new Vector3(x, y, 40);
-				temp.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.cardTintLight;
-				temp.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.cardTintLight;
+				temp.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.tintCard;
+				temp.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.tintCard;
 			} // for handSize
 		} // if
 
@@ -501,7 +511,7 @@ public class GameManager : MonoBehaviour {
 	// Strength paramater refers to a possible brighter color variant.
 	public Color GetPlayerColor(byte playerID, int strength = 500) {
 
-		Color color = ColorPalette.cardTintLight;
+		Color color = ColorPalette.tintCard;
 
 		switch (playerID) {
 
@@ -557,6 +567,23 @@ public class GameManager : MonoBehaviour {
 	
 	} // GetPlayerColor()
 
+	// Shifts rows of cards up or down. Used to give room for cards under tiles.
+	public void ShiftRow(byte row, int units) {
+
+		for (byte x = 0; x < width; x++) {
+			for (byte y = row; y < height; y++) {
+				float oldX = grid[x, y].tile.transform.position.x;
+				float oldY = grid[x, y].tile.transform.position.y;
+				float oldZ = grid[x, y].tile.transform.position.z;
+				grid[x, y].tile.transform.position = new Vector3
+					(grid[x, y].tile.transform.position.x,
+					(oldY += (shiftUnit * units)),
+					grid[x, y].tile.transform.position.z);
+			} // for y
+		} // for x
+
+	} // ShiftRow()
+
 	// Updates the basic UI elements 
 	public void UpdateUI() {
 
@@ -595,5 +622,14 @@ public class GameManager : MonoBehaviour {
 		} // for array length
 
 	} // UpdateUI()
+
+	// Checks if a GameCard is allowed to be played on a Tile.
+	public bool CheckRules(GridUnit gridTile, GridUnit gameCard) {
+
+		
+		
+		return true;
+
+	} // CheckRules
 	
 } // GameManager class
