@@ -23,4 +23,4 @@ MonoBehaviour:
   onlyColorCorners: 0
   percFlag: 0
   moneyFlag: 0
-  footerOpr: 0
+  footerOpr: 1

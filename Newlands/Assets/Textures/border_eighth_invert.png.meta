@@ -1,10 +1,12 @@
 fileFormatVersion: 2
 guid: f7e6875a5800191438fca95f9d40fd72
 TextureImporter:
-  fileIDToRecycleName:
-    2186277476908879412: ImportLogs
+  internalIDToNameTable:
+  - first:
+      41386430: 2186277476908879412
+    second: ImportLogs
   externalObjects: {}
-  serializedVersion: 5
+  serializedVersion: 10
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -22,6 +24,8 @@ TextureImporter:
     heightScale: 0.25
     normalMapFilter: 0
   isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -32,7 +36,7 @@ TextureImporter:
     serializedVersion: 2
     filterMode: 1
     aniso: -1
-    mipBias: -1
+    mipBias: -100
     wrapU: 1
     wrapV: 1
     wrapW: 1
@@ -70,9 +74,9 @@ TextureImporter:
     androidETC2FallbackOverride: 0
   - serializedVersion: 2
     buildTarget: Standalone
-    maxTextureSize: 256
-    resizeAlgorithm: 0
-    textureFormat: 2
+    maxTextureSize: 512
+    resizeAlgorithm: 1
+    textureFormat: 12
     textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
@@ -119,11 +123,15 @@ TextureImporter:
     physicsShape: []
     bones: []
     spriteID: b551e272a3411c04384bc1486f304b10
+    internalID: 0
     vertices: []
     indices: 
     edges: []
     weights: []
+    secondaryTextures: []
   spritePackingTag: 
+  pSDRemoveMatte: 0
+  pSDShowRemoveMatteOption: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 

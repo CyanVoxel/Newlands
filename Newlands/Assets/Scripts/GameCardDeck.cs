@@ -19,10 +19,10 @@ public class GameCardDeck : Deck {
 			// Card cardToAdd;
 
 			// Market Mods
-			this.Add(dirGcMmI + "/add_20_perc", 2);
-			this.Add(dirGcMmI + "/add_10_perc", 3);
-			this.Add(dirGcMmI + "/sub_20_perc", 2);
-			this.Add(dirGcMmI + "/sub_10_perc", 3);
+			this.Add(dirGcMmI + "/add_20_perc", 4);
+			this.Add(dirGcMmI + "/add_10_perc", 6);
+			this.Add(dirGcMmS + "/sub_20_perc", 4);
+			this.Add(dirGcMmS + "/sub_10_perc", 6);
 
 			// Tile Mods (Resources)
 			this.Add(dirGcTmR + "/oil_add_1", 5);
@@ -47,15 +47,15 @@ public class GameCardDeck : Deck {
 			this.Add(dirGcTmR + "/platinum_add_1", 2);
 
 			// Tile Mods (Inv/Sab)
-			this.Add(dirGcTmI+ "/add_25_perc", 2);
-			this.Add(dirGcTmI+ "/add_50_perc", 1);
-			this.Add(dirGcTmI+ "/add_100_money", 4);
-			this.Add(dirGcTmI+ "/add_200_money", 2);
+			this.Add(dirGcTmI+ "/add_25_perc", 4);
+			this.Add(dirGcTmI+ "/add_50_perc", 2);
+			this.Add(dirGcTmI+ "/add_100_money", 8);
+			this.Add(dirGcTmI+ "/add_200_money", 4);
 			
-			this.Add(dirGcTmS+ "/sub_25_perc", 2);
-			this.Add(dirGcTmS+ "/sub_50_perc", 1);
-			this.Add(dirGcTmS+ "/sub_100_money", 4);
-			this.Add(dirGcTmS+ "/sub_200_money", 2);
+			this.Add(dirGcTmS+ "/sub_25_perc", 4);
+			this.Add(dirGcTmS+ "/sub_50_perc", 2);
+			this.Add(dirGcTmS+ "/sub_100_money", 8);
+			this.Add(dirGcTmS+ "/sub_200_money", 4);
 
 		} // if Vanilla Standard
 
