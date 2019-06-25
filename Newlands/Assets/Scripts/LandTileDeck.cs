@@ -1,9 +1,5 @@
 // A class designed to hold various Land Tiles in a Deck
 
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 public class LandTileDeck : Deck {
 
 	// CONSTRUCTORS -----------------------------------------------------------
@@ -12,62 +8,24 @@ public class LandTileDeck : Deck {
 	public LandTileDeck() { }
 
 	// Constructor that takes in a string representing the name of premade deck
-	public LandTileDeck(DeckType flavor) {
+	public LandTileDeck(string deckType) {
 		
 		// The Standard Deck's Land Tiles
-		if (flavor == DeckType.VanillaStandard) {
-			Card cardToAdd;
+		if (deckType == "Vanilla") {
 
-			cardToAdd = Resources.Load<Card>(dirLt + "/forest_oil_1");
-			this.Add(cardToAdd);
-			this.Add(cardToAdd);
-			this.Add(cardToAdd);
+			this.Add(dirTL + "/forest_oil_1", 3);
+			this.Add(dirTL + "/forest_lumber_1", 8);
+			this.Add(dirTL + "/forest_lumber_2", 5);
+			this.Add(dirTL + "/forest_lumber_3", 2);
+			this.Add(dirTL + "/plains_oil_1", 6);
+			this.Add(dirTL + "/plains_empty", 12);
+			this.Add(dirTL + "/quarry_iron_1", 6);
+			this.Add(dirTL + "/quarry_iron_2", 6);
+			this.Add(dirTL + "/quarry_silver_1", 4);
+			this.Add(dirTL + "/quarry_gold_1", 2);
 
-			cardToAdd = Resources.Load<Card>(dirLt + "/forest_lumber_1");
-			for (int i = 0; i < 8; i++) {
-				this.Add(cardToAdd);
-			}
+		} // if Vanila
 
-			cardToAdd = Resources.Load<Card>(dirLt + "/forest_lumber_2");
-			for (int i = 0; i < 5; i++) {
-				this.Add(cardToAdd);
-			}
-
-			cardToAdd = Resources.Load<Card>(dirLt + "/forest_lumber_3");
-			this.Add(cardToAdd);
-			this.Add(cardToAdd);
-
-			cardToAdd = Resources.Load<Card>(dirLt + "/plains_oil_1");
-			for (int i = 0; i < 6; i++) {
-				this.Add(cardToAdd);
-			}
-
-			cardToAdd = Resources.Load<Card>(dirLt + "/plains_empty");
-			for (int i = 0; i < 12; i++) {
-				this.Add(cardToAdd);
-			}
-
-			cardToAdd = Resources.Load<Card>(dirLt + "/quarry_iron_1");
-			for (int i = 0; i < 6; i++) {
-				this.Add(cardToAdd);
-			}
-
-			cardToAdd = Resources.Load<Card>(dirLt + "/quarry_iron_2");
-			for (int i = 0; i < 6; i++) {
-				this.Add(cardToAdd);
-			}
-
-			cardToAdd = Resources.Load<Card>(dirLt + "/quarry_silver_1");
-			for (int i = 0; i < 4; i++) {
-				this.Add(cardToAdd);
-			}
-
-			cardToAdd = Resources.Load<Card>(dirLt + "/quarry_gold_1");
-			this.Add(cardToAdd);
-			this.Add(cardToAdd);
-
-		} // if standard
-
-	} // LandTileDeck(flavor) constructor
+	} // LandTileDeck(deckType) constructor
 
 } //LandTileDeck class

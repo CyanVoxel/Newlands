@@ -11,19 +11,20 @@ public class MasterDeck {
 
 	public GameCardDeck gameCardDeck;
 	public LandTileDeck landTileDeck;
-	public PriceCardDeck priceCardDeck;
+	public MarketCardDeck priceCardDeck;
 
 	// NOTE: Since this class doesn't need to inherit any other data fields or
 	// 	methods from Deck, I've duplicated the directory strings here for use with
 	// 	custom MasterDeck configurations.
 	// Resource Directories -------------------------------
-	protected string dirGcMmI = "Cards/GameCards/MarketMods/Investment";
-	protected string dirGcMmS = "Cards/GameCards/MarketMods/Sabotage";
-	protected string dirGcTmI = "Cards/GameCards/TileMods/Investment";
-	protected string dirGcTmS = "Cards/GameCards/TileMods/Sabotage";
-	protected string dirGcTmR = "Cards/GameCards/TileMods/Resource";
-	protected string dirPc = "Cards/PriceCards";
-	protected string dirLt = "Cards/LandTiles";
+	protected string dirGcMmI = "Cards/Game Cards/Market Mods/Investment";
+	protected string dirGcMmS = "Cards/Game Cards/Market Mods/Sabotage";
+	protected string dirGcTmI = "Cards/Game Cards/Tile Mods/Investment";
+	protected string dirGcTmS = "Cards/Game Cards/Tile Mods/Sabotage";
+	protected string dirGcTmR = "Cards/Game Cards/Tile Mods/Resource";
+	protected string dirMc = "Cards/Market Cards";
+	protected string dirTL = "Cards/Tiles/Land";
+	protected string dirTC = "Cards/Tiles/Coast";
 
 	// CONSTRUCTORS -----------------------------------------------------------
 
@@ -31,13 +32,13 @@ public class MasterDeck {
 	public MasterDeck() { }
 
 	// Constructor that takes in a string representing the name of premade deck
-	public MasterDeck(DeckType flavor) {
+	public MasterDeck(string deckType) {
 		
-		// Fills in the subdecks with their preset cards for the deck flavor
-		gameCardDeck = new GameCardDeck(flavor);
-		priceCardDeck = new PriceCardDeck(flavor);
-		landTileDeck = new LandTileDeck(flavor);
+		// Fills in the subdecks with their preset cards for the deck deckType
+		gameCardDeck = new GameCardDeck(deckType);
+		priceCardDeck = new MarketCardDeck(deckType);
+		landTileDeck = new LandTileDeck(deckType);
 
-	} // TileDeck(flavor) constructor
+	} // TileDeck(deckType) constructor
 
 } // MasterDeck class

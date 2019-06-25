@@ -26,13 +26,13 @@ public class CardDisplay : MonoBehaviour {
 
 		string outputText = inputText;	// String to output
 
-		//While there's still BOLD markdown left in input string
+		// While there's still BOLD markdown left in input string
 		while (outputText.IndexOf("**") >= 0) {
 			int index = outputText.IndexOf("**");								// Set known index
 			outputText = outputText.Remove(startIndex: index, count: 2);		// Remove markdown
 			outputText = outputText.Insert(startIndex: index, value: "<b>");	// Insert start tag
 
-			//Making sure there's a place to insert an end tag
+			// Making sure there's a place to insert an end tag
 			if (outputText.IndexOf("**") >= 0) {
 				index = outputText.IndexOf("**");								// Reset the index
 				outputText = outputText.Remove(startIndex: index, count: 2);	// Remove markdown
@@ -41,15 +41,15 @@ public class CardDisplay : MonoBehaviour {
 				Debug.Log("Error parsing markdown: No closing statement found!");
 			}
 
-		} //while BOLD left
+		} // while BOLD left
 
-		//While there's still ITALIC markdown left in input string
+		// While there's still ITALIC markdown left in input string
 		while (outputText.IndexOf('*') >= 0) {
 			int index = outputText.IndexOf('*');								// Set known index
 			outputText = outputText.Remove(startIndex: index, count: 1);		// Remove markdown
 			outputText = outputText.Insert(startIndex: index, value: "<i>");	// Insert start tag
 
-			//Making sure there's a place to insert an end tag
+			// Making sure there's a place to insert an end tag
 			if (outputText.IndexOf('*') >= 0) {
 				index = outputText.IndexOf('*');								// Reset the index
 				outputText = outputText.Remove(startIndex: index, count: 1);	// Remove markdown
@@ -58,15 +58,38 @@ public class CardDisplay : MonoBehaviour {
 				Debug.Log("Error parsing markdown: No closing statement found!");
 			}
 
-		} //while ITALIC left
+		} // while ITALIC left
 
 		return outputText;
 
 	} // mdToTag()
 
+	// Converts a custom tag to Card Data
+	private string TagToCardData(string inputText, Card card) {
+
+		string outputText = inputText;	// String to output
+
+		// Processes an <r> tag
+		while (outputText.IndexOf("<r>") >= 0) {
+			int index = outputText.IndexOf("<r>");								// Set known index
+			outputText = outputText.Remove(startIndex: index, count: 3);		// Remove tag
+			outputText = outputText.Insert(startIndex: index, value: card.resource);
+		} // while <r> left
+
+		// Processes an <c> tag
+		while (outputText.IndexOf("<c>") >= 0) {
+			int index = outputText.IndexOf("<c>");								// Set known index
+			outputText = outputText.Remove(startIndex: index, count: 3);		// Remove tag
+			outputText = outputText.Insert(startIndex: index, value: card.category);
+		} // while <r> left
+
+		return outputText;
+
+	} // TagToCardData(string inputText, Card card)
+
 	// Inserts the footerValue into a string meant for the footer text
 	private string InsertFooterValue(Card card, string inputText, bool percFlag, 
-									 bool moneyFlag, CardFtrOpr op) {
+									 bool moneyFlag, char op) {
 
 		string outputText = inputText;								// String to output
 		string footerValueStr = card.footerValue.ToString("n0");	// The formatted footer value
@@ -88,9 +111,9 @@ public class CardDisplay : MonoBehaviour {
 			}
 
 			// Add the appropriate operator to the string
-			if (op == CardFtrOpr.Add) {
+			if (op == '+') {
 				footerValueStr = ("+" + footerValueStr);
-			} else if (op == CardFtrOpr.Sub) {
+			} else if (op == '-') {
 				footerValueStr = ("\u2013" + footerValueStr);
 			}
 		
@@ -121,7 +144,7 @@ public class CardDisplay : MonoBehaviour {
 		Image footerBorder = footerBorderObj.GetComponent<Image>();
 
 		// GAMECARD SPECIFICS -------------------------------------------------
-		if (card.category == CardCategory.GameCard) {
+		if (card.category == "Game Card") {
 
 			GameObject subtitleObj = transform.Find("Front Canvas/Subtitle").gameObject;
 			TMP_Text subtitle = subtitleObj.GetComponent<TMP_Text>();
@@ -132,34 +155,17 @@ public class CardDisplay : MonoBehaviour {
 			Image footerBorderR = footerBorderObjR.GetComponent<Image>();
 
 			// Set the TMP subtitle text based on the card object's enum
-			switch(card.subtitle) {
-				case CardSubtitle.Investment:		// Investment
-					subtitle.text = "Investment";
-					break;
-				case CardSubtitle.Sabotage:			// Sabotage
-					subtitle.text = "Sabotage";
-					break;
-				case CardSubtitle.Resource:			// Resource
-					subtitle.text = "Resource";
-					break;
-				case CardSubtitle.NamedRes:			// ALL Resource Names
-					subtitle.text = card.resource;
-					break;
-				default:							// Default (Warning)
-					Debug.LogWarning("<b>[CardDisplay]</b> Warning: " + 
-					"A Card's subtitle was not set!");
-					break;
-			} // switch(card.subtitle)
+			subtitle.text = card.subtitle;
 
 			// Color the footer border
-			if (card.title == CardTitle.MarketMod) {
+			if (card.title == "Market Mod") {
 
 				footerBorder.color = ColorPalette.cardDark;
 
-				if (card.FooterColor == CardFtrColor.Red) { 				// Red
+				if (card.FooterColor == "Red") { 				// Red
 					footerBorderL.color = ColorPalette.red500;
 					footerBorderR.color = ColorPalette.red500;
-				} else if (card.FooterColor == CardFtrColor.Green) { 	// Green
+				} else if (card.FooterColor == "Green") { 	// Green
 					footerBorderL.color = ColorPalette.green500;
 					footerBorderR.color = ColorPalette.green500;
 				}
@@ -170,73 +176,77 @@ public class CardDisplay : MonoBehaviour {
 				footerBorderR.color = ColorPalette.alpha;
 
 				// Color the footer border
-				if (card.FooterColor == CardFtrColor.Black) { 			// Black
+				if (card.FooterColor == "Black") { 					// Black
 					footerBorder.color = ColorPalette.cardDark;
-				} else if (card.FooterColor == CardFtrColor.Red) {		// Red
+				} else if (card.FooterColor == "Red") {				// Red
 					footerBorder.color = ColorPalette.red500;
-				} else if (card.FooterColor == CardFtrColor.Green) {		// Green
+				} else if (card.FooterColor == "Green") {			// Green
 					footerBorder.color = ColorPalette.green500;
-				} else if (card.FooterColor == CardFtrColor.Cyan) {		// Cyan
+				} else if (card.FooterColor == "Light Blue") {		// Light Blue
 					footerBorder.color = ColorPalette.lightBlue500;
-				} else if (card.FooterColor == CardFtrColor.Yellow) {	// Yellow
+				} else if (card.FooterColor == "Yellow") {			// Yellow
 					footerBorder.color = ColorPalette.yellow500;
-				} else if (card.FooterColor == CardFtrColor.Magenta) {	// Magenta
+				} else if (card.FooterColor == "Pink") {			// Pink
 					footerBorder.color = ColorPalette.pink500;
-				} else if (card.FooterColor == CardFtrColor.Blue) {		// Blue
+				} else if (card.FooterColor == "Blue") {			// Blue
 					footerBorder.color = ColorPalette.lightBlue500;
 				} // if-else
 
 			} // if Market Mod else
 
+			subtitle.text = TagToCardData(MdToTag(subtitle.text), card);
+
 		} // GameCard specifics
 
-		// LANDTILE SPECIFICS -------------------------------------------------
-		if (card.category == CardCategory.LandTile) {
+		// TILE SPECIFICS -----------------------------------------------------
+		if (card.category == "Tile") {
 
 			GameObject titleIconObj = transform.Find("Front Canvas/Icon").gameObject;
 			Image iconImage = titleIconObj.GetComponent<Image>();
 
-			if (card.title == CardTitle.Forest) {
+			if (card.title == "Forest") {
 				iconImage.sprite = Resources.Load<Sprite>("Sprites/icon_forest");	// Forest
-			} else if (card.title == CardTitle.Plains) {
+			} else if (card.title == "Plains") {
 				iconImage.sprite = Resources.Load<Sprite>("Sprites/icon_plains");	// Plains
-			} else if (card.title == CardTitle.Quarry) {
+			} else if (card.title == "Quarry") {
 				iconImage.sprite = Resources.Load<Sprite>("Sprites/icon_quarry");	// Quarry
 			} // else-if
 
 			// Color the footer border
-			if (card.FooterColor == CardFtrColor.Black) { 			// Black
+			if (card.FooterColor == "Black") { 					// Black
 				footerBorder.color = ColorPalette.cardDark;
-			} else if (card.FooterColor == CardFtrColor.Red) {		// Red
+			} else if (card.FooterColor == "Red") {				// Red
 				footerBorder.color = ColorPalette.red500;
-			} else if (card.FooterColor == CardFtrColor.Green) {		// Green
+			} else if (card.FooterColor == "Green") {			// Green
 				footerBorder.color = ColorPalette.green500;
-			} else if (card.FooterColor == CardFtrColor.Cyan) {		// Cyan
+			} else if (card.FooterColor == "Light Blue") {		// Light Blue
 				footerBorder.color = ColorPalette.lightBlue500;
-			} else if (card.FooterColor == CardFtrColor.Yellow) {	// Yellow
+			} else if (card.FooterColor == "Yellow") {			// Yellow
 				footerBorder.color = ColorPalette.yellow500;
-			} else if (card.FooterColor == CardFtrColor.Magenta) {	// Magenta
+			} else if (card.FooterColor == "Pink") {			// Pink
 				footerBorder.color = ColorPalette.pink500;
-			} else if (card.FooterColor == CardFtrColor.Blue) {		// Blue
+			} else if (card.FooterColor == "Blue") {			// Blue
 				footerBorder.color = ColorPalette.lightBlue500;
 			} // if-else
 
 		} // LandTile specifics
 		
-		// Set the TMP title text based on the card object's enum
-		if (card.title == CardTitle.MarketMod) {			// Market Mod
+		// Set the TMP title text.
+		// TODO: Optimize this under the new string system, as well as when Land Tile titles
+		//	are finally auto-centered with along with their icons.
+		if (card.title == "Market Mod") {					// Market Mod
 			title.text = "\u2013Market Mod\u2013";
-		} else if (card.title == CardTitle.PriceCard) {		// Price Card
-			title.text = "\u2013Price Card\u2013";
-		} else if (card.title == CardTitle.Resource) {		// Resource
+		} else if (card.title == "Market Card") {			// Price Card
+			title.text = "\u2013Market Card\u2013";
+		} else if (card.title == "Resource") {				// Resource
 			title.text = "\u2013Resource\u2013";
-		} else if (card.title == CardTitle.TileMod) {		// Tile Mod
+		} else if (card.title == "Tile Mod") {				// Tile Mod
 			title.text = "\u2013Tile Mod\u2013";
-		} else if (card.title == CardTitle.Forest) {		// Forest Tile
+		} else if (card.title == "Forest") {				// Forest Tile
 			title.text = " Forest";
-		} else if (card.title == CardTitle.Plains) {		// Plains Tile
+		} else if (card.title == "Plains") {				// Plains Tile
 			title.text = " Plains";
-		} else if (card.title == CardTitle.Quarry) {		// Quarry Tile
+		} else if (card.title == "Quarry") {				// Quarry Tile
 			title.text = "    Quarry";
 		} // if-else
 
@@ -244,7 +254,9 @@ public class CardDisplay : MonoBehaviour {
 		body.text = MdToTag(card.bodyText);
 		footer.text = InsertFooterValue(card, card.footerText, card.percFlag, 
 											card.moneyFlag, card.footerOpr);
-		footer.text = MdToTag(footer.text);
+											
+		body.text = MdToTag(body.text);
+		footer.text = TagToCardData(MdToTag(footer.text), card);
 
 	} // displayCard()
 

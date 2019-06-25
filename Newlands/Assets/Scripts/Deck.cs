@@ -11,13 +11,14 @@ public class Deck {
 	private List<Card> deck = new List<Card>();
 
 	// Resource Directories -------------------------------
-	protected string dirGcMmI = "Cards/GameCards/MarketMods/Investment";
-	protected string dirGcMmS = "Cards/GameCards/MarketMods/Sabotage";
-	protected string dirGcTmI = "Cards/GameCards/TileMods/Investment";
-	protected string dirGcTmS = "Cards/GameCards/TileMods/Sabotage";
-	protected string dirGcTmR = "Cards/GameCards/TileMods/Resource";
-	protected string dirPc = "Cards/PriceCards";
-	protected string dirLt = "Cards/LandTiles";
+	protected string dirGcMmI = "Cards/Game Cards/Market Mods/Investment";
+	protected string dirGcMmS = "Cards/Game Cards/Market Mods/Sabotage";
+	protected string dirGcTmI = "Cards/Game Cards/Tile Mods/Investment";
+	protected string dirGcTmS = "Cards/Game Cards/Tile Mods/Sabotage";
+	protected string dirGcTmR = "Cards/Game Cards/Tile Mods/Resource";
+	protected string dirMc = "Cards/Market Cards";
+	protected string dirTL = "Cards/Tiles/Land";
+	protected string dirTC = "Cards/Tiles/Coast";
 
 	// METHODS ----------------------------------------------------------------
 

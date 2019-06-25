@@ -57,11 +57,11 @@ public class ResourceInfo : MonoBehaviour {
 
 	 } // ResourceInfo() constructor
 
-	public ResourceInfo(DeckType flavor) { 
+	public ResourceInfo(string deckType) { 
 
 		// NOTE: Only custom resources or price changes need to be put here.
 
-	} // Prices(flavor) constructor
+	} // Prices(deckType) constructor
 
 } // ResourceInfo class
 

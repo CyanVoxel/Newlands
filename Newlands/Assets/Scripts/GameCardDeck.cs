@@ -1,9 +1,5 @@
 // A class designed to hold various Game Cards in a Deck
 
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 public class GameCardDeck : Deck {
 
 	// CONSTRUCTORS -----------------------------------------------------------
@@ -12,10 +8,10 @@ public class GameCardDeck : Deck {
 	public GameCardDeck() { }
 
 	// Constructor that takes in a string representing the name of premade deck
-	public GameCardDeck(DeckType flavor) {
+	public GameCardDeck(string flavor) {
 		
 		// The Vanilla Standard Deck's Game Cards
-		if (flavor == DeckType.VanillaStandard) {
+		if (flavor == "Vanilla") {
 			// Card cardToAdd;
 
 			// Market Mods

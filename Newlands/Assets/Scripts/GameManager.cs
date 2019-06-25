@@ -51,8 +51,8 @@ public class GameManager : MonoBehaviour {
 
 		// DECKS ##############################################################
 
-		masterDeck = new MasterDeck(DeckType.VanillaStandard);
-		masterDeckMutable = new MasterDeck(DeckType.VanillaStandard);
+		masterDeck = new MasterDeck("Vanilla");
+		masterDeckMutable = new MasterDeck("Vanilla");
 
 		// PLAYERS ############################################################
 

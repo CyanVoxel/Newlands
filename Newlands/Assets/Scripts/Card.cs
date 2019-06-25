@@ -11,16 +11,22 @@ public class Card : ScriptableObject {
 	// DATA FIELDS ------------------------------------------------------------
 
 	// The overall category of the Card (ex. Game Card, Price Card)
-	public CardCategory category; 
+	public string category; 
 
 	// The Title of the Card, specifying its type in its category
-	public CardTitle title;
+	public string title;
 
 	// The subtitle of the Card, further specifying the title subcategory
-	public CardSubtitle subtitle;
+	public string subtitle;
 
 	// The body text of a Card
 	public string bodyText;
+
+	// What type of Card category this Card targets, if any
+	public string targetCategory = "Tile";
+
+	// What subtypes of Card this Card can target within the category
+	public string targetScope = "Any";
 
 	// The footer text of the Card
 	public string footerText;
@@ -32,7 +38,7 @@ public class Card : ScriptableObject {
 	public int footerValue;
 
 	// The color of the footer border
-	public CardFtrColor FooterColor;
+	public string FooterColor;
 
 	// Flag indicating if only the corners of the footer should be colored
 	public bool onlyColorCorners;
@@ -44,7 +50,7 @@ public class Card : ScriptableObject {
 	public bool moneyFlag;
 
 	// The operator of the footerValue
-	public CardFtrOpr footerOpr;
+	public char footerOpr;
 
 
 	// CONSTRUCTORS -----------------------------------------------------------
