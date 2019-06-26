@@ -16,7 +16,7 @@ MonoBehaviour:
   title: Tile Mod
   subtitle: Resource
   bodyText: Place this under any **Plains** tile.
-  targetCategory: Tile
+  targetCategory: Land Tile
   targetScope: Plains
   footerText: '**<x>** <r>'
   resource: Cash Crops

@@ -16,6 +16,7 @@ public class Deck {
 	protected string dirGcTmI = "Cards/Game Cards/Tile Mods/Investment";
 	protected string dirGcTmS = "Cards/Game Cards/Tile Mods/Sabotage";
 	protected string dirGcTmR = "Cards/Game Cards/Tile Mods/Resource";
+	protected string dirGcTmU = "Cards/Game Cards/Tile Mods/Upgrade";
 	protected string dirMc = "Cards/Market Cards";
 	protected string dirTL = "Cards/Tiles/Land";
 	protected string dirTC = "Cards/Tiles/Coast";
@@ -28,17 +29,17 @@ public class Deck {
 	} // Add()
 
 	// Add a card to the deck, taking in a directory and an amount
-	public void Add(string dir, int amount) {
+	public void Add(string dir, int amount = 1) {
 		//Card cardToAdd = Resources.Load<Card>(dir);
 		for (int i = 0; i < amount; i++) {
 			try {
 				this.deck.Add(Resources.Load<Card>(dir));
-			}
+			} // try
 
 			catch (UnassignedReferenceException e) {
 				Debug.LogError("<b>[Deck]</b> Error: " +
 				"Could not add card to deck: " + e);
-			}
+			} // catch
 			
 		} // for
 	} // Add()

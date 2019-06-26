@@ -1,6 +1,7 @@
 // A GridUnit object, used to represent the state and properties
 // of an internal game grid.
-// TODO: Manage the scope of the data fields after testing
+// TODO: Manage the scope of the data fields after testing.
+// TODO: Instead of passing an entire Card object, only pass the directory.
 
 using System.Collections;
 using System.Collections.Generic;
@@ -18,8 +19,10 @@ public class GridUnit {
 	public string resource;
 	public int quantity;
 	public int value;
-	public string unit = "Tile";
-	public string unitType = "Quarry";
+	public string targetCat = "None";
+	public string targetScope = "None";
+	public string category;
+	public string scope;
 
 	// METHODS ####################################################################################
 
@@ -49,6 +52,13 @@ public class GridUnit {
 		this.landType = card.title;
 		this.resource = card.resource;
 		this.quantity = card.footerValue;
+		this.scope = card.category;
+		this.category = card.title;
+
+		if (card.category == "Game Card") {
+			this.targetCat = card.targetCategory;
+			this.targetScope = card.targetScope;
+		}
 		
 
 	} // GridUnit constructor

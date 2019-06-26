@@ -1,5 +1,7 @@
 ﻿// The template for the Card Scriptable Object.
 // Members included here include all possible Card types.
+// TODO: Make some bodies simpler, and possibly add another felid for in-depth descriptions
+//	that can appear when using a future help/info tool.
 
 using System.Collections;
 using System.Collections.Generic;

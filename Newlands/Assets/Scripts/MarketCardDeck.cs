@@ -13,14 +13,15 @@ public class MarketCardDeck : Deck {
 		// The Vanilla Standard Deck's Price Cards
 		if (deckType == "Vanilla") {
 			
-			this.Add(dirMc + "/lumber", 1);
-			this.Add(dirMc + "/cashcrops", 1);
-			this.Add(dirMc + "/oil", 1);
-			this.Add(dirMc + "/iron", 1);
-			this.Add(dirMc + "/silver", 1);
-			this.Add(dirMc + "/gold", 1);
-			this.Add(dirMc + "/gems", 1);
-			this.Add(dirMc + "/platinum", 1);
+			this.Add(dirMc + "/lumber");
+			this.Add(dirMc + "/cashcrops");
+			this.Add(dirMc + "/fish");
+			this.Add(dirMc + "/oil");
+			this.Add(dirMc + "/iron");
+			this.Add(dirMc + "/silver");
+			this.Add(dirMc + "/gold");
+			this.Add(dirMc + "/gems");
+			this.Add(dirMc + "/platinum");
 
 		} // if Vanilla Standard deck
 

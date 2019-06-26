@@ -10,19 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 252e8b19c3229d843a76e098201409a6, type: 3}
-  m_Name: cashcrops_add_2
+  m_Name: farmland_empty
   m_EditorClassIdentifier: 
-  category: Game Card
-  title: Tile Mod
-  subtitle: Resource
-  bodyText: Place this under any **Plains** tile.
-  targetCategory: Land Tile
-  targetScope: Plains
-  footerText: '**<x>** <r>'
-  resource: Cash Crops
-  footerValue: 2
-  FooterColor: Light Blue
+  category: Tile
+  title: Farmland
+  subtitle: None
+  bodyText: Holds compatible **Tile Mod** Cards. Acts as a **Plains** Tile.
+  targetCategory: None
+  targetScope: None
+  footerText: '*Empty*'
+  resource: None
+  footerValue: 0
+  FooterColor: Black
   onlyColorCorners: 0
   percFlag: 0
   moneyFlag: 0
-  footerOpr: 43
+  footerOpr: 78

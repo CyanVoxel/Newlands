@@ -15,8 +15,8 @@ MonoBehaviour:
   category: Game Card
   title: Tile Mod
   subtitle: Resource
-  bodyText: Place this under **Any** tile.
-  targetCategory: Tile
+  bodyText: Place this under any **<tc>**.
+  targetCategory: Land Tile
   targetScope: Any
   footerText: '**<x>** <r>'
   resource: Lumber

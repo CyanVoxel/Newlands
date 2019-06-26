@@ -114,7 +114,7 @@ public class GameManager : MonoBehaviour {
 
 	private void PopulateGrid() {
 		// Populate the Card prefab and create the Master Deck
-		landTilePrefab = Resources.Load<GameObject>("Prefabs/LandTile");
+		landTilePrefab = Resources.Load<GameObject>("Prefabs/Tile");
 		//masterDeckMutable = masterDeck;	// Sets mutable deck version to internal one
 		
 		for (int x = 0; x < width; x++) {
@@ -626,7 +626,20 @@ public class GameManager : MonoBehaviour {
 	// Checks if a GameCard is allowed to be played on a Tile.
 	public bool CheckRules(GridUnit gridTile, GridUnit gameCard) {
 
-		
+		if (gameCard.targetCat == gridTile.category) {
+
+			if (gameCard.targetScope == gridTile.scope) {
+
+				
+
+			} // if match Scope
+
+		} else {
+			Debug.Log("[GameManager] You can't play a " +
+						gameCard.targetCat +
+						" card on a "  + 
+						gridTile.category + "!");
+		}
 		
 		return true;
 

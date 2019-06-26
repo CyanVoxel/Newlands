@@ -10,19 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 252e8b19c3229d843a76e098201409a6, type: 3}
-  m_Name: cashcrops_add_2
+  m_Name: fish
   m_EditorClassIdentifier: 
-  category: Game Card
-  title: Tile Mod
-  subtitle: Resource
-  bodyText: Place this under any **Plains** tile.
-  targetCategory: Land Tile
-  targetScope: Plains
-  footerText: '**<x>** <r>'
-  resource: Cash Crops
-  footerValue: 2
-  FooterColor: Light Blue
+  category: Market Card
+  title: <c>
+  subtitle: <r>
+  bodyText: The most common resource found on various **Coast** type Tiles.
+  targetCategory: None
+  targetScope: None
+  footerText: '**<x>**'
+  resource: Fish
+  footerValue: -1
+  FooterColor: Black
   onlyColorCorners: 0
   percFlag: 0
-  moneyFlag: 0
-  footerOpr: 43
+  moneyFlag: 1
+  footerOpr: 78

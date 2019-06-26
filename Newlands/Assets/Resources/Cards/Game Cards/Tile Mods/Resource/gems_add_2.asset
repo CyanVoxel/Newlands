@@ -15,8 +15,8 @@ MonoBehaviour:
   category: Game Card
   title: Tile Mod
   subtitle: Resource
-  bodyText: Place this under any **Quarry** tile.
-  targetCategory: Tile
+  bodyText: Place this under any **<ts>** tile.
+  targetCategory: Land Tile
   targetScope: Quarry
   footerText: '**<x>** <r>'
   resource: Gems

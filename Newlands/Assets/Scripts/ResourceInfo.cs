@@ -21,6 +21,7 @@ public class ResourceInfo : MonoBehaviour {
 		resources.Add("None");
 		resources.Add("Lumber");
 		resources.Add("Cash Crops");
+		resources.Add("Fish");
 		resources.Add("Oil");
 		resources.Add("Iron");
 		resources.Add("Gems");
@@ -32,6 +33,7 @@ public class ResourceInfo : MonoBehaviour {
 		prices.Add("None", 0);
 		prices.Add("Lumber", 50);
 		prices.Add("Cash Crops", 50);
+		prices.Add("Fish", 50);
 		prices.Add("Oil", 100);
 		prices.Add("Iron", 100);
 		prices.Add("Gems", 500);

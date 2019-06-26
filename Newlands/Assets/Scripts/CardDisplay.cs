@@ -81,7 +81,21 @@ public class CardDisplay : MonoBehaviour {
 			int index = outputText.IndexOf("<c>");								// Set known index
 			outputText = outputText.Remove(startIndex: index, count: 3);		// Remove tag
 			outputText = outputText.Insert(startIndex: index, value: card.category);
-		} // while <r> left
+		} // while <c> left
+
+		// Processes an <ts> tag
+		while (outputText.IndexOf("<ts>") >= 0) {
+			int index = outputText.IndexOf("<ts>");								// Set known index
+			outputText = outputText.Remove(startIndex: index, count: 4);		// Remove tag
+			outputText = outputText.Insert(startIndex: index, value: card.targetScope);
+		} // while <ts> left
+
+		// Processes an <tc> tag
+		while (outputText.IndexOf("<tc>") >= 0) {
+			int index = outputText.IndexOf("<tc>");								// Set known index
+			outputText = outputText.Remove(startIndex: index, count: 4);		// Remove tag
+			outputText = outputText.Insert(startIndex: index, value: card.targetCategory);
+		} // while <tc> left
 
 		return outputText;
 
@@ -190,6 +204,8 @@ public class CardDisplay : MonoBehaviour {
 					footerBorder.color = ColorPalette.pink500;
 				} else if (card.FooterColor == "Blue") {			// Blue
 					footerBorder.color = ColorPalette.lightBlue500;
+				} else if (card.FooterColor == "Dark Blue") {		// Dark Blue
+					footerBorder.color = ColorPalette.indigo500;
 				} // if-else
 
 			} // if Market Mod else
@@ -210,6 +226,8 @@ public class CardDisplay : MonoBehaviour {
 				iconImage.sprite = Resources.Load<Sprite>("Sprites/icon_plains");	// Plains
 			} else if (card.title == "Quarry") {
 				iconImage.sprite = Resources.Load<Sprite>("Sprites/icon_quarry");	// Quarry
+			} else if (card.title == "Farmland") {
+				iconImage.sprite = Resources.Load<Sprite>("Sprites/icon_farmland");	// Farmland
 			} // else-if
 
 			// Color the footer border
@@ -227,6 +245,8 @@ public class CardDisplay : MonoBehaviour {
 				footerBorder.color = ColorPalette.pink500;
 			} else if (card.FooterColor == "Blue") {			// Blue
 				footerBorder.color = ColorPalette.lightBlue500;
+			} else if (card.FooterColor == "Dark Blue") {		// Dark Blue
+				footerBorder.color = ColorPalette.indigo500;
 			} // if-else
 
 		} // LandTile specifics
@@ -248,10 +268,12 @@ public class CardDisplay : MonoBehaviour {
 			title.text = " Plains";
 		} else if (card.title == "Quarry") {				// Quarry Tile
 			title.text = "    Quarry";
+		} else if (card.title == "Farmland") {				// Farmland Tile
+			title.text = "       Farmland";
 		} // if-else
 
 		// String members are assigned to the text labels after being formatted
-		body.text = MdToTag(card.bodyText);
+		body.text = TagToCardData(MdToTag(card.bodyText), card);
 		footer.text = InsertFooterValue(card, card.footerText, card.percFlag, 
 											card.moneyFlag, card.footerOpr);
 											
