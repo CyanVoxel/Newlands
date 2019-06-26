@@ -15,7 +15,7 @@ public class MarketCardDeck : Deck {
 			
 			this.Add(dirMc + "/lumber");
 			this.Add(dirMc + "/cashcrops");
-			this.Add(dirMc + "/fish");
+			// this.Add(dirMc + "/fish");
 			this.Add(dirMc + "/oil");
 			this.Add(dirMc + "/iron");
 			this.Add(dirMc + "/silver");

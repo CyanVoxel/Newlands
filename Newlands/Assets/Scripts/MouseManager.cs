@@ -8,7 +8,7 @@ using UnityEngine.EventSystems;
 public class MouseManager : MonoBehaviour {
 
 	public GameManager gameMan;
-	int selection = -1;
+	public static int selection = -1;
 	
 	// Update is called once per frame
 	void Update() {
@@ -34,6 +34,8 @@ public class MouseManager : MonoBehaviour {
 		if (Physics.Raycast(ray, out hitInfo)) {
 			GameObject objectHit = hitInfo.collider.transform.parent.gameObject;
 
+			// Debug.Log(objectHit.transform.parent.name);
+
 			// Containers for object position and rotation info
 			float objX = objectHit.transform.parent.position.x;
 			float objY = objectHit.transform.parent.position.y;
@@ -51,11 +53,15 @@ public class MouseManager : MonoBehaviour {
 				byte locX = byte.Parse(objectHit.transform.parent.name.Substring(10, 1));
 				byte locY = byte.Parse(objectHit.transform.parent.name.Substring(13, 1));
 
+				
+
 				// PHASE 1 ####################################################
 				if (GameManager.phase == 1) {
 
 					// Left Click #########################
 					if (Input.GetMouseButtonDown(0)) {
+
+						gameMan.WipeSelectionColors("GameCard");
 
 						// If the grace rounds have passes, start highlighting the neighbors
 						if (GameManager.round > GameManager.graceRounds) {
@@ -63,7 +69,7 @@ public class MouseManager : MonoBehaviour {
 							gameMan.HighlightNeighbors();
 						} // if
 
-						gameMan.WipeSelectionColors("GameCard");	//Deselect any GameCards
+						// gameMan.WipeSelectionColors("GameCard");	//Deselect any GameCards
 						selection = -1;
 						gameMan.UpdateUI();
 
@@ -132,6 +138,8 @@ public class MouseManager : MonoBehaviour {
 						objRotY = objectHit.transform.parent.rotation.y;
 						objRotZ = objectHit.transform.parent.rotation.z;
 
+						gameMan.WipeSelectionColors("GameCard");
+
 						objectHit.transform.parent.rotation = new Quaternion(objRotX, 1+objRotY, objRotZ, 0);
 
 						objectHit.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.tintCard;
@@ -151,9 +159,15 @@ public class MouseManager : MonoBehaviour {
 					// Left Click #########################
 					if (Input.GetMouseButtonDown(0)) {
 
+						gameMan.WipeSelectionColors("GameCard");
+
 						if (selection >= 0) {
-							Debug.Log("Using GameCard " + selection + 
+							if (gameMan.CheckRules(GameManager.grid[locX, locY], 
+								GameManager.players[0].handUnits[selection])) {
+								Debug.Log("Using GameCard " + selection + 
 									  " on LandTile " + locX + ", " + locY);
+									  //GameManager.players[0].hand[selection]
+							}
 						} else {
 							return;
 						} // if a GameCard is selected

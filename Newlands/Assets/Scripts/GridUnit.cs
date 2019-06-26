@@ -12,6 +12,8 @@ public class GridUnit {
 	// DATA FIELDS ################################################################################
 	// public Card tile;
 	public byte ownerId = 0;
+	public byte x;
+	public byte y;
 	public GameObject tile;
 	public List<GameObject> cardStack;
 
@@ -21,8 +23,8 @@ public class GridUnit {
 	public int value;
 	public string targetCat = "None";
 	public string targetScope = "None";
-	public string category;
-	public string scope;
+	public string tileCat;
+	public string tileScope;
 
 	// METHODS ####################################################################################
 
@@ -46,14 +48,16 @@ public class GridUnit {
 	// CONSTRUCTORS ###############################################################################
 
 	// Constructor that takes in necessary card info and populates the rest
-	public GridUnit(Card card, GameObject tileObj, float posX, float posY) {
+	public GridUnit(Card card, GameObject tileObj, byte x, byte y) {
 
 		this.tile = tileObj;
 		this.landType = card.title;
 		this.resource = card.resource;
 		this.quantity = card.footerValue;
-		this.scope = card.category;
-		this.category = card.title;
+		this.tileScope = card.title;
+		this.tileCat = card.category;
+		this.x = x;
+		this.y = y;
 
 		if (card.category == "Game Card") {
 			this.targetCat = card.targetCategory;

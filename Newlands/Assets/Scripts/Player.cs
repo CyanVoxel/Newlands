@@ -10,6 +10,7 @@ public class Player {
 
 	public byte Id { get; set; } = 0;
 	public Deck hand;
+	public GridUnit[] handUnits;
 	private double baseMoney = 0;
 	private double tileMoney = 0;
 	private double totalMoney = 0;
@@ -57,6 +58,7 @@ public class Player {
 
 	public Player() {
 		this.CalcMoney();
+		handUnits = new GridUnit[GameManager.handSize];
 		// this.hand = new Deck();
 		// moneyObj = new GameObject();
 	} // Player() constructor

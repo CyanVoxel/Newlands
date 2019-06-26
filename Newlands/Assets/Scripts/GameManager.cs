@@ -19,18 +19,20 @@ public class GameManager : MonoBehaviour {
 
 	public static readonly byte width = 7;			// Width of the game grid in cards
 	public static readonly byte height = 7;			// Height of the game grid in cards
-	public static readonly byte handSize = 5;		// How many cards the player is dealt
+	public static readonly byte handSize = 9;		// How many cards the player is dealt
 
-	private static List<Player> players = new List<Player>();	// The player data objects
+	public static List<Player> players = new List<Player>();	// The player data objects
 
 	// Grid specific
 	public static GridUnit[,] grid;					// The internal grid, made up of GridUnits
 	public static float[] rowPos;					// Row position
+	private static byte[] maxStack;
 	private static float cardThickness = 0.2f;
 	private static float shiftUnit = 1.2f;
 	private static float cardOffX = 11f;
 	private static float cardOffY = 8f;
 	
+	public static Camera mainCam;
 	private GameObject landTilePrefab;
 	// private Card card;
 
@@ -61,6 +63,7 @@ public class GameManager : MonoBehaviour {
 			players.Add(new Player());
 			players[i].Id = ((byte)(i + 1));
 			players[i].hand = DrawHand(handSize);
+
 		} // for playerCount
 
 		// Displays those hands on screen
@@ -95,6 +98,7 @@ public class GameManager : MonoBehaviour {
 		// Initialize the internal grid
 		grid = new GridUnit[width, height];
 		rowPos = new float[height];
+		maxStack = new byte[height];
 
 		// Create tile GameObjects and connect them to internal grid
 		PopulateGrid();	
@@ -107,18 +111,30 @@ public class GameManager : MonoBehaviour {
 			graceRounds = 1;
 		} // if (graceRounds < 1)
 
+		GameObject cameraObj = transform.Find("Main Camera").gameObject;
+		mainCam = cameraObj.GetComponent<Camera>();
+
 		// Push the first UI Update
 		UpdateUI();
 
 	} // Start()
+
+	void Update() {
+
+		// Scroll in and out
+		Vector3 cameraPos = mainCam.transform.position;
+		cameraPos.z += (Input.mouseScrollDelta.y * 3f);
+		mainCam.transform.position = cameraPos;
+
+	} // Update()
 
 	private void PopulateGrid() {
 		// Populate the Card prefab and create the Master Deck
 		landTilePrefab = Resources.Load<GameObject>("Prefabs/Tile");
 		//masterDeckMutable = masterDeck;	// Sets mutable deck version to internal one
 		
-		for (int x = 0; x < width; x++) {
-			for (int y = 0; y < height; y++) {
+		for (byte x = 0; x < width; x++) {
+			for (byte y = 0; y < height; y++) {
 				// Draw a card from the Land Tile deck
 				Card card = Card.CreateInstance<Card>();
 				card = DrawCard(masterDeckMutable.landTileDeck, masterDeck.landTileDeck);
@@ -133,7 +149,7 @@ public class GameManager : MonoBehaviour {
 				cardObj.transform.rotation = new Quaternion(0, 180, 0, 0);	// 0, 180, 0, 0
 
 				// Connect thr drawn card to the internal grid
-				grid[x, y] = new GridUnit(card: card, tileObj: cardObj, posX: xOff, posY: yOff);
+				grid[x, y] = new GridUnit(card: card, tileObj: cardObj, x: x, y: y);
 				rowPos[y] = cardObj.transform.position.y;	// Row position
 				// Set Tile's value based on its Resource
 				grid[x, y].AssignTileValue(tile: card);
@@ -165,15 +181,6 @@ public class GameManager : MonoBehaviour {
 	// Creates card game objects, places them on the screen, and populates them with deck data
 	private void DisplayHand(Deck deck, byte playerNum) {
 
-		// // Creates hand GameObjects to contain the card prefabs for each player
-		// for (byte i = 0; i < playerNum; i++) {
-
-		// 	GameObject hand = new GameObject();			// Creates new empty GameObject
-		// 	hand.name = ("Player" + i);					// Add index to name
-		// 	hand.transform.SetParent(this.transform);	// Sets the parent
-
-		// } // for each player
-
 		// Populate the Card prefab
 		landTilePrefab = Resources.Load<GameObject>("Prefabs/GameCard");
 
@@ -189,6 +196,10 @@ public class GameManager : MonoBehaviour {
 			cardObj.transform.SetParent(this.transform);
 			cardObj.transform.rotation = new Quaternion(0, 0, 0, 0);
 
+			players[playerNum].handUnits[i] = new GridUnit(players[playerNum].hand[i], 
+				cardObj, 
+				(byte)i, 0);
+
 			try {
 				cardObj.SendMessage("DisplayCard", deck[i]);
 			}
@@ -202,6 +213,7 @@ public class GameManager : MonoBehaviour {
 		} // for
 
 	} // DisplayHand()
+
 
 	public Card DrawCard(Deck deckMut, Deck deckPerm) {
 
@@ -481,12 +493,15 @@ public class GameManager : MonoBehaviour {
 			} // for width
 		} else if (cardType == "GameCard") {
 			for (int i = 0; i < handSize; i++) {
-				GameObject temp = transform.Find("GameCard_p0_i" + i).gameObject;
-				float x = temp.transform.position.x;
-				float y = temp.transform.position.y;
-				temp.transform.position = new Vector3(x, y, 40);
-				temp.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.tintCard;
-				temp.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.tintCard;
+				if (transform.Find("GameCard_p0_i" + i)) {
+					GameObject temp = transform.Find("GameCard_p0_i" + i).gameObject;
+					float x = temp.transform.position.x;
+					float y = temp.transform.position.y;
+					temp.transform.position = new Vector3(x, y, 40);
+					temp.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.tintCard;
+					temp.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.tintCard;
+				} // if the card could be found
+				
 			} // for handSize
 		} // if
 
@@ -626,22 +641,117 @@ public class GameManager : MonoBehaviour {
 	// Checks if a GameCard is allowed to be played on a Tile.
 	public bool CheckRules(GridUnit gridTile, GridUnit gameCard) {
 
-		if (gameCard.targetCat == gridTile.category) {
+		bool categoryMatch = false;
+		bool scopeMatch = false;
 
-			if (gameCard.targetScope == gridTile.scope) {
+		Debug.Log("[GameManager]\n" +
+				"Game Card Target Cat   : " + gameCard.targetCat + "\n" +
+				"Game Card Target Scope : " + gameCard.targetScope + "\n" +
+				"Land Tile Category     : " + gridTile.tileCat + "\n" +
+				"Land Tile Scope        : " + gridTile.tileScope);
 
-				
+		// Debug.Log("[GameManager] Checking if " + gameCard.targetCat +
+		// 				" can be played on " + gridTile.tileCat);
 
-			} // if match Scope
+
+		// Card Target Category
+		switch (gameCard.targetCat) {
+			case "Any":
+				categoryMatch = true;
+				break;
+			case "Tile":
+				if (gridTile.tileCat == "Tile" ||
+					gridTile.tileCat == "Land Tile" ||
+					gridTile.tileCat == "Coast Tile") {
+					categoryMatch = true;
+				}
+				break;
+			case "Land Tile":
+				if (gridTile.tileCat == "Tile") {
+					categoryMatch = true;
+				}
+				break;
+			case "Coast Tile":
+				if (gridTile.tileCat == "Tile") {
+					categoryMatch = true;
+				}
+				break;
+			default:
+				if (gameCard.targetCat == gridTile.tileCat) {
+					categoryMatch = true;
+				}
+				break;
+		} // Card Target Category
+
+		// If the category matched
+		if (categoryMatch) {
+
+			// Card Target Scope
+			switch (gameCard.targetScope) {
+				case "Any":
+					scopeMatch = true;
+					break;
+				case "Land Tile":
+					if (gridTile.tileScope == "Forest" ||
+						gridTile.tileScope == "Plains" ||
+						gridTile.tileScope == "Quarry" ||
+						gridTile.tileScope == "Farmland") {
+						scopeMatch = true;
+					}
+					break;
+				case "Coast Tile":
+					if (gridTile.tileScope == "Forest" ||
+						gridTile.tileScope == "Plains" ||
+						gridTile.tileScope == "Quarry" ||
+						gridTile.tileScope == "Farmland") {
+						scopeMatch = true;
+					}
+					break;
+				default:
+					if (gameCard.targetScope == gridTile.tileScope) {
+						scopeMatch = true;
+					}
+					break;
+			} // Card Target Scope
+
+		} // If the category matched
+
+		// If the Category AND Scope match
+		if (categoryMatch && scopeMatch) {
+
+			ShiftRow(gridTile.y, 1);
+			maxStack[gridTile.y]++;
+			WipeSelectionColors("Game Card");
+
+			gameCard.tile.transform.position = new Vector3
+				(gridTile.tile.transform.position.x,
+				gridTile.tile.transform.position.y - (shiftUnit * maxStack[gridTile.y]),
+				(gridTile.tile.transform.position.z) + (cardThickness * maxStack[gridTile.y]));
+
+			// players[turn].hand.Remove(players[turn].hand[gameCard.x]);
+			gameCard.tile.transform.parent = gridTile.tile.transform;
+			gameCard.tile.name = ("Card_i" + 0);
+
+			players[turn].hand.Add(DrawCard(masterDeckMutable.gameCardDeck, 
+											masterDeck.gameCardDeck));
+
+			landTilePrefab = Resources.Load<GameObject>("Prefabs/GameCard");
+
+			// gridTile.cardStack.Add(gameCard.tile);
+			MouseManager.selection = -1;
+			
+			return true;
 
 		} else {
 			Debug.Log("[GameManager] You can't play a " +
-						gameCard.targetCat +
+						gameCard.targetScope +
 						" card on a "  + 
-						gridTile.category + "!");
-		}
-		
-		return true;
+						gridTile.tileScope + "!");
+			MouseManager.selection = -1;
+			WipeSelectionColors("Game Card");
+			return false;
+		} // If the Category AND Scope match
+
 
 	} // CheckRules
 	
