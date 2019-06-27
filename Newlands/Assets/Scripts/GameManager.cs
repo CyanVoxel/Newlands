@@ -17,8 +17,8 @@ public class GameManager : MonoBehaviour {
 	public static byte turn = 1;					// The current turn in the round
 	public static int graceRounds = 1;				// The # of rounds without neighbor rules
 
-	public static readonly byte width = 7;			// Width of the game grid in cards
-	public static readonly byte height = 7;			// Height of the game grid in cards
+	public static readonly byte width = 3;			// Width of the game grid in cards
+	public static readonly byte height = 3;			// Height of the game grid in cards
 	public static readonly byte handSize = 9;		// How many cards the player is dealt
 
 	public static List<Player> players = new List<Player>();	// The player data objects
@@ -131,6 +131,8 @@ public class GameManager : MonoBehaviour {
 	private void PopulateGrid() {
 		// Populate the Card prefab and create the Master Deck
 		landTilePrefab = Resources.Load<GameObject>("Prefabs/Tile");
+		string xZeroes = "0";
+		string yZeroes = "0";
 		//masterDeckMutable = masterDeck;	// Sets mutable deck version to internal one
 		
 		for (byte x = 0; x < width; x++) {
@@ -142,8 +144,23 @@ public class GameManager : MonoBehaviour {
 				float xOff = x * cardOffX;
 				float yOff = y * cardOffY;
 
+				// Determines the number of zeroes to add in the object name
+				if (x >= 10) {
+					xZeroes = "";
+				} else {
+					xZeroes = "0";
+				}
+				if (y >= 10) {
+					yZeroes = "";
+				} else {
+					yZeroes = "0";
+				} // zeroes calc
+
 				GameObject cardObj = (GameObject)Instantiate(this.landTilePrefab, new Vector3(xOff, yOff, 50), Quaternion.identity);
-				cardObj.name = ("LandTile_x" + x + "_y" + y + "_z0");
+				cardObj.name = ("x" + xZeroes + x + "_" +
+								"y" + yZeroes + y + "_" +
+								"Tile");
+				// cardObj.name = ("LandTile_x" + x + "_y" + y + "_z0");
 
 				cardObj.transform.SetParent(this.transform);
 				cardObj.transform.rotation = new Quaternion(0, 180, 0, 0);	// 0, 180, 0, 0
@@ -183,6 +200,8 @@ public class GameManager : MonoBehaviour {
 
 		// Populate the Card prefab
 		landTilePrefab = Resources.Load<GameObject>("Prefabs/GameCard");
+		string pZeroes = "0";
+		string iZeroes = "0";
 
 		// Creates card prefabs and places them on the screen
 		for (int i = 0; i < deck.Count(); i++) {
@@ -190,8 +209,23 @@ public class GameManager : MonoBehaviour {
 			float xOff = i * 11 + (((width - handSize) / 2f) * 11);
 			float yOff = -10;
 
+			// Determines the number of zeroes to add in the object name
+				if (playerCount >= 10) {
+					pZeroes = "";
+				} else {
+					pZeroes = "0";
+				}
+				if (i >= 10) {
+					iZeroes = "";
+				} else {
+					iZeroes = "0";
+				} // zeroes calc
+
 			GameObject cardObj = (GameObject)Instantiate(this.landTilePrefab, new Vector3(xOff, yOff, 40), Quaternion.identity);
-			cardObj.name = ("GameCard_p" + playerNum + "_i"+ i);
+			cardObj.name = ("p" + pZeroes + playerNum + "_" +
+								"i" + iZeroes + i + "_" +
+								"GameCard");
+			// cardObj.name = ("GameCard_p" + playerNum + "_i"+ i);
 
 			cardObj.transform.SetParent(this.transform);
 			cardObj.transform.rotation = new Quaternion(0, 0, 0, 0);
@@ -318,7 +352,7 @@ public class GameManager : MonoBehaviour {
 						gridY + j < height) {
 
 						if (grid[gridX + i, gridY + j].ownerId == 0) {
-							GameObject temp = transform.Find("LandTile_x" + (gridX + i) + "_y" + (gridY + j) + "_z0").gameObject;
+							GameObject temp = FindCard("Tile", (byte)(gridX + i), (byte)(gridY + j));
 							temp.GetComponentsInChildren<Renderer>()[0].material.color = playerColor;
 							temp.GetComponentsInChildren<Renderer>()[1].material.color = playerColor;
 						} // if the Tile is unowned
@@ -482,24 +516,29 @@ public class GameManager : MonoBehaviour {
 	public void WipeSelectionColors(string cardType) {
 
 		if (cardType == "LandTile") {
-			for (int x = 0; x < width; x++) {
-				for (int y = 0; y < height; y++) {
+			for (byte x = 0; x < width; x++) {
+				for (byte y = 0; y < height; y++) {
 					if (grid[x, y].ownerId == 0) {
-						GameObject temp = transform.Find("LandTile_x" + x + "_y" + y + "_z0").gameObject;
+
+						GameObject temp = FindCard("Tile", (byte)x, (byte)y);
+
 						temp.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.tintCard;
 						temp.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.tintCard;
 					} //if tile unowned
 				} // for height
 			} // for width
 		} else if (cardType == "GameCard") {
-			for (int i = 0; i < handSize; i++) {
-				if (transform.Find("GameCard_p0_i" + i)) {
-					GameObject temp = transform.Find("GameCard_p0_i" + i).gameObject;
+			for (byte i = 0; i < handSize; i++) {
+				if (FindCard("GameCard", 0, i)) {
+					// GameObject temp = transform.Find("GameCard_p0_i" + i).gameObject;
+					GameObject temp = FindCard("GameCard", 0, i);
 					float x = temp.transform.position.x;
 					float y = temp.transform.position.y;
 					temp.transform.position = new Vector3(x, y, 40);
 					temp.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.tintCard;
 					temp.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.tintCard;
+				} else {
+					// Debug.LogWarning("[GameManager] Warning: Could not find a GameCard selection to wipe!");
 				} // if the card could be found
 				
 			} // for handSize
@@ -510,10 +549,10 @@ public class GameManager : MonoBehaviour {
 	// Turns all Land Tiles on the grid a specified color. (Overload)
 	public void WipeSelectionColors(string cardType, Color32 color) {
 
-		for (int x = 0; x < width; x++) {
-			for (int y = 0; y < height; y++) {
+		for (byte x = 0; x < width; x++) {
+			for (byte y = 0; y < height; y++) {
 				if (grid[x, y].ownerId == 0) {
-					GameObject temp = transform.Find("LandTile_x" + x + "_y" + y + "_z0").gameObject;
+					GameObject temp = FindCard("Tile", x, y);
 					temp.GetComponentsInChildren<Renderer>()[0].material.color = color;
 					temp.GetComponentsInChildren<Renderer>()[1].material.color = color;
 				}
@@ -730,7 +769,15 @@ public class GameManager : MonoBehaviour {
 
 			// players[turn].hand.Remove(players[turn].hand[gameCard.x]);
 			gameCard.tile.transform.parent = gridTile.tile.transform;
-			gameCard.tile.name = ("Card_i" + 0);
+			// gridTile.cardStack.Push(gameCard.tile);
+			// gameCard.tile.name = ("Card_i" + 0);
+			// CanvasGroup canvasGroup = gameCard.tile.GetComponentsInChildren<CanvasGroup>()[0];
+			// canvasGroup.blocksRaycasts = false;
+
+			// TODO: Name the card with the local child index included
+			gameCard.tile.name = ("p00_" +
+								  "i" + "00" + "_" +
+								  "GameCard");
 
 			players[turn].hand.Add(DrawCard(masterDeckMutable.gameCardDeck, 
 											masterDeck.gameCardDeck));
@@ -754,5 +801,41 @@ public class GameManager : MonoBehaviour {
 
 
 	} // CheckRules
+
+	public GameObject FindCard(string type, byte x, byte y) {
+
+		string strX = "x";
+		string strY = "y";
+
+		// Determines the number of zeroes to add in the object name
+		string xZeroes = "0";
+		string yZeroes = "0";
+		if (x >= 10) {
+			xZeroes = "";
+		} // if x >= 10
+		if (y >= 10) {
+			yZeroes = "";
+		} // if y >= 10
+
+		// Specific type changes
+		if (type == "GameCard") {
+			strX = "p";		// Instead of x, use p for PlayerID
+			strY = "i";		// Instead of y, use i for Index
+		} // if GameCard
+
+
+		if (transform.Find(strX + xZeroes + x + "_" + strY + yZeroes + y + "_" + type)) {
+			// GameObject gameObject = new GameObject();
+			GameObject gameObject = transform.Find(strX + xZeroes + x + "_" +
+										strY + yZeroes + y + "_" +
+										type).gameObject;
+			return gameObject;
+		} else {
+			// Debug.LogError("[GameManager] Error: Could not find GameObject!");	
+			return null;
+		}
+
+
+	} // FindCard()
 	
 } // GameManager class

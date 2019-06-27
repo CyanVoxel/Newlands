@@ -10,12 +10,11 @@ using UnityEngine;
 public class GridUnit {
 
 	// DATA FIELDS ################################################################################
-	// public Card tile;
 	public byte ownerId = 0;
 	public byte x;
 	public byte y;
 	public GameObject tile;
-	public List<GameObject> cardStack;
+	// public Stack<GameObject> cardStack;
 
 	public string landType;
 	public string resource;
@@ -49,6 +48,8 @@ public class GridUnit {
 
 	// Constructor that takes in necessary card info and populates the rest
 	public GridUnit(Card card, GameObject tileObj, byte x, byte y) {
+
+		Stack<GameObject> cardStack = new Stack<GameObject>();
 
 		this.tile = tileObj;
 		this.landType = card.title;

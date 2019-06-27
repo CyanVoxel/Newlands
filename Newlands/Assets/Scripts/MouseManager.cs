@@ -47,11 +47,14 @@ public class MouseManager : MonoBehaviour {
 
 			// LAND TILES #########################################################################
 
-			if (objectHit.transform.parent.name.Contains("LandTile")) {
+			if (objectHit.transform.parent.name.Contains("Tile")) {
 
+				// TODO: Write a function that takes in Type and element to search for,
+				//	returning the substring. Should be able to return variable lengths.
+				//	e.x. GetValue(type: "Tile", element: "x")
 				// Grab the grid coordinates stored in the object name
-				byte locX = byte.Parse(objectHit.transform.parent.name.Substring(10, 1));
-				byte locY = byte.Parse(objectHit.transform.parent.name.Substring(13, 1));
+				byte locX = byte.Parse(objectHit.transform.parent.name.Substring(1, 2));
+				byte locY = byte.Parse(objectHit.transform.parent.name.Substring(5, 2));
 
 				
 
@@ -183,8 +186,8 @@ public class MouseManager : MonoBehaviour {
 			if (objectHit.transform.parent.name.Contains("GameCard")) {
 
 				// Grab the grid coordinates stored in the object name
-				byte locX = byte.Parse(objectHit.transform.parent.name.Substring(10, 1));
-				byte locY = byte.Parse(objectHit.transform.parent.name.Substring(13, 1));
+				byte locX = byte.Parse(objectHit.transform.parent.name.Substring(1, 2));
+				byte locY = byte.Parse(objectHit.transform.parent.name.Substring(5, 2));
 
 				objX = objectHit.transform.parent.position.x;
 				objY = objectHit.transform.parent.position.y;
