@@ -24,12 +24,6 @@ public class Card : ScriptableObject {
 	// The body text of a Card
 	public string bodyText;
 
-	// What type of Card category this Card targets, if any
-	public string targetCategory = "Tile";
-
-	// What subtypes of Card this Card can target within the category
-	public string targetScope = "Any";
-
 	// The footer text of the Card
 	public string footerText;
 
@@ -53,6 +47,12 @@ public class Card : ScriptableObject {
 
 	// The operator of the footerValue
 	public char footerOpr;
+
+	// What subtypes of Card this Card can target within the category
+	public string target;
+
+	// Does this card get discarded if used? (Rather than being stacked under a Tile)
+	public bool doesDiscard;
 
 
 	// CONSTRUCTORS -----------------------------------------------------------

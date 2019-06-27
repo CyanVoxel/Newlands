@@ -16,8 +16,6 @@ MonoBehaviour:
   title: Tile Mod
   subtitle: Resource
   bodyText: Place this under **Any** tile.
-  targetCategory: Land Tile
-  targetScope: Any
   footerText: '**<x>** <r>'
   resource: Oil
   footerValue: 2
@@ -26,3 +24,5 @@ MonoBehaviour:
   percFlag: 0
   moneyFlag: 0
   footerOpr: 43
+  target: Tile
+  doesDiscard: 0

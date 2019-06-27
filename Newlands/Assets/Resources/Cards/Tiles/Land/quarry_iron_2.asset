@@ -14,10 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   category: Tile
   title: Quarry
-  subtitle: None
+  subtitle: Land
   bodyText: Holds compatible **Tile Mod** Cards.
-  targetCategory: None
-  targetScope: None
   footerText: '**<x>** Iron'
   resource: Iron
   footerValue: 2
@@ -26,3 +24,5 @@ MonoBehaviour:
   percFlag: 0
   moneyFlag: 0
   footerOpr: 78
+  target: 
+  doesDiscard: 0

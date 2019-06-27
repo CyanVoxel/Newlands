@@ -17,8 +17,6 @@ MonoBehaviour:
   subtitle: Sabotage
   bodyText: 'Place this under **any** Tile. This decreases the **total value** of
     the Tile. '
-  targetCategory: Tile
-  targetScope: Any
   footerText: '**<x>** in Value'
   resource: None
   footerValue: 100
@@ -27,3 +25,5 @@ MonoBehaviour:
   percFlag: 0
   moneyFlag: 1
   footerOpr: 45
+  target: Tile
+  doesDiscard: 0

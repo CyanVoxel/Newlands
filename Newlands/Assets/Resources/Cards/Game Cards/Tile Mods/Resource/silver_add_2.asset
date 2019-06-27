@@ -15,9 +15,7 @@ MonoBehaviour:
   category: Game Card
   title: Tile Mod
   subtitle: Resource
-  bodyText: Place this under any **<tc>**.
-  targetCategory: Land Tile
-  targetScope: Any
+  bodyText: Place this under any **<ts>**.
   footerText: '**<x>** <r>'
   resource: Silver
   footerValue: 2
@@ -26,3 +24,5 @@ MonoBehaviour:
   percFlag: 0
   moneyFlag: 0
   footerOpr: 43
+  target: Tile_Land
+  doesDiscard: 0

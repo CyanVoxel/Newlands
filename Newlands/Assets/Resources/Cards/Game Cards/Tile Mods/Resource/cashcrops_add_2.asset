@@ -16,8 +16,6 @@ MonoBehaviour:
   title: Tile Mod
   subtitle: Resource
   bodyText: Place this under any **Plains** tile.
-  targetCategory: Land Tile
-  targetScope: Plains
   footerText: '**<x>** <r>'
   resource: Cash Crops
   footerValue: 2
@@ -26,3 +24,5 @@ MonoBehaviour:
   percFlag: 0
   moneyFlag: 0
   footerOpr: 43
+  target: Tile_Land_Plains
+  doesDiscard: 0

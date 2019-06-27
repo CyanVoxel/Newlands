@@ -17,8 +17,6 @@ MonoBehaviour:
   subtitle: Upgrade
   bodyText: Upgrade any **<ts>** Tile to a **Farmland** Tile. This increases the **Base
     Value** of the Tile resources.
-  targetCategory: Land Tile
-  targetScope: Plains
   footerText: Upgrade
   resource: None
   footerValue: 0
@@ -27,3 +25,5 @@ MonoBehaviour:
   percFlag: 0
   moneyFlag: 0
   footerOpr: 0
+  target: Tile_Land_Plains
+  doesDiscard: 1

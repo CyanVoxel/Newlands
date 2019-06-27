@@ -680,83 +680,7 @@ public class GameManager : MonoBehaviour {
 	// Checks if a GameCard is allowed to be played on a Tile.
 	public bool CheckRules(GridUnit gridTile, GridUnit gameCard) {
 
-		bool categoryMatch = false;
-		bool scopeMatch = false;
-
-		Debug.Log("[GameManager]\n" +
-				"Game Card Target Cat   : " + gameCard.targetCat + "\n" +
-				"Game Card Target Scope : " + gameCard.targetScope + "\n" +
-				"Land Tile Category     : " + gridTile.tileCat + "\n" +
-				"Land Tile Scope        : " + gridTile.tileScope);
-
-		// Debug.Log("[GameManager] Checking if " + gameCard.targetCat +
-		// 				" can be played on " + gridTile.tileCat);
-
-
-		// Card Target Category
-		switch (gameCard.targetCat) {
-			case "Any":
-				categoryMatch = true;
-				break;
-			case "Tile":
-				if (gridTile.tileCat == "Tile" ||
-					gridTile.tileCat == "Land Tile" ||
-					gridTile.tileCat == "Coast Tile") {
-					categoryMatch = true;
-				}
-				break;
-			case "Land Tile":
-				if (gridTile.tileCat == "Tile") {
-					categoryMatch = true;
-				}
-				break;
-			case "Coast Tile":
-				if (gridTile.tileCat == "Tile") {
-					categoryMatch = true;
-				}
-				break;
-			default:
-				if (gameCard.targetCat == gridTile.tileCat) {
-					categoryMatch = true;
-				}
-				break;
-		} // Card Target Category
-
-		// If the category matched
-		if (categoryMatch) {
-
-			// Card Target Scope
-			switch (gameCard.targetScope) {
-				case "Any":
-					scopeMatch = true;
-					break;
-				case "Land Tile":
-					if (gridTile.tileScope == "Forest" ||
-						gridTile.tileScope == "Plains" ||
-						gridTile.tileScope == "Quarry" ||
-						gridTile.tileScope == "Farmland") {
-						scopeMatch = true;
-					}
-					break;
-				case "Coast Tile":
-					if (gridTile.tileScope == "Forest" ||
-						gridTile.tileScope == "Plains" ||
-						gridTile.tileScope == "Quarry" ||
-						gridTile.tileScope == "Farmland") {
-						scopeMatch = true;
-					}
-					break;
-				default:
-					if (gameCard.targetScope == gridTile.tileScope) {
-						scopeMatch = true;
-					}
-					break;
-			} // Card Target Scope
-
-		} // If the category matched
-
-		// If the Category AND Scope match
-		if (categoryMatch && scopeMatch) {
+		if (RuleSet.IsLegal(gridTile, gameCard)) {
 
 			ShiftRow(gridTile.y, 1);
 			maxStack[gridTile.y]++;
@@ -790,10 +714,7 @@ public class GameManager : MonoBehaviour {
 			return true;
 
 		} else {
-			Debug.Log("[GameManager] You can't play a " +
-						gameCard.targetScope +
-						" card on a "  + 
-						gridTile.tileScope + "!");
+			Debug.Log("[GameManager] Card move is illegal!");
 			MouseManager.selection = -1;
 			WipeSelectionColors("Game Card");
 			return false;

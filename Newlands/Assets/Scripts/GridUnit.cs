@@ -14,16 +14,19 @@ public class GridUnit {
 	public byte x;
 	public byte y;
 	public GameObject tile;
+	public byte stackSize = 0;
 	// public Stack<GameObject> cardStack;
 
-	public string landType;
+	// public string landType;
 	public string resource;
 	public int quantity;
 	public int value;
-	public string targetCat = "None";
-	public string targetScope = "None";
-	public string tileCat;
-	public string tileScope;
+	// public string tileCat;
+	// public string tileScope;
+	public string category;		// Category of unit (ex. Tile, Land Tile, Game Card, etc.)
+	public string scope;		// Scope of unit (ex. Land_Forest, Coast_Docks, Sabotage, etc.)
+	public string subScope;		// Scope of unit (ex. Land_Forest, Coast_Docks, Sabotage, etc.)
+	public string target = null;
 
 	// METHODS ####################################################################################
 
@@ -52,17 +55,20 @@ public class GridUnit {
 		Stack<GameObject> cardStack = new Stack<GameObject>();
 
 		this.tile = tileObj;
-		this.landType = card.title;
+		// this.landType = card.title;
 		this.resource = card.resource;
 		this.quantity = card.footerValue;
-		this.tileScope = card.title;
-		this.tileCat = card.category;
+		this.category = card.category;		// The Category of this card (Tile, Game Card)
+		this.scope = card.subtitle;			// The Scope of this card (Forest, Plains, Quarry)
+		this.subScope = card.title;
+		// this.tileScope = card.title;
+		// this.tileCat = card.category;
 		this.x = x;
 		this.y = y;
 
 		if (card.category == "Game Card") {
-			this.targetCat = card.targetCategory;
-			this.targetScope = card.targetScope;
+			// this.targetCat = card.targetCategory;
+			this.target = card.target;	// The Scope that this card targets
 		}
 		
 

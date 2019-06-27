@@ -17,8 +17,8 @@ MonoBehaviour:
   subtitle: Sabotage
   bodyText: Place this under any **Market Card.** This decreases the **Base Price**
     of the **Resource.**
-  targetCategory: Market Card
-  targetScope: All
+  targetScope: Market_All
+  doesDiscard: 0
   footerText: '**<x>** in Price'
   resource: None
   footerValue: 10

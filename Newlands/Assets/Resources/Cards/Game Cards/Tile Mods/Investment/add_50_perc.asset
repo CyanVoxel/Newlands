@@ -17,8 +17,6 @@ MonoBehaviour:
   subtitle: Investment
   bodyText: 'Place this under **any** Tile. This increases the **total value** of
     the Tile. '
-  targetCategory: Tile
-  targetScope: Any
   footerText: '**<x>** in Value'
   resource: None
   footerValue: 50
@@ -27,3 +25,5 @@ MonoBehaviour:
   percFlag: 1
   moneyFlag: 0
   footerOpr: 43
+  target: Tile
+  doesDiscard: 0

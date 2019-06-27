@@ -65,6 +65,8 @@ public class CardDisplay : MonoBehaviour {
 	} // mdToTag()
 
 	// Converts a custom tag to Card Data
+	// TODO: Expand the parser to dynamically generate most of the needed body text for cards,
+	//	including frequent phrases and dynamically generated scope info text.
 	private string TagToCardData(string inputText, Card card) {
 
 		string outputText = inputText;	// String to output
@@ -87,15 +89,15 @@ public class CardDisplay : MonoBehaviour {
 		while (outputText.IndexOf("<ts>") >= 0) {
 			int index = outputText.IndexOf("<ts>");								// Set known index
 			outputText = outputText.Remove(startIndex: index, count: 4);		// Remove tag
-			outputText = outputText.Insert(startIndex: index, value: card.targetScope);
+			outputText = outputText.Insert(startIndex: index, value: card.target);
 		} // while <ts> left
 
 		// Processes an <tc> tag
-		while (outputText.IndexOf("<tc>") >= 0) {
-			int index = outputText.IndexOf("<tc>");								// Set known index
-			outputText = outputText.Remove(startIndex: index, count: 4);		// Remove tag
-			outputText = outputText.Insert(startIndex: index, value: card.targetCategory);
-		} // while <tc> left
+		// while (outputText.IndexOf("<tc>") >= 0) {
+		// 	int index = outputText.IndexOf("<tc>");								// Set known index
+		// 	outputText = outputText.Remove(startIndex: index, count: 4);		// Remove tag
+		// 	outputText = outputText.Insert(startIndex: index, value: card.targetCategory);
+		// } // while <tc> left
 
 		return outputText;
 

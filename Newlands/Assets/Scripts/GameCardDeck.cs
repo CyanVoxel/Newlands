@@ -33,7 +33,7 @@ public class GameCardDeck : Deck {
 			this.Add(dirGcTmR + "/iron_add_1", 5);
 			this.Add(dirGcTmR + "/iron_add_2", 4);
 			this.Add(dirGcTmR + "/iron_add_3", 2);
-			this.Add(dirGcTmR + "/lumber_add_1", 3);
+			this.Add(dirGcTmR + "/lumber_add_1", 300);
 			this.Add(dirGcTmR + "/lumber_add_2", 3);
 			this.Add(dirGcTmR + "/lumber_add_3", 3);
 			this.Add(dirGcTmR + "/gems_add_1", 3);
