@@ -682,26 +682,32 @@ public class GameManager : MonoBehaviour {
 
 		if (RuleSet.IsLegal(gridTile, gameCard)) {
 
-			ShiftRow(gridTile.y, 1);
-			maxStack[gridTile.y]++;
+			gridTile.stackSize++;
+
+			// If the stack on the unit is larger than the stack count on the row, increase
+			if (gridTile.stackSize > maxStack[gridTile.y]) {
+				maxStack[gridTile.y]++;
+				ShiftRow(gridTile.y, 1);
+			}
+			
 			WipeSelectionColors("Game Card");
 
 			gameCard.tile.transform.position = new Vector3
 				(gridTile.tile.transform.position.x,
-				gridTile.tile.transform.position.y - (shiftUnit * maxStack[gridTile.y]),
-				(gridTile.tile.transform.position.z) + (cardThickness * maxStack[gridTile.y]));
+				gridTile.tile.transform.position.y - (shiftUnit * gridTile.stackSize),
+				(gridTile.tile.transform.position.z) + (cardThickness * gridTile.stackSize));
 
 			// players[turn].hand.Remove(players[turn].hand[gameCard.x]);
 			gameCard.tile.transform.parent = gridTile.tile.transform;
 			// gridTile.cardStack.Push(gameCard.tile);
-			// gameCard.tile.name = ("Card_i" + 0);
+
 			// CanvasGroup canvasGroup = gameCard.tile.GetComponentsInChildren<CanvasGroup>()[0];
 			// canvasGroup.blocksRaycasts = false;
 
-			// TODO: Name the card with the local child index included
+			// TODO: Adjust for more than 10 cards on a given stack (unlikely, but possible)
 			gameCard.tile.name = ("p00_" +
-								  "i" + "00" + "_" +
-								  "GameCard");
+								  "i0" + (gridTile.stackSize - 1) + "_" +
+								  "StackedCard");
 
 			players[turn].hand.Add(DrawCard(masterDeckMutable.gameCardDeck, 
 											masterDeck.gameCardDeck));

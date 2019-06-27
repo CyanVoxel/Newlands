@@ -76,7 +76,7 @@ public class RuleSet {
 
 		bool MatchScope0(string finalScope) {
 
-			Debug.Log("<b>[RuleSet]</b> Checking if " + finalScope + " matches target " + targetLevel[0]);
+			// Debug.Log("<b>[RuleSet]</b> Checking if " + finalScope + " matches target " + targetLevel[0]);
 			if (scopeLevel.Length >= 1) {
 				// Checks the Scope Level 0 (Category)
 				switch (finalScope) {
@@ -95,7 +95,7 @@ public class RuleSet {
 
 		bool MatchScope1(string finalScope) {
 
-			Debug.Log("<b>[RuleSet]</b> Checking if " + finalScope + " matches target " + targetLevel[1]);
+			// Debug.Log("<b>[RuleSet]</b> Checking if " + finalScope + " matches target " + targetLevel[1]);
 			if (scopeLevel.Length >= 2) {
 				// Checks the Scope Level 0 (Category)
 				switch (finalScope) {
@@ -115,7 +115,7 @@ public class RuleSet {
 
 		bool MatchScope2(string finalScope) {
 
-			Debug.Log("<b>[RuleSet]</b> Checking if " + finalScope + " matches target " + targetLevel[2]);
+			// Debug.Log("<b>[RuleSet]</b> Checking if " + finalScope + " matches target " + targetLevel[2]);
 			if (scopeLevel.Length >= 3) {
 				// Checks the Scope Level 0 (Category)
 				switch (finalScope) {
@@ -142,6 +142,7 @@ public class RuleSet {
 		void TestScope0() {
 
 			if (scopeLevel[0].Contains("|")) {
+
 				string[] subLevel = scopeLevel[0].Split('|');
 
 				for (int i = 0; i < subLevel.Length; i++) {
@@ -152,7 +153,7 @@ public class RuleSet {
 				} // for
 
 			} else {
-				scopeResults[0] = MatchScope0(targetLevel[0]);
+				scopeResults[0] = MatchScope0(scopeLevel[0]);
 			} // if-else contains '|'
 		} // TestScope
 
@@ -170,7 +171,7 @@ public class RuleSet {
 				} // for
 
 			} else {
-				scopeResults[1] = MatchScope1(targetLevel[1]);
+				scopeResults[1] = MatchScope1(scopeLevel[1]);
 			} // if-else contains '|'
 		} // TestScope
 
@@ -179,7 +180,7 @@ public class RuleSet {
 
 			if (scopeLevel[2].Contains("|")) {
 				string[] subLevel = scopeLevel[2].Split('|');
-				Debug.Log("subLevel length: " + subLevel.Length);
+
 				for (int i = 0; i < subLevel.Length; i++) {
 					
 					if (scopeResults[2] = MatchScope2(subLevel[i])) {
@@ -188,7 +189,7 @@ public class RuleSet {
 				} // for
 
 			} else {
-				scopeResults[2] = MatchScope2(targetLevel[2]);
+				scopeResults[2] = MatchScope2(scopeLevel[2]);
 			} // if-else contains '|'
 		} // TestScope
 

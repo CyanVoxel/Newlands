@@ -167,8 +167,8 @@ public class MouseManager : MonoBehaviour {
 						if (selection >= 0) {
 							if (gameMan.CheckRules(GameManager.grid[locX, locY], 
 								GameManager.players[0].handUnits[selection])) {
-								Debug.Log("Using GameCard " + selection + 
-									  " on LandTile " + locX + ", " + locY);
+								// Debug.Log("Using GameCard " + selection + 
+									//   " on LandTile " + locX + ", " + locY);
 									  //GameManager.players[0].hand[selection]
 							}
 						} else {
