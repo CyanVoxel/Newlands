@@ -455,7 +455,7 @@ public class GameManager : MonoBehaviour {
 	} // GetHighlightCount()
 
 	// Attempts to buy an unowned tile. Returns true if successful, or false if already owned.
-	public bool BuyTile(byte gridX, byte gridY) {
+	public static bool BuyTile(byte gridX, byte gridY) {
 
 		byte id = (byte)(turn - 1);
 
@@ -671,19 +671,23 @@ public class GameManager : MonoBehaviour {
 	public bool TryToPlay(GridUnit gridTile, GridUnit gameCard) {
 
 		if (!gridTile.bankrupt && RuleSet.IsLegal(gridTile, gameCard)) {
-
-			gridTile.stackSize++;
-			gridTile.cardStack.Add(gameCard.card);
+			
 			RuleSet.PlayCard(gridTile, gameCard.card);
+			UpdatePlayersInfo();
+			UpdateUI();
 
 			if (gridTile.bankrupt) {
 				BankruptTile(gridTile);
+				UpdatePlayersInfo();
 				UpdateUI();
 				Debug.Log("[GameManager] Tile bankrupt! has value of " + gridTile.totalValue);
 			}
 
 			if (gameCard.stackable) {
-				
+
+				gridTile.stackSize++;
+				gridTile.cardStack.Add(gameCard.card);
+				UpdatePlayersInfo();
 				UpdateUI();
 
 				// If the stack on the unit is larger than the stack count on the row, increase
@@ -709,6 +713,7 @@ public class GameManager : MonoBehaviour {
 			} else {
 				// After ALL processing is done, destroy the game object
 				Destroy(gameCard.tile);
+				UpdateUI();
 			}// if stackable
 
 			
@@ -730,7 +735,7 @@ public class GameManager : MonoBehaviour {
 			return false;
 		} // If the Category AND Scope match
 
-
+		
 	} // TryToPlay()
 
 	public GameObject FindCard(string type, byte x, byte y) {
@@ -772,6 +777,7 @@ public class GameManager : MonoBehaviour {
 		// Things that need to be updated for all players go here
 		for (byte i = 0; i < (byte)players.Count; i++) {
 			players[i].CalcTotalMoney();
+			Debug.Log("Player " + (i + 1) + "'s Money: $" + players[i].totalMoney);
 		} // for array length
 
 	} // UpdatePlayersInfo()

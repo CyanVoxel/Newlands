@@ -298,9 +298,11 @@ public class CardDisplay : MonoBehaviour {
 		Image iconImage = titleIconObj.GetComponent<Image>();
 		iconImage.color = ColorPalette.red500;
 
-		GameObject footerObj = tile.transform.Find("Front Canvas/Footer").gameObject;
-		TMP_Text footer = titleObj.GetComponent<TMP_Text>();
-		footer.color = ColorPalette.red500;
+		// This picks up the title text for some reason?
+		// GameObject footerObj = tile.transform.Find("Front Canvas/Footer").gameObject;
+		// TMP_Text footer = titleObj.GetComponent<TMP_Text>();
+		// footer.color = ColorPalette.red500;
+		// footer.text = "";
 
 	} //BankruptVisuals()
 

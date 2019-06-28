@@ -22,7 +22,7 @@ public class MasterDeck {
 	protected string dirGcTmI = "Cards/Game Cards/Tile Mods/Investment";
 	protected string dirGcTmS = "Cards/Game Cards/Tile Mods/Sabotage";
 	protected string dirGcTmR = "Cards/Game Cards/Tile Mods/Resource";
-	protected string dirGcTmU = "Cards/Game Cards/Tile Mods/Upgrade";
+	protected string dirGcTmO = "Cards/Game Cards/Tile Mods/Other";
 	protected string dirMc = "Cards/Market Cards";
 	protected string dirTL = "Cards/Tiles/Land";
 	protected string dirTC = "Cards/Tiles/Coast";

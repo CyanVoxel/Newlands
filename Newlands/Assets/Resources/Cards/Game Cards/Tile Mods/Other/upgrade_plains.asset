@@ -10,19 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 252e8b19c3229d843a76e098201409a6, type: 3}
-  m_Name: farmland_empty
+  m_Name: upgrade_plains
   m_EditorClassIdentifier: 
-  category: Tile
-  title: Farmland
-  subtitle: Land
-  bodyText: Holds compatible **Tile Mod** Cards. Acts as a **Plains** Tile.
-  footerText: '*Empty*'
+  category: Game Card
+  title: Tile Mod
+  subtitle: Upgrade
+  bodyText: Upgrade any **<ts>** Tile to a **Farmland** Tile. This increases the **Base
+    Value** of the Tile resources.
+  footerText: Upgrade
   resource: None
   footerValue: 0
-  FooterColor: Black
+  FooterColor: Dark Blue
   onlyColorCorners: 0
   percFlag: 0
   moneyFlag: 0
-  footerOpr: 78
-  target: 
-  doesDiscard: 0
+  footerOpr: 0
+  target: Tile_Land_Plains
+  doesDiscard: 1

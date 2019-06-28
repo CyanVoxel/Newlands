@@ -100,7 +100,7 @@ public class RuleSet {
 
 			// Debug.Log("<b>[RuleSet]</b> Checking if " + finalScope + " matches target " + targetLevel[1]);
 			if (scopeLevel.Length >= 2) {
-				// Checks the Scope Level 0 (Category)
+				// Checks the Scope Level 1
 				switch (finalScope) {
 					case "Any": return true;
 					case "Land": if (targetLevel[1] == "Land") { return true; } break;
@@ -121,13 +121,18 @@ public class RuleSet {
 
 			// Debug.Log("<b>[RuleSet]</b> Checking if " + finalScope + " matches target " + targetLevel[2]);
 			if (scopeLevel.Length >= 3) {
-				// Checks the Scope Level 0 (Category)
+				// Checks the Scope Level 2
 				switch (finalScope) {
 					case "Any": return true;
 					case "Forest": if (targetLevel[2] == "Forest") { return true; } break;
-					case "Plains": if (targetLevel[2] == "Plains") { return true; } break;
-					case "Quarry": if (targetLevel[2] == "Quarry") { return true; } break;
+					case "Plains": 
+						if (targetLevel[2] == "Plains") {
+							return true; 
+						} else if (targetLevel[2] == "Farmland" && card.scope != "Upgrade") {
+							return true;
+						} break;
 					case "Farmland": if (targetLevel[2] == "Farmland") { return true; } break;
+					case "Quarry": if (targetLevel[2] == "Quarry") { return true; } break;
 					case "Beach": if (targetLevel[2] == "Beach") { return true; } break;
 					case "Ocean": if (targetLevel[2] == "Ocean") { return true; } break;
 					case "Docks": if (targetLevel[2] == "Docks") { return true; } break;
@@ -224,6 +229,23 @@ public class RuleSet {
 				target.CalcTotalValue();
 				GameManager.UpdatePlayersInfo();
 				break;
+			case "Foreclosure":
+				target.bankrupt = true;
+				GameManager.BankruptTile(target);
+				GameManager.UpdatePlayersInfo();
+				break;
+			case "Upgrade":
+				if (GetScope(cardToPlay, 2) == "Plains" && target.subScope != "Farmland") {
+					Card newCard = Card.CreateInstance<Card>();
+					newCard = Resources.Load<Card>("Cards/Tiles/Land/farmland_cashcrops_5");
+					target.tile.SendMessage("DisplayCard", newCard);
+
+					GameManager.grid[target.x, target.y] = new GridUnit(newCard, target.tile, target.x, target.y);
+
+					target.CalcTotalValue();
+					GameManager.UpdatePlayersInfo();
+				} // if Plains
+				break;
 			default:
 				Debug.LogWarning("<b>[RuleSet]</b> Warning:" +
 				"No actions found for " + action + "!"); break;
@@ -235,6 +257,26 @@ public class RuleSet {
 	public static void PlayCard(GridUnit target, GridUnit cardToPlay) {
 		PlayCard(target, cardToPlay.card);
 	} // PlayCard(GridUnit, GridUnit)
+
+	private static string GetScope(Card card, int level = -1) {
+
+		string[] scopeLevel = new string[3];
+
+		if (card.target != null) {
+			scopeLevel = card.target.Split('_');
+		} else {
+			Debug.Log("Hey, that card's target is null!");
+			return "error";
+		}
+
+		switch (level) {
+			case 0: return scopeLevel[0];
+			case 1: return scopeLevel[1];
+			case 2: return scopeLevel[2];
+			default: return card.target;
+		}
+
+	} // GetScope()
 	
 
 } // RuleSet()

@@ -10,19 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 252e8b19c3229d843a76e098201409a6, type: 3}
-  m_Name: silver_add_1
+  m_Name: foreclosure
   m_EditorClassIdentifier: 
   category: Game Card
   title: Tile Mod
-  subtitle: Resource
-  bodyText: Place this under any **<ts>**.
-  footerText: '**<x>** <r>'
-  resource: Silver
-  footerValue: 1
-  FooterColor: Light Blue
+  subtitle: Foreclosure
+  bodyText: Use this on **Any** Tile to instantly **Foreclose** a Tile!
+  footerText: Foreclosure
+  resource: 
+  footerValue: 0
+  FooterColor: Red
   onlyColorCorners: 0
   percFlag: 0
   moneyFlag: 0
-  footerOpr: 43
-  target: Tile_Land_Quarry
-  doesDiscard: 0
+  footerOpr: 0
+  target: Tile
+  doesDiscard: 1

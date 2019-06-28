@@ -78,7 +78,7 @@ public class MouseManager : MonoBehaviour {
 						GameManager.UpdateUI();
 
 						// If the tile can be bought
-						if (gameMan.BuyTile(locX, locY)) {
+						if (GameManager.BuyTile(locX, locY)) {
 
 							objX = objectHit.transform.parent.position.x;
 							objY = objectHit.transform.parent.position.y;

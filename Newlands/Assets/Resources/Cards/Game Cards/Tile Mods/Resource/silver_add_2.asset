@@ -24,5 +24,5 @@ MonoBehaviour:
   percFlag: 0
   moneyFlag: 0
   footerOpr: 43
-  target: Tile_Land
+  target: Tile_Land_Quarry
   doesDiscard: 0
