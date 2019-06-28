@@ -17,8 +17,8 @@ public class GameManager : MonoBehaviour {
 	public static byte turn = 1;					// The current turn in the round
 	public static int graceRounds = 1;				// The # of rounds without neighbor rules
 
-	public static readonly byte width = 3;			// Width of the game grid in cards
-	public static readonly byte height = 3;			// Height of the game grid in cards
+	public static readonly byte width = 7;			// Width of the game grid in cards
+	public static readonly byte height = 7;			// Height of the game grid in cards
 	public static readonly byte handSize = 9;		// How many cards the player is dealt
 
 	public static List<Player> players = new List<Player>();	// The player data objects
@@ -169,7 +169,7 @@ public class GameManager : MonoBehaviour {
 				grid[x, y] = new GridUnit(card: card, tileObj: cardObj, x: x, y: y);
 				rowPos[y] = cardObj.transform.position.y;	// Row position
 				// Set Tile's value based on its Resource
-				grid[x, y].AssignTileValue(tile: card);
+				// grid[x, y].AssignTileValue(tile: card);
 
 				// Connect the drawn card to the prefab that was just created
 				cardObj.SendMessage("DisplayCard", card);
@@ -325,7 +325,7 @@ public class GameManager : MonoBehaviour {
 
 		byte id = (byte)(turn - 1);
 
-		WipeSelectionColors("LandTile");
+		WipeSelectionColors("LandTile", ColorPalette.tintCard);
 
 		// Search through the grid
 		for (byte x = 0; x < width; x++) {
@@ -351,7 +351,9 @@ public class GameManager : MonoBehaviour {
 						gridY + j >= 0 && 
 						gridY + j < height) {
 
-						if (grid[gridX + i, gridY + j].ownerId == 0) {
+						if (grid[gridX + i, gridY + j].ownerId == 0 && 
+							!grid[gridX + i, gridY + j].bankrupt) {
+
 							GameObject temp = FindCard("Tile", (byte)(gridX + i), (byte)(gridY + j));
 							temp.GetComponentsInChildren<Renderer>()[0].material.color = playerColor;
 							temp.GetComponentsInChildren<Renderer>()[1].material.color = playerColor;
@@ -405,7 +407,7 @@ public class GameManager : MonoBehaviour {
 				// Test to see if the grid is full
 				for (int x = 0; x < width; x++) {
 					for (int y = 0; y < height; y++) {
-						if (grid[x,y].ownerId == 0) {
+						if (grid[x,y].ownerId == 0 && !grid[x, y].bankrupt) {
 							gridSpaceLeft++;
 							// Debug.Log("Grid must NOT be full!");
 						} // if Tile is unowned
@@ -441,7 +443,9 @@ public class GameManager : MonoBehaviour {
 						gridX + i < width && 
 						gridY + j >= 0 && 
 						gridY + j < height) {
-						if (grid[gridX + i, gridY + j].ownerId == 0) {
+						if (grid[gridX + i, gridY + j].ownerId == 0 && 
+							!grid[gridX + i, gridY + j].bankrupt) {
+
 							highlighted[gridX + i, gridY + j] = true;	
 						} // if Tile is unowned
 					} // if grid in bounds
@@ -475,9 +479,10 @@ public class GameManager : MonoBehaviour {
 		} // if past first round
 
 		// If the tile is unowned (Had owner ID of 0), assign this owner to it
-		if (grid[gridX, gridY].ownerId == 0 && followsRules) {
+		if (grid[gridX, gridY].ownerId == 0 && followsRules && !grid[gridX, gridY].bankrupt) {
 			// players[id].ModifyMoney(-100);
-			players[id].CalcMoney();	//NOTE: Only need this OR ModifyMoney()
+			// players[id].CalcMoney();	//NOTE: Only need this OR ModifyMoney()
+			players[id].CalcTotalMoney();
 			grid[gridX, gridY].ownerId = players[id].Id;
 			// Debug.Log("Turn " + turn + ", buying for Player " + players[id].Id);
 			return true;
@@ -503,7 +508,8 @@ public class GameManager : MonoBehaviour {
 						gridLocY + j < height) {
 
 						if (grid[gridLocX + i, gridLocY + j].ownerId == 0 &&
-							grid[gridLocX + i, gridLocY + j] == grid[gridX, gridY]) {
+							grid[gridLocX + i, gridLocY + j] == grid[gridX, gridY] && 
+							!grid[gridX, gridY].bankrupt) {
 							followsRules = true;	// Signal that this is a valid purchase
 						} // if tile owned and in a valid spot
 					} // if grid in bounds
@@ -513,17 +519,17 @@ public class GameManager : MonoBehaviour {
 	} // BuyTile()
 
 	// Turns all Land Tiles on the grid white.
-	public void WipeSelectionColors(string cardType) {
+	public void WipeSelectionColors(string cardType, Color32 color) {
 
 		if (cardType == "LandTile") {
 			for (byte x = 0; x < width; x++) {
 				for (byte y = 0; y < height; y++) {
-					if (grid[x, y].ownerId == 0) {
+					if (grid[x, y].ownerId == 0 && !grid[x, y].bankrupt) {
 
 						GameObject temp = FindCard("Tile", (byte)x, (byte)y);
 
-						temp.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.tintCard;
-						temp.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.tintCard;
+						temp.GetComponentsInChildren<Renderer>()[0].material.color = color;
+						temp.GetComponentsInChildren<Renderer>()[1].material.color = color;
 					} //if tile unowned
 				} // for height
 			} // for width
@@ -535,8 +541,8 @@ public class GameManager : MonoBehaviour {
 					float x = temp.transform.position.x;
 					float y = temp.transform.position.y;
 					temp.transform.position = new Vector3(x, y, 40);
-					temp.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.tintCard;
-					temp.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.tintCard;
+					temp.GetComponentsInChildren<Renderer>()[0].material.color = color;
+					temp.GetComponentsInChildren<Renderer>()[1].material.color = color;
 				} else {
 					// Debug.LogWarning("[GameManager] Warning: Could not find a GameCard selection to wipe!");
 				} // if the card could be found
@@ -545,21 +551,6 @@ public class GameManager : MonoBehaviour {
 		} // if
 
 	} // WipeSelectionColors()
-
-	// Turns all Land Tiles on the grid a specified color. (Overload)
-	public void WipeSelectionColors(string cardType, Color32 color) {
-
-		for (byte x = 0; x < width; x++) {
-			for (byte y = 0; y < height; y++) {
-				if (grid[x, y].ownerId == 0) {
-					GameObject temp = FindCard("Tile", x, y);
-					temp.GetComponentsInChildren<Renderer>()[0].material.color = color;
-					temp.GetComponentsInChildren<Renderer>()[1].material.color = color;
-				}
-			}
-		}
-
-	} // WipeSelectionColors(color)
 
 	// Returns the color associated with a player ID.
 	// Strength paramater refers to a possible brighter color variant.
@@ -639,7 +630,7 @@ public class GameManager : MonoBehaviour {
 	} // ShiftRow()
 
 	// Updates the basic UI elements 
-	public void UpdateUI() {
+	public static void UpdateUI() {
 
 		GameManager.phaseNumberText.text = ("Phase " + GameManager.phase);
 		GameManager.roundNumberText.text = ("Round " + GameManager.round);
@@ -670,45 +661,58 @@ public class GameManager : MonoBehaviour {
 
 		// Things that need to be updated for all players go here
 		for (byte i = 0; i < (byte)players.Count; i++) {
-			// Debug.Log(moneyText[i].text);
-			players[i].CalcMoney();
-			players[i].moneyText.text = "Player " + (i + 1) + ": $" + players[i].Money; 
+			players[i].moneyText.text = "Player " + (i + 1) + ": " 
+										+ players[i].totalMoney.ToString("C"); 
 		} // for array length
 
 	} // UpdateUI()
 
 	// Checks if a GameCard is allowed to be played on a Tile.
-	public bool CheckRules(GridUnit gridTile, GridUnit gameCard) {
+	public bool TryToPlay(GridUnit gridTile, GridUnit gameCard) {
 
-		if (RuleSet.IsLegal(gridTile, gameCard)) {
+		if (!gridTile.bankrupt && RuleSet.IsLegal(gridTile, gameCard)) {
 
 			gridTile.stackSize++;
+			gridTile.cardStack.Add(gameCard.card);
+			RuleSet.PlayCard(gridTile, gameCard.card);
 
-			// If the stack on the unit is larger than the stack count on the row, increase
-			if (gridTile.stackSize > maxStack[gridTile.y]) {
-				maxStack[gridTile.y]++;
-				ShiftRow(gridTile.y, 1);
+			if (gridTile.bankrupt) {
+				BankruptTile(gridTile);
+				UpdateUI();
+				Debug.Log("[GameManager] Tile bankrupt! has value of " + gridTile.totalValue);
 			}
+
+			if (gameCard.stackable) {
+				
+				UpdateUI();
+
+				// If the stack on the unit is larger than the stack count on the row, increase
+				if (gridTile.stackSize > maxStack[gridTile.y]) {
+					maxStack[gridTile.y]++;
+					ShiftRow(gridTile.y, 1);
+				} // if stack size exceeds max stack recorded for row
+
+				gameCard.tile.transform.position = new Vector3
+					(gridTile.tile.transform.position.x,
+					gridTile.tile.transform.position.y - (shiftUnit * gridTile.stackSize),
+					(gridTile.tile.transform.position.z) + (cardThickness * gridTile.stackSize));
+
+				gameCard.tile.transform.parent = gridTile.tile.transform;
+
+
+				// TODO: Adjust for more than 10 cards on a given stack (unlikely, but possible)
+				// TODO: Account for different players
+				gameCard.tile.name = ("p00_" +
+									"i0" + (gridTile.stackSize - 1) + "_" +
+									"StackedCard");
+
+			} else {
+				// After ALL processing is done, destroy the game object
+				Destroy(gameCard.tile);
+			}// if stackable
+
 			
-			WipeSelectionColors("Game Card");
-
-			gameCard.tile.transform.position = new Vector3
-				(gridTile.tile.transform.position.x,
-				gridTile.tile.transform.position.y - (shiftUnit * gridTile.stackSize),
-				(gridTile.tile.transform.position.z) + (cardThickness * gridTile.stackSize));
-
-			// players[turn].hand.Remove(players[turn].hand[gameCard.x]);
-			gameCard.tile.transform.parent = gridTile.tile.transform;
-			// gridTile.cardStack.Push(gameCard.tile);
-
-			// CanvasGroup canvasGroup = gameCard.tile.GetComponentsInChildren<CanvasGroup>()[0];
-			// canvasGroup.blocksRaycasts = false;
-
-			// TODO: Adjust for more than 10 cards on a given stack (unlikely, but possible)
-			gameCard.tile.name = ("p00_" +
-								  "i0" + (gridTile.stackSize - 1) + "_" +
-								  "StackedCard");
-
+		
 			players[turn].hand.Add(DrawCard(masterDeckMutable.gameCardDeck, 
 											masterDeck.gameCardDeck));
 
@@ -716,18 +720,18 @@ public class GameManager : MonoBehaviour {
 
 			// gridTile.cardStack.Add(gameCard.tile);
 			MouseManager.selection = -1;
-			
+			WipeSelectionColors("Game Card", ColorPalette.tintCard);
 			return true;
 
 		} else {
 			Debug.Log("[GameManager] Card move is illegal!");
 			MouseManager.selection = -1;
-			WipeSelectionColors("Game Card");
+			WipeSelectionColors("Game Card", ColorPalette.tintCard);
 			return false;
 		} // If the Category AND Scope match
 
 
-	} // CheckRules
+	} // TryToPlay()
 
 	public GameObject FindCard(string type, byte x, byte y) {
 
@@ -762,7 +766,22 @@ public class GameManager : MonoBehaviour {
 			return null;
 		}
 
-
 	} // FindCard()
+
+	public static void UpdatePlayersInfo() {
+		// Things that need to be updated for all players go here
+		for (byte i = 0; i < (byte)players.Count; i++) {
+			players[i].CalcTotalMoney();
+		} // for array length
+
+	} // UpdatePlayersInfo()
+
+	public static void BankruptTile(GridUnit tile) {
+
+		Debug.Log("[GameManager] Bankrupting tile!");
+		tile.ownerId = 0;
+		CardDisplay.BankruptVisuals(tile.tile);
+
+	} // BankruptTile()
 	
 } // GameManager class

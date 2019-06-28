@@ -6,6 +6,8 @@ public class RuleSet {
 
 	// METHODS ####################################################################################
 
+	// Compares a Game Card against a target Card/Tle to determine if it is allowed to be played
+	//	given the scope of the Game Card.
 	public static bool IsLegal(GridUnit target, GridUnit card) {
 
 		string[] scopeLevel;
@@ -35,34 +37,34 @@ public class RuleSet {
 
 		TestScope0();
 		if (scopeLevel.Length == 1 && scopeResults[0]) {
-			Debug.Log("<b>[RuleSet]</b> Level [0] Match! Returning True!");
+			// Debug.Log("<b>[RuleSet]</b> Level [0] Match! Returning True!");
 			return true;
 		} else if (scopeLevel.Length == 1 && !scopeResults[0]) {
-			Debug.Log("<b>[RuleSet]</b> " +
-					"Returned false, failed Scope Pass [0] with length of 1");
+			// Debug.Log("<b>[RuleSet]</b> " +
+			// 		"Returned false, failed Scope Pass [0] with length of 1");
 			return false;
 		}
-		Debug.Log("<b>[RuleSet]</b> Level [0] Match! Continuing...");
+		// Debug.Log("<b>[RuleSet]</b> Level [0] Match! Continuing...");
 		
 
 		TestScope1();
 		if (scopeLevel.Length == 2 && scopeResults[1]) {
-			Debug.Log("<b>[RuleSet]</b> Level [1] Match! Returning True!");
+			// Debug.Log("<b>[RuleSet]</b> Level [1] Match! Returning True!");
 			return true;
 		} else if (scopeLevel.Length == 2 && !scopeResults[1]) {
-			Debug.Log("<b>[RuleSet]</b> " +
-					"Returned false, failed Scope Pass [1] with length of 2");
+			// Debug.Log("<b>[RuleSet]</b> " +
+			// 		"Returned false, failed Scope Pass [1] with length of 2");
 			return false;
 		}
-		Debug.Log("<b>[RuleSet]</b> Level [1] Match! Continuing...");
+		// Debug.Log("<b>[RuleSet]</b> Level [1] Match! Continuing...");
 
 		TestScope2();
 		if (scopeLevel.Length == 3 && scopeResults[2]) {
-			Debug.Log("<b>[RuleSet]</b> Level [2] Match! Returning True!");
+			// Debug.Log("<b>[RuleSet]</b> Level [2] Match! Returning True!");
 			return true;
 		} else if (scopeLevel.Length == 3 && !scopeResults[2]) {
-			Debug.Log("<b>[RuleSet]</b> " +
-					"Returned false, failed Scope Pass [2] with length of 3");
+			// Debug.Log("<b>[RuleSet]</b> " +
+			// 		"Returned false, failed Scope Pass [2] with length of 3");
 			return false;
 		}
 
@@ -83,10 +85,11 @@ public class RuleSet {
 					case "Tile": if (targetLevel[0] == "Tile") { return true; } break;
 					case "Market":if (targetLevel[0] == "Market") { return true; } break;
 					default:
-						Debug.Log("<b>[RuleSet]</b> " +
-						"The target " + card.target +
-						" is out of scope for the card " +
-						target.category + " at scope level 0"); break;
+						// Debug.Log("<b>[RuleSet]</b> " +
+						// "The target " + card.target +
+						// " is out of scope for the card " +
+						// target.category + " at scope level 0"); 
+						break;
 				} // switch
 			}
 			return false;
@@ -103,10 +106,11 @@ public class RuleSet {
 					case "Land": if (targetLevel[1] == "Land") { return true; } break;
 					case "Coast": if (targetLevel[1] == "Coast") { return true; } break;
 					default:
-						Debug.Log("<b>[RuleSet]</b> " +
-						"The target " + card.target +
-						" is out of scope for the card " +
-						target.category + " at scope level 1"); break;
+						// Debug.Log("<b>[RuleSet]</b> " +
+						// "The target " + card.target +
+						// " is out of scope for the card " +
+						// target.category + " at scope level 1"); 
+						break;
 				} // switch
 			}
 			return false;
@@ -128,10 +132,11 @@ public class RuleSet {
 					case "Ocean": if (targetLevel[2] == "Ocean") { return true; } break;
 					case "Docks": if (targetLevel[2] == "Docks") { return true; } break;
 					default:
-						Debug.Log("<b>[RuleSet]</b> " +
-						"The target " + card.target +
-						" is out of scope for the card " +
-						target.category + " at scope level 2"); break;
+						// Debug.Log("<b>[RuleSet]</b> " +
+						// "The target " + card.target +
+						// " is out of scope for the card " +
+						// target.category + " at scope level 2"); 
+						break;
 				} // switch
 			}
 			return false;
@@ -197,6 +202,39 @@ public class RuleSet {
 
 	} // IsLegal
 
+	// Carries out the action that a legal Game Card intends
+	public static void PlayCard(GridUnit target, Card cardToPlay) {
+		string action = cardToPlay.subtitle;
+		// NOTE: Cards promting tile value calculation have their calculations offset to
+		//	the GridUnit class. When adding a new case here, you'll need to also add one
+		//	in GridUnit so it knows how to do the calculations based on the card info.
+
+		// Debug.Log("<b>[RuleSet]</b> Playing a card...");
+
+		switch (action) {
+			case "Investment":
+				target.CalcTotalValue();
+				GameManager.UpdatePlayersInfo();
+				break;
+			case "Sabotage":
+				target.CalcTotalValue();
+				GameManager.UpdatePlayersInfo();
+				break;
+			case "Resource":
+				target.CalcTotalValue();
+				GameManager.UpdatePlayersInfo();
+				break;
+			default:
+				Debug.LogWarning("<b>[RuleSet]</b> Warning:" +
+				"No actions found for " + action + "!"); break;
+		} // switch
+
+	} // PlayCard(Card, GridUnit)
+
+	// Carries out the action that a legal Game Card intends (Override)
+	public static void PlayCard(GridUnit target, GridUnit cardToPlay) {
+		PlayCard(target, cardToPlay.card);
+	} // PlayCard(GridUnit, GridUnit)
 	
 
 } // RuleSet()

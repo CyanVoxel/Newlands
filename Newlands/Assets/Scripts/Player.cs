@@ -11,9 +11,11 @@ public class Player {
 	public byte Id { get; set; } = 0;
 	public Deck hand;
 	public GridUnit[] handUnits;
-	private double baseMoney = 0;
+
 	private double tileMoney = 0;
-	private double totalMoney = 0;
+	public double baseMoney = 0;
+	public double totalMoney = 0;
+
 	private bool initialized = false;
 
 	// UI ELEMENTS ------------------------------------------------------------
@@ -25,8 +27,9 @@ public class Player {
 
 	public double Money { get { return totalMoney; } }
 
-	public void CalcMoney() {
-		tileMoney = 0;	// Reset tile money before recalculating
+	public void CalcTotalMoney() {
+		this.totalMoney = 0;
+		this.tileMoney = 0;	// Reset tile money before recalculating
 
 		// Checks to see if the object has been initialized. If not, assume it will be afterwards.
 		if (this.initialized) {
@@ -35,7 +38,10 @@ public class Player {
 			for (byte x = 0; x < GameManager.width; x++) {
 				for (byte y = 0; y < GameManager.height; y++) {
 					if (GameManager.grid[x, y].ownerId == this.Id) {
-						this.tileMoney += (GameManager.grid[x, y].value * GameManager.grid[x, y].quantity);
+
+						GameManager.grid[x, y].CalcTotalValue();
+						this.tileMoney += (GameManager.grid[x, y].totalValue);
+
 					} // if player owns tile
 				} // for y
 			} // for x
@@ -44,21 +50,16 @@ public class Player {
 			this.initialized = true;
 		}// if initialized
 		
-		totalMoney = baseMoney + tileMoney;
+		this.totalMoney = this.baseMoney + this.tileMoney;
 
-	 } // CalcMoney()
+	 } // CalcTotalMoney()
 
-	// Takes in a double and adds it to the baseMoney, then recalculates the totalMoney 
-	 public void ModifyMoney(double amount) {
-		 this.baseMoney += amount;
-		 this.CalcMoney();
-	 } // ModifyMoney
 
 	// CONSTRUCTORS ###############################################################################
 
 	public Player() {
-		this.CalcMoney();
-		handUnits = new GridUnit[GameManager.handSize];
+		this.CalcTotalMoney();
+		this.handUnits = new GridUnit[GameManager.handSize];
 		// this.hand = new Deck();
 		// moneyObj = new GameObject();
 	} // Player() constructor

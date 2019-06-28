@@ -16,7 +16,7 @@ public class MouseManager : MonoBehaviour {
 		// If 'P' is pressed, end the phase - Debugging only
 		if (Input.GetKeyDown(KeyCode.P)) {
 			gameMan.EndPhase();
-			gameMan.UpdateUI();
+			GameManager.UpdateUI();
 		}
 
 		// If the cursor is over a UI element, return from Update()
@@ -52,6 +52,7 @@ public class MouseManager : MonoBehaviour {
 				// TODO: Write a function that takes in Type and element to search for,
 				//	returning the substring. Should be able to return variable lengths.
 				//	e.x. GetValue(type: "Tile", element: "x")
+
 				// Grab the grid coordinates stored in the object name
 				byte locX = byte.Parse(objectHit.transform.parent.name.Substring(1, 2));
 				byte locY = byte.Parse(objectHit.transform.parent.name.Substring(5, 2));
@@ -64,7 +65,7 @@ public class MouseManager : MonoBehaviour {
 					// Left Click #########################
 					if (Input.GetMouseButtonDown(0)) {
 
-						gameMan.WipeSelectionColors("GameCard");
+						gameMan.WipeSelectionColors("GameCard", ColorPalette.tintCard);
 
 						// If the grace rounds have passes, start highlighting the neighbors
 						if (GameManager.round > GameManager.graceRounds) {
@@ -74,7 +75,7 @@ public class MouseManager : MonoBehaviour {
 
 						// gameMan.WipeSelectionColors("GameCard");	//Deselect any GameCards
 						selection = -1;
-						gameMan.UpdateUI();
+						GameManager.UpdateUI();
 
 						// If the tile can be bought
 						if (gameMan.BuyTile(locX, locY)) {
@@ -122,7 +123,8 @@ public class MouseManager : MonoBehaviour {
 							} // switch
 
 							// Update the round/turn display text
-							gameMan.UpdateUI();
+							GameManager.UpdatePlayersInfo();
+							GameManager.UpdateUI();
 
 						} // if the tile could be bought
 
@@ -131,7 +133,7 @@ public class MouseManager : MonoBehaviour {
 							gameMan.VerifyHighlight();
 							gameMan.HighlightNeighbors();
 						} // if
-						gameMan.UpdateUI();
+						GameManager.UpdateUI();
 
 					} // if Left Click
 
@@ -141,7 +143,7 @@ public class MouseManager : MonoBehaviour {
 						objRotY = objectHit.transform.parent.rotation.y;
 						objRotZ = objectHit.transform.parent.rotation.z;
 
-						gameMan.WipeSelectionColors("GameCard");
+						gameMan.WipeSelectionColors("GameCard", ColorPalette.tintCard);
 
 						objectHit.transform.parent.rotation = new Quaternion(objRotX, 1+objRotY, objRotZ, 0);
 
@@ -152,7 +154,7 @@ public class MouseManager : MonoBehaviour {
 						GameManager.grid[locX, locY].ownerId = 0;
 
 						gameMan.RollbackTurn();
-						gameMan.UpdateUI();
+						GameManager.UpdateUI();
 
 					} // if Right Click
 
@@ -162,10 +164,10 @@ public class MouseManager : MonoBehaviour {
 					// Left Click #########################
 					if (Input.GetMouseButtonDown(0)) {
 
-						gameMan.WipeSelectionColors("GameCard");
+						gameMan.WipeSelectionColors("GameCard", ColorPalette.tintCard);
 
 						if (selection >= 0) {
-							if (gameMan.CheckRules(GameManager.grid[locX, locY], 
+							if (gameMan.TryToPlay(GameManager.grid[locX, locY], 
 								GameManager.players[0].handUnits[selection])) {
 								// Debug.Log("Using GameCard " + selection + 
 									//   " on LandTile " + locX + ", " + locY);
@@ -205,17 +207,17 @@ public class MouseManager : MonoBehaviour {
 							objectHit.transform.parent.position = new Vector3(objX, objY, 40f);
 						} else {
 							selection = locY;
-							gameMan.WipeSelectionColors("GameCard");
+							gameMan.WipeSelectionColors("GameCard", ColorPalette.tintCard);
 							objectHit.transform.parent.position = new Vector3(objX, objY, 38f);
 							objectHit.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.cyan300;
 							objectHit.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.cyan300;
 						} // if already selected
 
 						if (selection == -1) {
-							gameMan.WipeSelectionColors("GameCard");
+							gameMan.WipeSelectionColors("GameCard", ColorPalette.tintCard);
 						}
 					
-						gameMan.UpdateUI();
+						GameManager.UpdateUI();
 
 					} // if Left Click
 

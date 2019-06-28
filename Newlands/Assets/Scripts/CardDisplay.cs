@@ -284,4 +284,24 @@ public class CardDisplay : MonoBehaviour {
 
 	} // displayCard()
 
+	// Performas visual updates to a bankrupt card
+	public static void BankruptVisuals(GameObject tile) {
+
+		tile.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.cardDark;
+		tile.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.cardDark;
+
+		GameObject titleObj = tile.transform.Find("Front Canvas/Title").gameObject;
+		TMP_Text title = titleObj.GetComponent<TMP_Text>();
+		title.color = ColorPalette.red500;
+
+		GameObject titleIconObj = tile.transform.Find("Front Canvas/Icon").gameObject;
+		Image iconImage = titleIconObj.GetComponent<Image>();
+		iconImage.color = ColorPalette.red500;
+
+		GameObject footerObj = tile.transform.Find("Front Canvas/Footer").gameObject;
+		TMP_Text footer = titleObj.GetComponent<TMP_Text>();
+		footer.color = ColorPalette.red500;
+
+	} //BankruptVisuals()
+
 } // CardDisplay class

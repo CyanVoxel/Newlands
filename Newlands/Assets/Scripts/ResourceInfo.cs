@@ -9,6 +9,7 @@ public class ResourceInfo : MonoBehaviour {
 
 	public static List<string> resources = new List<string>();
 	public static Dictionary<string, int> prices = new Dictionary<string, int>();
+	public static Dictionary<string, int> pricesMut = new Dictionary<string, int>();
 
 	// METHODS ####################################################################################
 
@@ -40,6 +41,7 @@ public class ResourceInfo : MonoBehaviour {
 		prices.Add("Silver", 500);
 		prices.Add("Gold", 1000);
 		prices.Add("Platinum", 2000);
+		pricesMut = prices;
 
 		// Error checking; verify that each resource corresponds to a price
 		// If there's an equal number of resources and prices, continue

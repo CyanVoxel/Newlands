@@ -15,12 +15,22 @@ public class GridUnit {
 	public byte y;
 	public GameObject tile;
 	public byte stackSize = 0;
-	// public Stack<GameObject> cardStack;
+	public Card card;
+	public List<Card> cardStack = new List<Card>();
+	public bool bankrupt = false;
 
 	// public string landType;
 	public string resource;
 	public int quantity;
-	public int value;
+
+	private int baseValue = 0;
+	public int valueMod = 0;
+	public double totalValue = 0;
+
+	// public int baseValue;
+	// public double valueMod;
+	
+	public bool stackable = true;
 	// public string tileCat;
 	// public string tileScope;
 	public string category;		// Category of unit (ex. Tile, Land Tile, Game Card, etc.)
@@ -30,31 +40,108 @@ public class GridUnit {
 
 	// METHODS ####################################################################################
 
-	// Assigns the Tile's value based on its Resource
-	public void AssignTileValue(Card tile) {
-		int test = 0;
-		ResourceInfo.prices.TryGetValue(tile.resource, out test);
-		// If the Tile's resource's price can not be found, log an error
-		if (!ResourceInfo.prices.TryGetValue(tile.resource, out this.value)) {
-			Debug.LogError("<b>[GridUnit]</b> Error: " + 
-			"Could not assign the price for \"" + tile.resource + "\"!");
-		} // If the Tile's resource's price could not be found
+	// Calculates the value of all resources attached to this card, and updates the 
+	//	resourceValue field on this GridUnit object
+	public void CalcBaseValue() {
+		// Calculates the value of the resources built-in to the card
+		this.baseValue = 0;
+		int retrievedPrice = 0;
+		ResourceInfo.pricesMut.TryGetValue(this.resource, out retrievedPrice);
+		this.baseValue = (retrievedPrice * this.quantity);	//Could be 0, that's okay
 
-	} // AssignTileValue()
+		// Calculates the value of the resources on cards in the stack, if any
+		for (int i = 0; i < this.cardStack.Count; i++) {
+			retrievedPrice = 0;
 
-	// Assigns the Tile's value based on a passed int value
-	public void AssignTileValue(int newValue) {
-		this.value = newValue;
-	} // AssignTileValue(int newValue)
+			if (this.cardStack[i].subtitle == "Resource") {
+				ResourceInfo.pricesMut.TryGetValue(this.cardStack[i].resource, out retrievedPrice);
+				this.baseValue += (retrievedPrice * this.cardStack[i].footerValue);
+			} else if (this.cardStack[i].subtitle == "Investment" && !this.cardStack[i].percFlag) {
+				this.baseValue += this.cardStack[i].footerValue;
+			} else if (this.cardStack[i].subtitle == "Sabotage" && !this.cardStack[i].percFlag) {
+				this.baseValue -= this.cardStack[i].footerValue;
+			}
+
+		} // for cardStack size
+
+	} // CalcBaseValue()
+
+	public void CalcValueMod() {
+		// Calculates the value of the resources on cards in the stack, if any
+		this.valueMod = 0;
+		for (int i = 0; i < this.cardStack.Count; i++) {
+			
+			if (this.cardStack[i].subtitle == "Investment" && this.cardStack[i].percFlag) {
+				this.valueMod += this.cardStack[i].footerValue;
+			} else if (this.cardStack[i].subtitle == "Sabotage" && this.cardStack[i].percFlag) {
+				this.valueMod -= this.cardStack[i].footerValue;
+			} // if-else
+			
+		} // for cardStack size
+		
+	} // CalcValueMod()
+
+	// Calculates the total value this card, and updates the 
+	//	totalValue field on this GridUnit object
+	public void CalcTotalValue() {
+		// Reset all value data and recalculate
+		this.totalValue = 0;
+		this.CalcBaseValue();
+		this.CalcValueMod();
+
+		this.totalValue = (double)this.baseValue +
+			((double)this.baseValue * ((double)this.valueMod) / 100d);
+
+		if (this.totalValue < 0d) {
+			this.bankrupt = true;
+		}
+
+	} // CalcTotalValue()
+
+	private GameObject FindCard(string type, byte x, byte y) {
+
+		string strX = "x";
+		string strY = "y";
+
+		// Determines the number of zeroes to add in the object name
+		string xZeroes = "0";
+		string yZeroes = "0";
+		if (x >= 10) {
+			xZeroes = "";
+		} // if x >= 10
+		if (y >= 10) {
+			yZeroes = "";
+		} // if y >= 10
+
+		// Specific type changes
+		if (type == "GameCard") {
+			strX = "p";		// Instead of x, use p for PlayerID
+			strY = "i";		// Instead of y, use i for Index
+		} // if GameCard
+
+
+		if (this.tile.transform.Find(strX + xZeroes + x + "_" + strY + yZeroes + y + "_" + type)) {
+			// GameObject gameObject = new GameObject();
+			GameObject gameObject = this.tile.transform.Find(strX + xZeroes + x + "_" +
+										strY + yZeroes + y + "_" +
+										type).gameObject;
+			return gameObject;
+		} else {
+			// Debug.LogError("[GameManager] Error: Could not find GameObject!");	
+			return null;
+		}
+
+
+	} // FindCard()
 
 	// CONSTRUCTORS ###############################################################################
 
 	// Constructor that takes in necessary card info and populates the rest
 	public GridUnit(Card card, GameObject tileObj, byte x, byte y) {
 
-		Stack<GameObject> cardStack = new Stack<GameObject>();
-
+		this.card = card;
 		this.tile = tileObj;
+
 		// this.landType = card.title;
 		this.resource = card.resource;
 		this.quantity = card.footerValue;
@@ -69,8 +156,10 @@ public class GridUnit {
 		if (card.category == "Game Card") {
 			// this.targetCat = card.targetCategory;
 			this.target = card.target;	// The Scope that this card targets
+			this.stackable = !card.doesDiscard;
 		}
-		
+
+		this.CalcBaseValue();
 
 	} // GridUnit constructor
 
