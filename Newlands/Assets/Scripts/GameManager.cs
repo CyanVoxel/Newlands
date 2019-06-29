@@ -17,9 +17,9 @@ public class GameManager : MonoBehaviour {
 	public static byte turn = 1;					// The current turn in the round
 	public static int graceRounds = 1;				// The # of rounds without neighbor rules
 
-	public static readonly byte width = 4;			// Width of the game grid in cards
-	public static readonly byte height = 4;			// Height of the game grid in cards
-	public static readonly byte handSize = 9;		// How many cards the player is dealt
+	public static readonly byte width = 3;			// Width of the game grid in cards
+	public static readonly byte height = 3;			// Height of the game grid in cards
+	public static readonly byte handSize = 10;		// How many cards the player is dealt
 
 	public static List<Player> players = new List<Player>();	// The player data objects
 
@@ -36,6 +36,7 @@ public class GameManager : MonoBehaviour {
 	
 	public static Camera mainCam;
 	private GameObject landTilePrefab;
+	private GameObject gameCardPrefab;
 	private GameObject marketCardPrefab;
 	// private Card card;
 
@@ -219,7 +220,7 @@ public class GameManager : MonoBehaviour {
 				// Try to draw a card from the Market Card deck
 				if (DrawCard(masterDeckMutable.marketCardDeck, masterDeck.marketCardDeck, out card)) {
 
-					float xOff = ((width +  2) * cardOffX) + x * cardOffX;
+					float xOff = ((width + 1) * cardOffX) + x * cardOffX;
 					float yOff = y * cardOffY;
 
 					// Determines the number of zeroes to add in the object name
@@ -332,6 +333,57 @@ public class GameManager : MonoBehaviour {
 		} // for
 
 	} // DisplayHand()
+
+	// Creates card game objects, places them on the screen, and populates them with deck data
+	private void DisplayCard(Card card, byte playerNum, int index) {
+
+		// Populate the Card prefab
+		gameCardPrefab = Resources.Load<GameObject>("Prefabs/GameCard");
+		string pZeroes = "0";
+		string iZeroes = "0";
+
+		// Creates card prefabs and places them on the screen
+
+		float xOff = index * 11 + (((width - handSize) / 2f) * 11);
+		float yOff = -10;
+
+		// Determines the number of zeroes to add in the object name
+			if (playerCount >= 10) {
+				pZeroes = "";
+			} else {
+				pZeroes = "0";
+			}
+			if (index >= 10) {
+				iZeroes = "";
+			} else {
+				iZeroes = "0";
+			} // zeroes calc
+
+		GameObject cardObj = (GameObject)Instantiate(this.gameCardPrefab, new Vector3(xOff, yOff, 40), Quaternion.identity);
+		cardObj.name = ("p" + pZeroes + playerNum + "_" +
+							"i" + iZeroes + index + "_" +
+							"GameCard");
+		// cardObj.name = ("GameCard_p" + playerNum + "_i"+ i);
+
+		cardObj.transform.SetParent(this.transform);
+		cardObj.transform.rotation = new Quaternion(0, 0, 0, 0);
+
+		players[playerNum].handUnits[index] = new GridUnit(players[playerNum].hand[index], 
+			cardObj, 
+			(byte)index, 0);
+
+		try {
+			cardObj.SendMessage("DisplayCard", card);
+		}
+
+		catch (UnassignedReferenceException e) {
+			Debug.LogError("<b>[GameManager]</b> Error: " +
+			"Card error at deck index " + index + ": " + e);
+		}
+			
+
+
+	} // DisplayCard()
 
 
 	public bool DrawCard(Deck deckMut, Deck deckPerm, out Card card) {
@@ -800,6 +852,9 @@ public class GameManager : MonoBehaviour {
 			UpdatePlayersInfo();
 			UpdateUI();
 
+			Vector3 oldCardPosition = gameCard.tile.transform.position;
+			int oldCardIndex = gameCard.y;
+
 			if (gridTile.bankrupt) {
 				BankruptTile(gridTile);
 				UpdatePlayersInfo();
@@ -859,7 +914,8 @@ public class GameManager : MonoBehaviour {
 										"i0" + (gridTile.stackSize - 1) + "_" +
 										"StackedCard");
 
-				}
+				} // if market mod
+
 
 			} else {
 				// After ALL processing is done, destroy the game object
@@ -868,12 +924,18 @@ public class GameManager : MonoBehaviour {
 			}// if stackable
 
 			
-			Card card = Card.CreateInstance<Card>();
-			if (DrawCard(masterDeckMutable.gameCardDeck, masterDeck.gameCardDeck, out card)) {
-				players[turn].hand.Add(card);
-			} else {
-				Destroy(card);
-			}
+			// // Create a new card to replace the old one
+			// Card newCard = Card.CreateInstance<Card>();
+			// if (DrawCard(masterDeckMutable.gameCardDeck, masterDeck.gameCardDeck, out newCard) && masterDeckMutable.gameCardDeck.Count() > 0) {
+
+			// 	players[0].hand.Add(newCard);
+			// 	Destroy(players[0].handUnits[oldCardIndex].tile);
+			// 	DisplayCard(newCard, 0, oldCardIndex);
+			// 	players[0].handUnits[oldCardIndex].tile.transform.position = oldCardPosition;
+
+			// } else {
+			// 	Destroy(newCard);
+			// } // if card can be drawn
 
 			landTilePrefab = Resources.Load<GameObject>("Prefabs/GameCard");
 

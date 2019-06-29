@@ -15,7 +15,7 @@ MonoBehaviour:
   category: Game Card
   title: Tile Mod
   subtitle: Foreclosure
-  bodyText: Use this on **Any** Tile to instantly **Foreclose** a Tile!
+  bodyText: Use this on **Any** Tile to instantly **Foreclose** it, removing all value.
   footerText: Foreclosure
   resource: 
   footerValue: 0

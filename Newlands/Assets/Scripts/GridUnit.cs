@@ -69,7 +69,7 @@ public class GridUnit {
 
 			} // for cardStack size
 		} else if (this.card.category == "Market") {
-			ResourceInfo.pricesMut.TryGetValue(this.resource, out this.baseValue);
+			ResourceInfo.prices.TryGetValue(this.resource, out this.baseValue);
 		}
 
 	} // CalcBaseValue()
