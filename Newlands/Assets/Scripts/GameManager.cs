@@ -126,6 +126,26 @@ public class GameManager : MonoBehaviour {
 		cameraPos.z += (Input.mouseScrollDelta.y * 3f);
 		mainCam.transform.position = cameraPos;
 
+		if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow)) {
+			cameraPos.y += .75f;
+			mainCam.transform.position = cameraPos;
+		}
+
+		if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)) {
+			cameraPos.x -= .75f;
+			mainCam.transform.position = cameraPos;
+		}
+
+		if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow)) {
+			cameraPos.y -= .75f;
+			mainCam.transform.position = cameraPos;
+		}
+
+		if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow)) {
+			cameraPos.x += .75f;
+			mainCam.transform.position = cameraPos;
+		}
+
 	} // Update()
 
 	private void PopulateGrid() {
@@ -777,7 +797,7 @@ public class GameManager : MonoBehaviour {
 		// Things that need to be updated for all players go here
 		for (byte i = 0; i < (byte)players.Count; i++) {
 			players[i].CalcTotalMoney();
-			Debug.Log("Player " + (i + 1) + "'s Money: $" + players[i].totalMoney);
+			// Debug.Log("Player " + (i + 1) + "'s Money: $" + players[i].totalMoney);
 		} // for array length
 
 	} // UpdatePlayersInfo()
