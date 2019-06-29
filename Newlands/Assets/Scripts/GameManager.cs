@@ -17,9 +17,9 @@ public class GameManager : MonoBehaviour {
 	public static byte turn = 1;					// The current turn in the round
 	public static int graceRounds = 1;				// The # of rounds without neighbor rules
 
-	public static readonly byte width = 3;			// Width of the game grid in cards
-	public static readonly byte height = 3;			// Height of the game grid in cards
-	public static readonly byte handSize = 10;		// How many cards the player is dealt
+	public static readonly byte width = 7;			// Width of the game grid in cards
+	public static readonly byte height = 7;			// Height of the game grid in cards
+	public static readonly byte handSize = 5;		// How many cards the player is dealt
 
 	public static List<Player> players = new List<Player>();	// The player data objects
 
@@ -853,7 +853,8 @@ public class GameManager : MonoBehaviour {
 			UpdateUI();
 
 			Vector3 oldCardPosition = gameCard.tile.transform.position;
-			int oldCardIndex = gameCard.y;
+			int oldCardIndex = gameCard.x;
+			Debug.Log("Old Card Index: " + oldCardIndex);
 
 			if (gridTile.bankrupt) {
 				BankruptTile(gridTile);
@@ -924,20 +925,18 @@ public class GameManager : MonoBehaviour {
 			}// if stackable
 
 			
-			// // Create a new card to replace the old one
-			// Card newCard = Card.CreateInstance<Card>();
-			// if (DrawCard(masterDeckMutable.gameCardDeck, masterDeck.gameCardDeck, out newCard) && masterDeckMutable.gameCardDeck.Count() > 0) {
+			// Create a new card to replace the old one
+			Card newCard = Card.CreateInstance<Card>();
+			if (DrawCard(masterDeckMutable.gameCardDeck, masterDeck.gameCardDeck, out newCard) && masterDeckMutable.gameCardDeck.Count() > 0) {
 
-			// 	players[0].hand.Add(newCard);
-			// 	Destroy(players[0].handUnits[oldCardIndex].tile);
-			// 	DisplayCard(newCard, 0, oldCardIndex);
-			// 	players[0].handUnits[oldCardIndex].tile.transform.position = oldCardPosition;
+				players[0].hand.Add(newCard);
+				players[0].handUnits[oldCardIndex].LoadNewCard(newCard, players[0].handUnits[oldCardIndex].tile);
+				players[0].hand[oldCardIndex] = newCard;
+				DisplayCard(newCard, 0, oldCardIndex);
+				players[0].handUnits[oldCardIndex].tile.transform.position = oldCardPosition;
 
-			// } else {
-			// 	Destroy(newCard);
-			// } // if card can be drawn
+			} // if card can be drawn
 
-			landTilePrefab = Resources.Load<GameObject>("Prefabs/GameCard");
 
 			// gridTile.cardStack.Add(gameCard.tile);
 			MouseManager.selection = -1;

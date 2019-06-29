@@ -15,10 +15,10 @@ public class GameCardDeck : Deck {
 			// Card cardToAdd;
 
 			// Market Mods
-			this.Add(dirGcMmI + "/add_20_perc", 4);
-			this.Add(dirGcMmI + "/add_10_perc", 6);
-			this.Add(dirGcMmS + "/sub_20_perc", 4);
-			this.Add(dirGcMmS + "/sub_10_perc", 6);
+			this.Add(dirGcMmI + "/add_20_perc", 8);
+			this.Add(dirGcMmI + "/add_10_perc", 12);
+			this.Add(dirGcMmS + "/sub_20_perc", 8);
+			this.Add(dirGcMmS + "/sub_10_perc", 12);
 
 			// Tile Mods (Resources)
 			this.Add(dirGcTmR + "/oil_add_1", 5);
