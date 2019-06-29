@@ -85,10 +85,10 @@ public class RuleSet {
 					case "Tile": if (targetLevel[0] == "Tile") { return true; } break;
 					case "Market":if (targetLevel[0] == "Market") { return true; } break;
 					default:
-						// Debug.Log("<b>[RuleSet]</b> " +
-						// "The target " + card.target +
-						// " is out of scope for the card " +
-						// target.category + " at scope level 0"); 
+						Debug.Log("<b>[RuleSet]</b> " +
+						"The target " + card.target +
+						" is out of scope for the card " +
+						target.category + " at scope level 0"); 
 						break;
 				} // switch
 			}
@@ -106,10 +106,10 @@ public class RuleSet {
 					case "Land": if (targetLevel[1] == "Land") { return true; } break;
 					case "Coast": if (targetLevel[1] == "Coast") { return true; } break;
 					default:
-						// Debug.Log("<b>[RuleSet]</b> " +
-						// "The target " + card.target +
-						// " is out of scope for the card " +
-						// target.category + " at scope level 1"); 
+						Debug.Log("<b>[RuleSet]</b> " +
+						"The target " + card.target +
+						" is out of scope for the card " +
+						target.category + " at scope level 1"); 
 						break;
 				} // switch
 			}
@@ -137,10 +137,10 @@ public class RuleSet {
 					case "Ocean": if (targetLevel[2] == "Ocean") { return true; } break;
 					case "Docks": if (targetLevel[2] == "Docks") { return true; } break;
 					default:
-						// Debug.Log("<b>[RuleSet]</b> " +
-						// "The target " + card.target +
-						// " is out of scope for the card " +
-						// target.category + " at scope level 2"); 
+						Debug.Log("<b>[RuleSet]</b> " +
+						"The target " + card.target +
+						" is out of scope for the card " +
+						target.category + " at scope level 2"); 
 						break;
 				} // switch
 			}

@@ -15,10 +15,6 @@ public class CardDisplay : MonoBehaviour {
 	private string dirFtrBdr = "Front Canvas/Footer Mask/Footer Border Mask/Footer Border";
 	private string dirFtrBdrL = "Front Canvas/Footer Mask Left/Footer Border Mask/Footer Border";
 	private string dirFtrBdrR = "Front Canvas/Footer Mask Right/Footer Border Mask/Footer Border";
-
-	void Start() {
-		
-	} // Start()
 	
 
 	// Converts a string with bold and italic markdown into html-like tags
@@ -160,7 +156,7 @@ public class CardDisplay : MonoBehaviour {
 		Image footerBorder = footerBorderObj.GetComponent<Image>();
 
 		// GAMECARD SPECIFICS -------------------------------------------------
-		if (card.category == "Game Card") {
+		if (card.category == "Game Card" || card.category == "Market") {
 
 			GameObject subtitleObj = transform.Find("Front Canvas/Subtitle").gameObject;
 			TMP_Text subtitle = subtitleObj.GetComponent<TMP_Text>();
@@ -215,6 +211,14 @@ public class CardDisplay : MonoBehaviour {
 			subtitle.text = TagToCardData(MdToTag(subtitle.text), card);
 
 		} // GameCard specifics
+
+		if (card.category == "Market") {
+
+			title.text = "\u2013Market Card\u2013";
+
+			ResourceInfo.prices.TryGetValue(card.resource, out card.footerValue);
+			footer.text = TagToCardData(MdToTag(footer.text), card);
+		}
 
 		// TILE SPECIFICS -----------------------------------------------------
 		if (card.category == "Tile") {
@@ -305,5 +309,20 @@ public class CardDisplay : MonoBehaviour {
 		// footer.text = "";
 
 	} //BankruptVisuals()
+
+	public void UpdateFooter(GridUnit unit, double value) {
+
+		GameObject footerObj = transform.Find("Front Canvas/Footer").gameObject;
+		TMP_Text footer = footerObj.GetComponent<TMP_Text>();
+
+		ResourceInfo.pricesMut.TryGetValue(unit.card.resource, out unit.card.footerValue);
+		footer.text = InsertFooterValue(unit.card, unit.card.footerText, unit.card.percFlag, 
+										unit.card.moneyFlag, unit.card.footerOpr);
+		footer.text = TagToCardData(MdToTag(footer.text), unit.card);
+		GameManager.UpdatePlayersInfo();
+		GameManager.UpdateUI();
+
+
+	} //UpdateFooter()
 
 } // CardDisplay class

@@ -9,6 +9,8 @@ using UnityEngine;
 
 public class GridUnit {
 
+	CardDisplay cardDis;
+
 	// DATA FIELDS ################################################################################
 	public byte ownerId = 0;
 	public byte x;
@@ -44,61 +46,124 @@ public class GridUnit {
 	//	resourceValue field on this GridUnit object
 	public void CalcBaseValue() {
 		// Calculates the value of the resources built-in to the card
-		this.baseValue = 0;
-		int retrievedPrice = 0;
-		ResourceInfo.pricesMut.TryGetValue(this.resource, out retrievedPrice);
-		this.baseValue = (retrievedPrice * this.quantity);	//Could be 0, that's okay
 
-		// Calculates the value of the resources on cards in the stack, if any
-		for (int i = 0; i < this.cardStack.Count; i++) {
-			retrievedPrice = 0;
+		if (this.category == "Tile") {
 
-			if (this.cardStack[i].subtitle == "Resource") {
-				ResourceInfo.pricesMut.TryGetValue(this.cardStack[i].resource, out retrievedPrice);
-				this.baseValue += (retrievedPrice * this.cardStack[i].footerValue);
-			} else if (this.cardStack[i].subtitle == "Investment" && !this.cardStack[i].percFlag) {
-				this.baseValue += this.cardStack[i].footerValue;
-			} else if (this.cardStack[i].subtitle == "Sabotage" && !this.cardStack[i].percFlag) {
-				this.baseValue -= this.cardStack[i].footerValue;
-			}
+			this.baseValue = 0;
+			int retrievedPrice = 0;
+			ResourceInfo.pricesMut.TryGetValue(this.resource, out retrievedPrice);
+			this.baseValue = (retrievedPrice * this.quantity);	//Could be 0, that's okay
 
-		} // for cardStack size
+			// Calculates the value of the resources on cards in the stack, if any
+			for (int i = 0; i < this.cardStack.Count; i++) {
+				retrievedPrice = 0;
+
+				if (this.cardStack[i].subtitle == "Resource") {
+					ResourceInfo.pricesMut.TryGetValue(this.cardStack[i].resource, out retrievedPrice);
+					this.baseValue += (retrievedPrice * this.cardStack[i].footerValue);
+				} else if (this.cardStack[i].subtitle == "Investment" && !this.cardStack[i].percFlag) {
+					this.baseValue += this.cardStack[i].footerValue;
+				} else if (this.cardStack[i].subtitle == "Sabotage" && !this.cardStack[i].percFlag) {
+					this.baseValue -= this.cardStack[i].footerValue;
+				} // if
+
+			} // for cardStack size
+		} else if (this.card.category == "Market") {
+			ResourceInfo.pricesMut.TryGetValue(this.resource, out this.baseValue);
+		}
 
 	} // CalcBaseValue()
 
 	public void CalcValueMod() {
 		// Calculates the value of the resources on cards in the stack, if any
-		this.valueMod = 0;
-		for (int i = 0; i < this.cardStack.Count; i++) {
-			
-			if (this.cardStack[i].subtitle == "Investment" && this.cardStack[i].percFlag) {
-				this.valueMod += this.cardStack[i].footerValue;
-			} else if (this.cardStack[i].subtitle == "Sabotage" && this.cardStack[i].percFlag) {
-				this.valueMod -= this.cardStack[i].footerValue;
-			} // if-else
-			
-		} // for cardStack size
+
+		if (this.category == "Tile") {
+
+			this.valueMod = 0;
+			for (int i = 0; i < this.cardStack.Count; i++) {
+				
+				if (this.cardStack[i].subtitle == "Investment" && this.cardStack[i].percFlag) {
+					this.valueMod += this.cardStack[i].footerValue;
+				} else if (this.cardStack[i].subtitle == "Sabotage" && this.cardStack[i].percFlag) {
+					this.valueMod -= this.cardStack[i].footerValue;
+				} // if-else
+				
+			} // for cardStack size
+
+		} else if (this.category == "Market") {
+
+			// NOTE: Currently, this is the same code for Tile. This is here incase it needs to
+			// to change at some point.
+			this.valueMod = 0;
+			Debug.Log("Stack Size  :" + this.stackSize);
+			Debug.Log("Stack Count: " + this.cardStack.Count);
+			for (int i = 0; i < this.cardStack.Count; i++) {
+				
+				if (this.cardStack[i].subtitle == "Investment" && this.cardStack[i].percFlag) {
+					this.valueMod += this.cardStack[i].footerValue;
+					Debug.Log("Should be working! " + this.cardStack[i].footerValue);
+				} else if (this.cardStack[i].subtitle == "Sabotage" && this.cardStack[i].percFlag) {
+					Debug.Log("Should be working! -" + this.cardStack[i].footerValue);
+					this.valueMod -= this.cardStack[i].footerValue;
+				} // if-else
+				
+			} // for cardStack size
+
+		} // if-else category
+		
 		
 	} // CalcValueMod()
 
 	// Calculates the total value this card, and updates the 
 	//	totalValue field on this GridUnit object
 	public void CalcTotalValue() {
+
 		// Reset all value data and recalculate
-		this.totalValue = 0;
-		this.CalcBaseValue();
-		this.CalcValueMod();
+		if (this.category == "Tile") {
+			this.totalValue = 0;
+			this.CalcBaseValue();
+			this.CalcValueMod();
 
-		this.totalValue = (double)this.baseValue +
-			((double)this.baseValue * ((double)this.valueMod) / 100d);
-		
-		Debug.Log("[GridUnit] Tile " + this.x + ", " + this.y + " base value:  " + this.baseValue);
-		Debug.Log("[GridUnit] Tile " + this.x + ", " + this.y + " total value: " + this.totalValue);
+			this.totalValue = (double)this.baseValue +
+				((double)this.baseValue * ((double)this.valueMod) / 100d);
+			
+			// Debug.Log("[GridUnit] Tile " + this.x + ", " + this.y + " base value:  " +
+			// 	this.baseValue);
+			// Debug.Log("[GridUnit] Tile " + this.x + ", " + this.y + " total value: " +
+			// 	this.totalValue);
 
-		if (this.totalValue < 0) {
-			this.bankrupt = true;
-			GameManager.BankruptTile(this);
-		}
+			if (this.totalValue < 0) {
+				this.bankrupt = true;
+				GameManager.BankruptTile(this);
+			} // bankrupt check
+
+		} else if (this.category == "Market") {
+
+			// Reset all value data and recalculate
+			this.totalValue = 0;
+			this.CalcBaseValue();
+			this.CalcValueMod();
+
+			// Debug.Log("Old PriceMut: " + ResourceInfo.pricesMut[this.resource]);
+			// Debug.Log("Base Value  : " + this.baseValue);
+			// Debug.Log("Value Mod   : " + this.valueMod);
+			// Debug.Log("Calculating...");
+
+			this.totalValue = (double)this.baseValue +
+				((double)this.baseValue * ((double)this.valueMod) / 100d);
+
+				// Debug.Log("Total Value: " + this.totalValue);
+
+			ResourceInfo.pricesMut[this.resource] = (int)this.totalValue;
+			cardDis.UpdateFooter(this, ResourceInfo.pricesMut[this.resource]);
+
+			// Debug.Log("New PriceMut: " + ResourceInfo.pricesMut[this.resource]);
+			// Debug.Log("Base Value  : " + this.baseValue);
+			// Debug.Log("Value Mod   : " + this.valueMod);
+
+			
+
+		} // if tile
 
 	} // CalcTotalValue()
 
@@ -171,6 +236,7 @@ public class GridUnit {
 
 		this.card = card;
 		this.tile = tileObj;
+		cardDis = this.tile.AddComponent<CardDisplay>();
 
 		// this.landType = card.title;
 		this.resource = card.resource;
@@ -187,6 +253,14 @@ public class GridUnit {
 			// this.targetCat = card.targetCategory;
 			this.target = card.target;	// The Scope that this card targets
 			this.stackable = !card.doesDiscard;
+		}
+
+		if (card.category == "Market") {
+			// this.targetCat = card.targetCategory;
+			this.target = card.target;	// The Scope that this card targets
+			this.stackable = !card.doesDiscard;
+			// this.category = "Market";
+			ResourceInfo.prices.TryGetValue(card.subtitle, out this.baseValue);
 		}
 
 		this.CalcBaseValue();

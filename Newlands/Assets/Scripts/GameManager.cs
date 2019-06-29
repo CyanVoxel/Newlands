@@ -17,16 +17,18 @@ public class GameManager : MonoBehaviour {
 	public static byte turn = 1;					// The current turn in the round
 	public static int graceRounds = 1;				// The # of rounds without neighbor rules
 
-	public static readonly byte width = 3;			// Width of the game grid in cards
-	public static readonly byte height = 3;			// Height of the game grid in cards
+	public static readonly byte width = 4;			// Width of the game grid in cards
+	public static readonly byte height = 4;			// Height of the game grid in cards
 	public static readonly byte handSize = 9;		// How many cards the player is dealt
 
 	public static List<Player> players = new List<Player>();	// The player data objects
 
 	// Grid specific
 	public static GridUnit[,] grid;					// The internal grid, made up of GridUnits
+	public static GridUnit[,] marketGrid;
 	public static float[] rowPos;					// Row position
 	private static byte[] maxStack;
+	private static byte[] maxMarketStack;
 	private static float cardThickness = 0.2f;
 	private static float shiftUnit = 1.2f;
 	private static float cardOffX = 11f;
@@ -34,6 +36,7 @@ public class GameManager : MonoBehaviour {
 	
 	public static Camera mainCam;
 	private GameObject landTilePrefab;
+	private GameObject marketCardPrefab;
 	// private Card card;
 
 	// UI ELEMENTS ################################################################################
@@ -93,15 +96,19 @@ public class GameManager : MonoBehaviour {
 			players[i].moneyText.color = GetPlayerColor((byte)(i + 1), 500);
 		} // for playerCount
 
-		// GRID ###############################################################
+		// GRIDS ##############################################################
 		
-		// Initialize the internal grid
+		// Initialize the internal grids
 		grid = new GridUnit[width, height];
+		marketGrid = new GridUnit[Mathf.CeilToInt((float)ResourceInfo.resources.Count / 
+			(float)height), height];
 		rowPos = new float[height];
 		maxStack = new byte[height];
+		maxMarketStack = new byte[height];
 
 		// Create tile GameObjects and connect them to internal grid
 		PopulateGrid();	
+		PopulateMarket();
 		// ShiftRow(row: 4, units: 2);
 
 		// FINAL ##############################################################
@@ -159,7 +166,7 @@ public class GameManager : MonoBehaviour {
 			for (byte y = 0; y < height; y++) {
 				// Draw a card from the Land Tile deck
 				Card card = Card.CreateInstance<Card>();
-				card = DrawCard(masterDeckMutable.landTileDeck, masterDeck.landTileDeck);
+				DrawCard(masterDeckMutable.landTileDeck, masterDeck.landTileDeck, out card);
 
 				float xOff = x * cardOffX;
 				float yOff = y * cardOffY;
@@ -185,11 +192,9 @@ public class GameManager : MonoBehaviour {
 				cardObj.transform.SetParent(this.transform);
 				cardObj.transform.rotation = new Quaternion(0, 180, 0, 0);	// 0, 180, 0, 0
 
-				// Connect thr drawn card to the internal grid
+				// Connect the drawn card to the internal grid
 				grid[x, y] = new GridUnit(card: card, tileObj: cardObj, x: x, y: y);
 				rowPos[y] = cardObj.transform.position.y;	// Row position
-				// Set Tile's value based on its Resource
-				// grid[x, y].AssignTileValue(tile: card);
 
 				// Connect the drawn card to the prefab that was just created
 				cardObj.SendMessage("DisplayCard", card);
@@ -197,6 +202,60 @@ public class GameManager : MonoBehaviour {
 		} // x
 
 	} //PopulateGrid();
+
+	private void PopulateMarket() {
+		// Populate the Card prefab and create the Master Deck
+		marketCardPrefab = Resources.Load<GameObject>("Prefabs/GameCard");
+		string xZeroes = "0";
+		string yZeroes = "0";
+		//masterDeckMutable = masterDeck;	// Sets mutable deck version to internal one
+
+		int marketWidth = Mathf.CeilToInt((float)ResourceInfo.resources.Count / (float)height);
+		
+		for (byte x = 0; x < marketWidth; x++) {
+			for (byte y = 0; y < height; y++) {
+
+				Card card = Card.CreateInstance<Card>();
+				// Try to draw a card from the Market Card deck
+				if (DrawCard(masterDeckMutable.marketCardDeck, masterDeck.marketCardDeck, out card)) {
+
+					float xOff = ((width +  2) * cardOffX) + x * cardOffX;
+					float yOff = y * cardOffY;
+
+					// Determines the number of zeroes to add in the object name
+					if (x >= 10) {
+						xZeroes = "";
+					} else {
+						xZeroes = "0";
+					}
+					if (y >= 10) {
+						yZeroes = "";
+					} else {
+						yZeroes = "0";
+					} // zeroes calc
+
+					GameObject cardObj = (GameObject)Instantiate(this.marketCardPrefab, new Vector3(xOff, yOff, 50), Quaternion.identity);
+					cardObj.name = ("x" + xZeroes + x + "_" +
+									"y" + yZeroes + y + "_" +
+									"MarketCard");
+					// cardObj.name = ("LandTile_x" + x + "_y" + y + "_z0");
+
+					cardObj.transform.SetParent(this.transform);
+					// cardObj.transform.rotation = new Quaternion(0, 0, 0, 0);	// 0, 180, 0, 0
+
+					// Connect thr drawn card to the internal grid
+					marketGrid[x, y] = new GridUnit(card: card, tileObj: cardObj, x: x, y: y);
+					// rowPos[y] = cardObj.transform.position.y;	// Row position
+
+					// Connect the drawn card to the prefab that was just created
+					cardObj.SendMessage("DisplayCard", card);
+
+				} // if a market card could be drawn
+
+			} // y
+		} // x
+
+	} //PopulateMarket();
 
 	// Draws random GameCards from the masterDeck and returns a deck of a specified size
 	private Deck DrawHand(int handSize) {
@@ -207,7 +266,13 @@ public class GameManager : MonoBehaviour {
 			// Draw a card from the deck provided and add it to the deck to return.
 			// NOTE: In the future, masterDeckMutable might need to be checked for cards
 			// 	before preceding.
-			deck.Add(DrawCard(masterDeckMutable.gameCardDeck, masterDeck.gameCardDeck));
+			Card card = Card.CreateInstance<Card>();
+			if (DrawCard(masterDeckMutable.gameCardDeck, masterDeck.gameCardDeck, out card)) {
+				deck.Add(card);
+			} else {
+				Destroy(card);
+			}
+			
 
 		} // for
 
@@ -269,9 +334,9 @@ public class GameManager : MonoBehaviour {
 	} // DisplayHand()
 
 
-	public Card DrawCard(Deck deckMut, Deck deckPerm) {
+	public bool DrawCard(Deck deckMut, Deck deckPerm, out Card card) {
 
-		Card card;	// Card to return
+		// Card card;	// Card to return
 		int cardsLeft = deckMut.Count();	// Number of cards left from mutable deck
 		int cardsTotal = deckPerm.Count();	// Number of cards total from permanent deck
 
@@ -287,12 +352,14 @@ public class GameManager : MonoBehaviour {
 			// 	" cards left");
 		} else {
 			card = deckPerm[Random.Range(0, cardsTotal)];
-			Debug.LogWarning("<b>[GameManager]</b> Warning: " +
-			 "All cards (" + cardsTotal + ") were drawn from a deck! " +
-			 " Now drawing from immutable deck...");
+			return false;
+			// Debug.LogWarning("<b>[GameManager]</b> Warning: " +
+			//  "All cards (" + cardsTotal + ") were drawn from a deck! " +
+			//  " Now drawing from immutable deck...");
 		}
 
-		return card;
+		// return card;
+		return true;
 
 	} // DrawCard()
 
@@ -568,6 +635,21 @@ public class GameManager : MonoBehaviour {
 				} // if the card could be found
 				
 			} // for handSize
+		} else if (cardType == "MarketCard") {
+			int marketWidth = Mathf.CeilToInt((float)ResourceInfo.resources.Count / 
+			(float)height);
+			for (int x = 0; x < marketWidth; x++) {
+				for (int y = 0; y < height; y++) {
+
+						GameObject temp = FindCard("MarketCard", (byte)x, (byte)y);
+						float posX = temp.transform.position.x;
+						float posY = temp.transform.position.y;
+						temp.transform.position = new Vector3(posX, posY, 40);
+						temp.GetComponentsInChildren<Renderer>()[0].material.color = color;
+						temp.GetComponentsInChildren<Renderer>()[1].material.color = color;
+
+				} // for height
+			} // for width
 		} // if
 
 	} // WipeSelectionColors()
@@ -633,19 +715,41 @@ public class GameManager : MonoBehaviour {
 	} // GetPlayerColor()
 
 	// Shifts rows of cards up or down. Used to give room for cards under tiles.
-	public void ShiftRow(byte row, int units) {
+	public void ShiftRow(string type, byte row, int units) {
 
-		for (byte x = 0; x < width; x++) {
-			for (byte y = row; y < height; y++) {
-				float oldX = grid[x, y].tile.transform.position.x;
-				float oldY = grid[x, y].tile.transform.position.y;
-				float oldZ = grid[x, y].tile.transform.position.z;
-				grid[x, y].tile.transform.position = new Vector3
-					(grid[x, y].tile.transform.position.x,
-					(oldY += (shiftUnit * units)),
-					grid[x, y].tile.transform.position.z);
-			} // for y
-		} // for x
+		if (type == "Tile") {
+			for (byte x = 0; x < width; x++) {
+				for (byte y = row; y < height; y++) {
+					float oldX = grid[x, y].tile.transform.position.x;
+					float oldY = grid[x, y].tile.transform.position.y;
+					float oldZ = grid[x, y].tile.transform.position.z;
+					grid[x, y].tile.transform.position = new Vector3
+						(grid[x, y].tile.transform.position.x,
+						(oldY += (shiftUnit * units)),
+						grid[x, y].tile.transform.position.z);
+				} // for y
+			} // for x
+		} else if (type == "Market") {
+			int marketWidth = Mathf.CeilToInt((float)ResourceInfo.resources.Count / (float)height);
+			for (byte x = 0; x < marketWidth; x++) {
+				for (byte y = row; y < height; y++) {
+					
+					if (marketGrid[x, y] != null) {
+						float oldX = marketGrid[x, y].tile.transform.position.x;
+						float oldY = marketGrid[x, y].tile.transform.position.y;
+						float oldZ = marketGrid[x, y].tile.transform.position.z;
+						marketGrid[x, y].tile.transform.position = new Vector3
+							(marketGrid[x, y].tile.transform.position.x,
+							(oldY += (shiftUnit * units)),
+							marketGrid[x, y].tile.transform.position.z);
+					} // if tile at the location isn't null
+
+				} // for y
+			} // for x
+		} else {
+			Debug.Log("Not doing anything");
+		}// type
+		
 
 	} // ShiftRow()
 
@@ -707,28 +811,55 @@ public class GameManager : MonoBehaviour {
 
 				gridTile.stackSize++;
 				gridTile.cardStack.Add(gameCard.card);
+				gridTile.CalcTotalValue();	// This fixes Market Cards not calculating first time
 				UpdatePlayersInfo();
 				UpdateUI();
 
-				// If the stack on the unit is larger than the stack count on the row, increase
-				if (gridTile.stackSize > maxStack[gridTile.y]) {
-					maxStack[gridTile.y]++;
-					ShiftRow(gridTile.y, 1);
-				} // if stack size exceeds max stack recorded for row
+				if (gameCard.card.title == "Tile Mod") {
 
-				gameCard.tile.transform.position = new Vector3
-					(gridTile.tile.transform.position.x,
-					gridTile.tile.transform.position.y - (shiftUnit * gridTile.stackSize),
-					(gridTile.tile.transform.position.z) + (cardThickness * gridTile.stackSize));
+					// If the stack on the unit is larger than the stack count on the row, increase
+					if (gridTile.stackSize > maxStack[gridTile.y]) {
+						maxStack[gridTile.y]++;
+						ShiftRow(gridTile.category, gridTile.y, 1);
+					} // if stack size exceeds max stack recorded for row
 
-				gameCard.tile.transform.parent = gridTile.tile.transform;
+					gameCard.tile.transform.position = new Vector3
+						(gridTile.tile.transform.position.x,
+						gridTile.tile.transform.position.y - (shiftUnit * gridTile.stackSize),
+						(gridTile.tile.transform.position.z) + (cardThickness * gridTile.stackSize));
+
+					gameCard.tile.transform.parent = gridTile.tile.transform;
 
 
-				// TODO: Adjust for more than 10 cards on a given stack (unlikely, but possible)
-				// TODO: Account for different players
-				gameCard.tile.name = ("p00_" +
-									"i0" + (gridTile.stackSize - 1) + "_" +
-									"StackedCard");
+					// TODO: Adjust for more than 10 cards on a given stack (unlikely, but possible)
+					// TODO: Account for different players
+					gameCard.tile.name = ("p00_" +
+										"i0" + (gridTile.stackSize - 1) + "_" +
+										"StackedCard");
+
+				} else if (gameCard.card.title == "Market Mod") {
+
+					// If the stack on the unit is larger than the stack count on the row, increase
+					if (gridTile.stackSize > maxMarketStack[gridTile.y]) {
+						maxMarketStack[gridTile.y]++;
+						ShiftRow(gridTile.card.category, gridTile.y, 1);
+					} // if stack size exceeds max stack recorded for row
+
+					gameCard.tile.transform.position = new Vector3
+						(gridTile.tile.transform.position.x,
+						gridTile.tile.transform.position.y - (shiftUnit * gridTile.stackSize),
+						(gridTile.tile.transform.position.z) + (cardThickness * gridTile.stackSize));
+
+					gameCard.tile.transform.parent = gridTile.tile.transform;
+
+
+					// TODO: Adjust for more than 10 cards on a given stack (unlikely, but possible)
+					// TODO: Account for different players
+					gameCard.tile.name = ("p00_" +
+										"i0" + (gridTile.stackSize - 1) + "_" +
+										"StackedCard");
+
+				}
 
 			} else {
 				// After ALL processing is done, destroy the game object
@@ -737,9 +868,12 @@ public class GameManager : MonoBehaviour {
 			}// if stackable
 
 			
-		
-			players[turn].hand.Add(DrawCard(masterDeckMutable.gameCardDeck, 
-											masterDeck.gameCardDeck));
+			Card card = Card.CreateInstance<Card>();
+			if (DrawCard(masterDeckMutable.gameCardDeck, masterDeck.gameCardDeck, out card)) {
+				players[turn].hand.Add(card);
+			} else {
+				Destroy(card);
+			}
 
 			landTilePrefab = Resources.Load<GameObject>("Prefabs/GameCard");
 

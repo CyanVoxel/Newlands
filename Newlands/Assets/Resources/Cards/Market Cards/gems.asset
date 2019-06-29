@@ -12,17 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 252e8b19c3229d843a76e098201409a6, type: 3}
   m_Name: gems
   m_EditorClassIdentifier: 
-  category: Market Card
-  title: <c>
+  category: Market
+  title: Market Card
   subtitle: <r>
   bodyText: Assorted gemstones, not naturally occuring on any Tiles.
-  targetCategory: None
-  targetScope: None
   footerText: '**<x>**'
   resource: Gems
-  footerValue: -1
+  footerValue: 500
   FooterColor: Black
   onlyColorCorners: 0
   percFlag: 0
   moneyFlag: 1
   footerOpr: 78
+  target: 
+  doesDiscard: 0

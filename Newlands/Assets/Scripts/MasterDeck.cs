@@ -11,7 +11,7 @@ public class MasterDeck {
 
 	public GameCardDeck gameCardDeck;
 	public LandTileDeck landTileDeck;
-	public MarketCardDeck priceCardDeck;
+	public MarketCardDeck marketCardDeck;
 
 	// NOTE: Since this class doesn't need to inherit any other data fields or
 	// 	methods from Deck, I've duplicated the directory strings here for use with
@@ -37,7 +37,7 @@ public class MasterDeck {
 		
 		// Fills in the subdecks with their preset cards for the deck deckType
 		gameCardDeck = new GameCardDeck(deckType);
-		priceCardDeck = new MarketCardDeck(deckType);
+		marketCardDeck = new MarketCardDeck(deckType);
 		landTileDeck = new LandTileDeck(deckType);
 
 	} // TileDeck(deckType) constructor

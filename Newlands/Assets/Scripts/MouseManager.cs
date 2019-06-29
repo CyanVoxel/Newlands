@@ -222,19 +222,53 @@ public class MouseManager : MonoBehaviour {
 					} // if Left Click
 
 
-					// Right Click ########################
-					// if (Input.GetMouseButtonDown(1)) {
-
-					// 	objectHit.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.cardTintLight;
-					// 	objectHit.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.cardTintLight;
-
-					// 	gameMan.UpdateUI();
-
-					// } // if Right Click
-
-				} // Phase 1
+				} // Phase 2+
 
 			} // if GameCard
+
+
+			// MARKET CARDS #######################################################################
+
+			if (objectHit.transform.parent.name.Contains("MarketCard")) {
+
+				// TODO: Write a function that takes in Type and element to search for,
+				//	returning the substring. Should be able to return variable lengths.
+				//	e.x. GetValue(type: "Tile", element: "x")
+
+				// Grab the grid coordinates stored in the object name
+				byte locX = byte.Parse(objectHit.transform.parent.name.Substring(1, 2));
+				byte locY = byte.Parse(objectHit.transform.parent.name.Substring(5, 2));
+
+				
+				if (GameManager.phase == 2) {
+				// PHASE 2 ########################################################################
+
+					// Left Click #########################
+					if (Input.GetMouseButtonDown(0)) {
+
+						gameMan.WipeSelectionColors("GameCard", ColorPalette.tintCard);
+
+						if (selection >= 0) {
+							if (gameMan.TryToPlay(GameManager.marketGrid[locX, locY], 
+								GameManager.players[0].handUnits[selection])) {
+								// Debug.Log("Using GameCard " + selection + 
+									//   " on LandTile " + locX + ", " + locY);
+									  //GameManager.players[0].hand[selection]
+							}
+						} else {
+							selection = -1;
+							gameMan.WipeSelectionColors("GameCard", ColorPalette.tintCard);
+							GameManager.UpdateUI();
+							return;
+						} // if a GameCard is selected
+
+					} // Left Click
+
+				} // Phase
+
+			} // if LandTile
+
+			
 
 		} // if object hit
 
