@@ -17,8 +17,8 @@ public class GameManager : MonoBehaviour {
 	public static byte turn = 1;					// The current turn in the round
 	public static int graceRounds = 1;				// The # of rounds without neighbor rules
 
-	public static readonly byte width = 7;			// Width of the game grid in cards
-	public static readonly byte height = 7;			// Height of the game grid in cards
+	public static readonly byte width = 3;			// Width of the game grid in cards
+	public static readonly byte height = 3;			// Height of the game grid in cards
 	public static readonly byte handSize = 9;		// How many cards the player is dealt
 
 	public static List<Player> players = new List<Player>();	// The player data objects

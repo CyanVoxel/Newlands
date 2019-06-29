@@ -91,9 +91,13 @@ public class GridUnit {
 
 		this.totalValue = (double)this.baseValue +
 			((double)this.baseValue * ((double)this.valueMod) / 100d);
+		
+		Debug.Log("[GridUnit] Tile " + this.x + ", " + this.y + " base value:  " + this.baseValue);
+		Debug.Log("[GridUnit] Tile " + this.x + ", " + this.y + " total value: " + this.totalValue);
 
-		if (this.totalValue < 0d) {
+		if (this.totalValue < 0) {
 			this.bankrupt = true;
+			GameManager.BankruptTile(this);
 		}
 
 	} // CalcTotalValue()
@@ -133,6 +137,32 @@ public class GridUnit {
 
 
 	} // FindCard()
+
+	public void LoadNewCard(Card card, GameObject tileObj) {
+
+		this.card = card;
+		this.tile = tileObj;
+
+		// this.landType = card.title;
+		this.resource = card.resource;
+		this.quantity = card.footerValue;
+		this.category = card.category;		// The Category of this card (Tile, Game Card)
+		this.scope = card.subtitle;			// The Scope of this card (Forest, Plains, Quarry)
+		this.subScope = card.title;
+		// this.tileScope = card.title;
+		// this.tileCat = card.category;
+		// this.x = x;
+		// this.y = y;
+
+		if (card.category == "Game Card") {
+			// this.targetCat = card.targetCategory;
+			this.target = card.target;	// The Scope that this card targets
+			this.stackable = !card.doesDiscard;
+		}
+
+		this.CalcBaseValue();
+
+	} // GridUnit constructor
 
 	// CONSTRUCTORS ###############################################################################
 
