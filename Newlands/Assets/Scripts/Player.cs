@@ -1,8 +1,8 @@
 // A class to represent and hold player data
 // TODO: Adjust scope as necessary
 
-using UnityEngine;
 using TMPro;
+using UnityEngine;
 
 public class Player {
 
@@ -29,7 +29,7 @@ public class Player {
 
 	public void CalcTotalMoney() {
 		this.totalMoney = 0;
-		this.tileMoney = 0;	// Reset tile money before recalculating
+		this.tileMoney = 0; // Reset tile money before recalculating
 
 		// Checks to see if the object has been initialized. If not, assume it will be afterwards.
 		if (this.initialized) {
@@ -48,20 +48,17 @@ public class Player {
 
 		} else {
 			this.initialized = true;
-		}// if initialized
-		
+		} // if initialized
+
 		this.totalMoney = this.baseMoney + this.tileMoney;
 
-	 } // CalcTotalMoney()
-
+	} // CalcTotalMoney()
 
 	// CONSTRUCTORS ###############################################################################
 
 	public Player() {
 		this.CalcTotalMoney();
 		this.handUnits = new GridUnit[GameManager.handSize];
-		// this.hand = new Deck();
-		// moneyObj = new GameObject();
 	} // Player() constructor
 
 } // Player class

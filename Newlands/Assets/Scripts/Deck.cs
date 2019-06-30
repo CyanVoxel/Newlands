@@ -1,6 +1,5 @@
 ﻿// A class designed to hold and manage "decks" of Card objects
 
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -35,12 +34,11 @@ public class Deck {
 			try {
 				this.deck.Add(Resources.Load<Card>(dir));
 			} // try
-
 			catch (UnassignedReferenceException e) {
-				Debug.LogError("<b>[Deck]</b> Error: " +
-				"Could not add card to deck: " + e);
+				Debug.LogError("<b>[Deck]</b> Error: "
+					+ "Could not add card to deck: " + e);
 			} // catch
-			
+
 		} // for
 	} // Add()
 
@@ -70,10 +68,9 @@ public class Deck {
 		set { this.deck[i] = value; }
 	} // Indexer
 
-
 	// CONSTRUCTORS -----------------------------------------------------------
 
 	// No-arg constructor
 	public Deck() { } // Deck() constructor
-	
+
 } // Deck class

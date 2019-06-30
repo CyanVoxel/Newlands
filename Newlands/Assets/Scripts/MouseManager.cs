@@ -1,7 +1,5 @@
 ﻿// A class that manages mouse hit detection
 
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -9,7 +7,7 @@ public class MouseManager : MonoBehaviour {
 
 	public GameManager gameMan;
 	public static int selection = -1;
-	
+
 	// Update is called once per frame
 	void Update() {
 
@@ -57,8 +55,6 @@ public class MouseManager : MonoBehaviour {
 				byte locX = byte.Parse(objectHit.transform.parent.name.Substring(1, 2));
 				byte locY = byte.Parse(objectHit.transform.parent.name.Substring(5, 2));
 
-				
-
 				// PHASE 1 ####################################################
 				if (GameManager.phase == 1) {
 
@@ -87,37 +83,37 @@ public class MouseManager : MonoBehaviour {
 							objRotX = objectHit.transform.parent.rotation.x;
 							objRotY = objectHit.transform.parent.rotation.y;
 							objRotZ = objectHit.transform.parent.rotation.z;
-							
-							// Changes the material of the card depending on the player who clicked on it.
+
+							// Changes the material of the card depending on who clicked on it.
 							// TODO: Create a method somewhere that changes the desired materials
 							//	based on an object given and a playerId/turn
 							// TODO: Nice card flip animation
 							switch (GameManager.turn) {
-								case 1: 
-									objectHit.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.lightBlue300;
-									objectHit.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.lightBlue300;
-									objectHit.transform.parent.rotation = new Quaternion(objRotX, 1-objRotY, objRotZ, 0);
+								case 1:
+									objectHit.GetComponentsInChildren<Renderer>() [0].material.color = ColorPalette.LightBlue300;
+									objectHit.GetComponentsInChildren<Renderer>() [1].material.color = ColorPalette.LightBlue300;
+									objectHit.transform.parent.rotation = new Quaternion(objRotX, 1 - objRotY, objRotZ, 0);
 									gameMan.AdvanceTurn();
 									break;
-								case 2: 
-									objectHit.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.red400;
-									objectHit.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.red400;
-									objectHit.transform.parent.rotation = new Quaternion(objRotX, 1-objRotY, objRotZ, 0);
+								case 2:
+									objectHit.GetComponentsInChildren<Renderer>() [0].material.color = ColorPalette.Red400;
+									objectHit.GetComponentsInChildren<Renderer>() [1].material.color = ColorPalette.Red400;
+									objectHit.transform.parent.rotation = new Quaternion(objRotX, 1 - objRotY, objRotZ, 0);
 									gameMan.AdvanceTurn();
 									break;
-								case 3: 
-									objectHit.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.purple300;
-									objectHit.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.purple300;
-									objectHit.transform.parent.rotation = new Quaternion(objRotX, 1-objRotY, objRotZ, 0);
+								case 3:
+									objectHit.GetComponentsInChildren<Renderer>() [0].material.color = ColorPalette.Purple300;
+									objectHit.GetComponentsInChildren<Renderer>() [1].material.color = ColorPalette.Purple300;
+									objectHit.transform.parent.rotation = new Quaternion(objRotX, 1 - objRotY, objRotZ, 0);
 									gameMan.AdvanceTurn();
 									break;
-								case 4: 
-									objectHit.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.orange300;
-									objectHit.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.orange300;
-									objectHit.transform.parent.rotation = new Quaternion(objRotX, 1-objRotY, objRotZ, 0);
+								case 4:
+									objectHit.GetComponentsInChildren<Renderer>() [0].material.color = ColorPalette.Orange300;
+									objectHit.GetComponentsInChildren<Renderer>() [1].material.color = ColorPalette.Orange300;
+									objectHit.transform.parent.rotation = new Quaternion(objRotX, 1 - objRotY, objRotZ, 0);
 									gameMan.AdvanceTurn();
 									break;
-								default: 
+								default:
 									break;
 
 							} // switch
@@ -145,10 +141,10 @@ public class MouseManager : MonoBehaviour {
 
 						gameMan.WipeSelectionColors("GameCard", ColorPalette.tintCard);
 
-						objectHit.transform.parent.rotation = new Quaternion(objRotX, 1+objRotY, objRotZ, 0);
+						objectHit.transform.parent.rotation = new Quaternion(objRotX, 1 + objRotY, objRotZ, 0);
 
-						objectHit.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.tintCard;
-						objectHit.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.tintCard;
+						objectHit.GetComponentsInChildren<Renderer>() [0].material.color = ColorPalette.tintCard;
+						objectHit.GetComponentsInChildren<Renderer>() [1].material.color = ColorPalette.tintCard;
 
 						// "Sells" the tile - NOTE: this is for debugging ONLY
 						GameManager.grid[locX, locY].ownerId = 0;
@@ -159,7 +155,7 @@ public class MouseManager : MonoBehaviour {
 					} // if Right Click
 
 				} else if (GameManager.phase == 2) {
-				// PHASE 2 ########################################################################
+					// PHASE 2 ####################################################################
 
 					// Left Click #########################
 					if (Input.GetMouseButtonDown(0)) {
@@ -167,11 +163,11 @@ public class MouseManager : MonoBehaviour {
 						gameMan.WipeSelectionColors("GameCard", ColorPalette.tintCard);
 
 						if (selection >= 0) {
-							if (gameMan.TryToPlay(GameManager.grid[locX, locY], 
-								GameManager.players[0].handUnits[selection])) {
-								// Debug.Log("Using GameCard " + selection + 
-									//   " on LandTile " + locX + ", " + locY);
-									  //GameManager.players[0].hand[selection]
+							if (gameMan.TryToPlay(GameManager.grid[locX, locY],
+									GameManager.players[0].handUnits[selection])) {
+								// Debug.Log("Using GameCard " + selection +
+								//   " on LandTile " + locX + ", " + locY);
+								//GameManager.players[0].hand[selection]
 							}
 						} else {
 							return;
@@ -184,7 +180,7 @@ public class MouseManager : MonoBehaviour {
 			} // if LandTile
 
 			// GAME CARDS #########################################################################
-			
+
 			if (objectHit.transform.parent.name.Contains("GameCard")) {
 
 				// Grab the grid coordinates stored in the object name
@@ -200,7 +196,7 @@ public class MouseManager : MonoBehaviour {
 
 					// Left Click #########################
 					if (Input.GetMouseButtonDown(0)) {
-						
+
 						// If the object clicked was already selected, deselect it
 						if (selection == locY) {
 							selection = -1;
@@ -209,23 +205,21 @@ public class MouseManager : MonoBehaviour {
 							selection = locY;
 							gameMan.WipeSelectionColors("GameCard", ColorPalette.tintCard);
 							objectHit.transform.parent.position = new Vector3(objX, objY, 38f);
-							objectHit.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.cyan300;
-							objectHit.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.cyan300;
+							objectHit.GetComponentsInChildren<Renderer>() [0].material.color = ColorPalette.Cyan300;
+							objectHit.GetComponentsInChildren<Renderer>() [1].material.color = ColorPalette.Cyan300;
 						} // if already selected
 
 						if (selection == -1) {
 							gameMan.WipeSelectionColors("GameCard", ColorPalette.tintCard);
 						}
-					
+
 						GameManager.UpdateUI();
 
 					} // if Left Click
 
-
 				} // Phase 2+
 
 			} // if GameCard
-
 
 			// MARKET CARDS #######################################################################
 
@@ -239,9 +233,8 @@ public class MouseManager : MonoBehaviour {
 				byte locX = byte.Parse(objectHit.transform.parent.name.Substring(1, 2));
 				byte locY = byte.Parse(objectHit.transform.parent.name.Substring(5, 2));
 
-				
 				if (GameManager.phase == 2) {
-				// PHASE 2 ########################################################################
+					// PHASE 2 ####################################################################
 
 					// Left Click #########################
 					if (Input.GetMouseButtonDown(0)) {
@@ -249,11 +242,11 @@ public class MouseManager : MonoBehaviour {
 						gameMan.WipeSelectionColors("GameCard", ColorPalette.tintCard);
 
 						if (selection >= 0) {
-							if (gameMan.TryToPlay(GameManager.marketGrid[locX, locY], 
-								GameManager.players[0].handUnits[selection])) {
-								// Debug.Log("Using GameCard " + selection + 
-									//   " on LandTile " + locX + ", " + locY);
-									  //GameManager.players[0].hand[selection]
+							if (gameMan.TryToPlay(GameManager.marketGrid[locX, locY],
+									GameManager.players[0].handUnits[selection])) {
+								// Debug.Log("Using GameCard " + selection +
+								//   " on LandTile " + locX + ", " + locY);
+								//GameManager.players[0].hand[selection]
 							}
 						} else {
 							selection = -1;
@@ -268,12 +261,10 @@ public class MouseManager : MonoBehaviour {
 
 			} // if LandTile
 
-			
-
 		} // if object hit
 
 		//Debug.Log("World Point: " + worldPoint);
-		
+
 	} // Update()
 
 } // MouseManager class

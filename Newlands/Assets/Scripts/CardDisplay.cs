@@ -1,11 +1,9 @@
 ﻿// This class acts as a bridge between the internal Card scriptable object data
 // and the display components of the Card prefab.
 
-using System.Collections;
-using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 
 public class CardDisplay : MonoBehaviour {
 
@@ -15,24 +13,23 @@ public class CardDisplay : MonoBehaviour {
 	private string dirFtrBdr = "Front Canvas/Footer Mask/Footer Border Mask/Footer Border";
 	private string dirFtrBdrL = "Front Canvas/Footer Mask Left/Footer Border Mask/Footer Border";
 	private string dirFtrBdrR = "Front Canvas/Footer Mask Right/Footer Border Mask/Footer Border";
-	
 
 	// Converts a string with bold and italic markdown into html-like tags
 	private string MdToTag(string inputText) {
 
-		string outputText = inputText;	// String to output
+		string outputText = inputText; // String to output
 
 		// While there's still BOLD markdown left in input string
 		while (outputText.IndexOf("**") >= 0) {
-			int index = outputText.IndexOf("**");								// Set known index
-			outputText = outputText.Remove(startIndex: index, count: 2);		// Remove markdown
-			outputText = outputText.Insert(startIndex: index, value: "<b>");	// Insert start tag
+			int index = outputText.IndexOf("**"); // Set known index
+			outputText = outputText.Remove(startIndex: index, count: 2); // Remove markdown
+			outputText = outputText.Insert(startIndex: index, value: "<b>"); // Insert start tag
 
 			// Making sure there's a place to insert an end tag
 			if (outputText.IndexOf("**") >= 0) {
-				index = outputText.IndexOf("**");								// Reset the index
-				outputText = outputText.Remove(startIndex: index, count: 2);	// Remove markdown
-			outputText =  outputText.Insert(startIndex: index, value: "</b>");	// Insert end tag
+				index = outputText.IndexOf("**"); // Reset the index
+				outputText = outputText.Remove(startIndex: index, count: 2); // Remove markdown
+				outputText = outputText.Insert(startIndex: index, value: "</b>"); // Insert end tag
 			} else {
 				Debug.Log("Error parsing markdown: No closing statement found!");
 			}
@@ -41,15 +38,15 @@ public class CardDisplay : MonoBehaviour {
 
 		// While there's still ITALIC markdown left in input string
 		while (outputText.IndexOf('*') >= 0) {
-			int index = outputText.IndexOf('*');								// Set known index
-			outputText = outputText.Remove(startIndex: index, count: 1);		// Remove markdown
-			outputText = outputText.Insert(startIndex: index, value: "<i>");	// Insert start tag
+			int index = outputText.IndexOf('*'); // Set known index
+			outputText = outputText.Remove(startIndex: index, count: 1); // Remove markdown
+			outputText = outputText.Insert(startIndex: index, value: "<i>"); // Insert start tag
 
 			// Making sure there's a place to insert an end tag
 			if (outputText.IndexOf('*') >= 0) {
-				index = outputText.IndexOf('*');								// Reset the index
-				outputText = outputText.Remove(startIndex: index, count: 1);	// Remove markdown
-			outputText =  outputText.Insert(startIndex: index, value: "</i>");	// Insert end tag
+				index = outputText.IndexOf('*'); // Reset the index
+				outputText = outputText.Remove(startIndex: index, count: 1); // Remove markdown
+				outputText = outputText.Insert(startIndex: index, value: "</i>"); // Insert end tag
 			} else {
 				Debug.Log("Error parsing markdown: No closing statement found!");
 			}
@@ -65,26 +62,26 @@ public class CardDisplay : MonoBehaviour {
 	//	including frequent phrases and dynamically generated scope info text.
 	private string TagToCardData(string inputText, Card card) {
 
-		string outputText = inputText;	// String to output
+		string outputText = inputText; // String to output
 
 		// Processes an <r> tag
 		while (outputText.IndexOf("<r>") >= 0) {
-			int index = outputText.IndexOf("<r>");								// Set known index
-			outputText = outputText.Remove(startIndex: index, count: 3);		// Remove tag
+			int index = outputText.IndexOf("<r>");							// Set known index
+			outputText = outputText.Remove(startIndex: index, count: 3);	// Remove tag
 			outputText = outputText.Insert(startIndex: index, value: card.resource);
 		} // while <r> left
 
 		// Processes an <c> tag
 		while (outputText.IndexOf("<c>") >= 0) {
-			int index = outputText.IndexOf("<c>");								// Set known index
-			outputText = outputText.Remove(startIndex: index, count: 3);		// Remove tag
+			int index = outputText.IndexOf("<c>");							// Set known index
+			outputText = outputText.Remove(startIndex: index, count: 3);	// Remove tag
 			outputText = outputText.Insert(startIndex: index, value: card.category);
 		} // while <c> left
 
 		// Processes an <ts> tag
 		while (outputText.IndexOf("<ts>") >= 0) {
-			int index = outputText.IndexOf("<ts>");								// Set known index
-			outputText = outputText.Remove(startIndex: index, count: 4);		// Remove tag
+			int index = outputText.IndexOf("<ts>");							// Set known index
+			outputText = outputText.Remove(startIndex: index, count: 4);	// Remove tag
 			outputText = outputText.Insert(startIndex: index, value: card.target);
 		} // while <ts> left
 
@@ -100,8 +97,8 @@ public class CardDisplay : MonoBehaviour {
 	} // TagToCardData(string inputText, Card card)
 
 	// Inserts the footerValue into a string meant for the footer text
-	private string InsertFooterValue(Card card, string inputText, bool percFlag, 
-									 bool moneyFlag, char op) {
+	private string InsertFooterValue(Card card, string inputText, bool percFlag,
+		bool moneyFlag, char op) {
 
 		string outputText = inputText;								// String to output
 		string footerValueStr = card.footerValue.ToString("n0");	// The formatted footer value
@@ -109,7 +106,7 @@ public class CardDisplay : MonoBehaviour {
 		// While there's still ITALIC markdown left in input string
 		while (outputText.IndexOf("<x>") >= 0) {
 			// Set known index
-			int index = outputText.IndexOf("<x>");								
+			int index = outputText.IndexOf("<x>");
 			// Remove markdown
 			outputText = outputText.Remove(startIndex: index, count: 3);
 
@@ -128,9 +125,9 @@ public class CardDisplay : MonoBehaviour {
 			} else if (op == '-') {
 				footerValueStr = ("\u2013" + footerValueStr);
 			}
-		
+
 			// Insert start tag
-			outputText = outputText.Insert(startIndex: index, value: footerValueStr);	
+			outputText = outputText.Insert(startIndex: index, value: footerValueStr);
 
 		} // while ITALIC left
 
@@ -143,14 +140,14 @@ public class CardDisplay : MonoBehaviour {
 
 		// Grab the display elements from this parent object
 		GameObject titleObj = transform.Find("Front Canvas/Title").gameObject;
-		
+
 		GameObject bodyObj = transform.Find("Front Canvas/Body").gameObject;
 		GameObject footerObj = transform.Find("Front Canvas/Footer").gameObject;
 		GameObject footerBorderObj = transform.Find(dirFtrBdr).gameObject;
 
 		// Pick out the appropriate elements from the GameObjects that were grabbed
 		TMP_Text title = titleObj.GetComponent<TMP_Text>();
-		
+
 		TMP_Text body = bodyObj.GetComponent<TMP_Text>();
 		TMP_Text footer = footerObj.GetComponent<TMP_Text>();
 		Image footerBorder = footerBorderObj.GetComponent<Image>();
@@ -174,12 +171,12 @@ public class CardDisplay : MonoBehaviour {
 
 				footerBorder.color = ColorPalette.cardDark;
 
-				if (card.FooterColor == "Red") { 				// Red
-					footerBorderL.color = ColorPalette.red500;
-					footerBorderR.color = ColorPalette.red500;
-				} else if (card.FooterColor == "Green") { 	// Green
-					footerBorderL.color = ColorPalette.green500;
-					footerBorderR.color = ColorPalette.green500;
+				if (card.FooterColor == "Red") {					// Red
+					footerBorderL.color = ColorPalette.Red500;
+					footerBorderR.color = ColorPalette.Red500;
+				} else if (card.FooterColor == "Green") {			// Green
+					footerBorderL.color = ColorPalette.Green500;
+					footerBorderR.color = ColorPalette.Green500;
 				}
 
 			} else {
@@ -188,22 +185,22 @@ public class CardDisplay : MonoBehaviour {
 				footerBorderR.color = ColorPalette.alpha;
 
 				// Color the footer border
-				if (card.FooterColor == "Black") { 					// Black
+				if (card.FooterColor == "Black") {					// Black
 					footerBorder.color = ColorPalette.cardDark;
 				} else if (card.FooterColor == "Red") {				// Red
-					footerBorder.color = ColorPalette.red500;
+					footerBorder.color = ColorPalette.Red500;
 				} else if (card.FooterColor == "Green") {			// Green
-					footerBorder.color = ColorPalette.green500;
+					footerBorder.color = ColorPalette.Green500;
 				} else if (card.FooterColor == "Light Blue") {		// Light Blue
-					footerBorder.color = ColorPalette.lightBlue500;
+					footerBorder.color = ColorPalette.LightBlue500;
 				} else if (card.FooterColor == "Yellow") {			// Yellow
-					footerBorder.color = ColorPalette.yellow500;
+					footerBorder.color = ColorPalette.Yellow500;
 				} else if (card.FooterColor == "Pink") {			// Pink
-					footerBorder.color = ColorPalette.pink500;
+					footerBorder.color = ColorPalette.Pink500;
 				} else if (card.FooterColor == "Blue") {			// Blue
-					footerBorder.color = ColorPalette.lightBlue500;
+					footerBorder.color = ColorPalette.LightBlue500;
 				} else if (card.FooterColor == "Dark Blue") {		// Dark Blue
-					footerBorder.color = ColorPalette.indigo500;
+					footerBorder.color = ColorPalette.Indigo500;
 				} // if-else
 
 			} // if Market Mod else
@@ -237,52 +234,52 @@ public class CardDisplay : MonoBehaviour {
 			} // else-if
 
 			// Color the footer border
-			if (card.FooterColor == "Black") { 					// Black
+			if (card.FooterColor == "Black") {					// Black
 				footerBorder.color = ColorPalette.cardDark;
 			} else if (card.FooterColor == "Red") {				// Red
-				footerBorder.color = ColorPalette.red500;
+				footerBorder.color = ColorPalette.Red500;
 			} else if (card.FooterColor == "Green") {			// Green
-				footerBorder.color = ColorPalette.green500;
+				footerBorder.color = ColorPalette.Green500;
 			} else if (card.FooterColor == "Light Blue") {		// Light Blue
-				footerBorder.color = ColorPalette.lightBlue500;
+				footerBorder.color = ColorPalette.LightBlue500;
 			} else if (card.FooterColor == "Yellow") {			// Yellow
-				footerBorder.color = ColorPalette.yellow500;
+				footerBorder.color = ColorPalette.Yellow500;
 			} else if (card.FooterColor == "Pink") {			// Pink
-				footerBorder.color = ColorPalette.pink500;
+				footerBorder.color = ColorPalette.Pink500;
 			} else if (card.FooterColor == "Blue") {			// Blue
-				footerBorder.color = ColorPalette.lightBlue500;
+				footerBorder.color = ColorPalette.LightBlue500;
 			} else if (card.FooterColor == "Dark Blue") {		// Dark Blue
-				footerBorder.color = ColorPalette.indigo500;
+				footerBorder.color = ColorPalette.Indigo500;
 			} // if-else
 
 		} // LandTile specifics
-		
+
 		// Set the TMP title text.
 		// TODO: Optimize this under the new string system, as well as when Land Tile titles
 		//	are finally auto-centered with along with their icons.
-		if (card.title == "Market Mod") {					// Market Mod
+		if (card.title == "Market Mod") { // Market Mod
 			title.text = "\u2013Market Mod\u2013";
-		} else if (card.title == "Market Card") {			// Price Card
+		} else if (card.title == "Market Card") {		// Price Card
 			title.text = "\u2013Market Card\u2013";
-		} else if (card.title == "Resource") {				// Resource
+		} else if (card.title == "Resource") {			// Resource
 			title.text = "\u2013Resource\u2013";
-		} else if (card.title == "Tile Mod") {				// Tile Mod
+		} else if (card.title == "Tile Mod") {			// Tile Mod
 			title.text = "\u2013Tile Mod\u2013";
-		} else if (card.title == "Forest") {				// Forest Tile
+		} else if (card.title == "Forest") {			// Forest Tile
 			title.text = " Forest";
-		} else if (card.title == "Plains") {				// Plains Tile
+		} else if (card.title == "Plains") {			// Plains Tile
 			title.text = " Plains";
-		} else if (card.title == "Quarry") {				// Quarry Tile
+		} else if (card.title == "Quarry") {			// Quarry Tile
 			title.text = "    Quarry";
-		} else if (card.title == "Farmland") {				// Farmland Tile
+		} else if (card.title == "Farmland") {			// Farmland Tile
 			title.text = "       Farmland";
 		} // if-else
 
 		// String members are assigned to the text labels after being formatted
 		body.text = TagToCardData(MdToTag(card.bodyText), card);
-		footer.text = InsertFooterValue(card, card.footerText, card.percFlag, 
-											card.moneyFlag, card.footerOpr);
-											
+		footer.text = InsertFooterValue(card, card.footerText, card.percFlag,
+			card.moneyFlag, card.footerOpr);
+
 		body.text = MdToTag(body.text);
 		footer.text = TagToCardData(MdToTag(footer.text), card);
 
@@ -291,16 +288,16 @@ public class CardDisplay : MonoBehaviour {
 	// Performas visual updates to a bankrupt card
 	public static void BankruptVisuals(GameObject tile) {
 
-		tile.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.cardDark;
-		tile.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.cardDark;
+		tile.GetComponentsInChildren<Renderer>() [0].material.color = ColorPalette.cardDark;
+		tile.GetComponentsInChildren<Renderer>() [1].material.color = ColorPalette.cardDark;
 
 		GameObject titleObj = tile.transform.Find("Front Canvas/Title").gameObject;
 		TMP_Text title = titleObj.GetComponent<TMP_Text>();
-		title.color = ColorPalette.red500;
+		title.color = ColorPalette.Red500;
 
 		GameObject titleIconObj = tile.transform.Find("Front Canvas/Icon").gameObject;
 		Image iconImage = titleIconObj.GetComponent<Image>();
-		iconImage.color = ColorPalette.red500;
+		iconImage.color = ColorPalette.Red500;
 
 		// This picks up the title text for some reason?
 		// GameObject footerObj = tile.transform.Find("Front Canvas/Footer").gameObject;
@@ -316,12 +313,11 @@ public class CardDisplay : MonoBehaviour {
 		TMP_Text footer = footerObj.GetComponent<TMP_Text>();
 
 		ResourceInfo.pricesMut.TryGetValue(unit.card.resource, out unit.card.footerValue);
-		footer.text = InsertFooterValue(unit.card, unit.card.footerText, unit.card.percFlag, 
-										unit.card.moneyFlag, unit.card.footerOpr);
+		footer.text = InsertFooterValue(unit.card, unit.card.footerText, unit.card.percFlag,
+			unit.card.moneyFlag, unit.card.footerOpr);
 		footer.text = TagToCardData(MdToTag(footer.text), unit.card);
 		GameManager.UpdatePlayersInfo();
 		GameManager.UpdateUI();
-
 
 	} //UpdateFooter()
 

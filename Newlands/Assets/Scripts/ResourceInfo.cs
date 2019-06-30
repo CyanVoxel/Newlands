@@ -48,24 +48,23 @@ public class ResourceInfo : MonoBehaviour {
 		if (resources.Count == prices.Count) {
 			for (int i = 0; i < resources.Count; i++) {
 				if (!prices.ContainsKey(resources[i])) {
-					Debug.LogError("<b>[ResourceInfo]</b> Error: " + 
-					"The resource \"" + resources[i] + "\"" +
-					" could not be found in the price dictionary!");
+					Debug.LogError("<b>[ResourceInfo]</b> Error: "
+						+ "The resource \"" + resources[i] + "\""
+						+ " could not be found in the price dictionary!");
 				} // if prices does not contain key for a resource
 			} // for
 		} else {
-			Debug.LogError("<b>[ResourceInfo]</b> Error: " + 
-			"The number of resources (" + resources.Count + ") " +
-			"does not match the number of prices (" + resources.Count + ")!");
+			Debug.LogError("<b>[ResourceInfo]</b> Error: "
+				+ "The number of resources (" + resources.Count + ") "
+				+ "does not match the number of prices (" + resources.Count + ")!");
 		} // if equal resource/price count
 
-	 } // ResourceInfo() constructor
+	} // ResourceInfo() constructor
 
-	public ResourceInfo(string deckType) { 
+	public ResourceInfo(string deckType) {
 
 		// NOTE: Only custom resources or price changes need to be put here.
 
 	} // Prices(deckType) constructor
 
 } // ResourceInfo class
-

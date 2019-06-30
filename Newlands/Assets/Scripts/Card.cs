@@ -3,17 +3,15 @@
 // TODO: Make some bodies simpler, and possibly add another felid for in-depth descriptions
 //	that can appear when using a future help/info tool.
 
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Card", menuName = "Card")]
 public class Card : ScriptableObject {
 
-	// DATA FIELDS ------------------------------------------------------------
+	// FIELDS #####################################################################################
 
 	// The overall category of the Card (ex. Game Card, Price Card)
-	public string category; 
+	public string category;
 
 	// The Title of the Card, specifying its type in its category
 	public string title;
@@ -54,8 +52,7 @@ public class Card : ScriptableObject {
 	// Does this card get discarded if used? (Rather than being stacked under a Tile)
 	public bool doesDiscard;
 
-
-	// CONSTRUCTORS -----------------------------------------------------------
+	// CONSTRUCTORS ###############################################################################
 
 	// Default no-arg constructor
 	public Card() { }
@@ -64,5 +61,5 @@ public class Card : ScriptableObject {
 	public Card(string path) {
 		this.Equals(Resources.Load<Card>(path));
 	} // Card(string) constructor
-	
+
 } // Card class

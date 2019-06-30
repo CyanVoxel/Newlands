@@ -9,7 +9,7 @@ public class GameCardDeck : Deck {
 
 	// Constructor that takes in a string representing the name of premade deck
 	public GameCardDeck(string flavor) {
-		
+
 		// The Vanilla Standard Deck's Game Cards
 		if (flavor == "Vanilla") {
 			// Card cardToAdd;
@@ -44,19 +44,19 @@ public class GameCardDeck : Deck {
 			this.Add(dirGcTmR + "/platinum_add_1", 2);
 
 			// Tile Mods (Inv/Sab)
-			this.Add(dirGcTmI+ "/add_25_perc", 4);
-			this.Add(dirGcTmI+ "/add_50_perc", 2);
-			this.Add(dirGcTmI+ "/add_100_money", 8);
-			this.Add(dirGcTmI+ "/add_200_money", 4);
-			
-			this.Add(dirGcTmS+ "/sub_25_perc", 4);
-			this.Add(dirGcTmS+ "/sub_50_perc", 2);
-			this.Add(dirGcTmS+ "/sub_100_money", 8);
-			this.Add(dirGcTmS+ "/sub_200_money", 4);
+			this.Add(dirGcTmI + "/add_25_perc", 4);
+			this.Add(dirGcTmI + "/add_50_perc", 2);
+			this.Add(dirGcTmI + "/add_100_money", 8);
+			this.Add(dirGcTmI + "/add_200_money", 4);
+
+			this.Add(dirGcTmS + "/sub_25_perc", 4);
+			this.Add(dirGcTmS + "/sub_50_perc", 2);
+			this.Add(dirGcTmS + "/sub_100_money", 8);
+			this.Add(dirGcTmS + "/sub_200_money", 4);
 
 			// Tile Mods (Other)
-			this.Add(dirGcTmO+ "/upgrade_plains", 10);
-			this.Add(dirGcTmO+ "/foreclosure", 2);
+			this.Add(dirGcTmO + "/upgrade_plains", 10);
+			this.Add(dirGcTmO + "/foreclosure", 2);
 
 		} // if Vanilla Standard
 

@@ -9,10 +9,10 @@ public class MarketCardDeck : Deck {
 
 	// Constructor that takes in a string representing the name of premade deck
 	public MarketCardDeck(string deckType) {
-		
+
 		// The Vanilla Standard Deck's Price Cards
 		if (deckType == "Vanilla") {
-			
+
 			this.Add(dirMc + "/lumber");
 			this.Add(dirMc + "/cashcrops");
 			// this.Add(dirMc + "/fish");

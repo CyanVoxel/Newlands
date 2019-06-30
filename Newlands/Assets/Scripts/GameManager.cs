@@ -2,38 +2,40 @@
 // TODO: Will probably want to move all of the UI stuff to a dedicated class.
 
 using System.Collections.Generic;
-using UnityEngine;
 using TMPro;
+using UnityEngine;
 
 public class GameManager : MonoBehaviour {
+
+	public CardDisplay cardDis;
 
 	// VARIABLES ##################################################################################
 
 	public static MasterDeck masterDeck;
 	public static MasterDeck masterDeckMutable;
-	public static readonly byte playerCount = 4; 	// Number of players in the match
-	public static byte phase = 1;					// The current phase of the game
-	public static int round = 1;					// The current round of turns
-	public static byte turn = 1;					// The current turn in the round
-	public static int graceRounds = 1;				// The # of rounds without neighbor rules
+	public static readonly byte playerCount = 4; // Number of players in the match
+	public static byte phase = 1; // The current phase of the game
+	public static int round = 1; // The current round of turns
+	public static byte turn = 1; // The current turn in the round
+	public static int graceRounds = 1; // The # of rounds without neighbor rules
 
-	public static readonly byte width = 7;			// Width of the game grid in cards
-	public static readonly byte height = 7;			// Height of the game grid in cards
-	public static readonly byte handSize = 5;		// How many cards the player is dealt
+	public static readonly byte width = 7; // Width of the game grid in cards
+	public static readonly byte height = 7; // Height of the game grid in cards
+	public static readonly byte handSize = 5; // How many cards the player is dealt
 
-	public static List<Player> players = new List<Player>();	// The player data objects
+	public static List<Player> players = new List<Player>(); // The player data objects
 
 	// Grid specific
-	public static GridUnit[,] grid;					// The internal grid, made up of GridUnits
-	public static GridUnit[,] marketGrid;
-	public static float[] rowPos;					// Row position
+	public static GridUnit[, ] grid; // The internal grid, made up of GridUnits
+	public static GridUnit[, ] marketGrid;
+	public static float[] rowPos; // Row position
 	private static byte[] maxStack;
 	private static byte[] maxMarketStack;
 	private static float cardThickness = 0.2f;
 	private static float shiftUnit = 1.2f;
 	private static float cardOffX = 11f;
 	private static float cardOffY = 8f;
-	
+
 	public static Camera mainCam;
 	private GameObject landTilePrefab;
 	private GameObject gameCardPrefab;
@@ -65,7 +67,7 @@ public class GameManager : MonoBehaviour {
 		// Initializes each player object and draws a hand for them
 		for (byte i = 0; i < playerCount; i++) {
 			players.Add(new Player());
-			players[i].Id = ((byte)(i + 1));
+			players[i].Id = ((byte) (i + 1));
 			players[i].hand = DrawHand(handSize);
 
 		} // for playerCount
@@ -94,21 +96,21 @@ public class GameManager : MonoBehaviour {
 			// Debug.Log("UI/Money/Player (" + (i + 1) + ")");
 			players[i].moneyObj = transform.Find("UI/Money/Player (" + (i + 1) + ")").gameObject;
 			players[i].moneyText = players[i].moneyObj.GetComponent<TMP_Text>();
-			players[i].moneyText.color = GetPlayerColor((byte)(i + 1), 500);
+			players[i].moneyText.color = GetPlayerColor((byte) (i + 1), 500);
 		} // for playerCount
 
 		// GRIDS ##############################################################
-		
+
 		// Initialize the internal grids
 		grid = new GridUnit[width, height];
-		marketGrid = new GridUnit[Mathf.CeilToInt((float)ResourceInfo.resources.Count / 
-			(float)height), height];
+		marketGrid = new GridUnit[Mathf.CeilToInt((float) ResourceInfo.resources.Count
+			/ (float) height), height];
 		rowPos = new float[height];
 		maxStack = new byte[height];
 		maxMarketStack = new byte[height];
 
 		// Create tile GameObjects and connect them to internal grid
-		PopulateGrid();	
+		PopulateGrid();
 		PopulateMarket();
 		// ShiftRow(row: 4, units: 2);
 
@@ -162,7 +164,7 @@ public class GameManager : MonoBehaviour {
 		string xZeroes = "0";
 		string yZeroes = "0";
 		//masterDeckMutable = masterDeck;	// Sets mutable deck version to internal one
-		
+
 		for (byte x = 0; x < width; x++) {
 			for (byte y = 0; y < height; y++) {
 				// Draw a card from the Land Tile deck
@@ -184,18 +186,18 @@ public class GameManager : MonoBehaviour {
 					yZeroes = "0";
 				} // zeroes calc
 
-				GameObject cardObj = (GameObject)Instantiate(this.landTilePrefab, new Vector3(xOff, yOff, 50), Quaternion.identity);
-				cardObj.name = ("x" + xZeroes + x + "_" +
-								"y" + yZeroes + y + "_" +
-								"Tile");
+				GameObject cardObj = (GameObject) Instantiate(this.landTilePrefab, new Vector3(xOff, yOff, 50), Quaternion.identity);
+				cardObj.name = ("x" + xZeroes + x + "_"
+					+ "y" + yZeroes + y + "_"
+					+ "Tile");
 				// cardObj.name = ("LandTile_x" + x + "_y" + y + "_z0");
 
 				cardObj.transform.SetParent(this.transform);
-				cardObj.transform.rotation = new Quaternion(0, 180, 0, 0);	// 0, 180, 0, 0
+				cardObj.transform.rotation = new Quaternion(0, 180, 0, 0); // 0, 180, 0, 0
 
 				// Connect the drawn card to the internal grid
 				grid[x, y] = new GridUnit(card: card, tileObj: cardObj, x: x, y: y);
-				rowPos[y] = cardObj.transform.position.y;	// Row position
+				rowPos[y] = cardObj.transform.position.y; // Row position
 
 				// Connect the drawn card to the prefab that was just created
 				cardObj.SendMessage("DisplayCard", card);
@@ -211,8 +213,8 @@ public class GameManager : MonoBehaviour {
 		string yZeroes = "0";
 		//masterDeckMutable = masterDeck;	// Sets mutable deck version to internal one
 
-		int marketWidth = Mathf.CeilToInt((float)ResourceInfo.resources.Count / (float)height);
-		
+		int marketWidth = Mathf.CeilToInt((float) ResourceInfo.resources.Count / (float) height);
+
 		for (byte x = 0; x < marketWidth; x++) {
 			for (byte y = 0; y < height; y++) {
 
@@ -235,10 +237,10 @@ public class GameManager : MonoBehaviour {
 						yZeroes = "0";
 					} // zeroes calc
 
-					GameObject cardObj = (GameObject)Instantiate(this.marketCardPrefab, new Vector3(xOff, yOff, 50), Quaternion.identity);
-					cardObj.name = ("x" + xZeroes + x + "_" +
-									"y" + yZeroes + y + "_" +
-									"MarketCard");
+					GameObject cardObj = (GameObject) Instantiate(this.marketCardPrefab, new Vector3(xOff, yOff, 50), Quaternion.identity);
+					cardObj.name = ("x" + xZeroes + x + "_"
+						+ "y" + yZeroes + y + "_"
+						+ "MarketCard");
 					// cardObj.name = ("LandTile_x" + x + "_y" + y + "_z0");
 
 					cardObj.transform.SetParent(this.transform);
@@ -261,7 +263,7 @@ public class GameManager : MonoBehaviour {
 	// Draws random GameCards from the masterDeck and returns a deck of a specified size
 	private Deck DrawHand(int handSize) {
 
-		Deck deck = new Deck();		// The deck of drawn cards to return
+		Deck deck = new Deck(); // The deck of drawn cards to return
 
 		for (int i = 0; i < handSize; i++) {
 			// Draw a card from the deck provided and add it to the deck to return.
@@ -273,7 +275,6 @@ public class GameManager : MonoBehaviour {
 			} else {
 				Destroy(card);
 			}
-			
 
 		} // for
 
@@ -296,39 +297,36 @@ public class GameManager : MonoBehaviour {
 			float yOff = -10;
 
 			// Determines the number of zeroes to add in the object name
-				if (playerCount >= 10) {
-					pZeroes = "";
-				} else {
-					pZeroes = "0";
-				}
-				if (i >= 10) {
-					iZeroes = "";
-				} else {
-					iZeroes = "0";
-				} // zeroes calc
+			if (playerCount >= 10) {
+				pZeroes = "";
+			} else {
+				pZeroes = "0";
+			}
+			if (i >= 10) {
+				iZeroes = "";
+			} else {
+				iZeroes = "0";
+			} // zeroes calc
 
-			GameObject cardObj = (GameObject)Instantiate(this.landTilePrefab, new Vector3(xOff, yOff, 40), Quaternion.identity);
-			cardObj.name = ("p" + pZeroes + playerNum + "_" +
-								"i" + iZeroes + i + "_" +
-								"GameCard");
+			GameObject cardObj = (GameObject) Instantiate(this.landTilePrefab, new Vector3(xOff, yOff, 40), Quaternion.identity);
+			cardObj.name = ("p" + pZeroes + playerNum + "_"
+				+ "i" + iZeroes + i + "_"
+				+ "GameCard");
 			// cardObj.name = ("GameCard_p" + playerNum + "_i"+ i);
 
 			cardObj.transform.SetParent(this.transform);
 			cardObj.transform.rotation = new Quaternion(0, 0, 0, 0);
 
-			players[playerNum].handUnits[i] = new GridUnit(players[playerNum].hand[i], 
-				cardObj, 
-				(byte)i, 0);
+			players[playerNum].handUnits[i] = new GridUnit(players[playerNum].hand[i],
+				cardObj,
+				(byte) i, 0);
 
 			try {
 				cardObj.SendMessage("DisplayCard", deck[i]);
+			} catch (UnassignedReferenceException e) {
+				Debug.LogError("<b>[GameManager]</b> Error: "
+					+ "Card error at deck index " + i + ": " + e);
 			}
-
-			catch (UnassignedReferenceException e) {
-				Debug.LogError("<b>[GameManager]</b> Error: " +
-				"Card error at deck index " + i + ": " + e);
-			}
-			
 
 		} // for
 
@@ -348,59 +346,54 @@ public class GameManager : MonoBehaviour {
 		float yOff = -10;
 
 		// Determines the number of zeroes to add in the object name
-			if (playerCount >= 10) {
-				pZeroes = "";
-			} else {
-				pZeroes = "0";
-			}
-			if (index >= 10) {
-				iZeroes = "";
-			} else {
-				iZeroes = "0";
-			} // zeroes calc
+		if (playerCount >= 10) {
+			pZeroes = "";
+		} else {
+			pZeroes = "0";
+		}
+		if (index >= 10) {
+			iZeroes = "";
+		} else {
+			iZeroes = "0";
+		} // zeroes calc
 
-		GameObject cardObj = (GameObject)Instantiate(this.gameCardPrefab, new Vector3(xOff, yOff, 40), Quaternion.identity);
-		cardObj.name = ("p" + pZeroes + playerNum + "_" +
-							"i" + iZeroes + index + "_" +
-							"GameCard");
+		GameObject cardObj = (GameObject) Instantiate(this.gameCardPrefab, new Vector3(xOff, yOff, 40), Quaternion.identity);
+		cardObj.name = ("p" + pZeroes + playerNum + "_"
+			+ "i" + iZeroes + index + "_"
+			+ "GameCard");
 		// cardObj.name = ("GameCard_p" + playerNum + "_i"+ i);
 
 		cardObj.transform.SetParent(this.transform);
 		cardObj.transform.rotation = new Quaternion(0, 0, 0, 0);
 
-		players[playerNum].handUnits[index] = new GridUnit(players[playerNum].hand[index], 
-			cardObj, 
-			(byte)index, 0);
+		players[playerNum].handUnits[index] = new GridUnit(players[playerNum].hand[index],
+			cardObj,
+			(byte) index, 0);
 
 		try {
 			cardObj.SendMessage("DisplayCard", card);
+		} catch (UnassignedReferenceException e) {
+			Debug.LogError("<b>[GameManager]</b> Error: "
+				+ "Card error at deck index " + index + ": " + e);
 		}
-
-		catch (UnassignedReferenceException e) {
-			Debug.LogError("<b>[GameManager]</b> Error: " +
-			"Card error at deck index " + index + ": " + e);
-		}
-			
-
 
 	} // DisplayCard()
-
 
 	public bool DrawCard(Deck deckMut, Deck deckPerm, out Card card) {
 
 		// Card card;	// Card to return
-		int cardsLeft = deckMut.Count();	// Number of cards left from mutable deck
-		int cardsTotal = deckPerm.Count();	// Number of cards total from permanent deck
+		int cardsLeft = deckMut.Count(); // Number of cards left from mutable deck
+		int cardsTotal = deckPerm.Count(); // Number of cards total from permanent deck
 
 		// Draws a card from the mutable deck, then removes that card from the deck.
 		// If all cards are drawn, draw randomly from the immutable deck.
-		if (cardsLeft > 0 ) {
+		if (cardsLeft > 0) {
 			card = deckMut[Random.Range(0, cardsLeft)];
 			deckMut.Remove(card);
-			// Debug.Log("<b>[GameManager]</b> " + 
-			// 	cardsLeft + 
-			// 	" of " + 
-			// 	cardsTotal + 
+			// Debug.Log("<b>[GameManager]</b> " +
+			// 	cardsLeft +
+			// 	" of " +
+			// 	cardsTotal +
 			// 	" cards left");
 		} else {
 			card = deckPerm[Random.Range(0, cardsTotal)];
@@ -436,7 +429,7 @@ public class GameManager : MonoBehaviour {
 			if (round > 0) {
 				round--;
 			} // if round > 0
-			
+
 			turn = playerCount;
 
 		} // if turn == 0
@@ -462,7 +455,7 @@ public class GameManager : MonoBehaviour {
 
 	public void HighlightNeighbors() {
 
-		byte id = (byte)(turn - 1);
+		byte id = (byte) (turn - 1);
 
 		WipeSelectionColors("LandTile", ColorPalette.tintCard);
 
@@ -479,23 +472,23 @@ public class GameManager : MonoBehaviour {
 		void Highlight(byte gridX, byte gridY) {
 
 			Color playerColor = GetPlayerColor(turn, 200);
-			bool[,] highlighted = new bool[width, height];
+			bool[, ] highlighted = new bool[width, height];
 			// needToSkip = true;
 
 			// Find each unowned neighbor tiles
 			for (int i = -1; i <= 1; i++) {
 				for (int j = -1; j <= 1; j++) {
-					if (gridX + i >= 0 && 
-						gridX + i < width && 
-						gridY + j >= 0 && 
-						gridY + j < height) {
+					if (gridX + i >= 0
+						&& gridX + i < width
+						&& gridY + j >= 0
+						&& gridY + j < height) {
 
-						if (grid[gridX + i, gridY + j].ownerId == 0 && 
-							!grid[gridX + i, gridY + j].bankrupt) {
+						if (grid[gridX + i, gridY + j].ownerId == 0
+							&& !grid[gridX + i, gridY + j].bankrupt) {
 
-							GameObject temp = FindCard("Tile", (byte)(gridX + i), (byte)(gridY + j));
-							temp.GetComponentsInChildren<Renderer>()[0].material.color = playerColor;
-							temp.GetComponentsInChildren<Renderer>()[1].material.color = playerColor;
+							GameObject temp = FindCard("Tile", (byte) (gridX + i), (byte) (gridY + j));
+							temp.GetComponentsInChildren<Renderer>() [0].material.color = playerColor;
+							temp.GetComponentsInChildren<Renderer>() [1].material.color = playerColor;
 						} // if the Tile is unowned
 					} // if grid in bounds
 				} // for j
@@ -508,9 +501,9 @@ public class GameManager : MonoBehaviour {
 	// Returns TRUE if it needs to go through a recursive iteration.
 	public bool VerifyHighlight() {
 
-		byte id = (byte)(turn - 1);
+		byte id = (byte) (turn - 1);
 
-		bool[,] highlighted = new bool[width, height];
+		bool[, ] highlighted = new bool[width, height];
 		int highlightCount = 0;
 
 		if (round > graceRounds && phase == 1) {
@@ -528,7 +521,7 @@ public class GameManager : MonoBehaviour {
 
 			for (int x = 0; x < width; x++) {
 				for (int y = 0; y < height; y++) {
-					if (highlighted[x,y]) {
+					if (highlighted[x, y]) {
 						highlightCount++;
 						// Debug.Log("Highlighted:" + x + ", " + y);
 					} //if grid location was highlighted
@@ -546,7 +539,7 @@ public class GameManager : MonoBehaviour {
 				// Test to see if the grid is full
 				for (int x = 0; x < width; x++) {
 					for (int y = 0; y < height; y++) {
-						if (grid[x,y].ownerId == 0 && !grid[x, y].bankrupt) {
+						if (grid[x, y].ownerId == 0 && !grid[x, y].bankrupt) {
 							gridSpaceLeft++;
 							// Debug.Log("Grid must NOT be full!");
 						} // if Tile is unowned
@@ -563,7 +556,9 @@ public class GameManager : MonoBehaviour {
 				} else {
 					// return true;
 					VerifyHighlight();
-					// Debug.Log("[VerifyHighlight2] Turn " + turn + ", Player ID (Turn) " + id + ", (Real) " + players[id].Id);
+					// Debug.Log("[VerifyHighlight2] Turn "
+					// 	+ turn + ", Player ID (Turn) " + id
+					// 	+ ", (Real) " + players[id].Id);
 				} // if-else
 			} // if nothing was highlighted
 		} else {
@@ -578,14 +573,14 @@ public class GameManager : MonoBehaviour {
 			// Find each unowned neighbor tiles
 			for (int i = -1; i <= 1; i++) {
 				for (int j = -1; j <= 1; j++) {
-					if (gridX + i >= 0 && 
-						gridX + i < width && 
-						gridY + j >= 0 && 
-						gridY + j < height) {
-						if (grid[gridX + i, gridY + j].ownerId == 0 && 
-							!grid[gridX + i, gridY + j].bankrupt) {
+					if (gridX + i >= 0
+						&& gridX + i < width
+						&& gridY + j >= 0
+						&& gridY + j < height) {
+						if (grid[gridX + i, gridY + j].ownerId == 0
+							&& !grid[gridX + i, gridY + j].bankrupt) {
 
-							highlighted[gridX + i, gridY + j] = true;	
+							highlighted[gridX + i, gridY + j] = true;
 						} // if Tile is unowned
 					} // if grid in bounds
 				} // for j
@@ -596,12 +591,12 @@ public class GameManager : MonoBehaviour {
 	// Attempts to buy an unowned tile. Returns true if successful, or false if already owned.
 	public static bool BuyTile(byte gridX, byte gridY) {
 
-		byte id = (byte)(turn - 1);
+		byte id = (byte) (turn - 1);
 
 		// TODO: When money is implemented, factor that into the buying process.
 		//	It would also be nice to have a purchase conformation message
 
-		bool followsRules = false;	// Assume rules are not being followed
+		bool followsRules = false; // Assume rules are not being followed
 
 		// First check is the first round is finished
 		if (round > graceRounds) {
@@ -626,12 +621,12 @@ public class GameManager : MonoBehaviour {
 			// Debug.Log("Turn " + turn + ", buying for Player " + players[id].Id);
 			return true;
 		} else if (!followsRules) {
-			Debug.Log("<b>[GameManager]</b> " +
-						"You can't buy this tile, it's too far away!");
+			Debug.Log("<b>[GameManager]</b> "
+				+ "You can't buy this tile, it's too far away!");
 			return false;
 		} else {
-			Debug.Log("<b>[GameManager]</b> " +
-						"This Tile is already owned!");
+			Debug.Log("<b>[GameManager]</b> "
+				+ "This Tile is already owned!");
 			return false;
 		}
 
@@ -641,15 +636,15 @@ public class GameManager : MonoBehaviour {
 			// Find each unowned neighbor tiles
 			for (int i = -1; i <= 1; i++) {
 				for (int j = -1; j <= 1; j++) {
-					if (gridLocX + i >= 0 && 
-						gridLocX + i < width && 
-						gridLocY + j >= 0 && 
-						gridLocY + j < height) {
+					if (gridLocX + i >= 0
+						&& gridLocX + i < width
+						&& gridLocY + j >= 0
+						&& gridLocY + j < height) {
 
-						if (grid[gridLocX + i, gridLocY + j].ownerId == 0 &&
-							grid[gridLocX + i, gridLocY + j] == grid[gridX, gridY] && 
-							!grid[gridX, gridY].bankrupt) {
-							followsRules = true;	// Signal that this is a valid purchase
+						if (grid[gridLocX + i, gridLocY + j].ownerId == 0
+							&& grid[gridLocX + i, gridLocY + j] == grid[gridX, gridY]
+							&& !grid[gridX, gridY].bankrupt) {
+							followsRules = true; // Signal that this is a valid purchase
 						} // if tile owned and in a valid spot
 					} // if grid in bounds
 				} // for j
@@ -664,11 +659,9 @@ public class GameManager : MonoBehaviour {
 			for (byte x = 0; x < width; x++) {
 				for (byte y = 0; y < height; y++) {
 					if (grid[x, y].ownerId == 0 && !grid[x, y].bankrupt) {
-
-						GameObject temp = FindCard("Tile", (byte)x, (byte)y);
-
-						temp.GetComponentsInChildren<Renderer>()[0].material.color = color;
-						temp.GetComponentsInChildren<Renderer>()[1].material.color = color;
+						GameObject temp = FindCard("Tile", (byte) x, (byte) y);
+						temp.GetComponentsInChildren<Renderer>() [0].material.color = color;
+						temp.GetComponentsInChildren<Renderer>() [1].material.color = color;
 					} //if tile unowned
 				} // for height
 			} // for width
@@ -680,26 +673,24 @@ public class GameManager : MonoBehaviour {
 					float x = temp.transform.position.x;
 					float y = temp.transform.position.y;
 					temp.transform.position = new Vector3(x, y, 40);
-					temp.GetComponentsInChildren<Renderer>()[0].material.color = color;
-					temp.GetComponentsInChildren<Renderer>()[1].material.color = color;
+					temp.GetComponentsInChildren<Renderer>() [0].material.color = color;
+					temp.GetComponentsInChildren<Renderer>() [1].material.color = color;
 				} else {
 					// Debug.LogWarning("[GameManager] Warning: Could not find a GameCard selection to wipe!");
 				} // if the card could be found
-				
+
 			} // for handSize
 		} else if (cardType == "MarketCard") {
-			int marketWidth = Mathf.CeilToInt((float)ResourceInfo.resources.Count / 
-			(float)height);
+			int marketWidth = Mathf.CeilToInt((float) ResourceInfo.resources.Count
+				/ (float) height);
 			for (int x = 0; x < marketWidth; x++) {
 				for (int y = 0; y < height; y++) {
-
-						GameObject temp = FindCard("MarketCard", (byte)x, (byte)y);
-						float posX = temp.transform.position.x;
-						float posY = temp.transform.position.y;
-						temp.transform.position = new Vector3(posX, posY, 40);
-						temp.GetComponentsInChildren<Renderer>()[0].material.color = color;
-						temp.GetComponentsInChildren<Renderer>()[1].material.color = color;
-
+					GameObject temp = FindCard("MarketCard", (byte) x, (byte) y);
+					float posX = temp.transform.position.x;
+					float posY = temp.transform.position.y;
+					temp.transform.position = new Vector3(posX, posY, 40);
+					temp.GetComponentsInChildren<Renderer>() [0].material.color = color;
+					temp.GetComponentsInChildren<Renderer>() [1].material.color = color;
 				} // for height
 			} // for width
 		} // if
@@ -716,46 +707,46 @@ public class GameManager : MonoBehaviour {
 
 			case 1:
 				if (strength == 500) {
-					color = ColorPalette.lightBlue500;
+					color = ColorPalette.LightBlue500;
 				} else if (strength == 400) {
-					color = ColorPalette.lightBlue400;
+					color = ColorPalette.LightBlue400;
 				} else if (strength == 300) {
-					color = ColorPalette.lightBlue300;
+					color = ColorPalette.LightBlue300;
 				} else if (strength == 200) {
-					color = ColorPalette.lightBlue200;
+					color = ColorPalette.LightBlue200;
 				}
 				break;
 			case 2:
 				if (strength == 500) {
-					color = ColorPalette.red500;
+					color = ColorPalette.Red500;
 				} else if (strength == 400) {
-					color = ColorPalette.red400;
+					color = ColorPalette.Red400;
 				} else if (strength == 300) {
-					color = ColorPalette.red300;
+					color = ColorPalette.Red300;
 				} else if (strength == 200) {
-					color = ColorPalette.red300;
+					color = ColorPalette.Red300;
 				}
 				break;
 			case 3:
 				if (strength == 500) {
-					color = ColorPalette.purple500;
+					color = ColorPalette.Purple500;
 				} else if (strength == 400) {
-					color = ColorPalette.purple400;
+					color = ColorPalette.Purple400;
 				} else if (strength == 300) {
-					color = ColorPalette.purple300;
+					color = ColorPalette.Purple300;
 				} else if (strength == 200) {
-					color = ColorPalette.purple200;
+					color = ColorPalette.Purple200;
 				}
 				break;
 			case 4:
 				if (strength == 500) {
-					color = ColorPalette.amber500;
+					color = ColorPalette.Amber500;
 				} else if (strength == 400) {
-					color = ColorPalette.amber400;
+					color = ColorPalette.Amber400;
 				} else if (strength == 300) {
-					color = ColorPalette.amber300;
+					color = ColorPalette.Amber300;
 				} else if (strength == 200) {
-					color = ColorPalette.amber200;
+					color = ColorPalette.Amber200;
 				}
 				break;
 			default:
@@ -763,7 +754,7 @@ public class GameManager : MonoBehaviour {
 		} // switch
 
 		return color;
-	
+
 	} // GetPlayerColor()
 
 	// Shifts rows of cards up or down. Used to give room for cards under tiles.
@@ -775,23 +766,22 @@ public class GameManager : MonoBehaviour {
 					float oldX = grid[x, y].tile.transform.position.x;
 					float oldY = grid[x, y].tile.transform.position.y;
 					float oldZ = grid[x, y].tile.transform.position.z;
-					grid[x, y].tile.transform.position = new Vector3
-						(grid[x, y].tile.transform.position.x,
+					grid[x, y].tile.transform.position = new Vector3(grid[x, y].tile.transform.position.x,
 						(oldY += (shiftUnit * units)),
 						grid[x, y].tile.transform.position.z);
 				} // for y
 			} // for x
 		} else if (type == "Market") {
-			int marketWidth = Mathf.CeilToInt((float)ResourceInfo.resources.Count / (float)height);
+			int marketWidth = Mathf.CeilToInt((float) ResourceInfo.resources.Count
+				/ (float) height);
 			for (byte x = 0; x < marketWidth; x++) {
 				for (byte y = row; y < height; y++) {
-					
+
 					if (marketGrid[x, y] != null) {
 						float oldX = marketGrid[x, y].tile.transform.position.x;
 						float oldY = marketGrid[x, y].tile.transform.position.y;
 						float oldZ = marketGrid[x, y].tile.transform.position.z;
-						marketGrid[x, y].tile.transform.position = new Vector3
-							(marketGrid[x, y].tile.transform.position.x,
+						marketGrid[x, y].tile.transform.position = new Vector3(marketGrid[x, y].tile.transform.position.x,
 							(oldY += (shiftUnit * units)),
 							marketGrid[x, y].tile.transform.position.z);
 					} // if tile at the location isn't null
@@ -800,12 +790,11 @@ public class GameManager : MonoBehaviour {
 			} // for x
 		} else {
 			Debug.Log("Not doing anything");
-		}// type
-		
+		} // type
 
 	} // ShiftRow()
 
-	// Updates the basic UI elements 
+	// Updates the basic UI elements
 	public static void UpdateUI() {
 
 		GameManager.phaseNumberText.text = ("Phase " + GameManager.phase);
@@ -819,26 +808,25 @@ public class GameManager : MonoBehaviour {
 
 		switch (turn) {
 			case 1:
-				GameManager.turnNumberText.color = ColorPalette.lightBlue500;
+				GameManager.turnNumberText.color = ColorPalette.LightBlue500;
 				break;
 			case 2:
-				GameManager.turnNumberText.color = ColorPalette.red500;
+				GameManager.turnNumberText.color = ColorPalette.Red500;
 				break;
 			case 3:
-				GameManager.turnNumberText.color = ColorPalette.purple500;
+				GameManager.turnNumberText.color = ColorPalette.Purple500;
 				break;
 			case 4:
-				GameManager.turnNumberText.color = ColorPalette.amber500;
+				GameManager.turnNumberText.color = ColorPalette.Amber500;
 				break;
 			default:
 				break;
 		} // switch
 
-
 		// Things that need to be updated for all players go here
-		for (byte i = 0; i < (byte)players.Count; i++) {
-			players[i].moneyText.text = "Player " + (i + 1) + ": " 
-										+ players[i].totalMoney.ToString("C"); 
+		for (byte i = 0; i < (byte) players.Count; i++) {
+			players[i].moneyText.text = "Player " + (i + 1) + ": "
+				+ players[i].totalMoney.ToString("C");
 		} // for array length
 
 	} // UpdateUI()
@@ -847,7 +835,7 @@ public class GameManager : MonoBehaviour {
 	public bool TryToPlay(GridUnit gridTile, GridUnit gameCard) {
 
 		if (!gridTile.bankrupt && RuleSet.IsLegal(gridTile, gameCard)) {
-			
+
 			RuleSet.PlayCard(gridTile, gameCard.card);
 			UpdatePlayersInfo();
 			UpdateUI();
@@ -867,7 +855,7 @@ public class GameManager : MonoBehaviour {
 
 				gridTile.stackSize++;
 				gridTile.cardStack.Add(gameCard.card);
-				gridTile.CalcTotalValue();	// This fixes Market Cards not calculating first time
+				gridTile.CalcTotalValue(); // This fixes Market Cards not calculating first time
 				UpdatePlayersInfo();
 				UpdateUI();
 
@@ -879,19 +867,19 @@ public class GameManager : MonoBehaviour {
 						ShiftRow(gridTile.category, gridTile.y, 1);
 					} // if stack size exceeds max stack recorded for row
 
-					gameCard.tile.transform.position = new Vector3
-						(gridTile.tile.transform.position.x,
-						gridTile.tile.transform.position.y - (shiftUnit * gridTile.stackSize),
-						(gridTile.tile.transform.position.z) + (cardThickness * gridTile.stackSize));
+					gameCard.tile.transform.position = new Vector3(gridTile.tile.transform.position.x,
+						gridTile.tile.transform.position.y
+						- (shiftUnit * gridTile.stackSize),
+						(gridTile.tile.transform.position.z)
+						+ (cardThickness * gridTile.stackSize));
 
 					gameCard.tile.transform.parent = gridTile.tile.transform;
 
-
 					// TODO: Adjust for more than 10 cards on a given stack (unlikely, but possible)
 					// TODO: Account for different players
-					gameCard.tile.name = ("p00_" +
-										"i0" + (gridTile.stackSize - 1) + "_" +
-										"StackedCard");
+					gameCard.tile.name = ("p00_"
+						+ "i0" + (gridTile.stackSize - 1) + "_"
+						+ "StackedCard");
 
 				} else if (gameCard.card.title == "Market Mod") {
 
@@ -901,30 +889,28 @@ public class GameManager : MonoBehaviour {
 						ShiftRow(gridTile.card.category, gridTile.y, 1);
 					} // if stack size exceeds max stack recorded for row
 
-					gameCard.tile.transform.position = new Vector3
-						(gridTile.tile.transform.position.x,
-						gridTile.tile.transform.position.y - (shiftUnit * gridTile.stackSize),
-						(gridTile.tile.transform.position.z) + (cardThickness * gridTile.stackSize));
+					gameCard.tile.transform.position = new Vector3(gridTile.tile.transform.position.x,
+						gridTile.tile.transform.position.y
+						- (shiftUnit * gridTile.stackSize),
+						(gridTile.tile.transform.position.z)
+						+ (cardThickness * gridTile.stackSize));
 
 					gameCard.tile.transform.parent = gridTile.tile.transform;
 
-
 					// TODO: Adjust for more than 10 cards on a given stack (unlikely, but possible)
 					// TODO: Account for different players
-					gameCard.tile.name = ("p00_" +
-										"i0" + (gridTile.stackSize - 1) + "_" +
-										"StackedCard");
+					gameCard.tile.name = ("p00_"
+						+ "i0" + (gridTile.stackSize - 1) + "_"
+						+ "StackedCard");
 
 				} // if market mod
-
 
 			} else {
 				// After ALL processing is done, destroy the game object
 				Destroy(gameCard.tile);
 				UpdateUI();
-			}// if stackable
+			} // if stackable
 
-			
 			// Create a new card to replace the old one
 			Card newCard = Card.CreateInstance<Card>();
 			if (DrawCard(masterDeckMutable.gameCardDeck, masterDeck.gameCardDeck, out newCard) && masterDeckMutable.gameCardDeck.Count() > 0) {
@@ -936,7 +922,6 @@ public class GameManager : MonoBehaviour {
 				players[0].handUnits[oldCardIndex].tile.transform.position = oldCardPosition;
 
 			} // if card can be drawn
-
 
 			// gridTile.cardStack.Add(gameCard.tile);
 			MouseManager.selection = -1;
@@ -950,7 +935,6 @@ public class GameManager : MonoBehaviour {
 			return false;
 		} // If the Category AND Scope match
 
-		
 	} // TryToPlay()
 
 	public GameObject FindCard(string type, byte x, byte y) {
@@ -970,19 +954,18 @@ public class GameManager : MonoBehaviour {
 
 		// Specific type changes
 		if (type == "GameCard") {
-			strX = "p";		// Instead of x, use p for PlayerID
-			strY = "i";		// Instead of y, use i for Index
+			strX = "p"; // Instead of x, use p for PlayerID
+			strY = "i"; // Instead of y, use i for Index
 		} // if GameCard
-
 
 		if (transform.Find(strX + xZeroes + x + "_" + strY + yZeroes + y + "_" + type)) {
 			// GameObject gameObject = new GameObject();
-			GameObject gameObject = transform.Find(strX + xZeroes + x + "_" +
-										strY + yZeroes + y + "_" +
-										type).gameObject;
+			GameObject gameObject = transform.Find(strX + xZeroes + x + "_"
+				+ strY + yZeroes + y + "_"
+				+ type).gameObject;
 			return gameObject;
 		} else {
-			// Debug.LogError("[GameManager] Error: Could not find GameObject!");	
+			// Debug.LogError("[GameManager] Error: Could not find GameObject!");
 			return null;
 		}
 
@@ -990,7 +973,7 @@ public class GameManager : MonoBehaviour {
 
 	public static void UpdatePlayersInfo() {
 		// Things that need to be updated for all players go here
-		for (byte i = 0; i < (byte)players.Count; i++) {
+		for (byte i = 0; i < (byte) players.Count; i++) {
 			players[i].CalcTotalMoney();
 			// Debug.Log("Player " + (i + 1) + "'s Money: $" + players[i].totalMoney);
 		} // for array length
@@ -1004,5 +987,5 @@ public class GameManager : MonoBehaviour {
 		CardDisplay.BankruptVisuals(tile.tile);
 
 	} // BankruptTile()
-	
+
 } // GameManager class

@@ -9,7 +9,7 @@ public class CoastTileDeck : Deck {
 
 	// Constructor that takes in a string representing the name of premade deck
 	public CoastTileDeck(string deckType) {
-		
+
 		// The Standard Deck's Coast Tiles
 		if (deckType == "Vanilla") {
 

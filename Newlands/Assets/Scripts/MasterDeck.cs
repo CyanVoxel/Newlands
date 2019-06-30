@@ -34,7 +34,7 @@ public class MasterDeck {
 
 	// Constructor that takes in a string representing the name of premade deck
 	public MasterDeck(string deckType) {
-		
+
 		// Fills in the subdecks with their preset cards for the deck deckType
 		gameCardDeck = new GameCardDeck(deckType);
 		marketCardDeck = new MarketCardDeck(deckType);

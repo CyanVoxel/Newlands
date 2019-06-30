@@ -1,9 +1,7 @@
 // A GridUnit object, used to represent the state and properties
 // of an internal game grid.
 // TODO: Manage the scope of the data fields after testing.
-// TODO: Instead of passing an entire Card object, only pass the directory.
 
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -31,19 +29,19 @@ public class GridUnit {
 
 	// public int baseValue;
 	// public double valueMod;
-	
+
 	public bool stackable = true;
 	// public string tileCat;
 	// public string tileScope;
-	public string category;		// Category of unit (ex. Tile, Land Tile, Game Card, etc.)
-	public string scope;		// Scope of unit (ex. Land_Forest, Coast_Docks, Sabotage, etc.)
-	public string subScope;		// Scope of unit (ex. Land_Forest, Coast_Docks, Sabotage, etc.)
+	public string category; // Category of unit (ex. Tile, Land Tile, Game Card, etc.)
+	public string scope; // Scope of unit (ex. Land_Forest, Coast_Docks, Sabotage, etc.)
+	public string subScope; // Scope of unit (ex. Land_Forest, Coast_Docks, Sabotage, etc.)
 	public string target = null;
 
 	// METHODS ####################################################################################
 
-	// Calculates the value of all resources attached to this card, and updates the 
-	//	resourceValue field on this GridUnit object
+	// Calculates the value of all resources attached to this card, and updates the
+	// resourceValue field on this GridUnit object
 	public void CalcBaseValue() {
 		// Calculates the value of the resources built-in to the card
 
@@ -52,7 +50,7 @@ public class GridUnit {
 			this.baseValue = 0;
 			int retrievedPrice = 0;
 			ResourceInfo.pricesMut.TryGetValue(this.resource, out retrievedPrice);
-			this.baseValue = (retrievedPrice * this.quantity);	//Could be 0, that's okay
+			this.baseValue = (retrievedPrice * this.quantity); //Could be 0, that's okay
 
 			// Calculates the value of the resources on cards in the stack, if any
 			for (int i = 0; i < this.cardStack.Count; i++) {
@@ -74,20 +72,20 @@ public class GridUnit {
 
 	} // CalcBaseValue()
 
+	// Calculates the value of the resources on cards in the stack, if any
 	public void CalcValueMod() {
-		// Calculates the value of the resources on cards in the stack, if any
 
 		if (this.category == "Tile") {
 
 			this.valueMod = 0;
 			for (int i = 0; i < this.cardStack.Count; i++) {
-				
+
 				if (this.cardStack[i].subtitle == "Investment" && this.cardStack[i].percFlag) {
 					this.valueMod += this.cardStack[i].footerValue;
 				} else if (this.cardStack[i].subtitle == "Sabotage" && this.cardStack[i].percFlag) {
 					this.valueMod -= this.cardStack[i].footerValue;
 				} // if-else
-				
+
 			} // for cardStack size
 
 		} else if (this.category == "Market") {
@@ -97,8 +95,9 @@ public class GridUnit {
 			this.valueMod = 0;
 			Debug.Log("Stack Size  :" + this.stackSize);
 			Debug.Log("Stack Count: " + this.cardStack.Count);
+
 			for (int i = 0; i < this.cardStack.Count; i++) {
-				
+
 				if (this.cardStack[i].subtitle == "Investment" && this.cardStack[i].percFlag) {
 					this.valueMod += this.cardStack[i].footerValue;
 					Debug.Log("Should be working! " + this.cardStack[i].footerValue);
@@ -106,15 +105,14 @@ public class GridUnit {
 					Debug.Log("Should be working! -" + this.cardStack[i].footerValue);
 					this.valueMod -= this.cardStack[i].footerValue;
 				} // if-else
-				
+
 			} // for cardStack size
 
 		} // if-else category
-		
-		
+
 	} // CalcValueMod()
 
-	// Calculates the total value this card, and updates the 
+	// Calculates the total value this card, and updates the
 	//	totalValue field on this GridUnit object
 	public void CalcTotalValue() {
 
@@ -124,9 +122,9 @@ public class GridUnit {
 			this.CalcBaseValue();
 			this.CalcValueMod();
 
-			this.totalValue = (double)this.baseValue +
-				((double)this.baseValue * ((double)this.valueMod) / 100d);
-			
+			this.totalValue = (double) this.baseValue
+				+ ((double) this.baseValue * ((double) this.valueMod) / 100d);
+
 			// Debug.Log("[GridUnit] Tile " + this.x + ", " + this.y + " base value:  " +
 			// 	this.baseValue);
 			// Debug.Log("[GridUnit] Tile " + this.x + ", " + this.y + " total value: " +
@@ -149,19 +147,17 @@ public class GridUnit {
 			// Debug.Log("Value Mod   : " + this.valueMod);
 			// Debug.Log("Calculating...");
 
-			this.totalValue = (double)this.baseValue +
-				((double)this.baseValue * ((double)this.valueMod) / 100d);
+			this.totalValue = (double) this.baseValue
+				+ ((double) this.baseValue * ((double) this.valueMod) / 100d);
 
-				// Debug.Log("Total Value: " + this.totalValue);
+			// Debug.Log("Total Value: " + this.totalValue);
 
-			ResourceInfo.pricesMut[this.resource] = (int)this.totalValue;
+			ResourceInfo.pricesMut[this.resource] = (int) this.totalValue;
 			cardDis.UpdateFooter(this, ResourceInfo.pricesMut[this.resource]);
 
 			// Debug.Log("New PriceMut: " + ResourceInfo.pricesMut[this.resource]);
 			// Debug.Log("Base Value  : " + this.baseValue);
 			// Debug.Log("Value Mod   : " + this.valueMod);
-
-			
 
 		} // if tile
 
@@ -184,22 +180,20 @@ public class GridUnit {
 
 		// Specific type changes
 		if (type == "GameCard") {
-			strX = "p";		// Instead of x, use p for PlayerID
-			strY = "i";		// Instead of y, use i for Index
+			strX = "p"; // Instead of x, use p for PlayerID
+			strY = "i"; // Instead of y, use i for Index
 		} // if GameCard
-
 
 		if (this.tile.transform.Find(strX + xZeroes + x + "_" + strY + yZeroes + y + "_" + type)) {
 			// GameObject gameObject = new GameObject();
-			GameObject gameObject = this.tile.transform.Find(strX + xZeroes + x + "_" +
-										strY + yZeroes + y + "_" +
-										type).gameObject;
+			GameObject gameObject = this.tile.transform.Find(strX + xZeroes + x + "_"
+				+ strY + yZeroes + y + "_"
+				+ type).gameObject;
 			return gameObject;
 		} else {
-			// Debug.LogError("[GameManager] Error: Could not find GameObject!");	
+			// Debug.LogError("[GameManager] Error: Could not find GameObject!");
 			return null;
 		}
-
 
 	} // FindCard()
 
@@ -211,8 +205,8 @@ public class GridUnit {
 		// this.landType = card.title;
 		this.resource = card.resource;
 		this.quantity = card.footerValue;
-		this.category = card.category;		// The Category of this card (Tile, Game Card)
-		this.scope = card.subtitle;			// The Scope of this card (Forest, Plains, Quarry)
+		this.category = card.category; // The Category of this card (Tile, Game Card)
+		this.scope = card.subtitle; // The Scope of this card (Forest, Plains, Quarry)
 		this.subScope = card.title;
 		// this.tileScope = card.title;
 		// this.tileCat = card.category;
@@ -221,7 +215,7 @@ public class GridUnit {
 
 		if (card.category == "Game Card") {
 			// this.targetCat = card.targetCategory;
-			this.target = card.target;	// The Scope that this card targets
+			this.target = card.target; // The Scope that this card targets
 			this.stackable = !card.doesDiscard;
 		}
 
@@ -241,8 +235,8 @@ public class GridUnit {
 		// this.landType = card.title;
 		this.resource = card.resource;
 		this.quantity = card.footerValue;
-		this.category = card.category;		// The Category of this card (Tile, Game Card)
-		this.scope = card.subtitle;			// The Scope of this card (Forest, Plains, Quarry)
+		this.category = card.category; // The Category of this card (Tile, Game Card)
+		this.scope = card.subtitle; // The Scope of this card (Forest, Plains, Quarry)
 		this.subScope = card.title;
 		// this.tileScope = card.title;
 		// this.tileCat = card.category;
@@ -251,13 +245,13 @@ public class GridUnit {
 
 		if (card.category == "Game Card") {
 			// this.targetCat = card.targetCategory;
-			this.target = card.target;	// The Scope that this card targets
+			this.target = card.target; // The Scope that this card targets
 			this.stackable = !card.doesDiscard;
 		}
 
 		if (card.category == "Market") {
 			// this.targetCat = card.targetCategory;
-			this.target = card.target;	// The Scope that this card targets
+			this.target = card.target; // The Scope that this card targets
 			this.stackable = !card.doesDiscard;
 			// this.category = "Market";
 			ResourceInfo.prices.TryGetValue(card.subtitle, out this.baseValue);
