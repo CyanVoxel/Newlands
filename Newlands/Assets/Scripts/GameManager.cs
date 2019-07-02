@@ -4,8 +4,9 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using Mirror;
 
-public class GameManager : MonoBehaviour {
+public class GameManager : NetworkBehaviour {
 
 	public CardDisplay cardDis;
 
@@ -36,7 +37,6 @@ public class GameManager : MonoBehaviour {
 	private static float cardOffX = 11f;
 	private static float cardOffY = 8f;
 
-	public static Camera mainCam;
 	private GameObject landTilePrefab;
 	private GameObject gameCardPrefab;
 	private GameObject marketCardPrefab;
@@ -54,8 +54,13 @@ public class GameManager : MonoBehaviour {
 	// private static List<GameObject> playerMoneyObj = new List<GameObject>();
 	// private static List<TMP_Text> playerMoneyText = new List<TMP_Text>();
 
+
 	// Used for initialization
 	void Start() {
+
+		if (!hasAuthority) {
+			return;
+		}
 
 		// DECKS ##############################################################
 
@@ -110,7 +115,7 @@ public class GameManager : MonoBehaviour {
 		maxMarketStack = new byte[height];
 
 		// Create tile GameObjects and connect them to internal grid
-		PopulateGrid();
+		CmdPopulateGrid();
 		PopulateMarket();
 		// ShiftRow(row: 4, units: 2);
 
@@ -121,8 +126,8 @@ public class GameManager : MonoBehaviour {
 			graceRounds = 1;
 		} // if (graceRounds < 1)
 
-		GameObject cameraObj = transform.Find("Main Camera").gameObject;
-		mainCam = cameraObj.GetComponent<Camera>();
+		// GameObject cameraObj = transform.Find("Main Camera").gameObject;
+		// mainCam = cameraObj.GetComponent<Camera>();
 
 		// Push the first UI Update
 		UpdateUI();
@@ -131,34 +136,10 @@ public class GameManager : MonoBehaviour {
 
 	void Update() {
 
-		// Scroll in and out
-		Vector3 cameraPos = mainCam.transform.position;
-		cameraPos.z += (Input.mouseScrollDelta.y * 3f);
-		mainCam.transform.position = cameraPos;
-
-		if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow)) {
-			cameraPos.y += .75f;
-			mainCam.transform.position = cameraPos;
-		}
-
-		if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)) {
-			cameraPos.x -= .75f;
-			mainCam.transform.position = cameraPos;
-		}
-
-		if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow)) {
-			cameraPos.y -= .75f;
-			mainCam.transform.position = cameraPos;
-		}
-
-		if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow)) {
-			cameraPos.x += .75f;
-			mainCam.transform.position = cameraPos;
-		}
-
 	} // Update()
 
-	private void PopulateGrid() {
+	[Command]
+	private void CmdPopulateGrid() {
 		// Populate the Card prefab and create the Master Deck
 		landTilePrefab = Resources.Load<GameObject>("Prefabs/Tile");
 		string xZeroes = "0";
@@ -186,7 +167,7 @@ public class GameManager : MonoBehaviour {
 					yZeroes = "0";
 				} // zeroes calc
 
-				GameObject cardObj = (GameObject) Instantiate(this.landTilePrefab, new Vector3(xOff, yOff, 50), Quaternion.identity);
+				GameObject cardObj = Instantiate(this.landTilePrefab, new Vector3(xOff, yOff, 50), Quaternion.identity);
 				cardObj.name = ("x" + xZeroes + x + "_"
 					+ "y" + yZeroes + y + "_"
 					+ "Tile");
@@ -201,6 +182,8 @@ public class GameManager : MonoBehaviour {
 
 				// Connect the drawn card to the prefab that was just created
 				cardObj.SendMessage("DisplayCard", card);
+				
+				NetworkServer.Spawn(cardObj);
 			} // y
 		} // x
 

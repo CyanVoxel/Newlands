@@ -16,6 +16,9 @@
 // * Only way for smooth movement is to use a fixed movement speed during
 //   interpolation. interpolation over time is never that good.
 //
+
+// Extra NOTE: This script has been modified from it's original form.
+
 using UnityEngine;
 
 namespace Mirror
@@ -31,6 +34,7 @@ namespace Mirror
         [Tooltip("Compresses 16 Byte Quaternion into None=12, Much=3, Lots=2 Byte")]
         [SerializeField] Compression compressRotation = Compression.Much;
         public enum Compression { None, Much, Lots , NoRotation }; // easily understandable and funny
+        public bool instantMovement = true;
 
         // server
         Vector3 lastPosition;
@@ -369,7 +373,7 @@ namespace Mirror
                     if (goal != null)
                     {
                         // teleport or interpolate
-                        if (NeedsTeleport())
+                        if (NeedsTeleport() || instantMovement)
                         {
                             // local position/rotation for VR support
                             ApplyPositionAndRotation(goal.localPosition, goal.localRotation);

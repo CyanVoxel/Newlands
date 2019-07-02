@@ -1627,6 +1627,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4460451447946022}
   - component: {fileID: 114459191998210526}
+  - component: {fileID: 3845178695976746641}
   m_Layer: 0
   m_Name: GameCard
   m_TagString: Untagged
@@ -1662,6 +1663,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f3c753c7be1c3449a7538d4e1a71dcf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &3845178695976746641
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1850119598120500}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serverOnly: 0
+  localPlayerAuthority: 0
+  m_AssetId: 
+  m_SceneId: 1433171167
 --- !u!1 &1949806437575516
 GameObject:
   m_ObjectHideFlags: 0
