@@ -965,10 +965,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serverOnly: 1
+  serverOnly: 0
   localPlayerAuthority: 0
-  m_AssetId: 7caee29a79adf9648a38721e965c495d
-  m_SceneId: 0
+  m_AssetId: 
+  m_SceneId: 3561578760
 --- !u!1 &1874617469558062
 GameObject:
   m_ObjectHideFlags: 0

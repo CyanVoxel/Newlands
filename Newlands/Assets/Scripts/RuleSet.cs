@@ -263,9 +263,9 @@ public class RuleSet {
 				if (GetScope(cardToPlay, 2) == "Plains" && target.subScope != "Farmland") {
 					Card newCard = Card.CreateInstance<Card>();
 					newCard = Resources.Load<Card>("Cards/Tiles/Land/farmland_cashcrops_5");
-					target.tile.SendMessage("DisplayCard", newCard);
+					target.tileObj.SendMessage("DisplayCard", newCard);
 
-					GameManager.grid[target.x, target.y].LoadNewCard(newCard, target.tile);
+					GameManager.grid[target.x, target.y].LoadNewCard(newCard, target.tileObj);
 					target = GameManager.grid[target.x, target.y];
 
 					target.CalcTotalValue();

@@ -13,7 +13,7 @@ public class GridUnit {
 	public byte ownerId = 0;
 	public byte x;
 	public byte y;
-	public GameObject tile;
+	public GameObject tileObj;
 	public byte stackSize = 0;
 	public Card card;
 	public List<Card> cardStack = new List<Card>();
@@ -184,9 +184,9 @@ public class GridUnit {
 			strY = "i"; // Instead of y, use i for Index
 		} // if GameCard
 
-		if (this.tile.transform.Find(strX + xZeroes + x + "_" + strY + yZeroes + y + "_" + type)) {
+		if (this.tileObj.transform.Find(strX + xZeroes + x + "_" + strY + yZeroes + y + "_" + type)) {
 			// GameObject gameObject = new GameObject();
-			GameObject gameObject = this.tile.transform.Find(strX + xZeroes + x + "_"
+			GameObject gameObject = this.tileObj.transform.Find(strX + xZeroes + x + "_"
 				+ strY + yZeroes + y + "_"
 				+ type).gameObject;
 			return gameObject;
@@ -200,7 +200,7 @@ public class GridUnit {
 	public void LoadNewCard(Card card, GameObject tileObj) {
 
 		this.card = card;
-		this.tile = tileObj;
+		this.tileObj = tileObj;
 
 		// this.landType = card.title;
 		this.resource = card.resource;
@@ -229,8 +229,44 @@ public class GridUnit {
 	public GridUnit(Card card, GameObject tileObj, byte x, byte y) {
 
 		this.card = card;
-		this.tile = tileObj;
-		cardDis = this.tile.AddComponent<CardDisplay>();
+		this.tileObj = tileObj;
+		cardDis = this.tileObj.AddComponent<CardDisplay>();
+
+		// this.landType = card.title;
+		this.resource = card.resource;
+		this.quantity = card.footerValue;
+		this.category = card.category; // The Category of this card (Tile, Game Card)
+		this.scope = card.subtitle; // The Scope of this card (Forest, Plains, Quarry)
+		this.subScope = card.title;
+		// this.tileScope = card.title;
+		// this.tileCat = card.category;
+		this.x = x;
+		this.y = y;
+
+		if (card.category == "Game Card") {
+			// this.targetCat = card.targetCategory;
+			this.target = card.target; // The Scope that this card targets
+			this.stackable = !card.doesDiscard;
+		}
+
+		if (card.category == "Market") {
+			// this.targetCat = card.targetCategory;
+			this.target = card.target; // The Scope that this card targets
+			this.stackable = !card.doesDiscard;
+			// this.category = "Market";
+			ResourceInfo.prices.TryGetValue(card.subtitle, out this.baseValue);
+		}
+
+		this.CalcBaseValue();
+
+	} // GridUnit constructor
+
+	// Constructor that takes in necessary card info and populates the rest
+	public GridUnit(Card card, byte x, byte y) {
+
+		this.card = card;
+		// this.tileObj = tileObj;
+		// cardDis = this.tileObj.AddComponent<CardDisplay>();
 
 		// this.landType = card.title;
 		this.resource = card.resource;

@@ -136,14 +136,15 @@ public class CardDisplay : MonoBehaviour {
 	} // insertFooterValue()
 
 	// Displays card scriptable object data onto a card prefab
-	public void DisplayCard(Card card) {
+	public void DisplayCard(GameObject obj, Card card) {
+		// Debug.Log("[CardDisplay] Trying to display the card " + card.title + " on object " + obj);
 
 		// Grab the display elements from this parent object
-		GameObject titleObj = transform.Find("Front Canvas/Title").gameObject;
+		GameObject titleObj = obj.transform.Find("Front Canvas/Title").gameObject;
 
-		GameObject bodyObj = transform.Find("Front Canvas/Body").gameObject;
-		GameObject footerObj = transform.Find("Front Canvas/Footer").gameObject;
-		GameObject footerBorderObj = transform.Find(dirFtrBdr).gameObject;
+		GameObject bodyObj = obj.transform.Find("Front Canvas/Body").gameObject;
+		GameObject footerObj = obj.transform.Find("Front Canvas/Footer").gameObject;
+		GameObject footerBorderObj = obj.transform.Find(dirFtrBdr).gameObject;
 
 		// Pick out the appropriate elements from the GameObjects that were grabbed
 		TMP_Text title = titleObj.GetComponent<TMP_Text>();
@@ -155,11 +156,11 @@ public class CardDisplay : MonoBehaviour {
 		// GAMECARD SPECIFICS -------------------------------------------------
 		if (card.category == "Game Card" || card.category == "Market") {
 
-			GameObject subtitleObj = transform.Find("Front Canvas/Subtitle").gameObject;
+			GameObject subtitleObj = obj.transform.Find("Front Canvas/Subtitle").gameObject;
 			TMP_Text subtitle = subtitleObj.GetComponent<TMP_Text>();
 
-			GameObject footerBorderObjL = transform.Find(dirFtrBdrL).gameObject;
-			GameObject footerBorderObjR = transform.Find(dirFtrBdrR).gameObject;
+			GameObject footerBorderObjL = obj.transform.Find(dirFtrBdrL).gameObject;
+			GameObject footerBorderObjR = obj.transform.Find(dirFtrBdrR).gameObject;
 			Image footerBorderL = footerBorderObjL.GetComponent<Image>();
 			Image footerBorderR = footerBorderObjR.GetComponent<Image>();
 
@@ -220,7 +221,7 @@ public class CardDisplay : MonoBehaviour {
 		// TILE SPECIFICS -----------------------------------------------------
 		if (card.category == "Tile") {
 
-			GameObject titleIconObj = transform.Find("Front Canvas/Icon").gameObject;
+			GameObject titleIconObj = obj.transform.Find("Front Canvas/Icon").gameObject;
 			Image iconImage = titleIconObj.GetComponent<Image>();
 
 			if (card.title == "Forest") {
@@ -317,7 +318,7 @@ public class CardDisplay : MonoBehaviour {
 			unit.card.moneyFlag, unit.card.footerOpr);
 		footer.text = TagToCardData(MdToTag(footer.text), unit.card);
 		GameManager.UpdatePlayersInfo();
-		GameManager.UpdateUI();
+		// GuiManager.CmdUpdateUI();
 
 	} //UpdateFooter()
 

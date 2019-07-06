@@ -2,26 +2,34 @@
 
 using UnityEngine;
 using UnityEngine.EventSystems;
+using Mirror;
 
-public class MouseManager : MonoBehaviour {
+public class MouseManager : NetworkBehaviour {
 
 	public GameManager gameMan;
+	public GuiManager guiMan;
 	public static int selection = -1;
 
 	// Update is called once per frame
 	void Update() {
-
-		// If 'P' is pressed, end the phase - Debugging only
-		if (Input.GetKeyDown(KeyCode.P)) {
-			gameMan.EndPhase();
-			GameManager.UpdateUI();
-		}
 
 		// If the cursor is over a UI element, return from Update()
 		// NOTE: In order for Canvases on objects such as Cards to be ignored,
 		//	they must contain a "Canvas Group" and have "Block Raycasts" turned off
 		if (EventSystem.current.IsPointerOverGameObject()) {
 			return;
+		}
+
+		// if (!isLocalPlayer) {
+		// 	Debug.Log("<b>[MouseManager]</b> "
+		// 	+ "Player does not have authority!");
+		// 	return;
+		// }
+
+		// If 'P' is pressed, end the phase - Debugging only
+		if (Input.GetKeyDown(KeyCode.P)) {
+			gameMan.EndPhase();
+			guiMan.CmdUpdateUI();
 		}
 
 		// Initialize ray
@@ -71,7 +79,7 @@ public class MouseManager : MonoBehaviour {
 
 						// gameMan.WipeSelectionColors("GameCard");	//Deselect any GameCards
 						selection = -1;
-						GameManager.UpdateUI();
+						guiMan.CmdUpdateUI();
 
 						// If the tile can be bought
 						if (GameManager.BuyTile(locX, locY)) {
@@ -120,7 +128,7 @@ public class MouseManager : MonoBehaviour {
 
 							// Update the round/turn display text
 							GameManager.UpdatePlayersInfo();
-							GameManager.UpdateUI();
+							guiMan.CmdUpdateUI();
 
 						} // if the tile could be bought
 
@@ -129,7 +137,7 @@ public class MouseManager : MonoBehaviour {
 							gameMan.VerifyHighlight();
 							gameMan.HighlightNeighbors();
 						} // if
-						GameManager.UpdateUI();
+						guiMan.CmdUpdateUI();
 
 					} // if Left Click
 
@@ -150,7 +158,7 @@ public class MouseManager : MonoBehaviour {
 						GameManager.grid[locX, locY].ownerId = 0;
 
 						gameMan.RollbackTurn();
-						GameManager.UpdateUI();
+						guiMan.CmdUpdateUI();
 
 					} // if Right Click
 
@@ -165,9 +173,9 @@ public class MouseManager : MonoBehaviour {
 						if (selection >= 0) {
 							if (gameMan.TryToPlay(GameManager.grid[locX, locY],
 									GameManager.players[0].handUnits[selection])) {
-								// Debug.Log("Using GameCard " + selection +
-								//   " on LandTile " + locX + ", " + locY);
-								//GameManager.players[0].hand[selection]
+								Debug.Log("Using GameCard " + selection +
+								  " on LandTile " + locX + ", " + locY);
+								// GameManager.players[0].hand[selection]
 							}
 						} else {
 							return;
@@ -213,7 +221,7 @@ public class MouseManager : MonoBehaviour {
 							gameMan.WipeSelectionColors("GameCard", ColorPalette.tintCard);
 						}
 
-						GameManager.UpdateUI();
+						guiMan.CmdUpdateUI();
 
 					} // if Left Click
 
@@ -251,7 +259,7 @@ public class MouseManager : MonoBehaviour {
 						} else {
 							selection = -1;
 							gameMan.WipeSelectionColors("GameCard", ColorPalette.tintCard);
-							GameManager.UpdateUI();
+							guiMan.CmdUpdateUI();
 							return;
 						} // if a GameCard is selected
 

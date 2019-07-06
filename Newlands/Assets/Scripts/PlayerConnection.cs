@@ -5,6 +5,10 @@ using UnityEngine;
 
 public class PlayerConnection : NetworkBehaviour {
 
+	public GuiManager guiMan;
+	public GameManager gameMan;
+	public GameObject PlayerUnit; // The physical GameObject controlled by the player
+
 	// Start is called before the first frame update
 	void Start() {
 
@@ -12,12 +16,28 @@ public class PlayerConnection : NetworkBehaviour {
 			return;
 		}
 
-		// Command the server to spawn the player unit
 		CmdSpawnUnit();
 
-	} //Start()
+		guiMan = FindObjectOfType<GuiManager>();
+		gameMan = FindObjectOfType<GameManager>();
 
-	public GameObject PlayerUnit; // The physical GameObject controlled by the player
+		if (guiMan != null) {
+			// guiMan.CmdUpdateUI();
+		} else {
+			Debug.LogError("<b>[PlayerConnection]</b> "
+				+ "GuiManager is null!");
+		}
+
+		if (gameMan != null) {
+			Debug.Log("<b>[PlayerConnection]</b> "
+				+ "Spawning Game Grid....");
+			CmdSpawnCards();
+		} else {
+			Debug.LogError("<b>[PlayerConnection]</b> "
+				+ "GameManager is null!");
+		}
+
+	} //Start()
 
 	[SyncVar(hook = "OnPlayerNameChange")]
 	public string playerName = "PLAYER";
@@ -67,6 +87,13 @@ public class PlayerConnection : NetworkBehaviour {
 		// Tell clients new name
 
 	} // CmdChangePlayerName
+
+	[Command]
+	void CmdSpawnCards() {
+		Debug.Log("hello");
+		gameMan.CmdCreateGridObjects();
+		// gameMan.PopulateMarket();
+	}
 
 	// RPC ########################################################################################
 

@@ -2,13 +2,13 @@
 // TODO: Will probably want to move all of the UI stuff to a dedicated class.
 
 using System.Collections.Generic;
-using TMPro;
-using UnityEngine;
 using Mirror;
+using UnityEngine;
 
 public class GameManager : NetworkBehaviour {
 
 	public CardDisplay cardDis;
+	public GuiManager guiMan;
 
 	// VARIABLES ##################################################################################
 
@@ -42,18 +42,8 @@ public class GameManager : NetworkBehaviour {
 	private GameObject marketCardPrefab;
 	// private Card card;
 
-	// UI ELEMENTS ################################################################################
-
-	private static GameObject phaseNumberObj;
-	private static GameObject roundNumberObj;
-	private static GameObject turnNumberObj;
-	private static TMP_Text phaseNumberText;
-	private static TMP_Text roundNumberText;
-	private static TMP_Text turnNumberText;
-
 	// private static List<GameObject> playerMoneyObj = new List<GameObject>();
 	// private static List<TMP_Text> playerMoneyText = new List<TMP_Text>();
-
 
 	// Used for initialization
 	void Start() {
@@ -62,61 +52,33 @@ public class GameManager : NetworkBehaviour {
 			return;
 		}
 
-		// DECKS ##############################################################
+		Debug.Log("<b>[GameManager]</b> "
+			+ "Initializing GameManager...");
 
+		Debug.Log("<b>[GameManager]</b> "
+			+ "Creating Master Deck \"Vanilla\"");
 		masterDeck = new MasterDeck("Vanilla");
 		masterDeckMutable = new MasterDeck("Vanilla");
 
-		// PLAYERS ############################################################
-
-		// Initializes each player object and draws a hand for them
-		for (byte i = 0; i < playerCount; i++) {
-			players.Add(new Player());
-			players[i].Id = ((byte) (i + 1));
-			players[i].hand = DrawHand(handSize);
-
-		} // for playerCount
+		Debug.Log("<b>[GameManager]</b> "
+			+ "Initializing Players...");
+		InitPlayers();
 
 		// Displays those hands on screen
 		// NOTE: Change 1 to playerCount in order to view all players' cards.
-		for (byte i = 0; i < 1; i++) {
-			DisplayHand(deck: players[i].hand, playerNum: i);
-		} // for number of hands
-
-		// UI #################################################################
-
-		// Grab the UI elements
-		phaseNumberObj = transform.Find("UI/PhaseNumber").gameObject;
-		roundNumberObj = transform.Find("UI/RoundNumber").gameObject;
-		turnNumberObj = transform.Find("UI/TurnNumber").gameObject;
-		// Pick out the appropriate elements from the GameObjects that were grabbed
-		phaseNumberText = phaseNumberObj.GetComponent<TMP_Text>();
-		roundNumberText = roundNumberObj.GetComponent<TMP_Text>();
-		turnNumberText = turnNumberObj.GetComponent<TMP_Text>();
-
-		// Grabbing Money Objects/Text
-		for (byte i = 0; i < playerCount; i++) {
-			// playerMoneyObj.Add(new GameObject());
-			// playerMoneyText.Add(new TMP_Text());
-			// Debug.Log("UI/Money/Player (" + (i + 1) + ")");
-			players[i].moneyObj = transform.Find("UI/Money/Player (" + (i + 1) + ")").gameObject;
-			players[i].moneyText = players[i].moneyObj.GetComponent<TMP_Text>();
-			players[i].moneyText.color = GetPlayerColor((byte) (i + 1), 500);
-		} // for playerCount
-
-		// GRIDS ##############################################################
+		// for (byte i = 0; i < 1; i++) {
+		// 	Debug.Log("Player Object: " + players);
+		// 	DisplayHand(deck: players[i].hand, playerNum: i);
+		// } // for number of hands
 
 		// Initialize the internal grids
-		grid = new GridUnit[width, height];
-		marketGrid = new GridUnit[Mathf.CeilToInt((float) ResourceInfo.resources.Count
-			/ (float) height), height];
-		rowPos = new float[height];
-		maxStack = new byte[height];
-		maxMarketStack = new byte[height];
+		InitGameGrid();
+		InitMarketGrid();
+		// CmdCreateGridObjects();
 
 		// Create tile GameObjects and connect them to internal grid
-		CmdPopulateGrid();
-		PopulateMarket();
+		// CmdPopulateGrid();
+		// CmdPopulateMarket();
 		// ShiftRow(row: 4, units: 2);
 
 		// FINAL ##############################################################
@@ -130,7 +92,8 @@ public class GameManager : NetworkBehaviour {
 		// mainCam = cameraObj.GetComponent<Camera>();
 
 		// Push the first UI Update
-		UpdateUI();
+		guiMan.InitGuiManager();
+		guiMan.CmdUpdateUI();
 
 	} // Start()
 
@@ -139,18 +102,19 @@ public class GameManager : NetworkBehaviour {
 	} // Update()
 
 	[Command]
-	private void CmdPopulateGrid() {
+	public void CmdCreateGridObjects() {
+		Debug.Log("hello again");
 		// Populate the Card prefab and create the Master Deck
 		landTilePrefab = Resources.Load<GameObject>("Prefabs/Tile");
 		string xZeroes = "0";
 		string yZeroes = "0";
 		//masterDeckMutable = masterDeck;	// Sets mutable deck version to internal one
 
-		for (byte x = 0; x < width; x++) {
-			for (byte y = 0; y < height; y++) {
-				// Draw a card from the Land Tile deck
-				Card card = Card.CreateInstance<Card>();
-				DrawCard(masterDeckMutable.landTileDeck, masterDeck.landTileDeck, out card);
+		for (byte x = 0; x < grid.GetLength(0); x++) {
+			for (byte y = 0; y < grid.GetLength(1); y++) {
+				// // Draw a card from the Land Tile deck
+				// Card card = Card.CreateInstance<Card>();
+				// DrawCard(masterDeckMutable.landTileDeck, masterDeck.landTileDeck, out card);
 
 				float xOff = x * cardOffX;
 				float yOff = y * cardOffY;
@@ -168,28 +132,44 @@ public class GameManager : NetworkBehaviour {
 				} // zeroes calc
 
 				GameObject cardObj = Instantiate(this.landTilePrefab, new Vector3(xOff, yOff, 50), Quaternion.identity);
+				NetworkServer.Spawn(cardObj);
+
 				cardObj.name = ("x" + xZeroes + x + "_"
 					+ "y" + yZeroes + y + "_"
 					+ "Tile");
 				// cardObj.name = ("LandTile_x" + x + "_y" + y + "_z0");
 
+				Debug.Log("[GameManager] Trying to set parent of " + cardObj + " to " + this);
 				cardObj.transform.SetParent(this.transform);
 				cardObj.transform.rotation = new Quaternion(0, 180, 0, 0); // 0, 180, 0, 0
 
-				// Connect the drawn card to the internal grid
-				grid[x, y] = new GridUnit(card: card, tileObj: cardObj, x: x, y: y);
-				rowPos[y] = cardObj.transform.position.y; // Row position
+				// if (hasAuthority) {
+				// 	// Connect the drawn card to the internal grid
+				// 	grid[x, y] = new GridUnit(card: card, tileObj: cardObj, x: x, y: y);
+
+				// 	grid[x, y].GetComponent<GridUnit>();
+
+				// 	rowPos[y] = cardObj.transform.position.y; // Row position
+				// } else {
+				// 	Debug.Log("No authority to connect your cards into the internal grid!");
+				// }
 
 				// Connect the drawn card to the prefab that was just created
-				cardObj.SendMessage("DisplayCard", card);
-				
-				NetworkServer.Spawn(cardObj);
+				// cardObj.SendMessage("DisplayCard", grid[x, y].card);
+				cardDis.DisplayCard(obj: cardObj, card: grid[x, y].card);
+
+				// NetworkServer.SpawnWithClientAuthority(cardObj, connectionToClient);
+
 			} // y
 		} // x
 
-	} //PopulateGrid();
+	} //CmdCreateGridObjects();
 
-	private void PopulateMarket() {
+	private void DrawGridCards() {
+
+	}
+
+	public void PopulateMarket() {
 		// Populate the Card prefab and create the Master Deck
 		marketCardPrefab = Resources.Load<GameObject>("Prefabs/GameCard");
 		string xZeroes = "0";
@@ -234,7 +214,10 @@ public class GameManager : NetworkBehaviour {
 					// rowPos[y] = cardObj.transform.position.y;	// Row position
 
 					// Connect the drawn card to the prefab that was just created
-					cardObj.SendMessage("DisplayCard", card);
+
+					// NetworkServer.Spawn(cardObj);
+					// cardObj.SendMessage("DisplayCard", card);
+					cardDis.DisplayCard(obj: cardObj, card: grid[x, y].card);
 
 				} // if a market card could be drawn
 
@@ -305,6 +288,7 @@ public class GameManager : NetworkBehaviour {
 				(byte) i, 0);
 
 			try {
+				NetworkServer.Spawn(cardObj);
 				cardObj.SendMessage("DisplayCard", deck[i]);
 			} catch (UnassignedReferenceException e) {
 				Debug.LogError("<b>[GameManager]</b> Error: "
@@ -746,12 +730,12 @@ public class GameManager : NetworkBehaviour {
 		if (type == "Tile") {
 			for (byte x = 0; x < width; x++) {
 				for (byte y = row; y < height; y++) {
-					float oldX = grid[x, y].tile.transform.position.x;
-					float oldY = grid[x, y].tile.transform.position.y;
-					float oldZ = grid[x, y].tile.transform.position.z;
-					grid[x, y].tile.transform.position = new Vector3(grid[x, y].tile.transform.position.x,
+					float oldX = grid[x, y].tileObj.transform.position.x;
+					float oldY = grid[x, y].tileObj.transform.position.y;
+					float oldZ = grid[x, y].tileObj.transform.position.z;
+					grid[x, y].tileObj.transform.position = new Vector3(grid[x, y].tileObj.transform.position.x,
 						(oldY += (shiftUnit * units)),
-						grid[x, y].tile.transform.position.z);
+						grid[x, y].tileObj.transform.position.z);
 				} // for y
 			} // for x
 		} else if (type == "Market") {
@@ -761,12 +745,12 @@ public class GameManager : NetworkBehaviour {
 				for (byte y = row; y < height; y++) {
 
 					if (marketGrid[x, y] != null) {
-						float oldX = marketGrid[x, y].tile.transform.position.x;
-						float oldY = marketGrid[x, y].tile.transform.position.y;
-						float oldZ = marketGrid[x, y].tile.transform.position.z;
-						marketGrid[x, y].tile.transform.position = new Vector3(marketGrid[x, y].tile.transform.position.x,
+						float oldX = marketGrid[x, y].tileObj.transform.position.x;
+						float oldY = marketGrid[x, y].tileObj.transform.position.y;
+						float oldZ = marketGrid[x, y].tileObj.transform.position.z;
+						marketGrid[x, y].tileObj.transform.position = new Vector3(marketGrid[x, y].tileObj.transform.position.x,
 							(oldY += (shiftUnit * units)),
-							marketGrid[x, y].tile.transform.position.z);
+							marketGrid[x, y].tileObj.transform.position.z);
 					} // if tile at the location isn't null
 
 				} // for y
@@ -777,43 +761,6 @@ public class GameManager : NetworkBehaviour {
 
 	} // ShiftRow()
 
-	// Updates the basic UI elements
-	public static void UpdateUI() {
-
-		GameManager.phaseNumberText.text = ("Phase " + GameManager.phase);
-		GameManager.roundNumberText.text = ("Round " + GameManager.round);
-		GameManager.turnNumberText.text = ("Player " + GameManager.turn + "'s Turn");
-
-		// Tacks on "Grace Period" text if the round is a grace round
-		if (phase == 1 && round <= graceRounds) {
-			GameManager.roundNumberText.text += (" (Grace Period)");
-		} // if
-
-		switch (turn) {
-			case 1:
-				GameManager.turnNumberText.color = ColorPalette.LightBlue500;
-				break;
-			case 2:
-				GameManager.turnNumberText.color = ColorPalette.Red500;
-				break;
-			case 3:
-				GameManager.turnNumberText.color = ColorPalette.Purple500;
-				break;
-			case 4:
-				GameManager.turnNumberText.color = ColorPalette.Amber500;
-				break;
-			default:
-				break;
-		} // switch
-
-		// Things that need to be updated for all players go here
-		for (byte i = 0; i < (byte) players.Count; i++) {
-			players[i].moneyText.text = "Player " + (i + 1) + ": "
-				+ players[i].totalMoney.ToString("C");
-		} // for array length
-
-	} // UpdateUI()
-
 	// Checks if a GameCard is allowed to be played on a Tile.
 	public bool TryToPlay(GridUnit gridTile, GridUnit gameCard) {
 
@@ -821,16 +768,16 @@ public class GameManager : NetworkBehaviour {
 
 			RuleSet.PlayCard(gridTile, gameCard.card);
 			UpdatePlayersInfo();
-			UpdateUI();
+			guiMan.CmdUpdateUI();
 
-			Vector3 oldCardPosition = gameCard.tile.transform.position;
+			Vector3 oldCardPosition = gameCard.tileObj.transform.position;
 			int oldCardIndex = gameCard.x;
 			Debug.Log("Old Card Index: " + oldCardIndex);
 
 			if (gridTile.bankrupt) {
 				BankruptTile(gridTile);
 				UpdatePlayersInfo();
-				UpdateUI();
+				guiMan.CmdUpdateUI();
 				Debug.Log("[GameManager] Tile bankrupt! has value of " + gridTile.totalValue);
 			}
 
@@ -840,7 +787,7 @@ public class GameManager : NetworkBehaviour {
 				gridTile.cardStack.Add(gameCard.card);
 				gridTile.CalcTotalValue(); // This fixes Market Cards not calculating first time
 				UpdatePlayersInfo();
-				UpdateUI();
+				guiMan.CmdUpdateUI();
 
 				if (gameCard.card.title == "Tile Mod") {
 
@@ -850,17 +797,17 @@ public class GameManager : NetworkBehaviour {
 						ShiftRow(gridTile.category, gridTile.y, 1);
 					} // if stack size exceeds max stack recorded for row
 
-					gameCard.tile.transform.position = new Vector3(gridTile.tile.transform.position.x,
-						gridTile.tile.transform.position.y
+					gameCard.tileObj.transform.position = new Vector3(gridTile.tileObj.transform.position.x,
+						gridTile.tileObj.transform.position.y
 						- (shiftUnit * gridTile.stackSize),
-						(gridTile.tile.transform.position.z)
+						(gridTile.tileObj.transform.position.z)
 						+ (cardThickness * gridTile.stackSize));
 
-					gameCard.tile.transform.parent = gridTile.tile.transform;
+					gameCard.tileObj.transform.parent = gridTile.tileObj.transform;
 
 					// TODO: Adjust for more than 10 cards on a given stack (unlikely, but possible)
 					// TODO: Account for different players
-					gameCard.tile.name = ("p00_"
+					gameCard.tileObj.name = ("p00_"
 						+ "i0" + (gridTile.stackSize - 1) + "_"
 						+ "StackedCard");
 
@@ -872,17 +819,17 @@ public class GameManager : NetworkBehaviour {
 						ShiftRow(gridTile.card.category, gridTile.y, 1);
 					} // if stack size exceeds max stack recorded for row
 
-					gameCard.tile.transform.position = new Vector3(gridTile.tile.transform.position.x,
-						gridTile.tile.transform.position.y
+					gameCard.tileObj.transform.position = new Vector3(gridTile.tileObj.transform.position.x,
+						gridTile.tileObj.transform.position.y
 						- (shiftUnit * gridTile.stackSize),
-						(gridTile.tile.transform.position.z)
+						(gridTile.tileObj.transform.position.z)
 						+ (cardThickness * gridTile.stackSize));
 
-					gameCard.tile.transform.parent = gridTile.tile.transform;
+					gameCard.tileObj.transform.parent = gridTile.tileObj.transform;
 
 					// TODO: Adjust for more than 10 cards on a given stack (unlikely, but possible)
 					// TODO: Account for different players
-					gameCard.tile.name = ("p00_"
+					gameCard.tileObj.name = ("p00_"
 						+ "i0" + (gridTile.stackSize - 1) + "_"
 						+ "StackedCard");
 
@@ -890,19 +837,20 @@ public class GameManager : NetworkBehaviour {
 
 			} else {
 				// After ALL processing is done, destroy the game object
-				Destroy(gameCard.tile);
-				UpdateUI();
+				Destroy(gameCard.tileObj);
+				guiMan.CmdUpdateUI();
 			} // if stackable
 
 			// Create a new card to replace the old one
 			Card newCard = Card.CreateInstance<Card>();
-			if (DrawCard(masterDeckMutable.gameCardDeck, masterDeck.gameCardDeck, out newCard) && masterDeckMutable.gameCardDeck.Count() > 0) {
+			if (DrawCard(masterDeckMutable.gameCardDeck, masterDeck.gameCardDeck, out newCard)
+				&& masterDeckMutable.gameCardDeck.Count() > 0) {
 
 				players[0].hand.Add(newCard);
-				players[0].handUnits[oldCardIndex].LoadNewCard(newCard, players[0].handUnits[oldCardIndex].tile);
+				players[0].handUnits[oldCardIndex].LoadNewCard(newCard, players[0].handUnits[oldCardIndex].tileObj);
 				players[0].hand[oldCardIndex] = newCard;
 				DisplayCard(newCard, 0, oldCardIndex);
-				players[0].handUnits[oldCardIndex].tile.transform.position = oldCardPosition;
+				players[0].handUnits[oldCardIndex].tileObj.transform.position = oldCardPosition;
 
 			} // if card can be drawn
 
@@ -967,8 +915,56 @@ public class GameManager : NetworkBehaviour {
 
 		Debug.Log("[GameManager] Bankrupting tile!");
 		tile.ownerId = 0;
-		CardDisplay.BankruptVisuals(tile.tile);
+		CardDisplay.BankruptVisuals(tile.tileObj);
 
 	} // BankruptTile()
+
+	// Initializes each player object and draws a hand for them
+	private void InitPlayers() {
+
+		for (byte i = 0; i < playerCount; i++) {
+			players.Add(new Player());
+			players[i].Id = ((byte) (i + 1));
+			players[i].hand = DrawHand(handSize);
+		} // for playerCount
+
+	} // InitPlayers()
+
+	// Initialize the internal game grid
+	private void InitGameGrid() {
+
+		if (!hasAuthority) {
+			Debug.Log("No authority to initialize the internal grid!");
+			return;
+		}
+
+		// Game Grid ######################################
+		grid = new GridUnit[width, height];
+		rowPos = new float[height];
+		maxStack = new byte[height];
+
+		for (byte x = 0; x < width; x++) {
+			for (byte y = 0; y < height; y++) {
+				// Draw a card from the Land Tile deck
+				Card card = Card.CreateInstance<Card>();
+				DrawCard(masterDeckMutable.landTileDeck, masterDeck.landTileDeck, out card);
+				// Connect the drawn card to the internal grid
+				grid[x, y] = new GridUnit(card: card, x: x, y: y);
+
+				// rowPos[y] = cardObj.transform.position.y; // Row position
+			} // y
+		} // x
+
+		// Market Grid ####################################
+		marketGrid = new GridUnit[Mathf.CeilToInt((float) ResourceInfo.resources.Count
+			/ (float) height), height];
+		maxMarketStack = new byte[height];
+
+	} // InitGameGrid()
+
+	// Initialize the internal market grid
+	private void InitMarketGrid() {
+
+	} // InitMarketGrid()
 
 } // GameManager class
