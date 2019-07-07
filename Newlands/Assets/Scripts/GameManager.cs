@@ -9,6 +9,7 @@ public class GameManager : NetworkBehaviour {
 
 	public CardDisplay cardDis;
 	public GuiManager guiMan;
+	public GridManager gridMan;
 
 	// VARIABLES ##################################################################################
 
@@ -27,19 +28,19 @@ public class GameManager : NetworkBehaviour {
 	public static List<Player> players = new List<Player>(); // The player data objects
 
 	// Grid specific
-	public static GridUnit[, ] grid; // The internal grid, made up of GridUnits
-	public static GridUnit[, ] marketGrid;
-	public static float[] rowPos; // Row position
-	private static byte[] maxStack;
-	private static byte[] maxMarketStack;
-	private static float cardThickness = 0.2f;
-	private static float shiftUnit = 1.2f;
-	private static float cardOffX = 11f;
-	private static float cardOffY = 8f;
+	// public static GridUnit[, ] grid; // The internal grid, made up of GridUnits
+	// public static GridUnit[, ] marketGrid;
+	// public static float[] rowPos; // Row position
+	// private static byte[] maxStack;
+	// private static byte[] maxMarketStack;
+	// private static float cardThickness = 0.2f;
+	// private static float shiftUnit = 1.2f;
+	// private static float cardOffX = 11f;
+	// private static float cardOffY = 8f;
 
-	private GameObject landTilePrefab;
-	private GameObject gameCardPrefab;
-	private GameObject marketCardPrefab;
+	// public GameObject landTilePrefab;
+	// public GameObject gameCardPrefab;
+	// public GameObject marketCardPrefab;
 	// private Card card;
 
 	// private static List<GameObject> playerMoneyObj = new List<GameObject>();
@@ -72,9 +73,10 @@ public class GameManager : NetworkBehaviour {
 		// } // for number of hands
 
 		// Initialize the internal grids
-		InitGameGrid();
-		InitMarketGrid();
+		gridMan.InitGameGrid();
+		gridMan.InitMarketGrid();
 		// CmdCreateGridObjects();
+		// gridMan.CreateGridObjects();
 
 		// Create tile GameObjects and connect them to internal grid
 		// CmdPopulateGrid();
@@ -101,130 +103,139 @@ public class GameManager : NetworkBehaviour {
 
 	} // Update()
 
-	[Command]
-	public void CmdCreateGridObjects() {
-		Debug.Log("hello again");
-		// Populate the Card prefab and create the Master Deck
-		landTilePrefab = Resources.Load<GameObject>("Prefabs/Tile");
-		string xZeroes = "0";
-		string yZeroes = "0";
-		//masterDeckMutable = masterDeck;	// Sets mutable deck version to internal one
+	// [Command]
+	// public void CreateGridObjects() {
+	// 	Debug.Log("[GameManager] Creating Grid Objects...");
 
-		for (byte x = 0; x < grid.GetLength(0); x++) {
-			for (byte y = 0; y < grid.GetLength(1); y++) {
-				// // Draw a card from the Land Tile deck
-				// Card card = Card.CreateInstance<Card>();
-				// DrawCard(masterDeckMutable.landTileDeck, masterDeck.landTileDeck, out card);
+	// 	// Populate the Card prefab and create the Master Deck
+	// 	// landTilePrefab = Resources.Load<GameObject>("Prefabs/Tile");
+	// 	string xZeroes = "0";
+	// 	string yZeroes = "0";
+	// 	//masterDeckMutable = masterDeck;	// Sets mutable deck version to internal one
 
-				float xOff = x * cardOffX;
-				float yOff = y * cardOffY;
+	// 	Debug.Log("Grid: " + grid);
+	// 	Debug.Log("Grid Length 0: " + grid.GetLength(0));
 
-				// Determines the number of zeroes to add in the object name
-				if (x >= 10) {
-					xZeroes = "";
-				} else {
-					xZeroes = "0";
-				}
-				if (y >= 10) {
-					yZeroes = "";
-				} else {
-					yZeroes = "0";
-				} // zeroes calc
+	// 	for (byte x = 0; x < grid.GetLength(0); x++) {
+	// 		for (byte y = 0; y < grid.GetLength(1); y++) {
+	// 			// // Draw a card from the Land Tile deck
+	// 			// Card card = Card.CreateInstance<Card>();
+	// 			// DrawCard(masterDeckMutable.landTileDeck, masterDeck.landTileDeck, out card);
 
-				GameObject cardObj = Instantiate(this.landTilePrefab, new Vector3(xOff, yOff, 50), Quaternion.identity);
-				NetworkServer.Spawn(cardObj);
+	// 			float xOff = x * cardOffX;
+	// 			float yOff = y * cardOffY;
 
-				cardObj.name = ("x" + xZeroes + x + "_"
-					+ "y" + yZeroes + y + "_"
-					+ "Tile");
-				// cardObj.name = ("LandTile_x" + x + "_y" + y + "_z0");
+	// 			// Determines the number of zeroes to add in the object name
+	// 			if (x >= 10) {
+	// 				xZeroes = "";
+	// 			} else {
+	// 				xZeroes = "0";
+	// 			}
+	// 			if (y >= 10) {
+	// 				yZeroes = "";
+	// 			} else {
+	// 				yZeroes = "0";
+	// 			} // zeroes calc
 
-				Debug.Log("[GameManager] Trying to set parent of " + cardObj + " to " + this);
-				cardObj.transform.SetParent(this.transform);
-				cardObj.transform.rotation = new Quaternion(0, 180, 0, 0); // 0, 180, 0, 0
+	// 			GameObject cardObj = Instantiate(this.landTilePrefab,
+	// 				new Vector3(xOff, yOff, 50),
+	// 				Quaternion.identity);
+	// 			// NetworkServer.Spawn(cardObj);
+	// 			// NetworkServer.SpawnWithClientAuthority(cardObj, connectionToClient);
 
-				// if (hasAuthority) {
-				// 	// Connect the drawn card to the internal grid
-				// 	grid[x, y] = new GridUnit(card: card, tileObj: cardObj, x: x, y: y);
+	// 			cardObj.name = ("x" + xZeroes + x + "_"
+	// 				+ "y" + yZeroes + y + "_"
+	// 				+ "Tile");
+	// 			// cardObj.name = ("LandTile_x" + x + "_y" + y + "_z0");
 
-				// 	grid[x, y].GetComponent<GridUnit>();
+	// 			Debug.Log("[GameManager] Trying to set parent of " + cardObj + " to " + this);
+	// 			cardObj.transform.SetParent(this.transform);
+	// 			cardObj.transform.rotation = new Quaternion(0, 180, 0, 0); // 0, 180, 0, 0
 
-				// 	rowPos[y] = cardObj.transform.position.y; // Row position
-				// } else {
-				// 	Debug.Log("No authority to connect your cards into the internal grid!");
-				// }
+	// 			// if (hasAuthority) {
+	// 			// 	// Connect the drawn card to the internal grid
+	// 			// 	grid[x, y] = new GridUnit(card: card, tileObj: cardObj, x: x, y: y);
 
-				// Connect the drawn card to the prefab that was just created
-				// cardObj.SendMessage("DisplayCard", grid[x, y].card);
-				cardDis.DisplayCard(obj: cardObj, card: grid[x, y].card);
+	// 			// 	grid[x, y].GetComponent<GridUnit>();
 
-				// NetworkServer.SpawnWithClientAuthority(cardObj, connectionToClient);
+	// 			// 	rowPos[y] = cardObj.transform.position.y; // Row position
+	// 			// } else {
+	// 			// 	Debug.Log("No authority to connect your cards into the internal grid!");
+	// 			// }
 
-			} // y
-		} // x
+	// 			// Connect the drawn card to the prefab that was just created
+	// 			// cardObj.SendMessage("DisplayCard", grid[x, y].card);
+	// 			Debug.Log("[GameManager] Connecting Grid Object to Internal Card...");
+	// 			cardDis.DisplayCard(obj: cardObj, card: grid[x, y].card);
 
-	} //CmdCreateGridObjects();
+	// 			// NetworkServer.SpawnWithClientAuthority(cardObj, connectionToClient);
+
+	// 		} // y
+
+	// 	} // x
+
+	// } //CmdCreateGridObjects();
 
 	private void DrawGridCards() {
 
 	}
 
-	public void PopulateMarket() {
-		// Populate the Card prefab and create the Master Deck
-		marketCardPrefab = Resources.Load<GameObject>("Prefabs/GameCard");
-		string xZeroes = "0";
-		string yZeroes = "0";
-		//masterDeckMutable = masterDeck;	// Sets mutable deck version to internal one
+	// public void PopulateMarket() {
+	// 	// Populate the Card prefab and create the Master Deck
+	// 	marketCardPrefab = Resources.Load<GameObject>("Prefabs/GameCard");
+	// 	string xZeroes = "0";
+	// 	string yZeroes = "0";
+	// 	//masterDeckMutable = masterDeck;	// Sets mutable deck version to internal one
 
-		int marketWidth = Mathf.CeilToInt((float) ResourceInfo.resources.Count / (float) height);
+	// 	int marketWidth = Mathf.CeilToInt((float) ResourceInfo.resources.Count / (float) height);
 
-		for (byte x = 0; x < marketWidth; x++) {
-			for (byte y = 0; y < height; y++) {
+	// 	for (byte x = 0; x < marketWidth; x++) {
+	// 		for (byte y = 0; y < height; y++) {
 
-				Card card = Card.CreateInstance<Card>();
-				// Try to draw a card from the Market Card deck
-				if (DrawCard(masterDeckMutable.marketCardDeck, masterDeck.marketCardDeck, out card)) {
+	// 			Card card = Card.CreateInstance<Card>();
+	// 			// Try to draw a card from the Market Card deck
+	// 			if (DrawCard(masterDeckMutable.marketCardDeck, masterDeck.marketCardDeck, out card)) {
 
-					float xOff = ((width + 1) * cardOffX) + x * cardOffX;
-					float yOff = y * cardOffY;
+	// 				float xOff = ((width + 1) * cardOffX) + x * cardOffX;
+	// 				float yOff = y * cardOffY;
 
-					// Determines the number of zeroes to add in the object name
-					if (x >= 10) {
-						xZeroes = "";
-					} else {
-						xZeroes = "0";
-					}
-					if (y >= 10) {
-						yZeroes = "";
-					} else {
-						yZeroes = "0";
-					} // zeroes calc
+	// 				// Determines the number of zeroes to add in the object name
+	// 				if (x >= 10) {
+	// 					xZeroes = "";
+	// 				} else {
+	// 					xZeroes = "0";
+	// 				}
+	// 				if (y >= 10) {
+	// 					yZeroes = "";
+	// 				} else {
+	// 					yZeroes = "0";
+	// 				} // zeroes calc
 
-					GameObject cardObj = (GameObject) Instantiate(this.marketCardPrefab, new Vector3(xOff, yOff, 50), Quaternion.identity);
-					cardObj.name = ("x" + xZeroes + x + "_"
-						+ "y" + yZeroes + y + "_"
-						+ "MarketCard");
-					// cardObj.name = ("LandTile_x" + x + "_y" + y + "_z0");
+	// 				GameObject cardObj = (GameObject) Instantiate(this.marketCardPrefab, new Vector3(xOff, yOff, 50), Quaternion.identity);
+	// 				cardObj.name = ("x" + xZeroes + x + "_"
+	// 					+ "y" + yZeroes + y + "_"
+	// 					+ "MarketCard");
+	// 				// cardObj.name = ("LandTile_x" + x + "_y" + y + "_z0");
 
-					cardObj.transform.SetParent(this.transform);
-					// cardObj.transform.rotation = new Quaternion(0, 0, 0, 0);	// 0, 180, 0, 0
+	// 				cardObj.transform.SetParent(this.transform);
+	// 				// cardObj.transform.rotation = new Quaternion(0, 0, 0, 0);	// 0, 180, 0, 0
 
-					// Connect thr drawn card to the internal grid
-					marketGrid[x, y] = new GridUnit(card: card, tileObj: cardObj, x: x, y: y);
-					// rowPos[y] = cardObj.transform.position.y;	// Row position
+	// 				// Connect thr drawn card to the internal grid
+	// 				marketGrid[x, y] = new GridUnit(card: card, tileObj: cardObj, x: x, y: y);
+	// 				// rowPos[y] = cardObj.transform.position.y;	// Row position
 
-					// Connect the drawn card to the prefab that was just created
+	// 				// Connect the drawn card to the prefab that was just created
 
-					// NetworkServer.Spawn(cardObj);
-					// cardObj.SendMessage("DisplayCard", card);
-					cardDis.DisplayCard(obj: cardObj, card: grid[x, y].card);
+	// 				// NetworkServer.Spawn(cardObj);
+	// 				// cardObj.SendMessage("DisplayCard", card);
+	// 				cardDis.DisplayCard(obj: cardObj, card: grid[x, y].card);
 
-				} // if a market card could be drawn
+	// 			} // if a market card could be drawn
 
-			} // y
-		} // x
+	// 		} // y
+	// 	} // x
 
-	} //PopulateMarket();
+	// } //PopulateMarket();
 
 	// Draws random GameCards from the masterDeck and returns a deck of a specified size
 	private Deck DrawHand(int handSize) {
@@ -252,7 +263,8 @@ public class GameManager : NetworkBehaviour {
 	private void DisplayHand(Deck deck, byte playerNum) {
 
 		// Populate the Card prefab
-		landTilePrefab = Resources.Load<GameObject>("Prefabs/GameCard");
+		GameObject landTilePrefab = Resources.Load<GameObject>("Prefabs/GameCard");
+		// NOTE: As of the time of the addition of the GridManager class, this should be split off into it's own class.
 		string pZeroes = "0";
 		string iZeroes = "0";
 
@@ -274,7 +286,7 @@ public class GameManager : NetworkBehaviour {
 				iZeroes = "0";
 			} // zeroes calc
 
-			GameObject cardObj = (GameObject) Instantiate(this.landTilePrefab, new Vector3(xOff, yOff, 40), Quaternion.identity);
+			GameObject cardObj = (GameObject) Instantiate(landTilePrefab, new Vector3(xOff, yOff, 40), Quaternion.identity);
 			cardObj.name = ("p" + pZeroes + playerNum + "_"
 				+ "i" + iZeroes + i + "_"
 				+ "GameCard");
@@ -303,7 +315,8 @@ public class GameManager : NetworkBehaviour {
 	private void DisplayCard(Card card, byte playerNum, int index) {
 
 		// Populate the Card prefab
-		gameCardPrefab = Resources.Load<GameObject>("Prefabs/GameCard");
+		GameObject gameCardPrefab = Resources.Load<GameObject>("Prefabs/GameCard");
+		// NOTE: As of the time of the addition of the GridManager class, this should be split off into it's own class.
 		string pZeroes = "0";
 		string iZeroes = "0";
 
@@ -324,7 +337,7 @@ public class GameManager : NetworkBehaviour {
 			iZeroes = "0";
 		} // zeroes calc
 
-		GameObject cardObj = (GameObject) Instantiate(this.gameCardPrefab, new Vector3(xOff, yOff, 40), Quaternion.identity);
+		GameObject cardObj = (GameObject) Instantiate(gameCardPrefab, new Vector3(xOff, yOff, 40), Quaternion.identity);
 		cardObj.name = ("p" + pZeroes + playerNum + "_"
 			+ "i" + iZeroes + index + "_"
 			+ "GameCard");
@@ -346,7 +359,7 @@ public class GameManager : NetworkBehaviour {
 
 	} // DisplayCard()
 
-	public bool DrawCard(Deck deckMut, Deck deckPerm, out Card card) {
+	public static bool DrawCard(Deck deckMut, Deck deckPerm, out Card card) {
 
 		// Card card;	// Card to return
 		int cardsLeft = deckMut.Count(); // Number of cards left from mutable deck
@@ -429,7 +442,7 @@ public class GameManager : NetworkBehaviour {
 		// Search through the grid
 		for (byte x = 0; x < width; x++) {
 			for (byte y = 0; y < height; y++) {
-				if (grid[x, y].ownerId == players[id].Id) {
+				if (GridManager.grid[x, y].ownerId == players[id].Id) {
 					Highlight(x, y);
 				} // if Tile is owned by the player
 			} // for y
@@ -450,8 +463,8 @@ public class GameManager : NetworkBehaviour {
 						&& gridY + j >= 0
 						&& gridY + j < height) {
 
-						if (grid[gridX + i, gridY + j].ownerId == 0
-							&& !grid[gridX + i, gridY + j].bankrupt) {
+						if (GridManager.grid[gridX + i, gridY + j].ownerId == 0
+							&& !GridManager.grid[gridX + i, gridY + j].bankrupt) {
 
 							GameObject temp = FindCard("Tile", (byte) (gridX + i), (byte) (gridY + j));
 							temp.GetComponentsInChildren<Renderer>() [0].material.color = playerColor;
@@ -479,7 +492,7 @@ public class GameManager : NetworkBehaviour {
 			for (byte x = 0; x < width; x++) {
 				for (byte y = 0; y < height; y++) {
 					// Debug.Log("[VerifyHighlight] Turn " + turn + ", Player ID (Turn) " + id + ", (Real) " + players[id].Id);
-					if (grid[x, y].ownerId == players[id].Id) {
+					if (GridManager.grid[x, y].ownerId == players[id].Id) {
 						Highlight(x, y);
 					} // if player owns Tile
 				} // for y
@@ -506,7 +519,8 @@ public class GameManager : NetworkBehaviour {
 				// Test to see if the grid is full
 				for (int x = 0; x < width; x++) {
 					for (int y = 0; y < height; y++) {
-						if (grid[x, y].ownerId == 0 && !grid[x, y].bankrupt) {
+						if (GridManager.grid[x, y].ownerId == 0
+							&& !GridManager.grid[x, y].bankrupt) {
 							gridSpaceLeft++;
 							// Debug.Log("Grid must NOT be full!");
 						} // if Tile is unowned
@@ -544,8 +558,8 @@ public class GameManager : NetworkBehaviour {
 						&& gridX + i < width
 						&& gridY + j >= 0
 						&& gridY + j < height) {
-						if (grid[gridX + i, gridY + j].ownerId == 0
-							&& !grid[gridX + i, gridY + j].bankrupt) {
+						if (GridManager.grid[gridX + i, gridY + j].ownerId == 0
+							&& !GridManager.grid[gridX + i, gridY + j].bankrupt) {
 
 							highlighted[gridX + i, gridY + j] = true;
 						} // if Tile is unowned
@@ -570,7 +584,7 @@ public class GameManager : NetworkBehaviour {
 			// Search through the grid
 			for (byte x = 0; x < width; x++) {
 				for (byte y = 0; y < height; y++) {
-					if (grid[x, y].ownerId == players[id].Id) {
+					if (GridManager.grid[x, y].ownerId == players[id].Id) {
 						ValidTile(x, y);
 					} // if player owns tile
 				} // for y
@@ -580,11 +594,12 @@ public class GameManager : NetworkBehaviour {
 		} // if past first round
 
 		// If the tile is unowned (Had owner ID of 0), assign this owner to it
-		if (grid[gridX, gridY].ownerId == 0 && followsRules && !grid[gridX, gridY].bankrupt) {
+		if (GridManager.grid[gridX, gridY].ownerId == 0
+			&& followsRules && !GridManager.grid[gridX, gridY].bankrupt) {
 			// players[id].ModifyMoney(-100);
 			// players[id].CalcMoney();	//NOTE: Only need this OR ModifyMoney()
 			players[id].CalcTotalMoney();
-			grid[gridX, gridY].ownerId = players[id].Id;
+			GridManager.grid[gridX, gridY].ownerId = players[id].Id;
 			// Debug.Log("Turn " + turn + ", buying for Player " + players[id].Id);
 			return true;
 		} else if (!followsRules) {
@@ -608,9 +623,9 @@ public class GameManager : NetworkBehaviour {
 						&& gridLocY + j >= 0
 						&& gridLocY + j < height) {
 
-						if (grid[gridLocX + i, gridLocY + j].ownerId == 0
-							&& grid[gridLocX + i, gridLocY + j] == grid[gridX, gridY]
-							&& !grid[gridX, gridY].bankrupt) {
+						if (GridManager.grid[gridLocX + i, gridLocY + j].ownerId == 0
+							&& GridManager.grid[gridLocX + i, gridLocY + j] == GridManager.grid[gridX, gridY]
+							&& !GridManager.grid[gridX, gridY].bankrupt) {
 							followsRules = true; // Signal that this is a valid purchase
 						} // if tile owned and in a valid spot
 					} // if grid in bounds
@@ -625,7 +640,8 @@ public class GameManager : NetworkBehaviour {
 		if (cardType == "LandTile") {
 			for (byte x = 0; x < width; x++) {
 				for (byte y = 0; y < height; y++) {
-					if (grid[x, y].ownerId == 0 && !grid[x, y].bankrupt) {
+					if (GridManager.grid[x, y].ownerId == 0
+						&& !GridManager.grid[x, y].bankrupt) {
 						GameObject temp = FindCard("Tile", (byte) x, (byte) y);
 						temp.GetComponentsInChildren<Renderer>() [0].material.color = color;
 						temp.GetComponentsInChildren<Renderer>() [1].material.color = color;
@@ -724,42 +740,42 @@ public class GameManager : NetworkBehaviour {
 
 	} // GetPlayerColor()
 
-	// Shifts rows of cards up or down. Used to give room for cards under tiles.
-	public void ShiftRow(string type, byte row, int units) {
+	// // Shifts rows of cards up or down. Used to give room for cards under tiles.
+	// public void ShiftRow(string type, byte row, int units) {
 
-		if (type == "Tile") {
-			for (byte x = 0; x < width; x++) {
-				for (byte y = row; y < height; y++) {
-					float oldX = grid[x, y].tileObj.transform.position.x;
-					float oldY = grid[x, y].tileObj.transform.position.y;
-					float oldZ = grid[x, y].tileObj.transform.position.z;
-					grid[x, y].tileObj.transform.position = new Vector3(grid[x, y].tileObj.transform.position.x,
-						(oldY += (shiftUnit * units)),
-						grid[x, y].tileObj.transform.position.z);
-				} // for y
-			} // for x
-		} else if (type == "Market") {
-			int marketWidth = Mathf.CeilToInt((float) ResourceInfo.resources.Count
-				/ (float) height);
-			for (byte x = 0; x < marketWidth; x++) {
-				for (byte y = row; y < height; y++) {
+	// 	if (type == "Tile") {
+	// 		for (byte x = 0; x < width; x++) {
+	// 			for (byte y = row; y < height; y++) {
+	// 				float oldX = grid[x, y].tileObj.transform.position.x;
+	// 				float oldY = grid[x, y].tileObj.transform.position.y;
+	// 				float oldZ = grid[x, y].tileObj.transform.position.z;
+	// 				grid[x, y].tileObj.transform.position = new Vector3(grid[x, y].tileObj.transform.position.x,
+	// 					(oldY += (shiftUnit * units)),
+	// 					grid[x, y].tileObj.transform.position.z);
+	// 			} // for y
+	// 		} // for x
+	// 	} else if (type == "Market") {
+	// 		int marketWidth = Mathf.CeilToInt((float) ResourceInfo.resources.Count
+	// 			/ (float) height);
+	// 		for (byte x = 0; x < marketWidth; x++) {
+	// 			for (byte y = row; y < height; y++) {
 
-					if (marketGrid[x, y] != null) {
-						float oldX = marketGrid[x, y].tileObj.transform.position.x;
-						float oldY = marketGrid[x, y].tileObj.transform.position.y;
-						float oldZ = marketGrid[x, y].tileObj.transform.position.z;
-						marketGrid[x, y].tileObj.transform.position = new Vector3(marketGrid[x, y].tileObj.transform.position.x,
-							(oldY += (shiftUnit * units)),
-							marketGrid[x, y].tileObj.transform.position.z);
-					} // if tile at the location isn't null
+	// 				if (marketGrid[x, y] != null) {
+	// 					float oldX = marketGrid[x, y].tileObj.transform.position.x;
+	// 					float oldY = marketGrid[x, y].tileObj.transform.position.y;
+	// 					float oldZ = marketGrid[x, y].tileObj.transform.position.z;
+	// 					marketGrid[x, y].tileObj.transform.position = new Vector3(marketGrid[x, y].tileObj.transform.position.x,
+	// 						(oldY += (shiftUnit * units)),
+	// 						marketGrid[x, y].tileObj.transform.position.z);
+	// 				} // if tile at the location isn't null
 
-				} // for y
-			} // for x
-		} else {
-			Debug.Log("Not doing anything");
-		} // type
+	// 			} // for y
+	// 		} // for x
+	// 	} else {
+	// 		Debug.Log("Not doing anything");
+	// 	} // type
 
-	} // ShiftRow()
+	// } // ShiftRow()
 
 	// Checks if a GameCard is allowed to be played on a Tile.
 	public bool TryToPlay(GridUnit gridTile, GridUnit gameCard) {
@@ -792,16 +808,16 @@ public class GameManager : NetworkBehaviour {
 				if (gameCard.card.title == "Tile Mod") {
 
 					// If the stack on the unit is larger than the stack count on the row, increase
-					if (gridTile.stackSize > maxStack[gridTile.y]) {
-						maxStack[gridTile.y]++;
-						ShiftRow(gridTile.category, gridTile.y, 1);
+					if (gridTile.stackSize > GridManager.maxStack[gridTile.y]) {
+						GridManager.maxStack[gridTile.y]++;
+						GridManager.ShiftRow(gridTile.category, gridTile.y, 1);
 					} // if stack size exceeds max stack recorded for row
 
 					gameCard.tileObj.transform.position = new Vector3(gridTile.tileObj.transform.position.x,
 						gridTile.tileObj.transform.position.y
-						- (shiftUnit * gridTile.stackSize),
+						- (GridManager.shiftUnit * gridTile.stackSize),
 						(gridTile.tileObj.transform.position.z)
-						+ (cardThickness * gridTile.stackSize));
+						+ (GridManager.cardThickness * gridTile.stackSize));
 
 					gameCard.tileObj.transform.parent = gridTile.tileObj.transform;
 
@@ -814,16 +830,16 @@ public class GameManager : NetworkBehaviour {
 				} else if (gameCard.card.title == "Market Mod") {
 
 					// If the stack on the unit is larger than the stack count on the row, increase
-					if (gridTile.stackSize > maxMarketStack[gridTile.y]) {
-						maxMarketStack[gridTile.y]++;
-						ShiftRow(gridTile.card.category, gridTile.y, 1);
+					if (gridTile.stackSize > GridManager.maxMarketStack[gridTile.y]) {
+						GridManager.maxMarketStack[gridTile.y]++;
+						GridManager.ShiftRow(gridTile.card.category, gridTile.y, 1);
 					} // if stack size exceeds max stack recorded for row
 
 					gameCard.tileObj.transform.position = new Vector3(gridTile.tileObj.transform.position.x,
 						gridTile.tileObj.transform.position.y
-						- (shiftUnit * gridTile.stackSize),
+						- (GridManager.shiftUnit * gridTile.stackSize),
 						(gridTile.tileObj.transform.position.z)
-						+ (cardThickness * gridTile.stackSize));
+						+ (GridManager.cardThickness * gridTile.stackSize));
 
 					gameCard.tileObj.transform.parent = gridTile.tileObj.transform;
 
@@ -889,9 +905,9 @@ public class GameManager : NetworkBehaviour {
 			strY = "i"; // Instead of y, use i for Index
 		} // if GameCard
 
-		if (transform.Find(strX + xZeroes + x + "_" + strY + yZeroes + y + "_" + type)) {
+		if (gridMan.transform.Find(strX + xZeroes + x + "_" + strY + yZeroes + y + "_" + type)) {
 			// GameObject gameObject = new GameObject();
-			GameObject gameObject = transform.Find(strX + xZeroes + x + "_"
+			GameObject gameObject = gridMan.transform.Find(strX + xZeroes + x + "_"
 				+ strY + yZeroes + y + "_"
 				+ type).gameObject;
 			return gameObject;
@@ -930,41 +946,41 @@ public class GameManager : NetworkBehaviour {
 
 	} // InitPlayers()
 
-	// Initialize the internal game grid
-	private void InitGameGrid() {
+	// // Initialize the internal game grid
+	// private void InitGameGrid() {
 
-		if (!hasAuthority) {
-			Debug.Log("No authority to initialize the internal grid!");
-			return;
-		}
+	// 	if (!hasAuthority) {
+	// 		Debug.Log("No authority to initialize the internal grid!");
+	// 		return;
+	// 	}
 
-		// Game Grid ######################################
-		grid = new GridUnit[width, height];
-		rowPos = new float[height];
-		maxStack = new byte[height];
+	// 	// Game Grid ######################################
+	// 	grid = new GridUnit[width, height];
+	// 	rowPos = new float[height];
+	// 	maxStack = new byte[height];
 
-		for (byte x = 0; x < width; x++) {
-			for (byte y = 0; y < height; y++) {
-				// Draw a card from the Land Tile deck
-				Card card = Card.CreateInstance<Card>();
-				DrawCard(masterDeckMutable.landTileDeck, masterDeck.landTileDeck, out card);
-				// Connect the drawn card to the internal grid
-				grid[x, y] = new GridUnit(card: card, x: x, y: y);
+	// 	for (byte x = 0; x < width; x++) {
+	// 		for (byte y = 0; y < height; y++) {
+	// 			// Draw a card from the Land Tile deck
+	// 			Card card = Card.CreateInstance<Card>();
+	// 			DrawCard(masterDeckMutable.landTileDeck, masterDeck.landTileDeck, out card);
+	// 			// Connect the drawn card to the internal grid
+	// 			grid[x, y] = new GridUnit(card: card, x: x, y: y);
 
-				// rowPos[y] = cardObj.transform.position.y; // Row position
-			} // y
-		} // x
+	// 			// rowPos[y] = cardObj.transform.position.y; // Row position
+	// 		} // y
+	// 	} // x
 
-		// Market Grid ####################################
-		marketGrid = new GridUnit[Mathf.CeilToInt((float) ResourceInfo.resources.Count
-			/ (float) height), height];
-		maxMarketStack = new byte[height];
+	// 	// Market Grid ####################################
+	// 	marketGrid = new GridUnit[Mathf.CeilToInt((float) ResourceInfo.resources.Count
+	// 		/ (float) height), height];
+	// 	maxMarketStack = new byte[height];
 
-	} // InitGameGrid()
+	// } // InitGameGrid()
 
-	// Initialize the internal market grid
-	private void InitMarketGrid() {
+	// // Initialize the internal market grid
+	// private void InitMarketGrid() {
 
-	} // InitMarketGrid()
+	// } // InitMarketGrid()
 
 } // GameManager class

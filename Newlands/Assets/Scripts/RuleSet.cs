@@ -265,8 +265,8 @@ public class RuleSet {
 					newCard = Resources.Load<Card>("Cards/Tiles/Land/farmland_cashcrops_5");
 					target.tileObj.SendMessage("DisplayCard", newCard);
 
-					GameManager.grid[target.x, target.y].LoadNewCard(newCard, target.tileObj);
-					target = GameManager.grid[target.x, target.y];
+					GridManager.grid[target.x, target.y].LoadNewCard(newCard, target.tileObj);
+					target = GridManager.grid[target.x, target.y];
 
 					target.CalcTotalValue();
 					GameManager.UpdatePlayersInfo();

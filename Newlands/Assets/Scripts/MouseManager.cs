@@ -38,7 +38,14 @@ public class MouseManager : NetworkBehaviour {
 
 		// If an object was hit
 		if (Physics.Raycast(ray, out hitInfo)) {
-			GameObject objectHit = hitInfo.collider.transform.parent.gameObject;
+			GameObject objectHit;
+
+			// Checks if the object hit has a parent before assinging it to a local var.
+			if (hitInfo.collider.transform.parent != null) {
+				objectHit = hitInfo.collider.transform.parent.gameObject;
+			} else {
+				objectHit = hitInfo.collider.transform.gameObject;
+			}
 
 			// Debug.Log(objectHit.transform.parent.name);
 
@@ -155,7 +162,7 @@ public class MouseManager : NetworkBehaviour {
 						objectHit.GetComponentsInChildren<Renderer>() [1].material.color = ColorPalette.tintCard;
 
 						// "Sells" the tile - NOTE: this is for debugging ONLY
-						GameManager.grid[locX, locY].ownerId = 0;
+						GridManager.grid[locX, locY].ownerId = 0;
 
 						gameMan.RollbackTurn();
 						guiMan.CmdUpdateUI();
@@ -171,7 +178,7 @@ public class MouseManager : NetworkBehaviour {
 						gameMan.WipeSelectionColors("GameCard", ColorPalette.tintCard);
 
 						if (selection >= 0) {
-							if (gameMan.TryToPlay(GameManager.grid[locX, locY],
+							if (gameMan.TryToPlay(GridManager.grid[locX, locY],
 									GameManager.players[0].handUnits[selection])) {
 								Debug.Log("Using GameCard " + selection +
 								  " on LandTile " + locX + ", " + locY);
@@ -250,7 +257,7 @@ public class MouseManager : NetworkBehaviour {
 						gameMan.WipeSelectionColors("GameCard", ColorPalette.tintCard);
 
 						if (selection >= 0) {
-							if (gameMan.TryToPlay(GameManager.marketGrid[locX, locY],
+							if (gameMan.TryToPlay(GridManager.marketGrid[locX, locY],
 									GameManager.players[0].handUnits[selection])) {
 								// Debug.Log("Using GameCard " + selection +
 								//   " on LandTile " + locX + ", " + locY);

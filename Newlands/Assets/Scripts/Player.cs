@@ -37,10 +37,10 @@ public class Player {
 			// TODO: Implement a list of known owned tile coordinates to replace these for loops
 			for (byte x = 0; x < GameManager.width; x++) {
 				for (byte y = 0; y < GameManager.height; y++) {
-					if (GameManager.grid[x, y].ownerId == this.Id) {
+					if (GridManager.grid[x, y].ownerId == this.Id) {
 
-						GameManager.grid[x, y].CalcTotalValue();
-						this.tileMoney += (GameManager.grid[x, y].totalValue);
+						GridManager.grid[x, y].CalcTotalValue();
+						this.tileMoney += (GridManager.grid[x, y].totalValue);
 
 					} // if player owns tile
 				} // for y

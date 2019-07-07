@@ -7,6 +7,7 @@ public class PlayerConnection : NetworkBehaviour {
 
 	public GuiManager guiMan;
 	public GameManager gameMan;
+	public GridManager gridMan;
 	public GameObject PlayerUnit; // The physical GameObject controlled by the player
 
 	// Start is called before the first frame update
@@ -20,6 +21,7 @@ public class PlayerConnection : NetworkBehaviour {
 
 		guiMan = FindObjectOfType<GuiManager>();
 		gameMan = FindObjectOfType<GameManager>();
+		gridMan = FindObjectOfType<GridManager>();
 
 		if (guiMan != null) {
 			// guiMan.CmdUpdateUI();
@@ -31,6 +33,7 @@ public class PlayerConnection : NetworkBehaviour {
 		if (gameMan != null) {
 			Debug.Log("<b>[PlayerConnection]</b> "
 				+ "Spawning Game Grid....");
+			// gameMan.CreateGridObjects();
 			CmdSpawnCards();
 		} else {
 			Debug.LogError("<b>[PlayerConnection]</b> "
@@ -90,9 +93,14 @@ public class PlayerConnection : NetworkBehaviour {
 
 	[Command]
 	void CmdSpawnCards() {
-		Debug.Log("hello");
-		gameMan.CmdCreateGridObjects();
+		Debug.Log("[PlayerConnection] Creating Grid GameObjects...");
+		gridMan.CmdCreateGridObjects();
 		// gameMan.PopulateMarket();
+	}
+
+	[Command]
+	void CmdDisplayCardInfo() {
+
 	}
 
 	// RPC ########################################################################################
