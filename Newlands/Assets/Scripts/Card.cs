@@ -58,8 +58,8 @@ public class Card : ScriptableObject {
 	public Card() { }
 
 	// Constructor that (should) create a card from a resource path
-	public Card(string path) {
-		this.Equals(Resources.Load<Card>(path));
-	} // Card(string) constructor
+	// public Card(string path) {
+	// 	this.Equals(Resources.Load<Card>(path));
+	// } // Card(string) constructor
 
 } // Card class

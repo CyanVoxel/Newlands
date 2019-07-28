@@ -713,6 +713,7 @@ GameObject:
   m_Component:
   - component: {fileID: 706877490}
   - component: {fileID: 706877489}
+  - component: {fileID: 706877491}
   m_Layer: 0
   m_Name: CardDisplay
   m_TagString: Untagged
@@ -732,6 +733,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f3c753c7be1c3449a7538d4e1a71dcf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncInterval: 0.1
 --- !u!4 &706877490
 Transform:
   m_ObjectHideFlags: 0
@@ -746,6 +748,22 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &706877491
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 706877488}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serverOnly: 0
+  localPlayerAuthority: 0
+  m_AssetId: 
+  m_SceneId: 382044079
 --- !u!1 &889834021
 GameObject:
   m_ObjectHideFlags: 0
@@ -1124,7 +1142,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   syncInterval: 0.1
-  cardDis: {fileID: 706877489}
   landTilePrefab: {fileID: 1862741089836950, guid: 7caee29a79adf9648a38721e965c495d,
     type: 3}
   gameCardPrefab: {fileID: 1850119598120500, guid: 51fb3f7ac2da8354bb24e66d233f9cdc,

@@ -4,8 +4,9 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Mirror;
 
-public class CardDisplay : MonoBehaviour {
+public class CardDisplay : NetworkBehaviour {
 
 	// DATA FIELDS ------------------------------------------------------------
 
@@ -136,7 +137,8 @@ public class CardDisplay : MonoBehaviour {
 	} // insertFooterValue()
 
 	// Displays card scriptable object data onto a card prefab
-	public void DisplayCard(GameObject obj, Card card) {
+	[ClientRpc]
+	public void RpcDisplayCard(GameObject obj, Card card) {
 		// Debug.Log("[CardDisplay] Trying to display the card " + card.title + " on object " + obj);
 
 		// Grab the display elements from this parent object
