@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Mirror;
 using UnityEngine;
+using TMPro;
 
 public class GridManager : NetworkBehaviour {
 
@@ -17,6 +18,8 @@ public class GridManager : NetworkBehaviour {
 	public static readonly float shiftUnit = 1.2f;
 	public static readonly float cardOffX = 11f;
 	public static readonly float cardOffY = 8f;
+	[SyncVar(hook = "OnTitleChange")]
+	public string tempTitle = "wow";
 
 	public GameObject landTilePrefab;
 	public GameObject gameCardPrefab;
@@ -24,11 +27,35 @@ public class GridManager : NetworkBehaviour {
 
 	void Start() {
 		cardDis = FindObjectOfType<CardDisplay>();
+		// PreInitGameGrid();
+		// InitGameGrid();
 	}
 
-	[Command]
-	public void CmdCreateGridObjects() {
+	public void OnTitleChange(string newTitle) {
+
+		Debug.Log("Title was changed, this is the hook!");
+		// Debug.Log(grid);
+		// Debug.Log(grid[0,0].tileObj);
+		// Debug.Log(grid[0,0].tileObj.transform);
+
+		// GameObject titleObj = grid[0,0].tileObj.transform.Find("Front Canvas/Title").gameObject;
+		// TMP_Text title = titleObj.GetComponent<TMP_Text>();
+
+		// title.text = newTitle;
+		// grid[0,0].subScope = newTitle;
+	}
+
+	// [ClientRpc]
+	public void CreateGridObjects(NetworkConnection conn) {
+
+		Debug.Log("Has authority? " + hasAuthority + ", connection to client: " + conn);
+
+		if (!hasAuthority) {
+			return;
+		}
+
 		Debug.Log("[GridManager] Creating Grid Objects...");
+		// PreInitGameGrid();
 
 		// Populate the Card prefab and create the Master Deck
 		// landTilePrefab = Resources.Load<GameObject>("Prefabs/Tile");
@@ -78,9 +105,23 @@ public class GridManager : NetworkBehaviour {
 				// RpcFillOutCard(cardObj, x, y);
 				// cardDis.DisplayCard(obj: cardObj, card: grid[x, y].card);
 
-				NetworkServer.Spawn(cardObj);
+				Debug.Log("[GridManager] Spawning Card...");
+				NetworkServer.SpawnWithClientAuthority(cardObj, conn);
 
-				RpcFillOutCard(cardObj, x, y);
+				Debug.Log("[GridManager] Trying to fill out card info...");
+				FillOutCard(cardObj, x, y);
+
+				CardState cardState = cardObj.GetComponent<CardState>();
+
+				if (cardState != null) {
+					cardState.titleStr = tempTitle;
+				} else {
+					Debug.Log("[GridManager] This object's card state was null!");
+				}
+
+				GameObject titleObj = cardObj.transform.Find("Front Canvas/Title").gameObject;
+				TMP_Text title = titleObj.GetComponent<TMP_Text>();
+				title.text = tempTitle;
 
 				// NetworkServer.SpawnWithClientAuthority(cardObj, connectionToClient);
 
@@ -107,9 +148,22 @@ public class GridManager : NetworkBehaviour {
 
 	} //CmdCreateGridObjects();
 
-	[ClientRpc]
-	void RpcFillOutCard(GameObject cardObj, int x, int y) {
-		cardDis.RpcDisplayCard(obj: cardObj, card: grid[x, y].card);
+	[Command]
+	public void CmdFillOutCard(GameObject cardObj, int x, int y) {
+		FillOutCard(cardObj, x, y);
+	}
+
+	// [ClientRpc]
+	void FillOutCard(GameObject cardObj, int x, int y) {
+		Debug.Log("Filling out card info for clients!");
+
+		// if (grid == null) {
+		// 	PreInitGameGrid();
+		// }
+
+		// Debug.Log(grid[x,y]);
+
+		cardDis.DisplayCard(obj: cardObj, card: grid[x, y].card);
 	}
 
 	// public void PopulateMarket() {
@@ -170,7 +224,7 @@ public class GridManager : NetworkBehaviour {
 	// } // PopulateMarket()
 
 	// Shifts rows of cards up or down. Used to give room for cards under tiles.
-	public static void ShiftRow(string type, byte row, int units) {
+	public void ShiftRow(string type, byte row, int units) {
 
 		if (type == "Tile") {
 			for (byte x = 0; x < GameManager.width; x++) {
@@ -206,6 +260,17 @@ public class GridManager : NetworkBehaviour {
 
 	} // ShiftRow()
 
+	// public void PreInitGameGrid() {
+	// 	grid = new GridUnit[GameManager.width, GameManager.height];
+	// 	rowPos = new float[GameManager.height];
+	// 	maxStack = new byte[GameManager.height];
+	// }
+
+	[Command]
+	public void CmdChangeTestName(string newTitle) {
+		tempTitle = newTitle;
+	}
+
 	// Initialize the internal game grid
 	public void InitGameGrid() {
 
@@ -214,7 +279,12 @@ public class GridManager : NetworkBehaviour {
 			return;
 		}
 
+		string titleCheck = "Title Check #" + Random.Range(1, 100);
+		Debug.Log("Sending request to change name to " + titleCheck);
+		CmdChangeTestName(titleCheck);
+
 		// Game Grid ######################################
+		// PreInitGameGrid();
 		grid = new GridUnit[GameManager.width, GameManager.height];
 		rowPos = new float[GameManager.height];
 		maxStack = new byte[GameManager.height];
@@ -242,5 +312,10 @@ public class GridManager : NetworkBehaviour {
 	public void InitMarketGrid() {
 
 	} // InitMarketGrid()
+
+	[Command]
+	public void CmdGetTitle(int x, int y) {
+		// return grid[x,y].subScope;
+	}
 
 }

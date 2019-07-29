@@ -8,7 +8,12 @@ public class MouseManager : NetworkBehaviour {
 
 	public GameManager gameMan;
 	public GuiManager guiMan;
+	public GridManager gridMan;
 	public static int selection = -1;
+
+	void Start() {
+		gridMan = FindObjectOfType<GridManager>();
+	}
 
 	// Update is called once per frame
 	void Update() {
@@ -89,7 +94,7 @@ public class MouseManager : NetworkBehaviour {
 						guiMan.CmdUpdateUI();
 
 						// If the tile can be bought
-						if (GameManager.BuyTile(locX, locY)) {
+						if (gameMan.BuyTile(locX, locY)) {
 
 							objX = objectHit.transform.parent.position.x;
 							objY = objectHit.transform.parent.position.y;

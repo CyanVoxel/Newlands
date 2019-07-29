@@ -969,9 +969,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   serverOnly: 0
-  localPlayerAuthority: 0
+  localPlayerAuthority: 1
   m_AssetId: 
-  m_SceneId: 2723829935
+  m_SceneId: 4187990317
 --- !u!114 &7149671756936438314
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -999,6 +999,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44523a8bf444efe4eb8cd0c1e0fe3057, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncInterval: 0.1
+  titleStr: 
+  gridMan: {fileID: 0}
 --- !u!1 &1874617469558062
 GameObject:
   m_ObjectHideFlags: 0

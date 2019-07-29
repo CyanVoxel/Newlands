@@ -35,6 +35,7 @@ public class PlayerConnection : NetworkBehaviour {
 				+ "Spawning Game Grid....");
 			// gameMan.CreateGridObjects();
 			CmdSpawnCards();
+			// gridMan.OnTitleChange(gridMan.tempTitle);
 		} else {
 			Debug.LogError("<b>[PlayerConnection]</b> "
 				+ "GameManager is null!");
@@ -94,7 +95,7 @@ public class PlayerConnection : NetworkBehaviour {
 	[Command]
 	void CmdSpawnCards() {
 		Debug.Log("[PlayerConnection] Creating Grid GameObjects...");
-		gridMan.CmdCreateGridObjects();
+		gridMan.CreateGridObjects(connectionToClient);
 		// gameMan.PopulateMarket();
 	}
 

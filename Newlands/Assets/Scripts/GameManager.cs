@@ -73,6 +73,7 @@ public class GameManager : NetworkBehaviour {
 		// } // for number of hands
 
 		// Initialize the internal grids
+		// gridMan.PreInitGameGrid();
 		gridMan.InitGameGrid();
 		gridMan.InitMarketGrid();
 		// CmdCreateGridObjects();
@@ -570,7 +571,7 @@ public class GameManager : NetworkBehaviour {
 	} // GetHighlightCount()
 
 	// Attempts to buy an unowned tile. Returns true if successful, or false if already owned.
-	public static bool BuyTile(byte gridX, byte gridY) {
+	public bool BuyTile(byte gridX, byte gridY) {
 
 		byte id = (byte) (turn - 1);
 
@@ -782,7 +783,9 @@ public class GameManager : NetworkBehaviour {
 
 		if (!gridTile.bankrupt && RuleSet.IsLegal(gridTile, gameCard)) {
 
-			RuleSet.PlayCard(gridTile, gameCard.card);
+			RuleSet ruleSet = new RuleSet();
+
+			ruleSet.PlayCard(gridTile, gameCard.card);
 			UpdatePlayersInfo();
 			guiMan.CmdUpdateUI();
 
@@ -810,7 +813,7 @@ public class GameManager : NetworkBehaviour {
 					// If the stack on the unit is larger than the stack count on the row, increase
 					if (gridTile.stackSize > GridManager.maxStack[gridTile.y]) {
 						GridManager.maxStack[gridTile.y]++;
-						GridManager.ShiftRow(gridTile.category, gridTile.y, 1);
+						gridMan.ShiftRow(gridTile.category, gridTile.y, 1);
 					} // if stack size exceeds max stack recorded for row
 
 					gameCard.tileObj.transform.position = new Vector3(gridTile.tileObj.transform.position.x,
@@ -832,7 +835,7 @@ public class GameManager : NetworkBehaviour {
 					// If the stack on the unit is larger than the stack count on the row, increase
 					if (gridTile.stackSize > GridManager.maxMarketStack[gridTile.y]) {
 						GridManager.maxMarketStack[gridTile.y]++;
-						GridManager.ShiftRow(gridTile.card.category, gridTile.y, 1);
+						gridMan.ShiftRow(gridTile.card.category, gridTile.y, 1);
 					} // if stack size exceeds max stack recorded for row
 
 					gameCard.tileObj.transform.position = new Vector3(gridTile.tileObj.transform.position.x,

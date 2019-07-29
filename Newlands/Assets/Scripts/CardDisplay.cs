@@ -137,8 +137,8 @@ public class CardDisplay : NetworkBehaviour {
 	} // insertFooterValue()
 
 	// Displays card scriptable object data onto a card prefab
-	[ClientRpc]
-	public void RpcDisplayCard(GameObject obj, Card card) {
+	// [ClientRpc]
+	public void DisplayCard(GameObject obj, Card card) {
 		// Debug.Log("[CardDisplay] Trying to display the card " + card.title + " on object " + obj);
 
 		// Grab the display elements from this parent object

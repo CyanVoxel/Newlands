@@ -55,7 +55,7 @@ public class Card : ScriptableObject {
 	// CONSTRUCTORS ###############################################################################
 
 	// Default no-arg constructor
-	public Card() { }
+	// public Card() { }
 
 	// Constructor that (should) create a card from a resource path
 	// public Card(string path) {

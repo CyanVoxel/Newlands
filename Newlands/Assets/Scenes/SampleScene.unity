@@ -1065,6 +1065,7 @@ MonoBehaviour:
   syncInterval: 0.1
   gameMan: {fileID: 160484955}
   guiMan: {fileID: 412696965}
+  gridMan: {fileID: 0}
 --- !u!114 &1065924669
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1112,7 +1113,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   serverOnly: 0
-  localPlayerAuthority: 0
+  localPlayerAuthority: 1
   m_AssetId: 
   m_SceneId: 1048399812
 --- !u!4 &1437400121
@@ -1142,6 +1143,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   syncInterval: 0.1
+  tempTitle: wow
   landTilePrefab: {fileID: 1862741089836950, guid: 7caee29a79adf9648a38721e965c495d,
     type: 3}
   gameCardPrefab: {fileID: 1850119598120500, guid: 51fb3f7ac2da8354bb24e66d233f9cdc,

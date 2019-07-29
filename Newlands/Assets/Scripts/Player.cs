@@ -6,6 +6,8 @@ using UnityEngine;
 
 public class Player {
 
+	public GridManager gridMan;
+
 	// DATA FIELDS ################################################################################
 
 	public byte Id { get; set; } = 0;
@@ -26,6 +28,10 @@ public class Player {
 	// METHODS ####################################################################################
 
 	public double Money { get { return totalMoney; } }
+
+	// void Start() {
+	// 	gridMan = FindObjectOfType<GridManager>();
+	// }
 
 	public void CalcTotalMoney() {
 		this.totalMoney = 0;

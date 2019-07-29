@@ -3,9 +3,15 @@
 
 using UnityEngine;
 
-public class RuleSet {
+public class RuleSet : MonoBehaviour {
+
+	private GridManager gridMan;
 
 	// METHODS ####################################################################################
+
+	void Start() {
+		gridMan = FindObjectOfType<GridManager>();
+	}
 
 	// Compares a Game Card against a target Card/Tle to determine if it is allowed to be played
 	// given the scope of the Game Card.
@@ -232,7 +238,7 @@ public class RuleSet {
 	} // IsLegal
 
 	// Carries out the action that a legal Game Card intends
-	public static void PlayCard(GridUnit target, Card cardToPlay) {
+	public void PlayCard(GridUnit target, Card cardToPlay) {
 
 		string action = cardToPlay.subtitle;
 		// NOTE: Cards promting tile value calculation have their calculations offset to
@@ -281,7 +287,7 @@ public class RuleSet {
 	} // PlayCard(Card, GridUnit)
 
 	// Carries out the action that a legal Game Card intends (Override)
-	public static void PlayCard(GridUnit target, GridUnit cardToPlay) {
+	public void PlayCard(GridUnit target, GridUnit cardToPlay) {
 		PlayCard(target, cardToPlay.card);
 	} // PlayCard(GridUnit, GridUnit)
 
