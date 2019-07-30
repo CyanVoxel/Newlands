@@ -10,6 +10,8 @@ public class CardState : NetworkBehaviour {
 
 	// [SerializeField]
 	public string titleStr = "test";
+	[SyncVar(hook = "OnObjectNameChange")]
+	public string objectName;
 	private CardDisplay cardDis;
 	[SerializeField]
 	private GridManager gridMan;
@@ -17,28 +19,8 @@ public class CardState : NetworkBehaviour {
 	// Start is called before the first frame update
 	void Start() {
 
-		// this.GetComponent<NetworkIdentity>().AssignClientAuthority(this.GetComponent<NetworkIdentity>().connectionToClient);
-
-		// if (!isLocalPlayer) {
-		//     Debug.Log("This is <b>NOT</b> the local player!");
-		//     return;
-		// } else {
-		//     Debug.Log("This <b>IS</b> the local player!");
-		// }
-
 		cardDis = this.GetComponent<CardDisplay>();
 		gridMan = FindObjectOfType<GridManager>();
-
-		// titleStr = "test";
-		// if (GridManager.grid != null) {
-		//     titleStr = GridManager.grid[2, 2].subScope;
-		// } else {
-		//     Debug.Log("Grid manager is null!");
-		// }
-
-		// RpcSetTitle();
-
-		// titleStr = gridMan.CmdGetTitle(2, 2);
 
 		if (gridMan == null) {
 			gridMan = FindObjectOfType<GridManager>();
@@ -53,16 +35,6 @@ public class CardState : NetworkBehaviour {
 	// Update is called once per frame
 	void Update() {
 
-		// if (gridMan == null) {
-		// 	gridMan = FindObjectOfType<GridManager>();
-
-		// 	GameObject titleObj = this.transform.Find("Front Canvas/Title").gameObject;
-		// 	TMP_Text title = titleObj.GetComponent<TMP_Text>();
-		// 	title.text = titleStr;
-		// 	// CmdRequestValues();
-		// 	// gridMan.CmdFillOutCard(this.gameObject, 2, 2);
-		// }
-
 		this.titleStr = gridMan.tempTitle;
 
 		if (gridMan == null) {
@@ -75,19 +47,11 @@ public class CardState : NetworkBehaviour {
 
 	}
 
-	[Command]
-	private void CmdRequestValues() {
-		RpcSetValues(GridManager.grid[2, 2].subScope);
-		gridMan.CmdFillOutCard(this.gameObject, 2, 2);
-	}
-
-	[ClientRpc]
-	private void RpcSetValues(string titleVal) {
-		this.titleStr = titleVal;
-	}
-
-	[ClientRpc]
-	private void RpcSetTitle() {
-		this.titleStr = GridManager.grid[2, 2].subScope;
-	}
+	// Fires when the name destined for this object changes (Should only happen once!)
+	private void OnObjectNameChange(string newName) {
+		this.transform.name = newName;
+		if (FindObjectOfType<GridManager>() != null) {
+			this.transform.SetParent(FindObjectOfType<GridManager>().transform);
+		}
+	} // OnObjectNameChange()
 }

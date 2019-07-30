@@ -32,17 +32,7 @@ public class GridManager : NetworkBehaviour {
 	}
 
 	public void OnTitleChange(string newTitle) {
-
 		Debug.Log("Title was changed, this is the hook!");
-		// Debug.Log(grid);
-		// Debug.Log(grid[0,0].tileObj);
-		// Debug.Log(grid[0,0].tileObj.transform);
-
-		// GameObject titleObj = grid[0,0].tileObj.transform.Find("Front Canvas/Title").gameObject;
-		// TMP_Text title = titleObj.GetComponent<TMP_Text>();
-
-		// title.text = newTitle;
-		// grid[0,0].subScope = newTitle;
 	}
 
 	// [ClientRpc]
@@ -106,15 +96,23 @@ public class GridManager : NetworkBehaviour {
 				// cardDis.DisplayCard(obj: cardObj, card: grid[x, y].card);
 
 				Debug.Log("[GridManager] Spawning Card...");
+				// Test later if NetworkServer.Spawn() will work now
 				NetworkServer.SpawnWithClientAuthority(cardObj, conn);
 
 				Debug.Log("[GridManager] Trying to fill out card info...");
-				FillOutCard(cardObj, x, y);
+				// FillOutCard(cardObj, x, y);
+
+				// TODO: Jobs from FillOutCard()/DisplayCard() need to apply to the cardState from now on.
+				// They can still be on a separate CardDisplay script to keep things clean, as long as that script
+				// is attached to the object in order to avoid passing a ton of large arguments.
 
 				CardState cardState = cardObj.GetComponent<CardState>();
 
 				if (cardState != null) {
 					cardState.titleStr = tempTitle;
+					cardState.objectName = ("x" + xZeroes + x + "_"
+					+ "y" + yZeroes + y + "_"
+					+ "Tile");
 				} else {
 					Debug.Log("[GridManager] This object's card state was null!");
 				}
@@ -123,48 +121,11 @@ public class GridManager : NetworkBehaviour {
 				TMP_Text title = titleObj.GetComponent<TMP_Text>();
 				title.text = tempTitle;
 
-				// NetworkServer.SpawnWithClientAuthority(cardObj, connectionToClient);
-
-				// if (hasAuthority) {
-				// 	// Connect the drawn card to the internal grid
-				// 	grid[x, y] = new GridUnit(card: card, tileObj: cardObj, x: x, y: y);
-
-				// 	grid[x, y].GetComponent<GridUnit>();
-
-				// 	rowPos[y] = cardObj.transform.position.y; // Row position
-				// } else {
-				// 	Debug.Log("No authority to connect your cards into the internal grid!");
-				// }
-
-				// Connect the drawn card to the prefab that was just created
-				// cardObj.SendMessage("DisplayCard", grid[x, y].card);
-				// Debug.Log("[GridManager] Connecting Grid Object to Internal Card...");
-
-				// NetworkServer.SpawnWithClientAuthority(cardObj, connectionToClient);
-
 			} // y
 
 		} // x
 
 	} //CmdCreateGridObjects();
-
-	[Command]
-	public void CmdFillOutCard(GameObject cardObj, int x, int y) {
-		FillOutCard(cardObj, x, y);
-	}
-
-	// [ClientRpc]
-	void FillOutCard(GameObject cardObj, int x, int y) {
-		Debug.Log("Filling out card info for clients!");
-
-		// if (grid == null) {
-		// 	PreInitGameGrid();
-		// }
-
-		// Debug.Log(grid[x,y]);
-
-		cardDis.DisplayCard(obj: cardObj, card: grid[x, y].card);
-	}
 
 	// public void PopulateMarket() {
 	//     // Populate the Card prefab and create the Master Deck
@@ -259,12 +220,6 @@ public class GridManager : NetworkBehaviour {
 		} // type
 
 	} // ShiftRow()
-
-	// public void PreInitGameGrid() {
-	// 	grid = new GridUnit[GameManager.width, GameManager.height];
-	// 	rowPos = new float[GameManager.height];
-	// 	maxStack = new byte[GameManager.height];
-	// }
 
 	[Command]
 	public void CmdChangeTestName(string newTitle) {
