@@ -720,7 +720,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &706877489
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1143,7 +1143,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   syncInterval: 0.1
-  tempTitle: wow
+  tempTitle: 
   landTilePrefab: {fileID: 1862741089836950, guid: 7caee29a79adf9648a38721e965c495d,
     type: 3}
   gameCardPrefab: {fileID: 1850119598120500, guid: 51fb3f7ac2da8354bb24e66d233f9cdc,

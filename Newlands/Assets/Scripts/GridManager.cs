@@ -115,8 +115,18 @@ public class GridManager : NetworkBehaviour {
 					+ "y" + yZeroes + y + "_"
 					+ "Tile");
 
-					// Push the Card's Title
+					// Push new values to the CardState to be synchronized across the network
 					cardState.title = grid[x, y].card.title;
+					cardState.subtitle = grid[x, y].card.subtitle;
+					cardState.body = grid[x, y].card.bodyText;
+					cardState.footer = grid[x, y].card.footerText;
+					cardState.resource = grid[x, y].card.resource;
+					cardState.footerValue = grid[x, y].card.footerValue;
+					cardState.target = grid[x, y].card.target;
+					cardState.resource = grid[x, y].card.resource;
+					cardState.percFlag = grid[x, y].card.percFlag;
+					cardState.moneyFlag = grid[x, y].card.moneyFlag;
+					cardState.footerOpr = grid[x, y].card.footerOpr;
 
 				} else {
 					Debug.Log("[GridManager] This object's card state was null!");

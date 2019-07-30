@@ -61,7 +61,7 @@ public class CardDisplay : NetworkBehaviour {
 	// Converts a custom tag to Card Data
 	// TODO: Expand the parser to dynamically generate most of the needed body text for cards,
 	//	including frequent phrases and dynamically generated scope info text.
-	private string TagToCardData(string inputText, Card card) {
+	private string TagToCardData(string inputText, CardState cardState) {
 
 		string outputText = inputText; // String to output
 
@@ -69,21 +69,21 @@ public class CardDisplay : NetworkBehaviour {
 		while (outputText.IndexOf("<r>") >= 0) {
 			int index = outputText.IndexOf("<r>"); // Set known index
 			outputText = outputText.Remove(startIndex: index, count: 3); // Remove tag
-			outputText = outputText.Insert(startIndex: index, value: card.resource);
+			outputText = outputText.Insert(startIndex: index, value: cardState.resource);
 		} // while <r> left
 
 		// Processes an <c> tag
 		while (outputText.IndexOf("<c>") >= 0) {
 			int index = outputText.IndexOf("<c>"); // Set known index
 			outputText = outputText.Remove(startIndex: index, count: 3); // Remove tag
-			outputText = outputText.Insert(startIndex: index, value: card.category);
+			outputText = outputText.Insert(startIndex: index, value: cardState.category);
 		} // while <c> left
 
 		// Processes an <ts> tag
 		while (outputText.IndexOf("<ts>") >= 0) {
 			int index = outputText.IndexOf("<ts>"); // Set known index
 			outputText = outputText.Remove(startIndex: index, count: 4); // Remove tag
-			outputText = outputText.Insert(startIndex: index, value: card.target);
+			outputText = outputText.Insert(startIndex: index, value: cardState.target);
 		} // while <ts> left
 
 		// Processes an <tc> tag
@@ -98,11 +98,10 @@ public class CardDisplay : NetworkBehaviour {
 	} // TagToCardData(string inputText, Card card)
 
 	// Inserts the footerValue into a string meant for the footer text
-	private string InsertFooterValue(Card card, string inputText, bool percFlag,
-		bool moneyFlag, char op) {
+	private string InsertFooterValue(CardState cardState, string inputText) {
 
 		string outputText = inputText; // String to output
-		string footerValueStr = card.footerValue.ToString("n0"); // The formatted footer value
+		string footerValueStr = cardState.footerValue.ToString("n0"); // The formatted footer value
 
 		// While there's still ITALIC markdown left in input string
 		while (outputText.IndexOf("<x>") >= 0) {
@@ -112,18 +111,18 @@ public class CardDisplay : NetworkBehaviour {
 			outputText = outputText.Remove(startIndex: index, count: 3);
 
 			// If the value is a percentage, add a %
-			if (percFlag) {
+			if (cardState.percFlag) {
 				footerValueStr = (footerValueStr + "%");
 			}
 			// If the value is a percentage, add a $
-			if (moneyFlag) {
+			if (cardState.moneyFlag) {
 				footerValueStr = ("$" + footerValueStr);
 			}
 
 			// Add the appropriate operator to the string
-			if (op == '+') {
+			if (cardState.footerOpr == '+') {
 				footerValueStr = ("+" + footerValueStr);
-			} else if (op == '-') {
+			} else if (cardState.footerOpr == '-') {
 				footerValueStr = ("\u2013" + footerValueStr);
 			}
 
@@ -136,20 +135,19 @@ public class CardDisplay : NetworkBehaviour {
 
 	} // insertFooterValue()
 
-	public void DisplayTitle(GameObject cardParent) {
+	public void DisplayTitle(GameObject cardObj) {
 
-		CardState card = cardParent.GetComponent<CardState>();
-
+		CardState cardState = cardObj.GetComponent<CardState>();
 		GameObject titleObj = this.transform.Find("Front Canvas/Title").gameObject;
 		TMP_Text title = titleObj.GetComponent<TMP_Text>();
 
 		// GAMECARD SPECIFICS -------------------------------------------------
-		if (card.category == "Game Card" || card.category == "Market") {
+		if (cardState.category == "Game Card" || cardState.category == "Market") {
 
 		}
 
 		// TILE SPECIFICS -----------------------------------------------------
-		if (card.category == "Tile") {
+		if (cardState.category == "Tile") {
 
 			GameObject titleIconObj = this.transform.Find("Front Canvas/Icon").gameObject;
 			Image iconImage = titleIconObj.GetComponent<Image>();
@@ -157,7 +155,7 @@ public class CardDisplay : NetworkBehaviour {
 			// Set the Title Text field
 			// TODO: Optimize this under the new string system, as well as when Land Tile titles
 			//	are finally auto-centered with along with their icons.
-			switch (card.title) {
+			switch (cardState.title) {
 				case "Forest":
 					title.text = " Forest";
 					break;
@@ -175,19 +173,54 @@ public class CardDisplay : NetworkBehaviour {
 			}
 
 			// Try to load the icon sprite
-			if (iconImage.sprite = Resources.Load<Sprite>("Sprites/icon_" + card.title.ToLower())) {
-				Debug.Log("[CardDisplay] Successfully loaded image sprite \""
-					+ "Sprites/icon_"
-					+ card.title.ToLower() + "\"");
+			if (iconImage.sprite = Resources.Load<Sprite>("Sprites/icon_" + cardState.title.ToLower())) {
+				// Debug.Log("[CardDisplay] Successfully loaded image sprite \""
+				// 	+ "Sprites/icon_"
+				// 	+ cardState.title.ToLower() + "\"");
 			} else {
 				Debug.LogError("[CardDisplay] ERROR: Could not load image sprite \""
 					+ "Sprites/icon_"
-					+ card.title.ToLower() + "\"");
+					+ cardState.title.ToLower() + "\"");
 			}
 
 		} // Tile specifics
 
 	} // DisplayTitle()
+
+	public void DisplaySubtitle(GameObject cardObj) {
+
+		CardState cardState = cardObj.GetComponent<CardState>();
+
+		if (cardState.category != "Tile") {
+			GameObject subtitleObj = this.transform.Find("Front Canvas/Subtitle").gameObject;
+			TMP_Text subtitle = subtitleObj.GetComponent<TMP_Text>();
+			subtitle.text = TagToCardData(MdToTag(cardState.subtitle), cardState);
+		}
+
+	} // DisplaySubtitle()
+
+	public void DisplayBody(GameObject cardObj) {
+
+		CardState cardState = cardObj.GetComponent<CardState>();
+		GameObject bodyObj = this.transform.Find("Front Canvas/Body").gameObject;
+		TMP_Text body = bodyObj.GetComponent<TMP_Text>();
+
+		body.text = MdToTag(cardState.body);
+
+	} // DisplayBody()
+
+	public void DisplayFooter(GameObject cardObj) {
+
+		CardState cardState = cardObj.GetComponent<CardState>();
+		GameObject footerObj = this.transform.Find("Front Canvas/Footer").gameObject;
+		TMP_Text footer = footerObj.GetComponent<TMP_Text>();
+
+		string tempFooter = cardState.footer;
+
+		tempFooter = InsertFooterValue(cardState, cardState.footer);
+		footer.text = TagToCardData(MdToTag(tempFooter), cardState);
+
+	} // DisplayFooter()
 
 	// Displays card scriptable object data onto a card prefab
 	// NOTE: This method is DEPRECATED! Use the new specific methods such as DisplayTitle()!
@@ -264,7 +297,8 @@ public class CardDisplay : NetworkBehaviour {
 
 			} // if Market Mod else
 
-			subtitle.text = TagToCardData(MdToTag(subtitle.text), card);
+			// NOTE: 7/30/19 - Commented out illegal method calls that conflict with new display system
+			// subtitle.text = TagToCardData(MdToTag(subtitle.text), card);
 
 		} // GameCard specifics
 
@@ -273,7 +307,8 @@ public class CardDisplay : NetworkBehaviour {
 			title.text = "\u2013Market Card\u2013";
 
 			ResourceInfo.prices.TryGetValue(card.resource, out card.footerValue);
-			footer.text = TagToCardData(MdToTag(footer.text), card);
+			// NOTE: 7/30/19 - Commented out illegal method calls that conflict with new display system
+			// footer.text = TagToCardData(MdToTag(footer.text), card);
 		}
 
 		// TILE SPECIFICS -----------------------------------------------------
@@ -335,12 +370,13 @@ public class CardDisplay : NetworkBehaviour {
 		} // if-else
 
 		// String members are assigned to the text labels after being formatted
-		body.text = TagToCardData(MdToTag(card.bodyText), card);
-		footer.text = InsertFooterValue(card, card.footerText, card.percFlag,
-			card.moneyFlag, card.footerOpr);
+		// NOTE: 7/30/19 - Commented out illegal method calls that conflict with new display system
+		// body.text = TagToCardData(MdToTag(card.bodyText), card);
+		// footer.text = InsertFooterValue(card, card.footerText, card.percFlag,
+		// 	card.moneyFlag, card.footerOpr);
 
 		body.text = MdToTag(body.text);
-		footer.text = TagToCardData(MdToTag(footer.text), card);
+		// footer.text = TagToCardData(MdToTag(footer.text), card);
 
 	} // displayCard()
 
@@ -372,9 +408,8 @@ public class CardDisplay : NetworkBehaviour {
 		TMP_Text footer = footerObj.GetComponent<TMP_Text>();
 
 		ResourceInfo.pricesMut.TryGetValue(unit.card.resource, out unit.card.footerValue);
-		footer.text = InsertFooterValue(unit.card, unit.card.footerText, unit.card.percFlag,
-			unit.card.moneyFlag, unit.card.footerOpr);
-		footer.text = TagToCardData(MdToTag(footer.text), unit.card);
+		footer.text = InsertFooterValue(unit.tileObj.GetComponent<CardState>(), unit.card.footerText);
+		footer.text = TagToCardData(MdToTag(footer.text), unit.tileObj.GetComponent<CardState>());
 		GameManager.UpdatePlayersInfo();
 		// GuiManager.CmdUpdateUI();
 
