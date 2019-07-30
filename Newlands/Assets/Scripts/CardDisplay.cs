@@ -141,11 +141,14 @@ public class CardDisplay : NetworkBehaviour {
 		GameObject titleObj = this.transform.Find("Front Canvas/Title").gameObject;
 		TMP_Text title = titleObj.GetComponent<TMP_Text>();
 
+		// Debug.Log("Title:" + cardState.title + ", Cat:" + cardState.category);
+
 		// GAMECARD SPECIFICS -------------------------------------------------
 		if (cardState.category == "Game Card" || cardState.category == "Market") {
 
-		}
+			title.text = cardState.title;
 
+		} else
 		// TILE SPECIFICS -----------------------------------------------------
 		if (cardState.category == "Tile") {
 

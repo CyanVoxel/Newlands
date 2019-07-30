@@ -38,7 +38,7 @@ public class CardState : NetworkBehaviour {
 	public char footerOpr;
 
 	[SyncVar(hook = "OnCategoryChange")]
-	public string category = "Tile"; // The Card's Category (Used to determine misc visuals)
+	public string category; // The Card's Category (Used to determine misc visuals)
 	[SyncVar]
 	public string resource;
 	[SyncVar]
@@ -52,15 +52,11 @@ public class CardState : NetworkBehaviour {
 		TryToGrabComponents();
 
 		OnObjectNameChange("Jerry");
-		OnTitleChange("Jerry");
-		OnSubtitleChange("Jerry");
-		OnBodyChange("Jerry");
-		OnFooterChange("Jerry");
-		OnCategoryChange("Jerry");
-
-		// GameObject titleObj = this.transform.Find("Front Canvas/Title").gameObject;
-		// TMP_Text title = titleObj.GetComponent<TMP_Text>();
-		// title.text = titleStr;
+		OnTitleChange("George");
+		OnSubtitleChange("Kramer");
+		OnBodyChange("Elaine");
+		OnFooterChange("Newman");
+		OnCategoryChange("Leo");
 
 	} // Start()
 
@@ -137,14 +133,24 @@ public class CardState : NetworkBehaviour {
 	} // OnBodyChange()
 
 	// Tries to grab necessary components if they haven't been already.
-	private void TryToGrabComponents() {
-		if (cardDis == null) {
-			cardDis = this.GetComponent<CardDisplay>();
+	private bool TryToGrabComponents() {
+
+		if (this.cardDis == null) {
+			this.cardDis = this.GetComponent<CardDisplay>();
 		}
 
-		if (gridMan == null) {
-			gridMan = FindObjectOfType<GridManager>();
+		if (this.gridMan == null) {
+			this.gridMan = FindObjectOfType<GridManager>();
 		}
+
+		if (this.cardDis == null) {
+			return false;
+		} else if (this.gridMan == null) {
+			return false;
+		} else {
+			return true;
+		}
+
 	} // GrabComponents()
 
 } // CardState class

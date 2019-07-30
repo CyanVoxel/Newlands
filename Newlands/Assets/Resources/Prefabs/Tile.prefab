@@ -969,9 +969,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   serverOnly: 0
-  localPlayerAuthority: 1
+  localPlayerAuthority: 0
   m_AssetId: 
-  m_SceneId: 4187990317
+  m_SceneId: 1826067379
 --- !u!114 &7149671756936438314
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1000,8 +1000,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   syncInterval: 0.1
-  titleStr: 
   gridMan: {fileID: 0}
+  objectName: 
+  title: 
+  subtitle: 
+  body: 
+  footer: 
+  footerValue: 0
+  percFlag: 0
+  moneyFlag: 0
+  footerOpr: 0
+  category: 
+  resource: 
+  target: 
 --- !u!1 &1874617469558062
 GameObject:
   m_ObjectHideFlags: 0

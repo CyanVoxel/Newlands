@@ -113,25 +113,25 @@ public class MouseManager : NetworkBehaviour {
 									objectHit.GetComponentsInChildren<Renderer>() [0].material.color = ColorPalette.LightBlue300;
 									objectHit.GetComponentsInChildren<Renderer>() [1].material.color = ColorPalette.LightBlue300;
 									objectHit.transform.parent.rotation = new Quaternion(objRotX, 1 - objRotY, objRotZ, 0);
-									gameMan.AdvanceTurn();
+									gameMan.IncrementTurn();
 									break;
 								case 2:
 									objectHit.GetComponentsInChildren<Renderer>() [0].material.color = ColorPalette.Red400;
 									objectHit.GetComponentsInChildren<Renderer>() [1].material.color = ColorPalette.Red400;
 									objectHit.transform.parent.rotation = new Quaternion(objRotX, 1 - objRotY, objRotZ, 0);
-									gameMan.AdvanceTurn();
+									gameMan.IncrementTurn();
 									break;
 								case 3:
 									objectHit.GetComponentsInChildren<Renderer>() [0].material.color = ColorPalette.Purple300;
 									objectHit.GetComponentsInChildren<Renderer>() [1].material.color = ColorPalette.Purple300;
 									objectHit.transform.parent.rotation = new Quaternion(objRotX, 1 - objRotY, objRotZ, 0);
-									gameMan.AdvanceTurn();
+									gameMan.IncrementTurn();
 									break;
 								case 4:
 									objectHit.GetComponentsInChildren<Renderer>() [0].material.color = ColorPalette.Orange300;
 									objectHit.GetComponentsInChildren<Renderer>() [1].material.color = ColorPalette.Orange300;
 									objectHit.transform.parent.rotation = new Quaternion(objRotX, 1 - objRotY, objRotZ, 0);
-									gameMan.AdvanceTurn();
+									gameMan.IncrementTurn();
 									break;
 								default:
 									break;

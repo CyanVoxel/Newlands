@@ -19,99 +19,70 @@ public class PlayerConnection : NetworkBehaviour {
 
 		CmdSpawnUnit();
 
-		guiMan = FindObjectOfType<GuiManager>();
-		gameMan = FindObjectOfType<GameManager>();
-		gridMan = FindObjectOfType<GridManager>();
-
-		if (guiMan != null) {
-			// guiMan.CmdUpdateUI();
-		} else {
-			Debug.LogError("<b>[PlayerConnection]</b> "
-				+ "GuiManager is null!");
-		}
-
-		if (gameMan != null) {
-			Debug.Log("<b>[PlayerConnection]</b> "
-				+ "Spawning Game Grid....");
-			// gameMan.CreateGridObjects();
+		if (TryToGrabComponents()) {
+			CmdIncrementPlayerCount();
 			CmdSpawnCards();
-			// gridMan.OnTitleChange(gridMan.tempTitle);
 		} else {
-			Debug.LogError("<b>[PlayerConnection]</b> "
-				+ "GameManager is null!");
+			Debug.LogError("[PlayerConnection] ERROR: Could not grab all components!");
 		}
 
 	} //Start()
 
-	[SyncVar(hook = "OnPlayerNameChange")]
-	public string playerName = "PLAYER";
+	// // Update is called once per frame
+	// void Update() {
 
-	// Update is called once per frame
-	void Update() {
+	// 	if (!isLocalPlayer) {
+	// 		return;
+	// 	}
 
-		if (!isLocalPlayer) {
-			return;
+	// } // Update()
+
+	// Tries to grab necessary components if they haven't been already.
+	// Returns true if all components were verified to be grabbed
+	private bool TryToGrabComponents() {
+
+		if (this.gameMan == null) {
+			this.gameMan = FindObjectOfType<GameManager>();
 		}
 
-		if (Input.GetKeyDown(KeyCode.Q)) {
-			string newName = "Voxel" + Random.Range(1, 100);
-			Debug.Log("Sending request to change name to " + newName);
-			CmdChangePlayerName(newName);
+		if (this.gridMan == null) {
+			this.gridMan = FindObjectOfType<GridManager>();
 		}
 
-	} // Update()
+		if (this.guiMan == null) {
+			this.guiMan = FindObjectOfType<GuiManager>();
+		}
 
-	void OnPlayerNameChange(string name) {
+		if (this.gameMan == null) {
+			return false;
+		} else if (this.gridMan == null) {
+			return false;
+		} else if (this.guiMan == null) {
+			return false;
+		} else {
+			return true;
+		}
 
-		Debug.Log("Player name was changed from " + playerName + " to " + name);
-		gameObject.name = "PlayerConnection(" + name + ")";
-
-	} // OnPlayerNameChange()
+	} // GrabComponents()
 
 	// COMMANDS ###################################################################################
 
 	[Command]
-	void CmdSpawnUnit() {
-
+	private void CmdSpawnUnit() {
 		GameObject obj = Instantiate(PlayerUnit);
-
-		// obj.GetComponent<NetworkIdentity>().AssignClientAuthority(connectionToClient);
-
 		NetworkServer.SpawnWithClientAuthority(obj, connectionToClient);
-
 	} // SpawnUnit()
 
 	[Command]
-	void CmdChangePlayerName(string name) {
-
-		Debug.Log("[CmdChangePlayerName] " + name);
-		playerName = name;
-		// RpcChangePlayerName(name);
-
-		// Tell clients new name
-
-	} // CmdChangePlayerName
-
-	[Command]
-	void CmdSpawnCards() {
+	private void CmdSpawnCards() {
 		Debug.Log("[PlayerConnection] Creating Grid GameObjects...");
-		gridMan.CreateGridObjects(connectionToClient);
-		// gameMan.PopulateMarket();
-	}
+		gridMan.CreateGameGridObjects();
+		gridMan.CreateMarketGridObjects();
+	} // CmdSpawnCards();
 
 	[Command]
-	void CmdDisplayCardInfo() {
-
-	}
-
-	// RPC ########################################################################################
-
-	// [ClientRpc]
-	// void RpcChangePlayerName(string name) {
-
-	// 	Debug.Log("[RpcChangePlayerName] Was asked to change name to: " + name);
-	// 	playerName = name;
-
-	// }
+	private void CmdIncrementPlayerCount() {
+		GameManager.IncrementPlayerCount();
+	} // CmdIncrementPlayerCount()
 
 } // PlayerConnection class
