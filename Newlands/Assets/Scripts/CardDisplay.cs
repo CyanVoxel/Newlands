@@ -1,14 +1,14 @@
 ﻿// This class acts as a bridge between the internal Card scriptable object data
 // and the display components of the Card prefab.
 
+using Mirror;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using Mirror;
 
 public class CardDisplay : NetworkBehaviour {
 
-	// DATA FIELDS ------------------------------------------------------------
+	// DATA FIELDS -------------------------------------------------------------
 
 	// Long directories stored as strings
 	private string dirFtrBdr = "Front Canvas/Footer Mask/Footer Border Mask/Footer Border";
@@ -67,22 +67,22 @@ public class CardDisplay : NetworkBehaviour {
 
 		// Processes an <r> tag
 		while (outputText.IndexOf("<r>") >= 0) {
-			int index = outputText.IndexOf("<r>");							// Set known index
-			outputText = outputText.Remove(startIndex: index, count: 3);	// Remove tag
+			int index = outputText.IndexOf("<r>"); // Set known index
+			outputText = outputText.Remove(startIndex: index, count: 3); // Remove tag
 			outputText = outputText.Insert(startIndex: index, value: card.resource);
 		} // while <r> left
 
 		// Processes an <c> tag
 		while (outputText.IndexOf("<c>") >= 0) {
-			int index = outputText.IndexOf("<c>");							// Set known index
-			outputText = outputText.Remove(startIndex: index, count: 3);	// Remove tag
+			int index = outputText.IndexOf("<c>"); // Set known index
+			outputText = outputText.Remove(startIndex: index, count: 3); // Remove tag
 			outputText = outputText.Insert(startIndex: index, value: card.category);
 		} // while <c> left
 
 		// Processes an <ts> tag
 		while (outputText.IndexOf("<ts>") >= 0) {
-			int index = outputText.IndexOf("<ts>");							// Set known index
-			outputText = outputText.Remove(startIndex: index, count: 4);	// Remove tag
+			int index = outputText.IndexOf("<ts>"); // Set known index
+			outputText = outputText.Remove(startIndex: index, count: 4); // Remove tag
 			outputText = outputText.Insert(startIndex: index, value: card.target);
 		} // while <ts> left
 
@@ -101,8 +101,8 @@ public class CardDisplay : NetworkBehaviour {
 	private string InsertFooterValue(Card card, string inputText, bool percFlag,
 		bool moneyFlag, char op) {
 
-		string outputText = inputText;								// String to output
-		string footerValueStr = card.footerValue.ToString("n0");	// The formatted footer value
+		string outputText = inputText; // String to output
+		string footerValueStr = card.footerValue.ToString("n0"); // The formatted footer value
 
 		// While there's still ITALIC markdown left in input string
 		while (outputText.IndexOf("<x>") >= 0) {
@@ -136,10 +136,66 @@ public class CardDisplay : NetworkBehaviour {
 
 	} // insertFooterValue()
 
+	public void DisplayTitle(GameObject cardParent) {
+
+		CardState card = cardParent.GetComponent<CardState>();
+
+		GameObject titleObj = this.transform.Find("Front Canvas/Title").gameObject;
+		TMP_Text title = titleObj.GetComponent<TMP_Text>();
+
+		// GAMECARD SPECIFICS -------------------------------------------------
+		if (card.category == "Game Card" || card.category == "Market") {
+
+		}
+
+		// TILE SPECIFICS -----------------------------------------------------
+		if (card.category == "Tile") {
+
+			GameObject titleIconObj = this.transform.Find("Front Canvas/Icon").gameObject;
+			Image iconImage = titleIconObj.GetComponent<Image>();
+
+			// Set the Title Text field
+			// TODO: Optimize this under the new string system, as well as when Land Tile titles
+			//	are finally auto-centered with along with their icons.
+			switch (card.title) {
+				case "Forest":
+					title.text = " Forest";
+					break;
+				case "Plains":
+					title.text = " Plains";
+					break;
+				case "Quarry":
+					title.text = "    Quarry";
+					break;
+				case "Farmland":
+					title.text = "       Farmland";
+					break;
+				default:
+					break;
+			}
+
+			// Try to load the icon sprite
+			if (iconImage.sprite = Resources.Load<Sprite>("Sprites/icon_" + card.title.ToLower())) {
+				Debug.Log("[CardDisplay] Successfully loaded image sprite \""
+					+ "Sprites/icon_"
+					+ card.title.ToLower() + "\"");
+			} else {
+				Debug.LogError("[CardDisplay] ERROR: Could not load image sprite \""
+					+ "Sprites/icon_"
+					+ card.title.ToLower() + "\"");
+			}
+
+		} // Tile specifics
+
+	} // DisplayTitle()
+
 	// Displays card scriptable object data onto a card prefab
-	// [ClientRpc]
+	// NOTE: This method is DEPRECATED! Use the new specific methods such as DisplayTitle()!
 	public void DisplayCard(GameObject obj, Card card) {
-		// Debug.Log("[CardDisplay] Trying to display the card " + card.title + " on object " + obj);
+		// Debug.Log("[CardDisplay] Trying to display the card "
+		// 	+ card.title
+		// 	+ " on object "
+		// 	+ obj);
 
 		// Grab the display elements from this parent object
 		GameObject titleObj = obj.transform.Find("Front Canvas/Title").gameObject;
@@ -174,10 +230,10 @@ public class CardDisplay : NetworkBehaviour {
 
 				footerBorder.color = ColorPalette.cardDark;
 
-				if (card.FooterColor == "Red") {					// Red
+				if (card.FooterColor == "Red") { // Red
 					footerBorderL.color = ColorPalette.Red500;
 					footerBorderR.color = ColorPalette.Red500;
-				} else if (card.FooterColor == "Green") {			// Green
+				} else if (card.FooterColor == "Green") { // Green
 					footerBorderL.color = ColorPalette.Green500;
 					footerBorderR.color = ColorPalette.Green500;
 				}
@@ -188,21 +244,21 @@ public class CardDisplay : NetworkBehaviour {
 				footerBorderR.color = ColorPalette.alpha;
 
 				// Color the footer border
-				if (card.FooterColor == "Black") {					// Black
+				if (card.FooterColor == "Black") { // Black
 					footerBorder.color = ColorPalette.cardDark;
-				} else if (card.FooterColor == "Red") {				// Red
+				} else if (card.FooterColor == "Red") { // Red
 					footerBorder.color = ColorPalette.Red500;
-				} else if (card.FooterColor == "Green") {			// Green
+				} else if (card.FooterColor == "Green") { // Green
 					footerBorder.color = ColorPalette.Green500;
-				} else if (card.FooterColor == "Light Blue") {		// Light Blue
+				} else if (card.FooterColor == "Light Blue") { // Light Blue
 					footerBorder.color = ColorPalette.LightBlue500;
-				} else if (card.FooterColor == "Yellow") {			// Yellow
+				} else if (card.FooterColor == "Yellow") { // Yellow
 					footerBorder.color = ColorPalette.Yellow500;
-				} else if (card.FooterColor == "Pink") {			// Pink
+				} else if (card.FooterColor == "Pink") { // Pink
 					footerBorder.color = ColorPalette.Pink500;
-				} else if (card.FooterColor == "Blue") {			// Blue
+				} else if (card.FooterColor == "Blue") { // Blue
 					footerBorder.color = ColorPalette.LightBlue500;
-				} else if (card.FooterColor == "Dark Blue") {		// Dark Blue
+				} else if (card.FooterColor == "Dark Blue") { // Dark Blue
 					footerBorder.color = ColorPalette.Indigo500;
 				} // if-else
 
@@ -227,31 +283,31 @@ public class CardDisplay : NetworkBehaviour {
 			Image iconImage = titleIconObj.GetComponent<Image>();
 
 			if (card.title == "Forest") {
-				iconImage.sprite = Resources.Load<Sprite>("Sprites/icon_forest");	// Forest
+				iconImage.sprite = Resources.Load<Sprite>("Sprites/icon_forest"); // Forest
 			} else if (card.title == "Plains") {
-				iconImage.sprite = Resources.Load<Sprite>("Sprites/icon_plains");	// Plains
+				iconImage.sprite = Resources.Load<Sprite>("Sprites/icon_plains"); // Plains
 			} else if (card.title == "Quarry") {
-				iconImage.sprite = Resources.Load<Sprite>("Sprites/icon_quarry");	// Quarry
+				iconImage.sprite = Resources.Load<Sprite>("Sprites/icon_quarry"); // Quarry
 			} else if (card.title == "Farmland") {
-				iconImage.sprite = Resources.Load<Sprite>("Sprites/icon_farmland");	// Farmland
+				iconImage.sprite = Resources.Load<Sprite>("Sprites/icon_farmland"); // Farmland
 			} // else-if
 
 			// Color the footer border
-			if (card.FooterColor == "Black") {					// Black
+			if (card.FooterColor == "Black") { // Black
 				footerBorder.color = ColorPalette.cardDark;
-			} else if (card.FooterColor == "Red") {				// Red
+			} else if (card.FooterColor == "Red") { // Red
 				footerBorder.color = ColorPalette.Red500;
-			} else if (card.FooterColor == "Green") {			// Green
+			} else if (card.FooterColor == "Green") { // Green
 				footerBorder.color = ColorPalette.Green500;
-			} else if (card.FooterColor == "Light Blue") {		// Light Blue
+			} else if (card.FooterColor == "Light Blue") { // Light Blue
 				footerBorder.color = ColorPalette.LightBlue500;
-			} else if (card.FooterColor == "Yellow") {			// Yellow
+			} else if (card.FooterColor == "Yellow") { // Yellow
 				footerBorder.color = ColorPalette.Yellow500;
-			} else if (card.FooterColor == "Pink") {			// Pink
+			} else if (card.FooterColor == "Pink") { // Pink
 				footerBorder.color = ColorPalette.Pink500;
-			} else if (card.FooterColor == "Blue") {			// Blue
+			} else if (card.FooterColor == "Blue") { // Blue
 				footerBorder.color = ColorPalette.LightBlue500;
-			} else if (card.FooterColor == "Dark Blue") {		// Dark Blue
+			} else if (card.FooterColor == "Dark Blue") { // Dark Blue
 				footerBorder.color = ColorPalette.Indigo500;
 			} // if-else
 
@@ -262,19 +318,19 @@ public class CardDisplay : NetworkBehaviour {
 		//	are finally auto-centered with along with their icons.
 		if (card.title == "Market Mod") { // Market Mod
 			title.text = "\u2013Market Mod\u2013";
-		} else if (card.title == "Market Card") {		// Price Card
+		} else if (card.title == "Market Card") { // Price Card
 			title.text = "\u2013Market Card\u2013";
-		} else if (card.title == "Resource") {			// Resource
+		} else if (card.title == "Resource") { // Resource
 			title.text = "\u2013Resource\u2013";
-		} else if (card.title == "Tile Mod") {			// Tile Mod
+		} else if (card.title == "Tile Mod") { // Tile Mod
 			title.text = "\u2013Tile Mod\u2013";
-		} else if (card.title == "Forest") {			// Forest Tile
+		} else if (card.title == "Forest") { // Forest Tile
 			title.text = " Forest";
-		} else if (card.title == "Plains") {			// Plains Tile
+		} else if (card.title == "Plains") { // Plains Tile
 			title.text = " Plains";
-		} else if (card.title == "Quarry") {			// Quarry Tile
+		} else if (card.title == "Quarry") { // Quarry Tile
 			title.text = "    Quarry";
-		} else if (card.title == "Farmland") {			// Farmland Tile
+		} else if (card.title == "Farmland") { // Farmland Tile
 			title.text = "       Farmland";
 		} // if-else
 

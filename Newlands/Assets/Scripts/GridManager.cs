@@ -109,17 +109,18 @@ public class GridManager : NetworkBehaviour {
 				CardState cardState = cardObj.GetComponent<CardState>();
 
 				if (cardState != null) {
-					cardState.titleStr = tempTitle;
+
+					// Generate and Push the string of the object's name
 					cardState.objectName = ("x" + xZeroes + x + "_"
 					+ "y" + yZeroes + y + "_"
 					+ "Tile");
+
+					// Push the Card's Title
+					cardState.title = grid[x, y].card.title;
+
 				} else {
 					Debug.Log("[GridManager] This object's card state was null!");
 				}
-
-				GameObject titleObj = cardObj.transform.Find("Front Canvas/Title").gameObject;
-				TMP_Text title = titleObj.GetComponent<TMP_Text>();
-				title.text = tempTitle;
 
 			} // y
 
