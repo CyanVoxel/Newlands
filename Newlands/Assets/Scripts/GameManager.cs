@@ -15,34 +15,22 @@ public class GameManager : NetworkBehaviour {
 
 	public static MasterDeck masterDeck;
 	public static MasterDeck masterDeckMutable;
-	public static readonly byte playerCount = 4; // Number of players in the match
-	private static int playerIncrement = 0; // This value increments when a new player joins
-	public static byte phase = 1; // The current phase of the game
+	public static readonly int playerCount = 4; // Number of players in the match
+	[SyncVar]
+	public int playerIndex = 0; // This value increments when a new player joins
+	public static int phase = 1; // The current phase of the game
 	public static int round = 1; // The current round of turns
-	public static byte turn = 1; // The current turn in the round
+	public static int turn = 1; // The current turn in the round
 	public static int graceRounds = 1; // The # of rounds without neighbor rules
 
-	public static readonly byte width = 7; // Width of the game grid in cards
-	public static readonly byte height = 7; // Height of the game grid in cards
-	public static readonly byte handSize = 5; // How many cards the player is dealt
+	public static readonly int width = 7; // Width of the game grid in cards
+	public static readonly int height = 7; // Height of the game grid in cards
+	public static readonly int handSize = 5; // How many cards the player is dealt
 
+	private static string debugH = "<color=#FF6D00FF><b>[GameManager] </b></color>";
+
+	[SerializeField]
 	public static List<Player> players = new List<Player>(); // The player data objects
-
-	// Grid specific
-	// public static GridUnit[, ] grid; // The internal grid, made up of GridUnits
-	// public static GridUnit[, ] marketGrid;
-	// public static float[] rowPos; // Row position
-	// private static byte[] maxStack;
-	// private static byte[] maxMarketStack;
-	// private static float cardThickness = 0.2f;
-	// private static float shiftUnit = 1.2f;
-	// private static float cardOffX = 11f;
-	// private static float cardOffY = 8f;
-
-	// public GameObject landTilePrefab;
-	// public GameObject gameCardPrefab;
-	// public GameObject marketCardPrefab;
-	// private Card card;
 
 	// private static List<GameObject> playerMoneyObj = new List<GameObject>();
 	// private static List<TMP_Text> playerMoneyText = new List<TMP_Text>();
@@ -54,36 +42,18 @@ public class GameManager : NetworkBehaviour {
 			return;
 		}
 
-		Debug.Log("<b>[GameManager]</b> "
-			+ "Initializing GameManager...");
+		Debug.Log(debugH + "Initializing GameManager...");
 
-		Debug.Log("<b>[GameManager]</b> "
-			+ "Creating Master Deck \"Vanilla\"");
+		Debug.Log(debugH + "Creating Master Deck \"Vanilla\"");
 		masterDeck = new MasterDeck("Vanilla");
 		masterDeckMutable = new MasterDeck("Vanilla");
 
-		Debug.Log("<b>[GameManager]</b> "
-			+ "Initializing Players...");
+		Debug.Log(debugH + "Initializing Players...");
 		InitPlayers();
 
-		// Displays those hands on screen
-		// NOTE: Change 1 to playerCount in order to view all players' cards.
-		// for (byte i = 0; i < 1; i++) {
-		// 	Debug.Log("Player Object: " + players);
-		// 	DisplayHand(deck: players[i].hand, playerNum: i);
-		// } // for number of hands
-
 		// Initialize the internal grids
-		// gridMan.PreInitGameGrid();
 		gridMan.InitGameGrid();
 		gridMan.InitMarketGrid();
-		// CmdCreateGridObjects();
-		// gridMan.CreateGridObjects();
-
-		// Create tile GameObjects and connect them to internal grid
-		// CmdPopulateGrid();
-		// CmdPopulateMarket();
-		// ShiftRow(row: 4, units: 2);
 
 		// FINAL ##############################################################
 
@@ -105,82 +75,8 @@ public class GameManager : NetworkBehaviour {
 
 	} // Update()
 
-	// Draws random GameCards from the masterDeck and returns a deck of a specified size
-	private Deck DrawHand(int handSize) {
-
-		Deck deck = new Deck(); // The deck of drawn cards to return
-
-		for (int i = 0; i < handSize; i++) {
-			// Draw a card from the deck provided and add it to the deck to return.
-			// NOTE: In the future, masterDeckMutable might need to be checked for cards
-			// 	before preceding.
-			Card card = Card.CreateInstance<Card>();
-			if (DrawCard(masterDeckMutable.gameCardDeck, masterDeck.gameCardDeck, out card)) {
-				deck.Add(card);
-			} else {
-				Destroy(card);
-			}
-
-		} // for
-
-		return deck;
-
-	} // DrawHand()
-
 	// Creates card game objects, places them on the screen, and populates them with deck data
-	private void DisplayHand(Deck deck, byte playerNum) {
-
-		// Populate the Card prefab
-		GameObject landTilePrefab = Resources.Load<GameObject>("Prefabs/GameCard");
-		// NOTE: As of the time of the addition of the GridManager class, this should be split off into it's own class.
-		string pZeroes = "0";
-		string iZeroes = "0";
-
-		// Creates card prefabs and places them on the screen
-		for (int i = 0; i < deck.Count(); i++) {
-
-			float xOff = i * 11 + (((width - handSize) / 2f) * 11);
-			float yOff = -10;
-
-			// Determines the number of zeroes to add in the object name
-			if (playerCount >= 10) {
-				pZeroes = "";
-			} else {
-				pZeroes = "0";
-			}
-			if (i >= 10) {
-				iZeroes = "";
-			} else {
-				iZeroes = "0";
-			} // zeroes calc
-
-			GameObject cardObj = (GameObject) Instantiate(landTilePrefab, new Vector3(xOff, yOff, 40), Quaternion.identity);
-			cardObj.name = ("p" + pZeroes + playerNum + "_"
-				+ "i" + iZeroes + i + "_"
-				+ "GameCard");
-			// cardObj.name = ("GameCard_p" + playerNum + "_i"+ i);
-
-			cardObj.transform.SetParent(this.transform);
-			cardObj.transform.rotation = new Quaternion(0, 0, 0, 0);
-
-			players[playerNum].handUnits[i] = new GridUnit(players[playerNum].hand[i],
-				cardObj,
-				(byte) i, 0);
-
-			try {
-				NetworkServer.Spawn(cardObj);
-				cardObj.SendMessage("DisplayCard", deck[i]);
-			} catch (UnassignedReferenceException e) {
-				Debug.LogError("<b>[GameManager]</b> Error: "
-					+ "Card error at deck index " + i + ": " + e);
-			}
-
-		} // for
-
-	} // DisplayHand()
-
-	// Creates card game objects, places them on the screen, and populates them with deck data
-	private void DisplayCard(Card card, byte playerNum, int index) {
+	private void DisplayCard(Card card, int playerNum, int index) {
 
 		// Populate the Card prefab
 		GameObject gameCardPrefab = Resources.Load<GameObject>("Prefabs/GameCard");
@@ -216,18 +112,19 @@ public class GameManager : NetworkBehaviour {
 
 		players[playerNum].handUnits[index] = new GridUnit(players[playerNum].hand[index],
 			cardObj,
-			(byte) index, 0);
+			index, 0);
 
 		try {
 			cardObj.SendMessage("DisplayCard", card);
 		} catch (UnassignedReferenceException e) {
-			Debug.LogError("<b>[GameManager]</b> Error: "
+			Debug.LogError(debugH + "Error: "
 				+ "Card error at deck index " + index + ": " + e);
 		}
 
 	} // DisplayCard()
 
-	public static bool DrawCard(Deck deckMut, Deck deckPerm, out Card card) {
+	// Draws a card from a deck. Random by default.
+	public static bool DrawCard(Deck deckMut, Deck deckPerm, out Card card, bool random = true) {
 
 		// Card card;	// Card to return
 		int cardsLeft = deckMut.Count(); // Number of cards left from mutable deck
@@ -236,7 +133,12 @@ public class GameManager : NetworkBehaviour {
 		// Draws a card from the mutable deck, then removes that card from the deck.
 		// If all cards are drawn, draw randomly from the immutable deck.
 		if (cardsLeft > 0) {
-			card = deckMut[Random.Range(0, cardsLeft)];
+			if (random) {
+				card = deckMut[Random.Range(0, cardsLeft)];
+			} else {
+				card = deckMut[deckMut.Count() - 1];
+			}
+
 			deckMut.Remove(card);
 			// Debug.Log("<b>[GameManager]</b> " +
 			// 	cardsLeft +
@@ -244,6 +146,7 @@ public class GameManager : NetworkBehaviour {
 			// 	cardsTotal +
 			// 	" cards left");
 		} else {
+			// This one HAS to be random anyways
 			card = deckPerm[Random.Range(0, cardsTotal)];
 			return false;
 			// Debug.LogWarning("<b>[GameManager]</b> Warning: " +
@@ -301,13 +204,13 @@ public class GameManager : NetworkBehaviour {
 
 	public void HighlightNeighbors() {
 
-		byte id = (byte) (turn - 1);
+		int id = (turn - 1);
 
 		WipeSelectionColors("LandTile", ColorPalette.tintCard);
 
 		// Search through the grid
-		for (byte x = 0; x < width; x++) {
-			for (byte y = 0; y < height; y++) {
+		for (int x = 0; x < width; x++) {
+			for (int y = 0; y < height; y++) {
 				if (GridManager.grid[x, y].ownerId == players[id].Id) {
 					Highlight(x, y);
 				} // if Tile is owned by the player
@@ -315,7 +218,7 @@ public class GameManager : NetworkBehaviour {
 		} // for x
 
 		// Local function that recolors unowned neighbor tiles
-		void Highlight(byte gridX, byte gridY) {
+		void Highlight(int gridX, int gridY) {
 
 			Color playerColor = GetPlayerColor(turn, 200);
 			bool[, ] highlighted = new bool[width, height];
@@ -332,7 +235,7 @@ public class GameManager : NetworkBehaviour {
 						if (GridManager.grid[gridX + i, gridY + j].ownerId == 0
 							&& !GridManager.grid[gridX + i, gridY + j].bankrupt) {
 
-							GameObject temp = FindCard("Tile", (byte) (gridX + i), (byte) (gridY + j));
+							GameObject temp = FindCard("Tile", (gridX + i), (gridY + j));
 							temp.GetComponentsInChildren<Renderer>() [0].material.color = playerColor;
 							temp.GetComponentsInChildren<Renderer>() [1].material.color = playerColor;
 						} // if the Tile is unowned
@@ -347,7 +250,7 @@ public class GameManager : NetworkBehaviour {
 	// Returns TRUE if it needs to go through a recursive iteration.
 	public bool VerifyHighlight() {
 
-		byte id = (byte) (turn - 1);
+		int id = (turn - 1);
 
 		bool[, ] highlighted = new bool[width, height];
 		int highlightCount = 0;
@@ -355,8 +258,8 @@ public class GameManager : NetworkBehaviour {
 		if (round > graceRounds && phase == 1) {
 
 			// Search through the grid
-			for (byte x = 0; x < width; x++) {
-				for (byte y = 0; y < height; y++) {
+			for (int x = 0; x < width; x++) {
+				for (int y = 0; y < height; y++) {
 					// Debug.Log("[VerifyHighlight] Turn " + turn + ", Player ID (Turn) " + id + ", (Real) " + players[id].Id);
 					if (GridManager.grid[x, y].ownerId == players[id].Id) {
 						Highlight(x, y);
@@ -415,7 +318,7 @@ public class GameManager : NetworkBehaviour {
 		return false;
 
 		// Local function that recolors unowned neighbor tiles.
-		void Highlight(byte gridX, byte gridY) {
+		void Highlight(int gridX, int gridY) {
 
 			// Find each unowned neighbor tiles
 			for (int i = -1; i <= 1; i++) {
@@ -436,9 +339,9 @@ public class GameManager : NetworkBehaviour {
 	} // GetHighlightCount()
 
 	// Attempts to buy an unowned tile. Returns true if successful, or false if already owned.
-	public bool BuyTile(byte gridX, byte gridY) {
+	public bool BuyTile(int gridX, int gridY) {
 
-		byte id = (byte) (turn - 1);
+		int id = (turn - 1);
 
 		// TODO: When money is implemented, factor that into the buying process.
 		//	It would also be nice to have a purchase conformation message
@@ -448,8 +351,8 @@ public class GameManager : NetworkBehaviour {
 		// First check is the first round is finished
 		if (round > graceRounds) {
 			// Search through the grid
-			for (byte x = 0; x < width; x++) {
-				for (byte y = 0; y < height; y++) {
+			for (int x = 0; x < width; x++) {
+				for (int y = 0; y < height; y++) {
 					if (GridManager.grid[x, y].ownerId == players[id].Id) {
 						ValidTile(x, y);
 					} // if player owns tile
@@ -469,17 +372,15 @@ public class GameManager : NetworkBehaviour {
 			// Debug.Log("Turn " + turn + ", buying for Player " + players[id].Id);
 			return true;
 		} else if (!followsRules) {
-			Debug.Log("<b>[GameManager]</b> "
-				+ "You can't buy this tile, it's too far away!");
+			Debug.Log(debugH + "You can't buy this tile, it's too far away!");
 			return false;
 		} else {
-			Debug.Log("<b>[GameManager]</b> "
-				+ "This Tile is already owned!");
+			Debug.Log(debugH + "This Tile is already owned!");
 			return false;
 		}
 
 		// Local function that recolors unowned neighbor tiles
-		void ValidTile(byte gridLocX, byte gridLocY) {
+		void ValidTile(int gridLocX, int gridLocY) {
 
 			// Find each unowned neighbor tiles
 			for (int i = -1; i <= 1; i++) {
@@ -504,18 +405,18 @@ public class GameManager : NetworkBehaviour {
 	public void WipeSelectionColors(string cardType, Color32 color) {
 
 		if (cardType == "LandTile") {
-			for (byte x = 0; x < width; x++) {
-				for (byte y = 0; y < height; y++) {
+			for (int x = 0; x < width; x++) {
+				for (int y = 0; y < height; y++) {
 					if (GridManager.grid[x, y].ownerId == 0
 						&& !GridManager.grid[x, y].bankrupt) {
-						GameObject temp = FindCard("Tile", (byte) x, (byte) y);
+						GameObject temp = FindCard("Tile", x, y);
 						temp.GetComponentsInChildren<Renderer>() [0].material.color = color;
 						temp.GetComponentsInChildren<Renderer>() [1].material.color = color;
 					} //if tile unowned
 				} // for height
 			} // for width
 		} else if (cardType == "GameCard") {
-			for (byte i = 0; i < handSize; i++) {
+			for (int i = 0; i < handSize; i++) {
 				if (FindCard("GameCard", 0, i)) {
 					// GameObject temp = transform.Find("GameCard_p0_i" + i).gameObject;
 					GameObject temp = FindCard("GameCard", 0, i);
@@ -534,7 +435,7 @@ public class GameManager : NetworkBehaviour {
 				/ (float) height);
 			for (int x = 0; x < marketWidth; x++) {
 				for (int y = 0; y < height; y++) {
-					GameObject temp = FindCard("MarketCard", (byte) x, (byte) y);
+					GameObject temp = FindCard("MarketCard", x, y);
 					float posX = temp.transform.position.x;
 					float posY = temp.transform.position.y;
 					temp.transform.position = new Vector3(posX, posY, 40);
@@ -548,7 +449,7 @@ public class GameManager : NetworkBehaviour {
 
 	// Returns the color associated with a player ID.
 	// Strength paramater refers to a possible brighter color variant.
-	public Color GetPlayerColor(byte playerID, int strength = 500) {
+	public Color GetPlayerColor(int playerID, int strength = 500) {
 
 		Color color = ColorPalette.tintCard;
 
@@ -619,13 +520,13 @@ public class GameManager : NetworkBehaviour {
 
 			Vector3 oldCardPosition = gameCard.tileObj.transform.position;
 			int oldCardIndex = gameCard.x;
-			Debug.Log("Old Card Index: " + oldCardIndex);
+			Debug.Log(debugH + "Old Card Index: " + oldCardIndex);
 
 			if (gridTile.bankrupt) {
 				BankruptTile(gridTile);
 				UpdatePlayersInfo();
 				guiMan.CmdUpdateUI();
-				Debug.Log("[GameManager] Tile bankrupt! has value of " + gridTile.totalValue);
+				Debug.Log(debugH + "Tile bankrupt! has value of " + gridTile.totalValue);
 			}
 
 			if (gameCard.stackable) {
@@ -707,7 +608,7 @@ public class GameManager : NetworkBehaviour {
 			return true;
 
 		} else {
-			Debug.Log("[GameManager] Card move is illegal!");
+			Debug.Log(debugH + "Card move is illegal!");
 			MouseManager.selection = -1;
 			WipeSelectionColors("Game Card", ColorPalette.tintCard);
 			return false;
@@ -715,7 +616,7 @@ public class GameManager : NetworkBehaviour {
 
 	} // TryToPlay()
 
-	public GameObject FindCard(string type, byte x, byte y) {
+	public GameObject FindCard(string type, int x, int y) {
 
 		string strX = "x";
 		string strY = "y";
@@ -751,7 +652,7 @@ public class GameManager : NetworkBehaviour {
 
 	public static void UpdatePlayersInfo() {
 		// Things that need to be updated for all players go here
-		for (byte i = 0; i < (byte) players.Count; i++) {
+		for (int i = 0; i < players.Count; i++) {
 			players[i].CalcTotalMoney();
 			// Debug.Log("Player " + (i + 1) + "'s Money: $" + players[i].totalMoney);
 		} // for array length
@@ -760,7 +661,7 @@ public class GameManager : NetworkBehaviour {
 
 	public static void BankruptTile(GridUnit tile) {
 
-		Debug.Log("[GameManager] Bankrupting tile!");
+		Debug.Log(debugH + "Bankrupting tile!");
 		tile.ownerId = 0;
 		CardDisplay.BankruptVisuals(tile.tileObj);
 
@@ -769,16 +670,42 @@ public class GameManager : NetworkBehaviour {
 	// Initializes each player object and draws a hand for them
 	private void InitPlayers() {
 
-		for (byte i = 0; i < playerCount; i++) {
+		for (int i = 0; i < playerCount; i++) {
 			players.Add(new Player());
-			players[i].Id = ((byte) (i + 1));
+			players[i].Id = (i + 1);
 			players[i].hand = DrawHand(handSize);
 		} // for playerCount
 
 	} // InitPlayers()
 
-	public static void IncrementPlayerCount() {
-		playerIncrement++;
+	// Draws random GameCards from the masterDeck and returns a deck of a specified size
+	private Deck DrawHand(int handSize) {
+
+		Deck deck = new Deck(); // The deck of drawn cards to return
+
+		for (int i = 0; i < handSize; i++) {
+			// Draw a card from the deck provided and add it to the deck to return.
+			// NOTE: In the future, masterDeckMutable might need to be checked for cards
+			// 	before preceding.
+			Card card = Card.CreateInstance<Card>();
+			if (DrawCard(masterDeckMutable.gameCardDeck, masterDeck.gameCardDeck, out card)) {
+				deck.Add(card);
+			} else {
+				Destroy(card);
+			}
+
+		} // for
+
+		return deck;
+
+	} // DrawHand()
+
+	public void IncrementPlayerIndex() {
+		this.playerIndex++;
+	}
+
+	public int GetPlayerIndex() {
+		return this.playerIndex;
 	}
 
 } // GameManager class

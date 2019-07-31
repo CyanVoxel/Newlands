@@ -3,7 +3,7 @@
 [Oo]bj/
 [Bb]uild/
 [Bb]uilds/
-Assets/AssetStoreTools*
+Newlands/Assets/AssetStoreTools*
 
 # Visual Studio cache directory
 .vs/
@@ -35,6 +35,10 @@ ExportedObj/
 
 # Unity3D Generated File On Crash Reports
 sysinfo.txt
+
+#Fonts
+*.TTF
+*.TTF.meta
 
 # Builds
 *.apk

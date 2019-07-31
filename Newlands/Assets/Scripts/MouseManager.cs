@@ -72,8 +72,8 @@ public class MouseManager : NetworkBehaviour {
 				//	e.x. GetValue(type: "Tile", element: "x")
 
 				// Grab the grid coordinates stored in the object name
-				byte locX = byte.Parse(objectHit.transform.parent.name.Substring(1, 2));
-				byte locY = byte.Parse(objectHit.transform.parent.name.Substring(5, 2));
+				int locX = int.Parse(objectHit.transform.parent.name.Substring(1, 2));
+				int locY = int.Parse(objectHit.transform.parent.name.Substring(5, 2));
 
 				// PHASE 1 ####################################################
 				if (GameManager.phase == 1) {
@@ -204,8 +204,8 @@ public class MouseManager : NetworkBehaviour {
 			if (objectHit.transform.parent.name.Contains("GameCard")) {
 
 				// Grab the grid coordinates stored in the object name
-				byte locX = byte.Parse(objectHit.transform.parent.name.Substring(1, 2));
-				byte locY = byte.Parse(objectHit.transform.parent.name.Substring(5, 2));
+				int locX = int.Parse(objectHit.transform.parent.name.Substring(1, 2));
+				int locY = int.Parse(objectHit.transform.parent.name.Substring(5, 2));
 
 				objX = objectHit.transform.parent.position.x;
 				objY = objectHit.transform.parent.position.y;
@@ -250,8 +250,8 @@ public class MouseManager : NetworkBehaviour {
 				//	e.x. GetValue(type: "Tile", element: "x")
 
 				// Grab the grid coordinates stored in the object name
-				byte locX = byte.Parse(objectHit.transform.parent.name.Substring(1, 2));
-				byte locY = byte.Parse(objectHit.transform.parent.name.Substring(5, 2));
+				int locX = int.Parse(objectHit.transform.parent.name.Substring(1, 2));
+				int locY = int.Parse(objectHit.transform.parent.name.Substring(5, 2));
 
 				if (GameManager.phase == 2) {
 					// PHASE 2 ####################################################################

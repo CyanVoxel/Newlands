@@ -3,6 +3,7 @@
 
 using TMPro;
 using UnityEngine;
+using System.Collections.Generic;
 
 public class Player {
 
@@ -10,7 +11,7 @@ public class Player {
 
 	// DATA FIELDS ################################################################################
 
-	public byte Id { get; set; } = 0;
+	public int Id { get; set; } = 0;
 	public Deck hand;
 	public GridUnit[] handUnits;
 
@@ -41,8 +42,8 @@ public class Player {
 		if (this.initialized) {
 			// Search the grid for owned tiles
 			// TODO: Implement a list of known owned tile coordinates to replace these for loops
-			for (byte x = 0; x < GameManager.width; x++) {
-				for (byte y = 0; y < GameManager.height; y++) {
+			for (int x = 0; x < GameManager.width; x++) {
+				for (int y = 0; y < GameManager.height; y++) {
 					if (GridManager.grid[x, y].ownerId == this.Id) {
 
 						GridManager.grid[x, y].CalcTotalValue();

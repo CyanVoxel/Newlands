@@ -310,6 +310,7 @@ MonoBehaviour:
   cardDis: {fileID: 706877489}
   guiMan: {fileID: 412696965}
   gridMan: {fileID: 1437400122}
+  playerIndex: 0
 --- !u!114 &160484956
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -325,7 +326,7 @@ MonoBehaviour:
   serverOnly: 0
   localPlayerAuthority: 0
   m_AssetId: 
-  m_SceneId: 3483146076
+  m_SceneId: 2129974526
 --- !u!1 &412696962
 GameObject:
   m_ObjectHideFlags: 0
@@ -374,7 +375,7 @@ MonoBehaviour:
   serverOnly: 0
   localPlayerAuthority: 1
   m_AssetId: 
-  m_SceneId: 1218861040
+  m_SceneId: 3865671372
 --- !u!114 &412696965
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -763,7 +764,7 @@ MonoBehaviour:
   serverOnly: 0
   localPlayerAuthority: 0
   m_AssetId: 
-  m_SceneId: 382044079
+  m_SceneId: 874198056
 --- !u!1 &889834021
 GameObject:
   m_ObjectHideFlags: 0
@@ -1081,7 +1082,7 @@ MonoBehaviour:
   serverOnly: 0
   localPlayerAuthority: 1
   m_AssetId: 
-  m_SceneId: 1764830632
+  m_SceneId: 756680054
 --- !u!1 &1437400119
 GameObject:
   m_ObjectHideFlags: 0
@@ -1115,7 +1116,7 @@ MonoBehaviour:
   serverOnly: 0
   localPlayerAuthority: 1
   m_AssetId: 
-  m_SceneId: 1048399812
+  m_SceneId: 2387412995
 --- !u!4 &1437400121
 Transform:
   m_ObjectHideFlags: 0
@@ -1466,7 +1467,6 @@ MonoBehaviour:
   autoCreatePlayer: 1
   playerSpawnMethod: 0
   spawnPrefabs:
-  - {fileID: 641646719284810671, guid: 802080a562a57454ca08cc6a1fd32c3a, type: 3}
   - {fileID: 1862741089836950, guid: 7caee29a79adf9648a38721e965c495d, type: 3}
   - {fileID: 1850119598120500, guid: 51fb3f7ac2da8354bb24e66d233f9cdc, type: 3}
 --- !u!4 &1879253250

@@ -143,14 +143,16 @@ public class CardDisplay : NetworkBehaviour {
 
 		// Debug.Log("Title:" + cardState.title + ", Cat:" + cardState.category);
 
-		// GAMECARD SPECIFICS -------------------------------------------------
-		if (cardState.category == "Game Card" || cardState.category == "Market") {
+		if (cardState.category == "Game Card") {
 
 			title.text = cardState.title;
 
-		} else
-		// TILE SPECIFICS -----------------------------------------------------
-		if (cardState.category == "Tile") {
+		} else if (cardState.category == "Market") {
+
+			title.text = "\u2013Market Card\u2013";
+			ResourceInfo.prices.TryGetValue(cardState.resource, out cardState.footerValue);
+
+		} else if (cardState.category == "Tile") {
 
 			GameObject titleIconObj = this.transform.Find("Front Canvas/Icon").gameObject;
 			Image iconImage = titleIconObj.GetComponent<Image>();
@@ -174,6 +176,26 @@ public class CardDisplay : NetworkBehaviour {
 				default:
 					break;
 			}
+
+			// TODO: Optimize this under the new string system, as well as when Land Tile titles
+			//	are finally auto-centered with along with their icons.
+			if (cardState.title == "Market Mod") { // Market Mod
+				title.text = "\u2013Market Mod\u2013";
+			} else if (cardState.title == "Market Card") { // Price Card
+				title.text = "\u2013Market Card\u2013";
+			} else if (cardState.title == "Resource") { // Resource
+				title.text = "\u2013Resource\u2013";
+			} else if (cardState.title == "Tile Mod") { // Tile Mod
+				title.text = "\u2013Tile Mod\u2013";
+			} else if (cardState.title == "Forest") { // Forest Tile
+				title.text = " Forest";
+			} else if (cardState.title == "Plains") { // Plains Tile
+				title.text = " Plains";
+			} else if (cardState.title == "Quarry") { // Quarry Tile
+				title.text = "    Quarry";
+			} else if (cardState.title == "Farmland") { // Farmland Tile
+				title.text = "       Farmland";
+			} // if-else
 
 			// Try to load the icon sprite
 			if (iconImage.sprite = Resources.Load<Sprite>("Sprites/icon_" + cardState.title.ToLower())) {
@@ -208,7 +230,7 @@ public class CardDisplay : NetworkBehaviour {
 		GameObject bodyObj = this.transform.Find("Front Canvas/Body").gameObject;
 		TMP_Text body = bodyObj.GetComponent<TMP_Text>();
 
-		body.text = MdToTag(cardState.body);
+		body.text = TagToCardData(MdToTag(cardState.bodyText), cardState);
 
 	} // DisplayBody()
 
@@ -218,9 +240,9 @@ public class CardDisplay : NetworkBehaviour {
 		GameObject footerObj = this.transform.Find("Front Canvas/Footer").gameObject;
 		TMP_Text footer = footerObj.GetComponent<TMP_Text>();
 
-		string tempFooter = cardState.footer;
+		string tempFooter = cardState.footerText;
 
-		tempFooter = InsertFooterValue(cardState, cardState.footer);
+		tempFooter = InsertFooterValue(cardState, cardState.footerText);
 		footer.text = TagToCardData(MdToTag(tempFooter), cardState);
 
 	} // DisplayFooter()

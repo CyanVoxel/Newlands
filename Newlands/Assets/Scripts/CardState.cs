@@ -1,17 +1,16 @@
-﻿// A test class used to test the functionality of scripts across the network
+﻿// A class used to store relevent card data for visuals and synchronize it between the server and
+// clients. Could be used with GridUnit in the future?
 
 using System.Collections;
 using System.Collections.Generic;
 using Mirror;
-using TMPro;
 using UnityEngine;
 
 public class CardState : NetworkBehaviour {
 
 	// DATA FIELDS #################################################################################
 
-	// [SerializeField]
-	// public string titleStr = "test";
+	[SerializeField]
 	private CardDisplay cardDis;
 	[SerializeField]
 	private GridManager gridMan;
@@ -24,10 +23,10 @@ public class CardState : NetworkBehaviour {
 	[SyncVar(hook = "OnSubtitleChange")]
 	public string subtitle; // The Card's Subtitle
 	[SyncVar(hook = "OnBodyChange")]
-	public string body; // The Card's Body Text
+	public string bodyText; // The Card's Body Text
 
 	[SyncVar(hook = "OnFooterChange")]
-	public string footer; // The Card's Footer Text
+	public string footerText; // The Card's Footer Text
 	[SyncVar]
 	public int footerValue;
 	[SyncVar] // No hook on values which won't change under current game rules
@@ -94,7 +93,7 @@ public class CardState : NetworkBehaviour {
 
 		TryToGrabComponents();
 
-		if (this.footer != "") {
+		if (this.footerText != "") {
 			cardDis.DisplayFooter(this.transform.gameObject);
 		}
 
@@ -126,7 +125,7 @@ public class CardState : NetworkBehaviour {
 
 		TryToGrabComponents();
 
-		if (this.body != "") {
+		if (this.bodyText != "") {
 			cardDis.DisplayBody(this.transform.gameObject);
 		}
 
@@ -151,6 +150,6 @@ public class CardState : NetworkBehaviour {
 			return true;
 		}
 
-	} // GrabComponents()
+	} // TryToGrabComponents()
 
 } // CardState class

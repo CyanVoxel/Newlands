@@ -36,13 +36,13 @@ public class GuiManager : NetworkBehaviour {
 		InitPlayerText();
 
 		// Grabbing Money Objects/Text
-		for (byte i = 0; i < GameManager.playerCount; i++) {
+		for (int i = 0; i < GameManager.playerCount; i++) {
 			// playerMoneyObj.Add(new GameObject());
 			// playerMoneyText.Add(new TMP_Text());
 			// Debug.Log("UI/Money/Player (" + (i + 1) + ")");
 			GameManager.players[i].moneyObj = transform.Find("Gui/Money/Player (" + (i + 1) + ")").gameObject;
 			GameManager.players[i].moneyText = GameManager.players[i].moneyObj.GetComponent<TMP_Text>();
-			// GameManager.players[i].moneyText.color = GetPlayerColor((byte) (i + 1), 500);
+			// GameManager.players[i].moneyText.color = GetPlayerColor((i + 1), 500);
 		} // for playerCount
 
 	} // InitGuiManager()
@@ -140,7 +140,7 @@ public class GuiManager : NetworkBehaviour {
 		} // switch
 
 		// Things that need to be updated for all players go here
-		for (byte i = 0; i < (byte) GameManager.players.Count; i++) {
+		for (int i = 0; i < GameManager.players.Count; i++) {
 			GameManager.players[i].moneyText.text = "Player " + (i + 1) + ": "
 				+ GameManager.players[i].totalMoney.ToString("C");
 		} // for array length

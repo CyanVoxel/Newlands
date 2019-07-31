@@ -52,14 +52,6 @@ public class Card : ScriptableObject {
 	// Does this card get discarded if used? (Rather than being stacked under a Tile)
 	public bool doesDiscard;
 
-	// CONSTRUCTORS ###############################################################################
-
-	// Default no-arg constructor
-	// public Card() { }
-
-	// Constructor that (should) create a card from a resource path
-	// public Card(string path) {
-	// 	this.Equals(Resources.Load<Card>(path));
-	// } // Card(string) constructor
+	// public CardData data;
 
 } // Card class
