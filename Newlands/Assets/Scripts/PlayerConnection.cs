@@ -84,23 +84,6 @@ public class PlayerConnection : NetworkBehaviour {
 
 	// COMMANDS ####################################################################################
 
-	// [Command]
-	// private void CmdSpawnGrids() {
-	// 	TryToGrabComponents();
-	// 	gridMan.CreateGameGridObjects();
-	// 	gridMan.CreateMarketGridObjects();
-	// } // CmdSpawnCards();
-
-	// Increments the PlayerIndex in gameMan
-	// [Command]
-	// private void CmdUpdateIdIndex() {
-	// 	TryToGrabComponents();
-	// 	gameMan.IncrementPlayerIndex();
-	// 	Debug.Log(debugH + "[CmdUpdateIdIndex] Updating index to "
-	// 		+ gameMan.playerIndex
-	// 		+ " (Getter: " + gameMan.GetPlayerIndex() + ")");
-	// } // CmdIncrementPlayerCount()
-
 	[Command]
 	public void CmdGetHand() {
 
@@ -108,15 +91,15 @@ public class PlayerConnection : NetworkBehaviour {
 			InitId();
 		}
 
-		Debug.Log(debugH + "[CmdGetHand] GameManager.handSize =  "
-			+ GameManager.handSize
-			+ " for player " + this.id);
+		// Debug.Log(debugH + "[CmdGetHand] GameManager.handSize =  "
+		// 	+ GameManager.handSize
+		// 	+ " for player " + this.id);
 
 		for (int i = 0; i < GameManager.handSize; i++) {
-			if (GameManager.players[this.id].hand[i] != null) {
-				CardData card = new CardData(GameManager.players[this.id].hand[i]);
-				Debug.Log(debugH + "[CmdGetHand] Adding Card " + i
-					+ " to SyncList for player " + this.id);
+			if (GameManager.players[this.id - 1].hand[i] != null) {
+				CardData card = new CardData(GameManager.players[this.id - 1].hand[i]);
+				// Debug.Log(debugH + "[CmdGetHand] Adding Card " + i
+				// 	+ " to SyncList for player " + this.id);
 				this.hand.Add(card);
 			} else {
 				Debug.LogWarning(debugH + "[CmdGetHand] Warning: "
@@ -124,9 +107,9 @@ public class PlayerConnection : NetworkBehaviour {
 			}
 		} // for
 
-		Debug.Log(debugH + "[CmdGetHand] Finished grabbing "
-			+ this.hand.Count
-			+ " cards for player " + this.id);
+		// Debug.Log(debugH + "[CmdGetHand] Finished grabbing "
+		// 	+ this.hand.Count
+		// 	+ " cards for player " + this.id);
 
 		// TargetCreateHandObjects(connectionToClient, this.hand);
 
@@ -134,44 +117,45 @@ public class PlayerConnection : NetworkBehaviour {
 
 	private void OnIdChange(int newId) {
 		this.id = newId;
-		// this.transform.name = "Player (" + this.id + ")";
+		this.transform.name = "Player (" + this.id + ")";
+		GameManager.localPlayerId = this.id;
 	} // OnIdChange()
 
 	private void InitId() {
 
 		TryToGrabComponents();
 
-		Debug.Log(debugH + "Chainging default id of "
-			+ this.id
-			+ " to " + gameMan.GetPlayerIndex());
+		// Debug.Log(debugH + "Chainging default id of "
+		// 	+ this.id
+		// 	+ " to " + gameMan.GetPlayerIndex());
 
 		this.id = gameMan.GetPlayerIndex();
 		gameMan.IncrementPlayerIndex();
 
 		Debug.Log(debugH + "Assigned ID of " + this.id);
 
-		Debug.Log(debugH + "Verifying new PlayerIndex: "
-			+ gameMan.GetPlayerIndex());
+		// Debug.Log(debugH + "Verifying new PlayerIndex: "
+		// 	+ gameMan.GetPlayerIndex());
 
 		// this.transform.name = "Player (" + this.id + ")";
 
-		Debug.Log(debugH + "GameManager.handSize =  "
-			+ GameManager.handSize
-			+ " for player " + this.id);
+		// Debug.Log(debugH + "GameManager.handSize =  "
+		// 	+ GameManager.handSize
+		// 	+ " for player " + this.id);
 
 		this.initIdFlag = true;
 
 	} // InitId()
 
-	private void OnHandUpdated(SyncListCardData.Operation op, int shrek, CardData card) {
+	private void OnHandUpdated(SyncListCardData.Operation op, int index, CardData card) {
 
 		if (!isLocalPlayer) {
 			return;
 		}
 
-		Debug.Log(debugH + "Index: " + shrek);
+		// Debug.Log(debugH + "Index: " + index);
 
-		if (shrek == (GameManager.handSize - 1) && op == SyncListCardData.Operation.OP_ADD) {
+		if (index == (GameManager.handSize - 1) && op == SyncListCardData.Operation.OP_ADD) {
 			gridMan.CreateHandObjects(this.id, this.hand);
 		}
 

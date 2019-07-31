@@ -31,7 +31,7 @@ public struct CardData {
     public int footerValue;
 
     // The color of the footer border
-    public string FooterColor;
+    public string footerColor;
 
     // Flag indicating if only the corners of the footer should be colored
     public bool onlyColorCorners;
@@ -69,7 +69,7 @@ public struct CardData {
         resource = cardScript.resource;
         target = cardScript.target;
         doesDiscard = cardScript.doesDiscard;
-        FooterColor = cardScript.FooterColor;
+        footerColor = cardScript.footerColor;
         onlyColorCorners = cardScript.onlyColorCorners;
 
     } // CardData(Card) constructor

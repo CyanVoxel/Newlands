@@ -8,6 +8,8 @@ using UnityEngine.UI;
 
 public class CardDisplay : NetworkBehaviour {
 
+	private static string debugH = "<color=#64DD17FF><b>[CardDisplay] </b></color>";
+
 	// DATA FIELDS -------------------------------------------------------------
 
 	// Long directories stored as strings
@@ -135,80 +137,173 @@ public class CardDisplay : NetworkBehaviour {
 
 	} // insertFooterValue()
 
+	// Formats card elements based on a new Title
+	// TODO: Probably want to break this up into smaller private methods
 	public void DisplayTitle(GameObject cardObj) {
 
 		CardState cardState = cardObj.GetComponent<CardState>();
 		GameObject titleObj = this.transform.Find("Front Canvas/Title").gameObject;
 		TMP_Text title = titleObj.GetComponent<TMP_Text>();
 
-		// Debug.Log("Title:" + cardState.title + ", Cat:" + cardState.category);
+		GameObject footerBorderObj = this.transform.Find(dirFtrBdr).gameObject;
+		Image footerBorder = footerBorderObj.GetComponent<Image>();
 
-		if (cardState.category == "Game Card") {
+		GameObject footerBorderObjL;
+		Image footerBorderL;
+		GameObject footerBorderObjR;
+		Image footerBorderR;
 
-			title.text = cardState.title;
+		switch (cardState.category) {
+			case "Tile":
+				// Title Text --------------------------------------------------
+				// TODO: Create a dynamic text-centering system based on the physical size of
+				// the TMP asset plus the icon width.
+				switch (cardState.title) {
+					case "Forest":
+						title.text = " Forest";
+						break;
+					case "Plains":
+						title.text = " Plains";
+						break;
+					case "Quarry":
+						title.text = "    Quarry";
+						break;
+					case "Farmland":
+						title.text = "       Farmland";
+						break;
+					default:
+						title.text = cardState.title;
+						break;
+				}
+				// Icon --------------------------------------------------------
+				GameObject titleIconObj = this.transform.Find("Front Canvas/Icon").gameObject;
+				Image iconImage = titleIconObj.GetComponent<Image>();
+				if (iconImage.sprite = Resources.Load<Sprite>("Sprites/icon_" + cardState.title.ToLower())) {
+					// Debug.Log("[CardDisplay] Successfully loaded image sprite \""
+					// 	+ "Sprites/icon_"
+					// 	+ cardState.title.ToLower() + "\"");
+				} else {
+					Debug.LogError("[CardDisplay] ERROR: Could not load image sprite \""
+						+ "Sprites/icon_"
+						+ cardState.title.ToLower() + "\"");
+				} // if icon could be loaded
+				break;
 
-		} else if (cardState.category == "Market") {
+			case "Game Card":
+				// Title Text --------------------------------------------------
+				switch (cardState.title) {
+					case "Market Mod":
+						title.text = "\u2013Market Mod\u2013";
+						break;
+					case "Resource":
+						title.text = "\u2013Resource\u2013";
+						break;
+					case "Tile Mod":
+						title.text = "\u2013Tile Mod\u2013";
+						break;
+					default:
+						title.text = cardState.title;
+						break;
+				} // switch (cardState.title)
+				// Footer Border -----------------------------------------------
+				footerBorderObjL = this.transform.Find(dirFtrBdrL).gameObject;
+				footerBorderL = footerBorderObjL.GetComponent<Image>();
+				footerBorderObjR = this.transform.Find(dirFtrBdrR).gameObject;
+				footerBorderR = footerBorderObjR.GetComponent<Image>();
+				footerBorderL.color = ColorPalette.alpha;
+				footerBorderR.color = ColorPalette.alpha;
+				switch (cardState.footerColor) {
+					case "Black":
+						if (cardState.onlyColorCorners) {
+							footerBorderL.color = ColorPalette.cardDark;
+							footerBorderR.color = ColorPalette.cardDark;
+						} else {
+							footerBorder.color = ColorPalette.cardDark;
+						}
+						break;
+					case "Red":
+						if (cardState.onlyColorCorners) {
+							footerBorderL.color = ColorPalette.Red500;
+							footerBorderR.color = ColorPalette.Red500;
+						} else {
+							footerBorder.color = ColorPalette.Red500;
+						}
+						break;
+					case "Green":
+						if (cardState.onlyColorCorners) {
+							footerBorderL.color = ColorPalette.Green500;
+							footerBorderR.color = ColorPalette.Green500;
+						} else {
+							footerBorder.color = ColorPalette.Green500;
+						}
+						break;
+					case "Light Blue":
+						if (cardState.onlyColorCorners) {
+							footerBorderL.color = ColorPalette.LightBlue500;
+							footerBorderR.color = ColorPalette.LightBlue500;
+						} else {
+							footerBorder.color = ColorPalette.LightBlue500;
+						}
+						break;
+					case "Yellow":
+						if (cardState.onlyColorCorners) {
+							footerBorderL.color = ColorPalette.Yellow500;
+							footerBorderR.color = ColorPalette.Yellow500;
+						} else {
+							footerBorder.color = ColorPalette.Yellow500;
+						}
+						break;
+					case "Pink":
+						if (cardState.onlyColorCorners) {
+							footerBorderL.color = ColorPalette.Pink500;
+							footerBorderR.color = ColorPalette.Pink500;
+						} else {
+							footerBorder.color = ColorPalette.Pink500;
+						}
+						break;
+					case "Blue":
+						if (cardState.onlyColorCorners) {
+							footerBorderL.color = ColorPalette.LightBlue500;
+							footerBorderR.color = ColorPalette.LightBlue500;
+						} else {
+							footerBorder.color = ColorPalette.LightBlue500;
+						}
+						break;
+					case "Dark Blue":
+						if (cardState.onlyColorCorners) {
+							footerBorderL.color = ColorPalette.Indigo500;
+							footerBorderR.color = ColorPalette.Indigo500;
+						} else {
+							footerBorder.color = ColorPalette.Indigo500;
+						}
+						break;
+					case "":
+						if (cardState.onlyColorCorners) {
+							footerBorderL.color = Color.magenta;
+							footerBorderR.color = Color.magenta;
+						} else {
+							footerBorder.color = Color.magenta;
+						}
+						break;
+					default:
+						footerBorder.color = ColorPalette.cardDark;
+						break;
+				} // (cardState.footerColor)
+				break;
 
-			title.text = "\u2013Market Card\u2013";
-			ResourceInfo.prices.TryGetValue(cardState.resource, out cardState.footerValue);
-
-		} else if (cardState.category == "Tile") {
-
-			GameObject titleIconObj = this.transform.Find("Front Canvas/Icon").gameObject;
-			Image iconImage = titleIconObj.GetComponent<Image>();
-
-			// Set the Title Text field
-			// TODO: Optimize this under the new string system, as well as when Land Tile titles
-			//	are finally auto-centered with along with their icons.
-			switch (cardState.title) {
-				case "Forest":
-					title.text = " Forest";
-					break;
-				case "Plains":
-					title.text = " Plains";
-					break;
-				case "Quarry":
-					title.text = "    Quarry";
-					break;
-				case "Farmland":
-					title.text = "       Farmland";
-					break;
-				default:
-					break;
-			}
-
-			// TODO: Optimize this under the new string system, as well as when Land Tile titles
-			//	are finally auto-centered with along with their icons.
-			if (cardState.title == "Market Mod") { // Market Mod
-				title.text = "\u2013Market Mod\u2013";
-			} else if (cardState.title == "Market Card") { // Price Card
+			case "Market":
+				// Title Text --------------------------------------------------
 				title.text = "\u2013Market Card\u2013";
-			} else if (cardState.title == "Resource") { // Resource
-				title.text = "\u2013Resource\u2013";
-			} else if (cardState.title == "Tile Mod") { // Tile Mod
-				title.text = "\u2013Tile Mod\u2013";
-			} else if (cardState.title == "Forest") { // Forest Tile
-				title.text = " Forest";
-			} else if (cardState.title == "Plains") { // Plains Tile
-				title.text = " Plains";
-			} else if (cardState.title == "Quarry") { // Quarry Tile
-				title.text = "    Quarry";
-			} else if (cardState.title == "Farmland") { // Farmland Tile
-				title.text = "       Farmland";
-			} // if-else
+				// Footer Value ------------------------------------------------
+				ResourceInfo.prices.TryGetValue(cardState.resource, out cardState.footerValue);
+				// Footer Border -----------------------------------------------
+				footerBorder.color = ColorPalette.cardDark;
+				break;
 
-			// Try to load the icon sprite
-			if (iconImage.sprite = Resources.Load<Sprite>("Sprites/icon_" + cardState.title.ToLower())) {
-				// Debug.Log("[CardDisplay] Successfully loaded image sprite \""
-				// 	+ "Sprites/icon_"
-				// 	+ cardState.title.ToLower() + "\"");
-			} else {
-				Debug.LogError("[CardDisplay] ERROR: Could not load image sprite \""
-					+ "Sprites/icon_"
-					+ cardState.title.ToLower() + "\"");
-			}
-
-		} // Tile specifics
+			default:
+				title.text = cardState.title;
+				break;
+		} // switch (cardState.category)
 
 	} // DisplayTitle()
 
@@ -288,10 +383,10 @@ public class CardDisplay : NetworkBehaviour {
 
 				footerBorder.color = ColorPalette.cardDark;
 
-				if (card.FooterColor == "Red") { // Red
+				if (card.footerColor == "Red") { // Red
 					footerBorderL.color = ColorPalette.Red500;
 					footerBorderR.color = ColorPalette.Red500;
-				} else if (card.FooterColor == "Green") { // Green
+				} else if (card.footerColor == "Green") { // Green
 					footerBorderL.color = ColorPalette.Green500;
 					footerBorderR.color = ColorPalette.Green500;
 				}
@@ -302,21 +397,21 @@ public class CardDisplay : NetworkBehaviour {
 				footerBorderR.color = ColorPalette.alpha;
 
 				// Color the footer border
-				if (card.FooterColor == "Black") { // Black
+				if (card.footerColor == "Black") { // Black
 					footerBorder.color = ColorPalette.cardDark;
-				} else if (card.FooterColor == "Red") { // Red
+				} else if (card.footerColor == "Red") { // Red
 					footerBorder.color = ColorPalette.Red500;
-				} else if (card.FooterColor == "Green") { // Green
+				} else if (card.footerColor == "Green") { // Green
 					footerBorder.color = ColorPalette.Green500;
-				} else if (card.FooterColor == "Light Blue") { // Light Blue
+				} else if (card.footerColor == "Light Blue") { // Light Blue
 					footerBorder.color = ColorPalette.LightBlue500;
-				} else if (card.FooterColor == "Yellow") { // Yellow
+				} else if (card.footerColor == "Yellow") { // Yellow
 					footerBorder.color = ColorPalette.Yellow500;
-				} else if (card.FooterColor == "Pink") { // Pink
+				} else if (card.footerColor == "Pink") { // Pink
 					footerBorder.color = ColorPalette.Pink500;
-				} else if (card.FooterColor == "Blue") { // Blue
+				} else if (card.footerColor == "Blue") { // Blue
 					footerBorder.color = ColorPalette.LightBlue500;
-				} else if (card.FooterColor == "Dark Blue") { // Dark Blue
+				} else if (card.footerColor == "Dark Blue") { // Dark Blue
 					footerBorder.color = ColorPalette.Indigo500;
 				} // if-else
 
@@ -353,21 +448,21 @@ public class CardDisplay : NetworkBehaviour {
 			} // else-if
 
 			// Color the footer border
-			if (card.FooterColor == "Black") { // Black
+			if (card.footerColor == "Black") { // Black
 				footerBorder.color = ColorPalette.cardDark;
-			} else if (card.FooterColor == "Red") { // Red
+			} else if (card.footerColor == "Red") { // Red
 				footerBorder.color = ColorPalette.Red500;
-			} else if (card.FooterColor == "Green") { // Green
+			} else if (card.footerColor == "Green") { // Green
 				footerBorder.color = ColorPalette.Green500;
-			} else if (card.FooterColor == "Light Blue") { // Light Blue
+			} else if (card.footerColor == "Light Blue") { // Light Blue
 				footerBorder.color = ColorPalette.LightBlue500;
-			} else if (card.FooterColor == "Yellow") { // Yellow
+			} else if (card.footerColor == "Yellow") { // Yellow
 				footerBorder.color = ColorPalette.Yellow500;
-			} else if (card.FooterColor == "Pink") { // Pink
+			} else if (card.footerColor == "Pink") { // Pink
 				footerBorder.color = ColorPalette.Pink500;
-			} else if (card.FooterColor == "Blue") { // Blue
+			} else if (card.footerColor == "Blue") { // Blue
 				footerBorder.color = ColorPalette.LightBlue500;
-			} else if (card.FooterColor == "Dark Blue") { // Dark Blue
+			} else if (card.footerColor == "Dark Blue") { // Dark Blue
 				footerBorder.color = ColorPalette.Indigo500;
 			} // if-else
 

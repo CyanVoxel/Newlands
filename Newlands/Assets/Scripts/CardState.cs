@@ -35,6 +35,8 @@ public class CardState : NetworkBehaviour {
 	public bool moneyFlag;
 	[SyncVar]
 	public char footerOpr;
+	[SyncVar]
+	public bool onlyColorCorners;
 
 	[SyncVar(hook = "OnCategoryChange")]
 	public string category; // The Card's Category (Used to determine misc visuals)
@@ -42,6 +44,8 @@ public class CardState : NetworkBehaviour {
 	public string resource;
 	[SyncVar]
 	public string target;
+	[SyncVar]
+	public string footerColor;
 
 	// METHODS #################################################################################
 

@@ -37,8 +37,10 @@ ExportedObj/
 sysinfo.txt
 
 #Fonts
-*.TTF
-*.TTF.meta
+*.otf
+*.ttf
+*.ttf.meta
+*.otf.meta
 
 # Builds
 *.apk

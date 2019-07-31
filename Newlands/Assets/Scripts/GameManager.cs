@@ -1,5 +1,4 @@
 ﻿// Manages most UI Elements and game setup tasks.
-// TODO: Will probably want to move all of the UI stuff to a dedicated class.
 
 using System.Collections.Generic;
 using Mirror;
@@ -17,7 +16,8 @@ public class GameManager : NetworkBehaviour {
 	public static MasterDeck masterDeckMutable;
 	public static readonly int playerCount = 4; // Number of players in the match
 	[SyncVar]
-	public int playerIndex = 0; // This value increments when a new player joins
+	private int playerIndex = 1; // This value increments when a new player joins
+	public static int localPlayerId = -1;
 	public static int phase = 1; // The current phase of the game
 	public static int round = 1; // The current round of turns
 	public static int turn = 1; // The current turn in the round
@@ -75,53 +75,53 @@ public class GameManager : NetworkBehaviour {
 
 	} // Update()
 
-	// Creates card game objects, places them on the screen, and populates them with deck data
-	private void DisplayCard(Card card, int playerNum, int index) {
+	// // Creates card game objects, places them on the screen, and populates them with deck data
+	// private void DisplayCard(Card card, int playerNum, int index) {
 
-		// Populate the Card prefab
-		GameObject gameCardPrefab = Resources.Load<GameObject>("Prefabs/GameCard");
-		// NOTE: As of the time of the addition of the GridManager class, this should be split off into it's own class.
-		string pZeroes = "0";
-		string iZeroes = "0";
+	// 	// Populate the Card prefab
+	// 	GameObject gameCardPrefab = Resources.Load<GameObject>("Prefabs/GameCard");
+	// 	// NOTE: As of the time of the addition of the GridManager class, this should be split off into it's own class.
+	// 	string pZeroes = "0";
+	// 	string iZeroes = "0";
 
-		// Creates card prefabs and places them on the screen
+	// 	// Creates card prefabs and places them on the screen
 
-		float xOff = index * 11 + (((width - handSize) / 2f) * 11);
-		float yOff = -10;
+	// 	float xOff = index * 11 + (((width - handSize) / 2f) * 11);
+	// 	float yOff = -10;
 
-		// Determines the number of zeroes to add in the object name
-		if (playerCount >= 10) {
-			pZeroes = "";
-		} else {
-			pZeroes = "0";
-		}
-		if (index >= 10) {
-			iZeroes = "";
-		} else {
-			iZeroes = "0";
-		} // zeroes calc
+	// 	// Determines the number of zeroes to add in the object name
+	// 	if (playerCount >= 10) {
+	// 		pZeroes = "";
+	// 	} else {
+	// 		pZeroes = "0";
+	// 	}
+	// 	if (index >= 10) {
+	// 		iZeroes = "";
+	// 	} else {
+	// 		iZeroes = "0";
+	// 	} // zeroes calc
 
-		GameObject cardObj = (GameObject) Instantiate(gameCardPrefab, new Vector3(xOff, yOff, 40), Quaternion.identity);
-		cardObj.name = ("p" + pZeroes + playerNum + "_"
-			+ "i" + iZeroes + index + "_"
-			+ "GameCard");
-		// cardObj.name = ("GameCard_p" + playerNum + "_i"+ i);
+	// 	GameObject cardObj = (GameObject) Instantiate(gameCardPrefab, new Vector3(xOff, yOff, 40), Quaternion.identity);
+	// 	cardObj.name = ("p" + pZeroes + playerNum + "_"
+	// 		+ "i" + iZeroes + index + "_"
+	// 		+ "GameCard");
+	// 	// cardObj.name = ("GameCard_p" + playerNum + "_i"+ i);
 
-		cardObj.transform.SetParent(this.transform);
-		cardObj.transform.rotation = new Quaternion(0, 0, 0, 0);
+	// 	cardObj.transform.SetParent(this.transform);
+	// 	cardObj.transform.rotation = new Quaternion(0, 0, 0, 0);
 
-		players[playerNum].handUnits[index] = new GridUnit(players[playerNum].hand[index],
-			cardObj,
-			index, 0);
+	// 	players[playerNum].handUnits[index] = new GridUnit(players[playerNum].hand[index],
+	// 		cardObj,
+	// 		index, 0);
 
-		try {
-			cardObj.SendMessage("DisplayCard", card);
-		} catch (UnassignedReferenceException e) {
-			Debug.LogError(debugH + "Error: "
-				+ "Card error at deck index " + index + ": " + e);
-		}
+	// 	try {
+	// 		cardObj.SendMessage("DisplayCard", card);
+	// 	} catch (UnassignedReferenceException e) {
+	// 		Debug.LogError(debugH + "Error: "
+	// 			+ "Card error at deck index " + index + ": " + e);
+	// 	}
 
-	} // DisplayCard()
+	// } // DisplayCard()
 
 	// Draws a card from a deck. Random by default.
 	public static bool DrawCard(Deck deckMut, Deck deckPerm, out Card card, bool random = true) {
@@ -417,9 +417,9 @@ public class GameManager : NetworkBehaviour {
 			} // for width
 		} else if (cardType == "GameCard") {
 			for (int i = 0; i < handSize; i++) {
-				if (FindCard("GameCard", 0, i)) {
+				if (FindCard("GameCard", localPlayerId, i)) {
 					// GameObject temp = transform.Find("GameCard_p0_i" + i).gameObject;
-					GameObject temp = FindCard("GameCard", 0, i);
+					GameObject temp = FindCard("GameCard", localPlayerId, i);
 					float x = temp.transform.position.x;
 					float y = temp.transform.position.y;
 					temp.transform.position = new Vector3(x, y, 40);
@@ -597,7 +597,7 @@ public class GameManager : NetworkBehaviour {
 				players[0].hand.Add(newCard);
 				players[0].handUnits[oldCardIndex].LoadNewCard(newCard, players[0].handUnits[oldCardIndex].tileObj);
 				players[0].hand[oldCardIndex] = newCard;
-				DisplayCard(newCard, 0, oldCardIndex);
+				// DisplayCard(newCard, 0, oldCardIndex);
 				players[0].handUnits[oldCardIndex].tileObj.transform.position = oldCardPosition;
 
 			} // if card can be drawn

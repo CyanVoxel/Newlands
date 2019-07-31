@@ -103,8 +103,8 @@ public class GuiManager : NetworkBehaviour {
 	public void CmdUpdateUI() {
 
 		if (!isLocalPlayer) {
-			Debug.Log("<b>[GuiManager]</b> "
-			+ "Player does not have authority to update GUI!");
+			// Debug.Log("<b>[GuiManager]</b> "
+			// + "Player does not have authority to update GUI!");
 			return;
 		}
 

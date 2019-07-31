@@ -1,8 +1,8 @@
 ﻿// A class that manages mouse hit detection
 
+using Mirror;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using Mirror;
 
 public class MouseManager : NetworkBehaviour {
 
@@ -182,11 +182,11 @@ public class MouseManager : NetworkBehaviour {
 
 						gameMan.WipeSelectionColors("GameCard", ColorPalette.tintCard);
 
-						if (selection >= 0) {
+						if (selection >= 1) {
 							if (gameMan.TryToPlay(GridManager.grid[locX, locY],
-									GameManager.players[0].handUnits[selection])) {
-								Debug.Log("Using GameCard " + selection +
-								  " on LandTile " + locX + ", " + locY);
+									GameManager.players[0].handUnits[selection - 1])) {
+								// Debug.Log("Using GameCard " + selection
+								// 	+ " on LandTile " + locX + ", " + locY);
 								// GameManager.players[0].hand[selection]
 							}
 						} else {
@@ -210,6 +210,8 @@ public class MouseManager : NetworkBehaviour {
 				objX = objectHit.transform.parent.position.x;
 				objY = objectHit.transform.parent.position.y;
 				objZ = objectHit.transform.parent.position.z;
+
+				// Debug.Log(locX + ", " + locY);
 
 				// PHASES 2+ ##################################################
 				if (GameManager.phase > 1) {
@@ -261,9 +263,9 @@ public class MouseManager : NetworkBehaviour {
 
 						gameMan.WipeSelectionColors("GameCard", ColorPalette.tintCard);
 
-						if (selection >= 0) {
+						if (selection >= 1) {
 							if (gameMan.TryToPlay(GridManager.marketGrid[locX, locY],
-									GameManager.players[0].handUnits[selection])) {
+									GameManager.players[0].handUnits[selection - 1])) {
 								// Debug.Log("Using GameCard " + selection +
 								//   " on LandTile " + locX + ", " + locY);
 								//GameManager.players[0].hand[selection]

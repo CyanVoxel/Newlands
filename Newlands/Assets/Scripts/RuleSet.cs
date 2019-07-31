@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class RuleSet : MonoBehaviour {
 
+	private static string debugH = "<color=#0091EAFF><b>[RuleSet] </b></color>";
+
 	private GridManager gridMan;
 
 	// METHODS ####################################################################################
@@ -21,11 +23,11 @@ public class RuleSet : MonoBehaviour {
 		string[] targetLevel = new string[3];
 		bool[] scopeResults;
 
-		if (card.target != null) {
+		if (card != null && card.target != null) {
 			scopeLevel = card.target.Split('_');
 			scopeResults = new bool[scopeLevel.Length];
 		} else {
-			Debug.Log("Hey, that card's target is null!");
+			Debug.Log(debugH + "The card or it's target is null!");
 			return false;
 		}
 

@@ -196,8 +196,8 @@ public class GridManager : NetworkBehaviour {
 		// 	return;
 		// }
 
-		Debug.Log(debugH + "Spawning Cards for ID " + playerNum);
-		Debug.Log(debugH + "Hand size of: " + hand.Count);
+		// Debug.Log(debugH + "Spawning Cards for ID " + playerNum);
+		// Debug.Log(debugH + "Hand size of: " + hand.Count);
 
 		// Populate the Card prefab
 		string pZeroes = "0";
@@ -233,11 +233,11 @@ public class GridManager : NetworkBehaviour {
 
 			if (cardState != null) {
 				// Generate and Push the string of the object's name
-				cardState.objectName = ("i" + iZeroes + i + "_"
-					+ "p" + pZeroes + playerNum + "_"
+				cardState.objectName = ("p" + pZeroes + playerNum + "_"
+					+ "i" + iZeroes + i + "_"
 					+ "GameCard");
 
-				Debug.Log(debugH + "Spawned CardObj: " + hand[i].title);
+				// Debug.Log(debugH + "Spawned CardObj: " + hand[i].title);
 
 				// Debug.Log("[GridManager] Accessing hand card at [" + i + ", " + playerNum + "]...");
 
@@ -254,6 +254,9 @@ public class GridManager : NetworkBehaviour {
 				cardState.percFlag = hand[i].percFlag;
 				cardState.moneyFlag = hand[i].moneyFlag;
 				cardState.footerOpr = hand[i].footerOpr;
+				cardState.footerColor = hand[i].footerColor;
+				cardState.onlyColorCorners = hand[i].onlyColorCorners;
+				// cardState.title = hand[i].title;
 			} else {
 				Debug.Log(debugH + "This object's card state was null!");
 			} // if (cardState != null)
@@ -279,7 +282,7 @@ public class GridManager : NetworkBehaviour {
 	public void InitGameGrid() {
 
 		if (!hasAuthority) {
-			Debug.Log(debugH + "No authority to initialize the internal game grid!");
+			// Debug.Log(debugH + "No authority to initialize the internal game grid!");
 			return;
 		}
 

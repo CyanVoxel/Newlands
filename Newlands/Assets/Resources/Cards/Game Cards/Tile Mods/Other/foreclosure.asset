@@ -19,7 +19,7 @@ MonoBehaviour:
   footerText: Foreclosure
   resource: 
   footerValue: 0
-  FooterColor: Red
+  footerColor: Red
   onlyColorCorners: 0
   percFlag: 0
   moneyFlag: 0

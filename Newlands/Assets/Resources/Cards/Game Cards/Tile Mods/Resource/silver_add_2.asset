@@ -15,11 +15,11 @@ MonoBehaviour:
   category: Game Card
   title: Tile Mod
   subtitle: Resource
-  bodyText: Place this under any **<ts>**.
+  bodyText: Place this under any **Quarry**.
   footerText: '**<x>** <r>'
   resource: Silver
   footerValue: 2
-  FooterColor: Light Blue
+  footerColor: Light Blue
   onlyColorCorners: 0
   percFlag: 0
   moneyFlag: 0

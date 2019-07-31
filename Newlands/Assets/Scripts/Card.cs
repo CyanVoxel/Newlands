@@ -32,7 +32,7 @@ public class Card : ScriptableObject {
 	public int footerValue;
 
 	// The color of the footer border
-	public string FooterColor;
+	public string footerColor;
 
 	// Flag indicating if only the corners of the footer should be colored
 	public bool onlyColorCorners;
