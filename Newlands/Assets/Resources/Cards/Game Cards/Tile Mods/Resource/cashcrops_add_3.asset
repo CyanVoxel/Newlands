@@ -19,7 +19,7 @@ MonoBehaviour:
   footerText: '**<x>** <r>'
   resource: Cash Crops
   footerValue: 3
-  FooterColor: Light Blue
+  footerColor: Light Blue
   onlyColorCorners: 0
   percFlag: 0
   moneyFlag: 0

@@ -20,7 +20,7 @@ MonoBehaviour:
   footerText: '**<x>** in Value'
   resource: None
   footerValue: 25
-  FooterColor: Green
+  footerColor: Green
   onlyColorCorners: 0
   percFlag: 1
   moneyFlag: 0

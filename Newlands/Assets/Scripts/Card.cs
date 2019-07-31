@@ -32,7 +32,7 @@ public class Card : ScriptableObject {
 	public int footerValue;
 
 	// The color of the footer border
-	public string FooterColor;
+	public string footerColor;
 
 	// Flag indicating if only the corners of the footer should be colored
 	public bool onlyColorCorners;
@@ -52,14 +52,6 @@ public class Card : ScriptableObject {
 	// Does this card get discarded if used? (Rather than being stacked under a Tile)
 	public bool doesDiscard;
 
-	// CONSTRUCTORS ###############################################################################
-
-	// Default no-arg constructor
-	public Card() { }
-
-	// Constructor that (should) create a card from a resource path
-	public Card(string path) {
-		this.Equals(Resources.Load<Card>(path));
-	} // Card(string) constructor
+	// public CardData data;
 
 } // Card class

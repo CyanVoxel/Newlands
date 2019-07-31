@@ -3,9 +3,17 @@
 
 using UnityEngine;
 
-public class RuleSet {
+public class RuleSet : MonoBehaviour {
+
+	private static string debugH = "<color=#0091EAFF><b>[RuleSet] </b></color>";
+
+	private GridManager gridMan;
 
 	// METHODS ####################################################################################
+
+	void Start() {
+		gridMan = FindObjectOfType<GridManager>();
+	}
 
 	// Compares a Game Card against a target Card/Tle to determine if it is allowed to be played
 	// given the scope of the Game Card.
@@ -15,11 +23,11 @@ public class RuleSet {
 		string[] targetLevel = new string[3];
 		bool[] scopeResults;
 
-		if (card.target != null) {
+		if (card != null && card.target != null) {
 			scopeLevel = card.target.Split('_');
 			scopeResults = new bool[scopeLevel.Length];
 		} else {
-			Debug.Log("Hey, that card's target is null!");
+			Debug.Log(debugH + "The card or it's target is null!");
 			return false;
 		}
 
@@ -232,7 +240,7 @@ public class RuleSet {
 	} // IsLegal
 
 	// Carries out the action that a legal Game Card intends
-	public static void PlayCard(GridUnit target, Card cardToPlay) {
+	public void PlayCard(GridUnit target, Card cardToPlay) {
 
 		string action = cardToPlay.subtitle;
 		// NOTE: Cards promting tile value calculation have their calculations offset to
@@ -263,10 +271,10 @@ public class RuleSet {
 				if (GetScope(cardToPlay, 2) == "Plains" && target.subScope != "Farmland") {
 					Card newCard = Card.CreateInstance<Card>();
 					newCard = Resources.Load<Card>("Cards/Tiles/Land/farmland_cashcrops_5");
-					target.tile.SendMessage("DisplayCard", newCard);
+					target.tileObj.SendMessage("DisplayCard", newCard);
 
-					GameManager.grid[target.x, target.y].LoadNewCard(newCard, target.tile);
-					target = GameManager.grid[target.x, target.y];
+					GridManager.grid[target.x, target.y].LoadNewCard(newCard, target.tileObj);
+					target = GridManager.grid[target.x, target.y];
 
 					target.CalcTotalValue();
 					GameManager.UpdatePlayersInfo();
@@ -281,7 +289,7 @@ public class RuleSet {
 	} // PlayCard(Card, GridUnit)
 
 	// Carries out the action that a legal Game Card intends (Override)
-	public static void PlayCard(GridUnit target, GridUnit cardToPlay) {
+	public void PlayCard(GridUnit target, GridUnit cardToPlay) {
 		PlayCard(target, cardToPlay.card);
 	} // PlayCard(GridUnit, GridUnit)
 

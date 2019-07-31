@@ -5,15 +5,15 @@ using UnityEngine;
 
 public class ResourceInfo : MonoBehaviour {
 
-	// DATA FIELDS ################################################################################
+	// DATA FIELDS #################################################################################
 
 	public static List<string> resources = new List<string>();
 	public static Dictionary<string, int> prices = new Dictionary<string, int>();
 	public static Dictionary<string, int> pricesMut = new Dictionary<string, int>();
 
-	// METHODS ####################################################################################
+	// METHODS #####################################################################################
 
-	// CONSTRUCTORS ###############################################################################
+	// CONSTRUCTORS ################################################################################
 
 	// Default static constructor
 	static ResourceInfo() {
