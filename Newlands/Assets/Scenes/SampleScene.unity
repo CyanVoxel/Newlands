@@ -310,7 +310,9 @@ MonoBehaviour:
   cardDis: {fileID: 706877489}
   guiMan: {fileID: 412696965}
   gridMan: {fileID: 1437400122}
-  playerIndex: 0
+  phase: 1
+  round: 1
+  turn: 1
 --- !u!114 &160484956
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -389,6 +391,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   syncInterval: 0.1
+  gameMan: {fileID: 160484955}
 --- !u!1 &516230485
 GameObject:
   m_ObjectHideFlags: 0
@@ -1066,7 +1069,7 @@ MonoBehaviour:
   syncInterval: 0.1
   gameMan: {fileID: 160484955}
   guiMan: {fileID: 412696965}
-  gridMan: {fileID: 0}
+  gridMan: {fileID: 1437400122}
 --- !u!114 &1065924669
 MonoBehaviour:
   m_ObjectHideFlags: 0

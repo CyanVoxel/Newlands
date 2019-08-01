@@ -14,17 +14,20 @@ public class GameManager : NetworkBehaviour {
 
 	public static MasterDeck masterDeck;
 	public static MasterDeck masterDeckMutable;
-	public static readonly int playerCount = 4; // Number of players in the match
+	public static readonly int playerCount = 2; // Number of players in the match
 	[SyncVar]
 	private int playerIndex = 1; // This value increments when a new player joins
 	public static int localPlayerId = -1;
-	public static int phase = 1; // The current phase of the game
-	public static int round = 1; // The current round of turns
-	public static int turn = 1; // The current turn in the round
+	[SyncVar]
+	public int phase = 1; // The current phase of the game
+	[SyncVar]
+	public int round = 1; // The current round of turns
+	[SyncVar(hook = "OnTurnChange")]
+	public int turn = 1; // The current turn in the round
 	public static int graceRounds = 1; // The # of rounds without neighbor rules
 
 	public static readonly int width = 7; // Width of the game grid in cards
-	public static readonly int height = 7; // Height of the game grid in cards
+	public static readonly int height = 3; // Height of the game grid in cards
 	public static readonly int handSize = 5; // How many cards the player is dealt
 
 	private static string debugH = "<color=#FF6D00FF><b>[GameManager] </b></color>";
@@ -160,12 +163,20 @@ public class GameManager : NetworkBehaviour {
 	} // DrawCard()
 
 	// Advance to the next turn
-	public void IncrementTurn() {
+	public void IncrementTurn(int turnChecked = 0, bool skipThis = false) {
 
-		turn++;
-		if (turn > playerCount) {
-			round++;
-			turn = 1;
+		if (this.turn < playerCount) {
+			this.turn++;
+		} else {
+			if (turnChecked > 0) { // If the turn checked was passed
+				if (skipThis) {	// And the turn passed should always be skipped now
+					this.turn = turnChecked; // Set the turn to one past the skipable turn
+				}
+			} else {
+				round++; // NOTE: In the future where round are capped, this needs error detection too
+				this.turn = 1;
+			}
+
 		}
 
 	} //IncrementTurn()
@@ -202,11 +213,14 @@ public class GameManager : NetworkBehaviour {
 
 	} //EndPhase()
 
-	public void HighlightNeighbors() {
+	public void HighlightNeighbors(int turn) {
 
+		int oldTurn = this.turn;
 		int id = (turn - 1);
 
+		// if (turn != oldTurn) {
 		WipeSelectionColors("LandTile", ColorPalette.tintCard);
+		// }
 
 		// Search through the grid
 		for (int x = 0; x < width; x++) {
@@ -243,6 +257,7 @@ public class GameManager : NetworkBehaviour {
 				} // for j
 			} // for i
 		} // Highlight()
+
 	} // HighlightNeighbors()
 
 	// Verifies that the Tile highlighting used in Phase 1 is correct.
@@ -280,7 +295,7 @@ public class GameManager : NetworkBehaviour {
 			// Debug.Log("Highlight Count:" + highlightCount);
 			if (highlightCount == 0) {
 				// Debug.Log("[VerifyHighlight] Turn " + turn + ", advancing...");
-				IncrementTurn();
+				IncrementTurn(turnChecked: this.turn, skipThis: true);
 				// Debug.Log("[VerifyHighlight] Turn " + turn);
 
 				int gridSpaceLeft = 0;
@@ -372,7 +387,7 @@ public class GameManager : NetworkBehaviour {
 			// Debug.Log("Turn " + turn + ", buying for Player " + players[id].Id);
 			return true;
 		} else if (!followsRules) {
-			Debug.Log(debugH + "You can't buy this tile, it's too far away!");
+			Debug.Log(debugH + "You can't buy this tile!");
 			return false;
 		} else {
 			Debug.Log(debugH + "This Tile is already owned!");
@@ -706,6 +721,27 @@ public class GameManager : NetworkBehaviour {
 
 	public int GetPlayerIndex() {
 		return this.playerIndex;
+	}
+
+	public void OnTurnChange(int newTurn) {
+
+		MouseManager.highlightFlag = false;
+
+		bool highlightAllowed = false;
+		if (round > GameManager.graceRounds) {
+			highlightAllowed = true;
+		}
+		Debug.Log(debugH + "Round: " + round + "/" + GameManager.graceRounds + " | " + highlightAllowed);
+		Debug.Log(debugH + "Turn: " + newTurn);
+
+		if (round > graceRounds) {
+			VerifyHighlight();
+			if (!MouseManager.highlightFlag) {
+				Debug.Log(debugH + "Highlighting...");
+				HighlightNeighbors(newTurn);
+				MouseManager.highlightFlag = true;
+			}
+		} // if
 	}
 
 } // GameManager class

@@ -15,6 +15,7 @@ public class PlayerConnection : NetworkBehaviour {
 	public SyncListCardData hand;
 	[SyncVar]
 	private bool initIdFlag = false;
+	public static NetworkConnection connection;
 
 	private static string debugH = "<color=#304FFEFF><b>[PlayerConnection] </b></color>";
 
@@ -26,6 +27,7 @@ public class PlayerConnection : NetworkBehaviour {
 		}
 
 		hand.Callback += OnHandUpdated;
+		connection = connectionToClient;
 
 		if (TryToGrabComponents()) {
 

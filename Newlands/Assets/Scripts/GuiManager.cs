@@ -8,6 +8,8 @@ public class GuiManager : NetworkBehaviour {
 
 	// GUI ELEMENTS ###############################################################################
 
+	public GameManager gameMan;
+
 	private TMP_Text phaseNumberText;
 	private TMP_Text roundNumberText;
 	private TMP_Text turnNumberText;
@@ -108,21 +110,21 @@ public class GuiManager : NetworkBehaviour {
 			return;
 		}
 
-		phaseNumStr = ("Phase " + GameManager.phase);
+		phaseNumStr = ("Phase " + gameMan.phase);
 		this.phaseNumberText.text = phaseNumStr;
 
-		roundNumStr = ("Round " + GameManager.round);
+		roundNumStr = ("Round " + gameMan.round);
 		this.roundNumberText.text = roundNumStr;
 
-		turnNumStr = ("Player " + GameManager.turn + "'s Turn");
+		turnNumStr = ("Player " + gameMan.turn + "'s Turn");
 		this.turnNumberText.text = turnNumStr;
 
 		// Tacks on "Grace Period" text if the round is a grace round
-		if (GameManager.phase == 1 && GameManager.round <= GameManager.graceRounds) {
+		if (gameMan.phase == 1 && gameMan.round <= GameManager.graceRounds) {
 			this.roundNumberText.text += (" (Grace Period)");
 		} // if
 
-		switch (GameManager.turn) {
+		switch (gameMan.turn) {
 			case 1:
 				this.turnNumberText.color = ColorPalette.LightBlue500;
 				break;
