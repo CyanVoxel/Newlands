@@ -126,16 +126,16 @@ public class GuiManager : NetworkBehaviour {
 
 		switch (gameMan.turn) {
 			case 1:
-				this.turnNumberText.color = ColorPalette.LightBlue500;
+				this.turnNumberText.color = ColorPalette.lightBlue500;
 				break;
 			case 2:
-				this.turnNumberText.color = ColorPalette.Red500;
+				this.turnNumberText.color = ColorPalette.red500;
 				break;
 			case 3:
-				this.turnNumberText.color = ColorPalette.Purple500;
+				this.turnNumberText.color = ColorPalette.purple500;
 				break;
 			case 4:
-				this.turnNumberText.color = ColorPalette.Amber500;
+				this.turnNumberText.color = ColorPalette.amber500;
 				break;
 			default:
 				break;

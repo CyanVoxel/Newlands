@@ -39,7 +39,7 @@ public class GridUnit {
 	public string subScope; // Scope of unit (ex. Land_Forest, Coast_Docks, Sabotage, etc.)
 	public string target = null;
 
-	private string debugH = "<color=#FFD600FF><b>[GridUnit] </b></color>";
+	private static DebugTag debug = new DebugTag("GridUnit", "FFD600");
 
 	// METHODS ####################################################################################
 
@@ -125,8 +125,8 @@ public class GridUnit {
 			this.CalcBaseValue();
 			this.CalcValueMod();
 
-			this.totalValue = (double) this.baseValue
-				+ ((double) this.baseValue * ((double) this.valueMod) / 100d);
+			this.totalValue = (double)this.baseValue
+				+ ((double)this.baseValue * ((double)this.valueMod) / 100d);
 
 			// Debug.Log("[GridUnit] Tile " + this.x + ", " + this.y + " base value:  " +
 			// 	this.baseValue);
@@ -150,12 +150,12 @@ public class GridUnit {
 			// Debug.Log("Value Mod   : " + this.valueMod);
 			// Debug.Log("Calculating...");
 
-			this.totalValue = (double) this.baseValue
-				+ ((double) this.baseValue * ((double) this.valueMod) / 100d);
+			this.totalValue = (double)this.baseValue
+				+ ((double)this.baseValue * ((double)this.valueMod) / 100d);
 
 			// Debug.Log("Total Value: " + this.totalValue);
 
-			ResourceInfo.pricesMut[this.resource] = (int) this.totalValue;
+			ResourceInfo.pricesMut[this.resource] = (int)this.totalValue;
 			cardDis.UpdateFooter(this, ResourceInfo.pricesMut[this.resource]);
 
 			// Debug.Log("New PriceMut: " + ResourceInfo.pricesMut[this.resource]);
@@ -270,7 +270,7 @@ public class GridUnit {
 
 		this.card = Card.CreateInstance<Card>();
 
-		Debug.Log(debugH + "Storing CardData for: " + cardData.title);
+		Debug.Log(debug.head + "Storing CardData for: " + cardData.title);
 
 		this.card.category = cardData.category;
 		this.card.title = cardData.title;

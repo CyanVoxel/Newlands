@@ -23,7 +23,7 @@ public class GridManager : NetworkBehaviour {
 	public GameObject gameCardPrefab;
 	public GameObject marketCardPrefab;
 
-	private static string debugH = "<color=#FFAB00FF><b>[GridManager] </b></color>";
+	private static DebugTag debug = new DebugTag("GridManager", "FFAB00");
 
 	void Start() {
 		cardDis = FindObjectOfType<CardDisplay>();
@@ -99,7 +99,7 @@ public class GridManager : NetworkBehaviour {
 					cardState.moneyFlag = grid[x, y].card.moneyFlag;
 					cardState.footerOpr = grid[x, y].card.footerOpr;
 				} else {
-					Debug.Log(debugH + "This object's card state was null!");
+					Debug.Log(debug.head + "This object's card state was null!");
 				}
 
 			} // y
@@ -142,7 +142,7 @@ public class GridManager : NetworkBehaviour {
 						yZeroes = "0";
 					} // zeroes calc
 
-					GameObject cardObj = (GameObject) Instantiate(marketCardPrefab,
+					GameObject cardObj = (GameObject)Instantiate(marketCardPrefab,
 						new Vector3(xOff, yOff, 50),
 						Quaternion.identity);
 
@@ -178,7 +178,7 @@ public class GridManager : NetworkBehaviour {
 						cardState.moneyFlag = marketGrid[x, y].card.moneyFlag;
 						cardState.footerOpr = marketGrid[x, y].card.footerOpr;
 					} else {
-						Debug.Log(debugH + "This object's card state was null!");
+						Debug.Log(debug.head + "This object's card state was null!");
 					} // if (cardState != null)
 
 				} // if (marketGrid[x, y] != null)
@@ -196,8 +196,8 @@ public class GridManager : NetworkBehaviour {
 		// 	return;
 		// }
 
-		// Debug.Log(debugH + "Spawning Cards for ID " + playerNum);
-		// Debug.Log(debugH + "Hand size of: " + hand.Count);
+		// Debug.Log(debug.head + "Spawning Cards for ID " + playerNum);
+		// Debug.Log(debug.head + "Hand size of: " + hand.Count);
 
 		// Populate the Card prefab
 		string pZeroes = "0";
@@ -221,7 +221,7 @@ public class GridManager : NetworkBehaviour {
 				iZeroes = "0";
 			} // zeroes calc
 
-			GameObject cardObj = (GameObject) Instantiate(gameCardPrefab,
+			GameObject cardObj = (GameObject)Instantiate(gameCardPrefab,
 				new Vector3(xOff, yOff, 40),
 				Quaternion.identity);
 
@@ -237,7 +237,7 @@ public class GridManager : NetworkBehaviour {
 					+ "i" + iZeroes + i + "_"
 					+ "GameCard");
 
-				// Debug.Log(debugH + "Spawned CardObj: " + hand[i].title);
+				// Debug.Log(debug.head + "Spawned CardObj: " + hand[i].title);
 
 				// Debug.Log("[GridManager] Accessing hand card at [" + i + ", " + playerNum + "]...");
 
@@ -258,17 +258,17 @@ public class GridManager : NetworkBehaviour {
 				cardState.onlyColorCorners = hand[i].onlyColorCorners;
 				// cardState.title = hand[i].title;
 			} else {
-				Debug.Log(debugH + "This object's card state was null!");
+				Debug.Log(debug.head + "This object's card state was null!");
 			} // if (cardState != null)
 
-			// Debug.Log(debugH + "Player " + playerNum);
-			// Debug.Log(debugH + GameManager.players);
-			// Debug.Log(debugH + GameManager.players.Count);
-			// Debug.Log(debugH + GameManager.players[playerNum]);
-			// Debug.Log(debugH + GameManager.players[playerNum].handUnits);
-			// Debug.Log(debugH + GameManager.players[playerNum].handUnits[i]);
-			// Debug.Log(debugH + hand[i]);
-			// Debug.Log(debugH + i);
+			// Debug.Log(debug.head + "Player " + playerNum);
+			// Debug.Log(debug.head + GameManager.players);
+			// Debug.Log(debug.head + GameManager.players.Count);
+			// Debug.Log(debug.head + GameManager.players[playerNum]);
+			// Debug.Log(debug.head + GameManager.players[playerNum].handUnits);
+			// Debug.Log(debug.head + GameManager.players[playerNum].handUnits[i]);
+			// Debug.Log(debug.head + hand[i]);
+			// Debug.Log(debug.head + i);
 
 			// GameManager.players[playerNum].handUnits[i] = new GridUnit(hand[i],
 			// 	cardObj,
@@ -282,7 +282,7 @@ public class GridManager : NetworkBehaviour {
 	public void InitGameGrid() {
 
 		if (!hasAuthority) {
-			// Debug.Log(debugH + "No authority to initialize the internal game grid!");
+			// Debug.Log(debug.head + "No authority to initialize the internal game grid!");
 			return;
 		}
 
@@ -303,7 +303,7 @@ public class GridManager : NetworkBehaviour {
 					// Connect the drawn card to the internal grid
 					grid[x, y] = new GridUnit(card: card, x: x, y: y);
 				} else {
-					Debug.Log(debugH + "Tile Draw failure!");
+					Debug.Log(debug.head + "Tile Draw failure!");
 				}
 			} // y
 		} // x
@@ -314,17 +314,17 @@ public class GridManager : NetworkBehaviour {
 	public void InitMarketGrid() {
 
 		if (!hasAuthority) {
-			Debug.Log(debugH + "No authority to initialize the internal market grid!");
+			Debug.Log(debug.head + "No authority to initialize the internal market grid!");
 			return;
 		}
 
 		// Market Grid ####################################
-		marketGrid = new GridUnit[Mathf.CeilToInt((float) GameManager.masterDeck.marketCardDeck.Count()
-			/ (float) GameManager.height), GameManager.height];
+		marketGrid = new GridUnit[Mathf.CeilToInt((float)GameManager.masterDeck.marketCardDeck.Count()
+			/ (float)GameManager.height), GameManager.height];
 		maxMarketStack = new int[GameManager.height];
 
-		int marketWidth = Mathf.CeilToInt((float) GameManager.masterDeck.marketCardDeck.Count()
-			/ (float) GameManager.height);
+		int marketWidth = Mathf.CeilToInt((float)GameManager.masterDeck.marketCardDeck.Count()
+			/ (float)GameManager.height);
 
 		for (int x = 0; x < marketWidth; x++) {
 			for (int y = 0; y < GameManager.height; y++) {
@@ -358,8 +358,8 @@ public class GridManager : NetworkBehaviour {
 				} // for y
 			} // for x
 		} else if (type == "Market") {
-			int marketWidth = Mathf.CeilToInt((float) GameManager.masterDeck.marketCardDeck.Count()
-				/ (float) GameManager.height);
+			int marketWidth = Mathf.CeilToInt((float)GameManager.masterDeck.marketCardDeck.Count()
+				/ (float)GameManager.height);
 			for (int x = 0; x < marketWidth; x++) {
 				for (int y = row; y < GameManager.height; y++) {
 
@@ -375,7 +375,7 @@ public class GridManager : NetworkBehaviour {
 				} // for y
 			} // for x
 		} else {
-			Debug.Log(debugH + "Not doing anything");
+			Debug.Log(debug.head + "Not doing anything");
 		} // type
 
 	} // ShiftRow()

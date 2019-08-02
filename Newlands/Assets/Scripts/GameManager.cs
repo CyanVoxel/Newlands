@@ -30,7 +30,7 @@ public class GameManager : NetworkBehaviour {
 	public static readonly int height = 3; // Height of the game grid in cards
 	public static readonly int handSize = 5; // How many cards the player is dealt
 
-	private static string debugH = "<color=#FF6D00FF><b>[GameManager] </b></color>";
+	private static DebugTag debug = new DebugTag("GameManager", "FF6D00");
 
 	[SerializeField]
 	public static List<Player> players = new List<Player>(); // The player data objects
@@ -45,13 +45,18 @@ public class GameManager : NetworkBehaviour {
 			return;
 		}
 
-		Debug.Log(debugH + "Initializing GameManager...");
+		Debug.Log(debug.head + ColorPalette.testColor.r);
+		Debug.Log(debug.head + ColorPalette.testColor.g);
+		Debug.Log(debug.head + ColorPalette.testColor.b);
+		Debug.Log(debug.head + ColorPalette.testColor.a);
 
-		Debug.Log(debugH + "Creating Master Deck \"Vanilla\"");
+		Debug.Log(debug.head + "Initializing GameManager...");
+
+		Debug.Log(debug.head + "Creating Master Deck \"Vanilla\"");
 		masterDeck = new MasterDeck("Vanilla");
 		masterDeckMutable = new MasterDeck("Vanilla");
 
-		Debug.Log(debugH + "Initializing Players...");
+		Debug.Log(debug.head + "Initializing Players...");
 		InitPlayers();
 
 		// Initialize the internal grids
@@ -120,7 +125,7 @@ public class GameManager : NetworkBehaviour {
 	// 	try {
 	// 		cardObj.SendMessage("DisplayCard", card);
 	// 	} catch (UnassignedReferenceException e) {
-	// 		Debug.LogError(debugH + "Error: "
+	// 		Debug.LogError(debugE + "Error: "
 	// 			+ "Card error at deck index " + index + ": " + e);
 	// 	}
 
@@ -169,7 +174,7 @@ public class GameManager : NetworkBehaviour {
 			this.turn++;
 		} else {
 			if (turnChecked > 0) { // If the turn checked was passed
-				if (skipThis) {	// And the turn passed should always be skipped now
+				if (skipThis) { // And the turn passed should always be skipped now
 					this.turn = turnChecked; // Set the turn to one past the skipable turn
 				}
 			} else {
@@ -213,148 +218,148 @@ public class GameManager : NetworkBehaviour {
 
 	} //EndPhase()
 
-	public void HighlightNeighbors(int turn) {
+	// public void HighlightNeighbors(int turn) {
 
-		int oldTurn = this.turn;
-		int id = (turn - 1);
+	// 	int oldTurn = this.turn;
+	// 	int id = (turn - 1);
 
-		// if (turn != oldTurn) {
-		WipeSelectionColors("LandTile", ColorPalette.tintCard);
-		// }
+	// 	// if (turn != oldTurn) {
+	// 	WipeSelectionColors("LandTile", ColorPalette.tintCard);
+	// 	// }
 
-		// Search through the grid
-		for (int x = 0; x < width; x++) {
-			for (int y = 0; y < height; y++) {
-				if (GridManager.grid[x, y].ownerId == players[id].Id) {
-					Highlight(x, y);
-				} // if Tile is owned by the player
-			} // for y
-		} // for x
+	// 	// Search through the grid
+	// 	for (int x = 0; x < width; x++) {
+	// 		for (int y = 0; y < height; y++) {
+	// 			if (GridManager.grid[x, y].ownerId == players[id].Id) {
+	// 				Highlight(x, y);
+	// 			} // if Tile is owned by the player
+	// 		} // for y
+	// 	} // for x
 
-		// Local function that recolors unowned neighbor tiles
-		void Highlight(int gridX, int gridY) {
+	// 	// Local function that recolors unowned neighbor tiles
+	// 	void Highlight(int gridX, int gridY) {
 
-			Color playerColor = GetPlayerColor(turn, 200);
-			bool[, ] highlighted = new bool[width, height];
-			// needToSkip = true;
+	// 		Color playerColor = GetPlayerColor(turn, 200);
+	// 		bool[, ] highlighted = new bool[width, height];
+	// 		// needToSkip = true;
 
-			// Find each unowned neighbor tiles
-			for (int i = -1; i <= 1; i++) {
-				for (int j = -1; j <= 1; j++) {
-					if (gridX + i >= 0
-						&& gridX + i < width
-						&& gridY + j >= 0
-						&& gridY + j < height) {
+	// 		// Find each unowned neighbor tiles
+	// 		for (int i = -1; i <= 1; i++) {
+	// 			for (int j = -1; j <= 1; j++) {
+	// 				if (gridX + i >= 0
+	// 					&& gridX + i < width
+	// 					&& gridY + j >= 0
+	// 					&& gridY + j < height) {
 
-						if (GridManager.grid[gridX + i, gridY + j].ownerId == 0
-							&& !GridManager.grid[gridX + i, gridY + j].bankrupt) {
+	// 					if (GridManager.grid[gridX + i, gridY + j].ownerId == 0
+	// 						&& !GridManager.grid[gridX + i, gridY + j].bankrupt) {
 
-							GameObject temp = FindCard("Tile", (gridX + i), (gridY + j));
-							temp.GetComponentsInChildren<Renderer>() [0].material.color = playerColor;
-							temp.GetComponentsInChildren<Renderer>() [1].material.color = playerColor;
-						} // if the Tile is unowned
-					} // if grid in bounds
-				} // for j
-			} // for i
-		} // Highlight()
+	// 						GameObject temp = FindCard("Tile", (gridX + i), (gridY + j));
+	// 						temp.GetComponentsInChildren<Renderer>()[0].material.color = playerColor;
+	// 						temp.GetComponentsInChildren<Renderer>()[1].material.color = playerColor;
+	// 					} // if the Tile is unowned
+	// 				} // if grid in bounds
+	// 			} // for j
+	// 		} // for i
+	// 	} // Highlight()
 
-	} // HighlightNeighbors()
+	// } // HighlightNeighbors()
 
 	// Verifies that the Tile highlighting used in Phase 1 is correct.
 	// NOTE: This function will skip a players turn if they are unable to buy any more tiles.
 	// Returns TRUE if it needs to go through a recursive iteration.
-	public bool VerifyHighlight() {
+	// public bool VerifyHighlight() {
 
-		int id = (turn - 1);
+	// 	int id = (turn - 1);
 
-		bool[, ] highlighted = new bool[width, height];
-		int highlightCount = 0;
+	// 	bool[, ] highlighted = new bool[width, height];
+	// 	int highlightCount = 0;
 
-		if (round > graceRounds && phase == 1) {
+	// 	if (round > graceRounds && phase == 1) {
 
-			// Search through the grid
-			for (int x = 0; x < width; x++) {
-				for (int y = 0; y < height; y++) {
-					// Debug.Log("[VerifyHighlight] Turn " + turn + ", Player ID (Turn) " + id + ", (Real) " + players[id].Id);
-					if (GridManager.grid[x, y].ownerId == players[id].Id) {
-						Highlight(x, y);
-					} // if player owns Tile
-				} // for y
-			} // for x
-			// Debug.Log("[VerifyHighlight] Highlights: " + highlightCount);
+	// 		// Search through the grid
+	// 		for (int x = 0; x < width; x++) {
+	// 			for (int y = 0; y < height; y++) {
+	// 				// Debug.Log("[VerifyHighlight] Turn " + turn + ", Player ID (Turn) " + id + ", (Real) " + players[id].Id);
+	// 				if (GridManager.grid[x, y].ownerId == players[id].Id) {
+	// 					Highlight(x, y);
+	// 				} // if player owns Tile
+	// 			} // for y
+	// 		} // for x
+	// 		// Debug.Log("[VerifyHighlight] Highlights: " + highlightCount);
 
-			for (int x = 0; x < width; x++) {
-				for (int y = 0; y < height; y++) {
-					if (highlighted[x, y]) {
-						highlightCount++;
-						// Debug.Log("Highlighted:" + x + ", " + y);
-					} //if grid location was highlighted
-				} // for y
-			} // for x
+	// 		for (int x = 0; x < width; x++) {
+	// 			for (int y = 0; y < height; y++) {
+	// 				if (highlighted[x, y]) {
+	// 					highlightCount++;
+	// 					// Debug.Log("Highlighted:" + x + ", " + y);
+	// 				} //if grid location was highlighted
+	// 			} // for y
+	// 		} // for x
 
-			// Debug.Log("Highlight Count:" + highlightCount);
-			if (highlightCount == 0) {
-				// Debug.Log("[VerifyHighlight] Turn " + turn + ", advancing...");
-				IncrementTurn(turnChecked: this.turn, skipThis: true);
-				// Debug.Log("[VerifyHighlight] Turn " + turn);
+	// 		// Debug.Log("Highlight Count:" + highlightCount);
+	// 		if (highlightCount == 0) {
+	// 			// Debug.Log("[VerifyHighlight] Turn " + turn + ", advancing...");
+	// 			IncrementTurn(turnChecked: this.turn, skipThis: true);
+	// 			// Debug.Log("[VerifyHighlight] Turn " + turn);
 
-				int gridSpaceLeft = 0;
+	// 			int gridSpaceLeft = 0;
 
-				// Test to see if the grid is full
-				for (int x = 0; x < width; x++) {
-					for (int y = 0; y < height; y++) {
-						if (GridManager.grid[x, y].ownerId == 0
-							&& !GridManager.grid[x, y].bankrupt) {
-							gridSpaceLeft++;
-							// Debug.Log("Grid must NOT be full!");
-						} // if Tile is unowned
-					} // for y
-				} // for x
-				// Debug.Log("Grid Space Left: " + gridSpaceLeft);
+	// 			// Test to see if the grid is full
+	// 			for (int x = 0; x < width; x++) {
+	// 				for (int y = 0; y < height; y++) {
+	// 					if (GridManager.grid[x, y].ownerId == 0
+	// 						&& !GridManager.grid[x, y].bankrupt) {
+	// 						gridSpaceLeft++;
+	// 						// Debug.Log("Grid must NOT be full!");
+	// 					} // if Tile is unowned
+	// 				} // for y
+	// 			} // for x
+	// 			// Debug.Log("Grid Space Left: " + gridSpaceLeft);
 
-				// If the grid is full, end the phase.
-				// Else, continue recursively checking if this turn should be skipped
-				if (gridSpaceLeft == 0) {
-					// Debug.Log("Grid was full!");
-					EndPhase();
-					return false;
-				} else {
-					// return true;
-					VerifyHighlight();
-					// Debug.Log("[VerifyHighlight2] Turn "
-					// 	+ turn + ", Player ID (Turn) " + id
-					// 	+ ", (Real) " + players[id].Id);
-				} // if-else
-			} // if nothing was highlighted
-		} else {
-			return false;
-		} // If the round was greater than 1 during phase 1
+	// 			// If the grid is full, end the phase.
+	// 			// Else, continue recursively checking if this turn should be skipped
+	// 			if (gridSpaceLeft == 0) {
+	// 				// Debug.Log("Grid was full!");
+	// 				EndPhase();
+	// 				return false;
+	// 			} else {
+	// 				// return true;
+	// 				VerifyHighlight();
+	// 				// Debug.Log("[VerifyHighlight2] Turn "
+	// 				// 	+ turn + ", Player ID (Turn) " + id
+	// 				// 	+ ", (Real) " + players[id].Id);
+	// 			} // if-else
+	// 		} // if nothing was highlighted
+	// 	} else {
+	// 		return false;
+	// 	} // If the round was greater than 1 during phase 1
 
-		return false;
+	// 	return false;
 
-		// Local function that recolors unowned neighbor tiles.
-		void Highlight(int gridX, int gridY) {
+	// 	// Local function that recolors unowned neighbor tiles.
+	// 	void Highlight(int gridX, int gridY) {
 
-			// Find each unowned neighbor tiles
-			for (int i = -1; i <= 1; i++) {
-				for (int j = -1; j <= 1; j++) {
-					if (gridX + i >= 0
-						&& gridX + i < width
-						&& gridY + j >= 0
-						&& gridY + j < height) {
-						if (GridManager.grid[gridX + i, gridY + j].ownerId == 0
-							&& !GridManager.grid[gridX + i, gridY + j].bankrupt) {
+	// 		// Find each unowned neighbor tiles
+	// 		for (int i = -1; i <= 1; i++) {
+	// 			for (int j = -1; j <= 1; j++) {
+	// 				if (gridX + i >= 0
+	// 					&& gridX + i < width
+	// 					&& gridY + j >= 0
+	// 					&& gridY + j < height) {
+	// 					if (GridManager.grid[gridX + i, gridY + j].ownerId == 0
+	// 						&& !GridManager.grid[gridX + i, gridY + j].bankrupt) {
 
-							highlighted[gridX + i, gridY + j] = true;
-						} // if Tile is unowned
-					} // if grid in bounds
-				} // for j
-			} // for i
-		} // Highlight()
-	} // GetHighlightCount()
+	// 						highlighted[gridX + i, gridY + j] = true;
+	// 					} // if Tile is unowned
+	// 				} // if grid in bounds
+	// 			} // for j
+	// 		} // for i
+	// 	} // Highlight()
+	// } // GetHighlightCount()
 
 	// Attempts to buy an unowned tile. Returns true if successful, or false if already owned.
-	public bool BuyTile(int gridX, int gridY) {
+	public bool OldBuyTile(int gridX, int gridY) {
 
 		int id = (turn - 1);
 
@@ -387,10 +392,10 @@ public class GameManager : NetworkBehaviour {
 			// Debug.Log("Turn " + turn + ", buying for Player " + players[id].Id);
 			return true;
 		} else if (!followsRules) {
-			Debug.Log(debugH + "You can't buy this tile!");
+			Debug.Log(debug.head + "You can't buy this tile!");
 			return false;
 		} else {
-			Debug.Log(debugH + "This Tile is already owned!");
+			Debug.Log(debug.head + "This Tile is already owned!");
 			return false;
 		}
 
@@ -416,51 +421,51 @@ public class GameManager : NetworkBehaviour {
 		} // ValidTile()
 	} // BuyTile()
 
-	// Turns all Land Tiles on the grid white.
-	public void WipeSelectionColors(string cardType, Color32 color) {
+	// // Turns all Land Tiles on the grid white.
+	// public void WipeSelectionColors(string cardType, Color32 color) {
 
-		if (cardType == "LandTile") {
-			for (int x = 0; x < width; x++) {
-				for (int y = 0; y < height; y++) {
-					if (GridManager.grid[x, y].ownerId == 0
-						&& !GridManager.grid[x, y].bankrupt) {
-						GameObject temp = FindCard("Tile", x, y);
-						temp.GetComponentsInChildren<Renderer>() [0].material.color = color;
-						temp.GetComponentsInChildren<Renderer>() [1].material.color = color;
-					} //if tile unowned
-				} // for height
-			} // for width
-		} else if (cardType == "GameCard") {
-			for (int i = 0; i < handSize; i++) {
-				if (FindCard("GameCard", localPlayerId, i)) {
-					// GameObject temp = transform.Find("GameCard_p0_i" + i).gameObject;
-					GameObject temp = FindCard("GameCard", localPlayerId, i);
-					float x = temp.transform.position.x;
-					float y = temp.transform.position.y;
-					temp.transform.position = new Vector3(x, y, 40);
-					temp.GetComponentsInChildren<Renderer>() [0].material.color = color;
-					temp.GetComponentsInChildren<Renderer>() [1].material.color = color;
-				} else {
-					// Debug.LogWarning("[GameManager] Warning: Could not find a GameCard selection to wipe!");
-				} // if the card could be found
+	// 	if (cardType == "LandTile") {
+	// 		for (int x = 0; x < width; x++) {
+	// 			for (int y = 0; y < height; y++) {
+	// 				if (GridManager.grid[x, y].ownerId == 0
+	// 					&& !GridManager.grid[x, y].bankrupt) {
+	// 					GameObject temp = FindCard("Tile", x, y);
+	// 					temp.GetComponentsInChildren<Renderer>()[0].material.color = color;
+	// 					temp.GetComponentsInChildren<Renderer>()[1].material.color = color;
+	// 				} //if tile unowned
+	// 			} // for height
+	// 		} // for width
+	// 	} else if (cardType == "GameCard") {
+	// 		for (int i = 0; i < handSize; i++) {
+	// 			if (FindCard("GameCard", localPlayerId, i)) {
+	// 				// GameObject temp = transform.Find("GameCard_p0_i" + i).gameObject;
+	// 				GameObject temp = FindCard("GameCard", localPlayerId, i);
+	// 				float x = temp.transform.position.x;
+	// 				float y = temp.transform.position.y;
+	// 				temp.transform.position = new Vector3(x, y, 40);
+	// 				temp.GetComponentsInChildren<Renderer>()[0].material.color = color;
+	// 				temp.GetComponentsInChildren<Renderer>()[1].material.color = color;
+	// 			} else {
+	// 				// Debug.LogWarning("[GameManager] Warning: Could not find a GameCard selection to wipe!");
+	// 			} // if the card could be found
 
-			} // for handSize
-		} else if (cardType == "MarketCard") {
-			int marketWidth = Mathf.CeilToInt((float) GameManager.masterDeck.marketCardDeck.Count()
-				/ (float) height);
-			for (int x = 0; x < marketWidth; x++) {
-				for (int y = 0; y < height; y++) {
-					GameObject temp = FindCard("MarketCard", x, y);
-					float posX = temp.transform.position.x;
-					float posY = temp.transform.position.y;
-					temp.transform.position = new Vector3(posX, posY, 40);
-					temp.GetComponentsInChildren<Renderer>() [0].material.color = color;
-					temp.GetComponentsInChildren<Renderer>() [1].material.color = color;
-				} // for height
-			} // for width
-		} // if
+	// 		} // for handSize
+	// 	} else if (cardType == "MarketCard") {
+	// 		int marketWidth = Mathf.CeilToInt((float)GameManager.masterDeck.marketCardDeck.Count()
+	// 			/ (float)height);
+	// 		for (int x = 0; x < marketWidth; x++) {
+	// 			for (int y = 0; y < height; y++) {
+	// 				GameObject temp = FindCard("MarketCard", x, y);
+	// 				float posX = temp.transform.position.x;
+	// 				float posY = temp.transform.position.y;
+	// 				temp.transform.position = new Vector3(posX, posY, 40);
+	// 				temp.GetComponentsInChildren<Renderer>()[0].material.color = color;
+	// 				temp.GetComponentsInChildren<Renderer>()[1].material.color = color;
+	// 			} // for height
+	// 		} // for width
+	// 	} // if
 
-	} // WipeSelectionColors()
+	// } // WipeSelectionColors()
 
 	// Returns the color associated with a player ID.
 	// Strength paramater refers to a possible brighter color variant.
@@ -472,46 +477,46 @@ public class GameManager : NetworkBehaviour {
 
 			case 1:
 				if (strength == 500) {
-					color = ColorPalette.LightBlue500;
+					color = ColorPalette.lightBlue500;
 				} else if (strength == 400) {
-					color = ColorPalette.LightBlue400;
+					color = ColorPalette.lightBlue400;
 				} else if (strength == 300) {
-					color = ColorPalette.LightBlue300;
+					color = ColorPalette.lightBlue300;
 				} else if (strength == 200) {
-					color = ColorPalette.LightBlue200;
+					color = ColorPalette.lightBlue200;
 				}
 				break;
 			case 2:
 				if (strength == 500) {
-					color = ColorPalette.Red500;
+					color = ColorPalette.red500;
 				} else if (strength == 400) {
-					color = ColorPalette.Red400;
+					color = ColorPalette.red400;
 				} else if (strength == 300) {
-					color = ColorPalette.Red300;
+					color = ColorPalette.red300;
 				} else if (strength == 200) {
-					color = ColorPalette.Red300;
+					color = ColorPalette.red300;
 				}
 				break;
 			case 3:
 				if (strength == 500) {
-					color = ColorPalette.Purple500;
+					color = ColorPalette.purple500;
 				} else if (strength == 400) {
-					color = ColorPalette.Purple400;
+					color = ColorPalette.purple400;
 				} else if (strength == 300) {
-					color = ColorPalette.Purple300;
+					color = ColorPalette.purple300;
 				} else if (strength == 200) {
-					color = ColorPalette.Purple200;
+					color = ColorPalette.purple200;
 				}
 				break;
 			case 4:
 				if (strength == 500) {
-					color = ColorPalette.Amber500;
+					color = ColorPalette.amber500;
 				} else if (strength == 400) {
-					color = ColorPalette.Amber400;
+					color = ColorPalette.amber400;
 				} else if (strength == 300) {
-					color = ColorPalette.Amber300;
+					color = ColorPalette.amber300;
 				} else if (strength == 200) {
-					color = ColorPalette.Amber200;
+					color = ColorPalette.amber200;
 				}
 				break;
 			default:
@@ -535,13 +540,13 @@ public class GameManager : NetworkBehaviour {
 
 			Vector3 oldCardPosition = gameCard.tileObj.transform.position;
 			int oldCardIndex = gameCard.x;
-			Debug.Log(debugH + "Old Card Index: " + oldCardIndex);
+			Debug.Log(debug.head + "Old Card Index: " + oldCardIndex);
 
 			if (gridTile.bankrupt) {
 				BankruptTile(gridTile);
 				UpdatePlayersInfo();
 				guiMan.CmdUpdateUI();
-				Debug.Log(debugH + "Tile bankrupt! has value of " + gridTile.totalValue);
+				Debug.Log(debug.head + "Tile bankrupt! has value of " + gridTile.totalValue);
 			}
 
 			if (gameCard.stackable) {
@@ -619,13 +624,13 @@ public class GameManager : NetworkBehaviour {
 
 			// gridTile.cardStack.Add(gameCard.tile);
 			MouseManager.selection = -1;
-			WipeSelectionColors("Game Card", ColorPalette.tintCard);
+			// WipeSelectionColors("Game Card", ColorPalette.tintCard);
 			return true;
 
 		} else {
-			Debug.Log(debugH + "Card move is illegal!");
+			Debug.Log(debug.head + "Card move is illegal!");
 			MouseManager.selection = -1;
-			WipeSelectionColors("Game Card", ColorPalette.tintCard);
+			// WipeSelectionColors("Game Card", ColorPalette.tintCard);
 			return false;
 		} // If the Category AND Scope match
 
@@ -676,7 +681,7 @@ public class GameManager : NetworkBehaviour {
 
 	public static void BankruptTile(GridUnit tile) {
 
-		Debug.Log(debugH + "Bankrupting tile!");
+		Debug.Log(debug.head + "Bankrupting tile!");
 		tile.ownerId = 0;
 		CardDisplay.BankruptVisuals(tile.tileObj);
 
@@ -731,17 +736,62 @@ public class GameManager : NetworkBehaviour {
 		if (round > GameManager.graceRounds) {
 			highlightAllowed = true;
 		}
-		Debug.Log(debugH + "Round: " + round + "/" + GameManager.graceRounds + " | " + highlightAllowed);
-		Debug.Log(debugH + "Turn: " + newTurn);
+		Debug.Log(debug.head + "Round: " + round + "/" + GameManager.graceRounds + " | " + highlightAllowed);
+		Debug.Log(debug.head + "Turn: " + newTurn);
 
-		if (round > graceRounds) {
-			VerifyHighlight();
-			if (!MouseManager.highlightFlag) {
-				Debug.Log(debugH + "Highlighting...");
-				HighlightNeighbors(newTurn);
-				MouseManager.highlightFlag = true;
-			}
-		} // if
+		// if (round > graceRounds) {
+		// 	// VerifyHighlight();
+		// 	if (!MouseManager.highlightFlag) {
+		// 		Debug.Log(debug.head + "Highlighting...");
+		// 		HighlightNeighbors(newTurn);
+		// 		MouseManager.highlightFlag = true;
+		// 	}
+		// } // if
 	}
+
+	public bool BuyTile(Coordinate2 target) {
+
+		int turn = this.turn; // Don't want the turn changing while this is running
+		bool tileOwned = false;
+		bool validPurchase = false;
+
+		Debug.Log(debug.head + "#############################################################");
+		Debug.Log(debug.head + "Turn " + turn);
+
+		// Interate through each player, then each tile they have owned.
+		// Sets tileOwned to true if a match is found.
+		for (int i = 0; i < GameManager.players.Count; i++) {
+			for (int j = 0; j < GameManager.players[i].ownedTiles.Count; j++) {
+				if (GameManager.players[i].ownedTiles[j] == target) {
+					Debug.Log(debug.head + "Can't purchase, tile " + target.ToString() + " is already owned!");
+					tileOwned = true;
+				}
+			}
+		}
+
+		if (!tileOwned) {
+			Debug.Log(debug.head + "Allowing tile purchase. Check for funds later!");
+			Debug.Log(debug.head + GameManager.players);
+			Debug.Log(debug.head + GameManager.players.Count + " - " + (turn - 1));
+			GameManager.players[turn - 1].ownedTiles.Add(target);
+			Debug.Log(debug.head + "Player " + turn
+				+ " (ID: " + GameManager.players[turn - 1].Id + ") bought tile " + target.ToString());
+			Debug.Log(debug.head + "Advancing Turn; This is a temporary mechanic!");
+			this.IncrementTurn();
+			Debug.Log(debug.head + "#############################################################");
+			validPurchase = true;
+		}
+
+		return validPurchase;
+
+	} // BuyTile()
+
+	// Overload of BuyTile(), taking in two ints instead of a Coordinate2.
+	public bool BuyTile(int x, int y) {
+
+		Coordinate2 target = new Coordinate2(x, y);
+		return BuyTile(target);
+
+	} // BuyTile()
 
 } // GameManager class

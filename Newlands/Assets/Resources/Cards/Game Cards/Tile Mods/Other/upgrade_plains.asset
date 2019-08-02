@@ -15,8 +15,7 @@ MonoBehaviour:
   category: Game Card
   title: Tile Mod
   subtitle: Upgrade
-  bodyText: Upgrade any **Plains** Tile to a **Farmland** Tile. This increases the
-    **Base Value** of the Tile resources.
+  bodyText: Upgrade any **Plains** Tile to a **Farmland** Tile.
   footerText: Upgrade
   resource: None
   footerValue: 0

@@ -4,21 +4,21 @@ using UnityEngine;
 
 public class CameraManager : MonoBehaviour {
 
-    public static Camera mainCam;
+	public static Camera mainCam;
 
-    void Awake() {
+	void Awake() {
 		mainCam = Camera.main;
 	}
 
-    // Start is called before the first frame update
-    void Start() {
+	// Start is called before the first frame update
+	void Start() {
 
-    }
+	}
 
-    // Update is called once per frame
-    void Update() {
+	// Update is called once per frame
+	void Update() {
 
-        // Scroll in and out
+		// Scroll in and out
 		Vector3 cameraPos = mainCam.transform.position;
 		cameraPos.z += (Input.mouseScrollDelta.y * 3f);
 		mainCam.transform.position = cameraPos;
@@ -43,5 +43,5 @@ public class CameraManager : MonoBehaviour {
 			mainCam.transform.position = cameraPos;
 		}
 
-    }
+	}
 }

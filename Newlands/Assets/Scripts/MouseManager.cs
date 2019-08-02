@@ -7,15 +7,19 @@ using UnityEngine.EventSystems;
 
 public class MouseManager : NetworkBehaviour {
 
-	private static string debugH = "<color=#AA00FFFF><b>[MouseManager] </b></color>";
+	private static DebugTag debug = new DebugTag("MouseManager", "AA00FF");
 
 	public GameManager gameMan;
 	public GuiManager guiMan;
 	public GridManager gridMan;
 	public static int selection = -1;
+	// TODO: Create a dictionary of flags
 	private static int purchaseSuccessFlag = -1; // -1: Reset | 0: False | 1: True
 	public static bool highlightFlag = false; // True if AttemptPurchaseVisuals() already highlighted
 	private static GameObject objectHit;
+
+	private int purchaseBufferX = -1;
+	private int purchaseBufferY = -1;
 
 	// Containers for object position and rotation info
 	private static float objX;
@@ -27,10 +31,6 @@ public class MouseManager : NetworkBehaviour {
 
 	void Start() {
 
-		// if (!isLocalPlayer) {
-		// 	return;
-		// }
-
 		// gridMan = FindObjectOfType<GridManager>();
 
 	} // Start()
@@ -38,19 +38,15 @@ public class MouseManager : NetworkBehaviour {
 	// Update is called once per frame
 	void Update() {
 
-		// if (!isLocalPlayer) {
-		// 	Debug.Log(debugH + "Not the local player!");
-		// 	return;
-		// } else {
-		// 	Debug.Log(debugH + "The local player!");
-		// }
-
 		// If the cursor is over a UI element, return from Update()
 		// NOTE: In order for Canvases on objects such as Cards to be ignored,
 		//	they must contain a "Canvas Group" and have "Block Raycasts" turned off
 		if (EventSystem.current.IsPointerOverGameObject()) {
 			return;
 		}
+
+		// Flag Checkers -------------------------------------------------------
+		CheckPurchaseSuccess();
 
 		// If 'P' is pressed, end the phase - Debugging only
 		if (Input.GetKeyDown(KeyCode.P)) {
@@ -63,16 +59,16 @@ public class MouseManager : NetworkBehaviour {
 		// if (gameMan.round > GameManager.graceRounds) {
 		// 	highlightAllowed = true;
 		// }
-		// Debug.Log(debugH + "Round: " + gameMan.round + "/" + GameManager.graceRounds + " | " + highlightAllowed);
-		// Debug.Log(debugH + "Turn: " + gameMan.turn);
-		if (gameMan.round > GameManager.graceRounds) {
-			gameMan.VerifyHighlight();
-			if (!highlightFlag) {
-				Debug.Log(debugH + "Highlighting...");
-				gameMan.HighlightNeighbors(gameMan.turn);
-				highlightFlag = true;
-			}
-		} // if
+		// Debug.Log(debug.head + "Round: " + gameMan.round + "/" + GameManager.graceRounds + " | " + highlightAllowed);
+		// Debug.Log(debug.head + "Turn: " + gameMan.turn);
+		// if (gameMan.round > GameManager.graceRounds) {
+		// 	// gameMan.VerifyHighlight();
+		// 	if (!highlightFlag) {
+		// 		Debug.Log(debug.head + "Highlighting...");
+		// 		gameMan.HighlightNeighbors(gameMan.turn);
+		// 		highlightFlag = true;
+		// 	}
+		// } // if
 		////////////////////////////////////////////////////////////////////////////////////////////
 
 		// Initialize ray
@@ -118,7 +114,7 @@ public class MouseManager : NetworkBehaviour {
 					// Left Click #########################
 					if (Input.GetMouseButtonDown(0)) {
 
-						gameMan.WipeSelectionColors("GameCard", ColorPalette.tintCard);
+						// gameMan.WipeSelectionColors("GameCard", ColorPalette.tintCard);
 
 						////////////////////////////////////////////////////////////////////////////
 						// If the grace rounds have passes, start highlighting the neighbors
@@ -126,37 +122,37 @@ public class MouseManager : NetworkBehaviour {
 						// if (gameMan.round > GameManager.graceRounds) {
 						// 	highlightAllowed = true;
 						// }
-						// Debug.Log(debugH + "Round: " + gameMan.round + "/" + GameManager.graceRounds + " | " + highlightAllowed);
-						if (gameMan.round > GameManager.graceRounds) {
-							gameMan.VerifyHighlight();
-							if (!highlightFlag) {
-								Debug.Log(debugH + "Highlighting...");
-								gameMan.HighlightNeighbors(gameMan.turn);
-								highlightFlag = true;
-							}
-						} // if
+						// Debug.Log(debug.head + "Round: " + gameMan.round + "/" + GameManager.graceRounds + " | " + highlightAllowed);
+						// if (gameMan.round > GameManager.graceRounds) {
+						// 	gameMan.VerifyHighlight();
+						// 	if (!highlightFlag) {
+						// 		Debug.Log(debug.head + "Highlighting...");
+						// 		gameMan.HighlightNeighbors(gameMan.turn);
+						// 		highlightFlag = true;
+						// 	}
+						// } // if
 						////////////////////////////////////////////////////////////////////////////
 
 						selection = -1;
 						// guiMan.CmdUpdateUI();
 
 						// If the tile can be bought
-						CmdBuyTile(locX, locY);
+						CallCmdBuyTile(locX, locY);
 
 						////////////////////////////////////////////////////////////////////////////
 						// If the grace rounds have passed, start highlighting the neighbors
 						// if (gameMan.round > GameManager.graceRounds) {
 						// 	highlightAllowed = true;
 						// }
-						// Debug.Log(debugH + "Round: " + gameMan.round + "/" + GameManager.graceRounds + " | " + highlightAllowed);
-						if (gameMan.round > GameManager.graceRounds) {
-							gameMan.VerifyHighlight();
-							if (!highlightFlag) {
-								Debug.Log(debugH + "Highlighting...");
-								gameMan.HighlightNeighbors(gameMan.turn);
-								highlightFlag = true;
-							}
-						} // if
+						// Debug.Log(debug.head + "Round: " + gameMan.round + "/" + GameManager.graceRounds + " | " + highlightAllowed);
+						// if (gameMan.round > GameManager.graceRounds) {
+						// 	gameMan.VerifyHighlight();
+						// 	if (!highlightFlag) {
+						// 		Debug.Log(debug.head + "Highlighting...");
+						// 		gameMan.HighlightNeighbors(gameMan.turn);
+						// 		highlightFlag = true;
+						// 	}
+						// } // if
 						////////////////////////////////////////////////////////////////////////////
 						// guiMan.CmdUpdateUI();
 
@@ -168,12 +164,12 @@ public class MouseManager : NetworkBehaviour {
 						objRotY = objectHit.transform.parent.rotation.y;
 						objRotZ = objectHit.transform.parent.rotation.z;
 
-						gameMan.WipeSelectionColors("GameCard", ColorPalette.tintCard);
+						// gameMan.WipeSelectionColors("GameCard", ColorPalette.tintCard);
 
 						objectHit.transform.parent.rotation = new Quaternion(objRotX, 1 + objRotY, objRotZ, 0);
 
-						objectHit.GetComponentsInChildren<Renderer>() [0].material.color = ColorPalette.tintCard;
-						objectHit.GetComponentsInChildren<Renderer>() [1].material.color = ColorPalette.tintCard;
+						objectHit.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.tintCard;
+						objectHit.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.tintCard;
 
 						// "Sells" the tile - NOTE: this is for debugging ONLY
 						GridManager.grid[locX, locY].ownerId = 0;
@@ -189,7 +185,7 @@ public class MouseManager : NetworkBehaviour {
 					// Left Click #########################
 					if (Input.GetMouseButtonDown(0)) {
 
-						gameMan.WipeSelectionColors("GameCard", ColorPalette.tintCard);
+						// gameMan.WipeSelectionColors("GameCard", ColorPalette.tintCard);
 
 						if (selection >= 1) {
 							if (gameMan.TryToPlay(GridManager.grid[locX, locY],
@@ -234,14 +230,14 @@ public class MouseManager : NetworkBehaviour {
 							objectHit.transform.parent.position = new Vector3(objX, objY, 40f);
 						} else {
 							selection = locY;
-							gameMan.WipeSelectionColors("GameCard", ColorPalette.tintCard);
+							// gameMan.WipeSelectionColors("GameCard", ColorPalette.tintCard);
 							objectHit.transform.parent.position = new Vector3(objX, objY, 38f);
-							objectHit.GetComponentsInChildren<Renderer>() [0].material.color = ColorPalette.Cyan300;
-							objectHit.GetComponentsInChildren<Renderer>() [1].material.color = ColorPalette.Cyan300;
+							objectHit.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.cyan300;
+							objectHit.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.cyan300;
 						} // if already selected
 
 						if (selection == -1) {
-							gameMan.WipeSelectionColors("GameCard", ColorPalette.tintCard);
+							// gameMan.WipeSelectionColors("GameCard", ColorPalette.tintCard);
 						}
 
 						// guiMan.CmdUpdateUI();
@@ -270,7 +266,7 @@ public class MouseManager : NetworkBehaviour {
 					// Left Click #########################
 					if (Input.GetMouseButtonDown(0)) {
 
-						gameMan.WipeSelectionColors("GameCard", ColorPalette.tintCard);
+						// gameMan.WipeSelectionColors("GameCard", ColorPalette.tintCard);
 
 						if (selection >= 1) {
 							if (gameMan.TryToPlay(GridManager.marketGrid[locX, locY],
@@ -281,7 +277,7 @@ public class MouseManager : NetworkBehaviour {
 							}
 						} else {
 							selection = -1;
-							gameMan.WipeSelectionColors("GameCard", ColorPalette.tintCard);
+							// gameMan.WipeSelectionColors("GameCard", ColorPalette.tintCard);
 							// guiMan.CmdUpdateUI();
 							return;
 						} // if a GameCard is selected
@@ -325,26 +321,26 @@ public class MouseManager : NetworkBehaviour {
 				// TODO: Nice card flip animation
 				switch (gameMan.turn) {
 					case 1:
-						objectHit.GetComponentsInChildren<Renderer>() [0].material.color = ColorPalette.LightBlue300;
-						objectHit.GetComponentsInChildren<Renderer>() [1].material.color = ColorPalette.LightBlue300;
+						objectHit.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.lightBlue300;
+						objectHit.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.lightBlue300;
 						objectHit.transform.parent.rotation = new Quaternion(objRotX, 1 - objRotY, objRotZ, 0);
 						gameMan.IncrementTurn();
 						break;
 					case 2:
-						objectHit.GetComponentsInChildren<Renderer>() [0].material.color = ColorPalette.Red400;
-						objectHit.GetComponentsInChildren<Renderer>() [1].material.color = ColorPalette.Red400;
+						objectHit.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.red400;
+						objectHit.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.red400;
 						objectHit.transform.parent.rotation = new Quaternion(objRotX, 1 - objRotY, objRotZ, 0);
 						gameMan.IncrementTurn();
 						break;
 					case 3:
-						objectHit.GetComponentsInChildren<Renderer>() [0].material.color = ColorPalette.Purple300;
-						objectHit.GetComponentsInChildren<Renderer>() [1].material.color = ColorPalette.Purple300;
+						objectHit.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.purple300;
+						objectHit.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.purple300;
 						objectHit.transform.parent.rotation = new Quaternion(objRotX, 1 - objRotY, objRotZ, 0);
 						gameMan.IncrementTurn();
 						break;
 					case 4:
-						objectHit.GetComponentsInChildren<Renderer>() [0].material.color = ColorPalette.Orange300;
-						objectHit.GetComponentsInChildren<Renderer>() [1].material.color = ColorPalette.Orange300;
+						objectHit.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.orange300;
+						objectHit.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.orange300;
 						objectHit.transform.parent.rotation = new Quaternion(objRotX, 1 - objRotY, objRotZ, 0);
 						gameMan.IncrementTurn();
 						break;
@@ -355,12 +351,12 @@ public class MouseManager : NetworkBehaviour {
 				} // switch
 
 				// Update the round/turn display text
-				GameManager.UpdatePlayersInfo();
-				if (!highlightFlag) {
-					Debug.Log(debugH + "Highlighting...");
-					gameMan.HighlightNeighbors(gameMan.turn);
-					highlightFlag = true;
-				}
+				// GameManager.UpdatePlayersInfo();
+				// if (!highlightFlag) {
+				// 	Debug.Log(debug.head + "Highlighting...");
+				// 	gameMan.HighlightNeighbors(gameMan.turn);
+				// 	highlightFlag = true;
+				// }
 				// guiMan.CmdUpdateUI();
 				purchaseSuccessFlag = -1;
 				break;
@@ -371,6 +367,36 @@ public class MouseManager : NetworkBehaviour {
 
 	} // AttemptPurchaseVisuals()
 
+	private void CheckPurchaseSuccess() {
+
+		switch (purchaseSuccessFlag) {
+			case -1:
+				break;
+			case 0:
+				// False
+				Debug.Log(debug.head + "Purchase Unsuccessful!");
+				purchaseSuccessFlag = -1;
+				break;
+			case 1:
+				// True
+				Debug.Log(debug.head + "Purchase Successful!");
+				CardAnimations.FlipCard("Tile", purchaseBufferX, purchaseBufferY);
+				purchaseSuccessFlag = -1;
+				break;
+			default:
+				Debug.LogWarning(debug.head + "PurchaseSuccessFlag was set to " + purchaseSuccessFlag);
+				purchaseSuccessFlag = -1;
+				break;
+		} // switch (purchaseSuccessFlag)
+
+	} // CheckPurchaseSuccess()
+
+	private void CallCmdBuyTile(int locX, int locY) {
+		this.purchaseBufferX = locX;
+		this.purchaseBufferY = locY;
+		CmdBuyTile(locX, locY);
+	} // CallCmdBuyTile()
+
 	[Command]
 	private void CmdBuyTile(int locX, int locY) {
 		bool success = false;
@@ -378,7 +404,7 @@ public class MouseManager : NetworkBehaviour {
 			success = true;
 		}
 		TargetBuyTile(PlayerConnection.connection, success);
-	}
+	} // CmdBuyTile()
 
 	[TargetRpc]
 	private void TargetBuyTile(NetworkConnection target, bool success) {
@@ -387,6 +413,6 @@ public class MouseManager : NetworkBehaviour {
 		} else {
 			purchaseSuccessFlag = 0;
 		}
-	}
+	} // TargetBuyTile()
 
 } // MouseManager class

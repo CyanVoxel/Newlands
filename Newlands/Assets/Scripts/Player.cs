@@ -1,9 +1,9 @@
 // A class to represent and hold player data
 // TODO: Adjust scope as necessary
 
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using System.Collections.Generic;
 
 public class Player {
 
@@ -14,6 +14,7 @@ public class Player {
 	public int Id { get; set; } = 0;
 	public Deck hand;
 	public GridUnit[] handUnits;
+	public List<Coordinate2> ownedTiles = new List<Coordinate2>();
 
 	private double tileMoney = 0;
 	public double baseMoney = 0;

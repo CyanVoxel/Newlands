@@ -16,8 +16,7 @@ public class PlayerConnection : NetworkBehaviour {
 	[SyncVar]
 	private bool initIdFlag = false;
 	public static NetworkConnection connection;
-
-	private static string debugH = "<color=#304FFEFF><b>[PlayerConnection] </b></color>";
+	private static DebugTag debug = new DebugTag("PlayerConnection", "2196F3");
 
 	// Start is called before the first frame update
 	void Start() {
@@ -36,11 +35,11 @@ public class PlayerConnection : NetworkBehaviour {
 			}
 
 			CmdGetHand();
-			// Debug.Log(debugH + "Hand size: " + this.hand.Count);
+			// Debug.Log(debug.head + "Hand size: " + this.hand.Count);
 			// gridMan.CreateHandObjects(this.id, this.hand);
 
 		} else {
-			Debug.LogError(debugH + "ERROR: Could not grab all components!");
+			Debug.LogError(debug.head + "ERROR: Could not grab all components!");
 		}
 
 	} //Start()
@@ -52,7 +51,7 @@ public class PlayerConnection : NetworkBehaviour {
 	// 		return;
 	// 	}
 
-	// 	// Debug.Log(debugH + "Hand size: " + this.hand.Count);
+	// 	// Debug.Log(debug.head + "Hand size: " + this.hand.Count);
 
 	// } // Update()
 
@@ -93,23 +92,23 @@ public class PlayerConnection : NetworkBehaviour {
 			InitId();
 		}
 
-		// Debug.Log(debugH + "[CmdGetHand] GameManager.handSize =  "
+		// Debug.Log(debug.head + "[CmdGetHand] GameManager.handSize =  "
 		// 	+ GameManager.handSize
 		// 	+ " for player " + this.id);
 
 		for (int i = 0; i < GameManager.handSize; i++) {
 			if (GameManager.players[this.id - 1].hand[i] != null) {
 				CardData card = new CardData(GameManager.players[this.id - 1].hand[i]);
-				// Debug.Log(debugH + "[CmdGetHand] Adding Card " + i
+				// Debug.Log(debug.head + "[CmdGetHand] Adding Card " + i
 				// 	+ " to SyncList for player " + this.id);
 				this.hand.Add(card);
 			} else {
-				Debug.LogWarning(debugH + "[CmdGetHand] Warning: "
+				Debug.LogWarning(debug.head + "[CmdGetHand] Warning: "
 					+ "The player did not have a card in slot " + i);
 			}
 		} // for
 
-		// Debug.Log(debugH + "[CmdGetHand] Finished grabbing "
+		// Debug.Log(debug.head + "[CmdGetHand] Finished grabbing "
 		// 	+ this.hand.Count
 		// 	+ " cards for player " + this.id);
 
@@ -127,21 +126,21 @@ public class PlayerConnection : NetworkBehaviour {
 
 		TryToGrabComponents();
 
-		// Debug.Log(debugH + "Chainging default id of "
+		// Debug.Log(debug.head + "Chainging default id of "
 		// 	+ this.id
 		// 	+ " to " + gameMan.GetPlayerIndex());
 
 		this.id = gameMan.GetPlayerIndex();
 		gameMan.IncrementPlayerIndex();
 
-		Debug.Log(debugH + "Assigned ID of " + this.id);
+		Debug.Log(debug.head + "Assigned ID of " + this.id);
 
-		// Debug.Log(debugH + "Verifying new PlayerIndex: "
+		// Debug.Log(debug.head + "Verifying new PlayerIndex: "
 		// 	+ gameMan.GetPlayerIndex());
 
 		// this.transform.name = "Player (" + this.id + ")";
 
-		// Debug.Log(debugH + "GameManager.handSize =  "
+		// Debug.Log(debug.head + "GameManager.handSize =  "
 		// 	+ GameManager.handSize
 		// 	+ " for player " + this.id);
 
@@ -155,7 +154,7 @@ public class PlayerConnection : NetworkBehaviour {
 			return;
 		}
 
-		// Debug.Log(debugH + "Index: " + index);
+		// Debug.Log(debug.head + "Index: " + index);
 
 		if (index == (GameManager.handSize - 1) && op == SyncListCardData.Operation.OP_ADD) {
 			gridMan.CreateHandObjects(this.id, this.hand);

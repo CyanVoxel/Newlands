@@ -223,58 +223,58 @@ public class CardDisplay : NetworkBehaviour {
 						break;
 					case "Red":
 						if (cardState.onlyColorCorners) {
-							footerBorderL.color = ColorPalette.Red500;
-							footerBorderR.color = ColorPalette.Red500;
+							footerBorderL.color = ColorPalette.red500;
+							footerBorderR.color = ColorPalette.red500;
 						} else {
-							footerBorder.color = ColorPalette.Red500;
+							footerBorder.color = ColorPalette.red500;
 						}
 						break;
 					case "Green":
 						if (cardState.onlyColorCorners) {
-							footerBorderL.color = ColorPalette.Green500;
-							footerBorderR.color = ColorPalette.Green500;
+							footerBorderL.color = ColorPalette.green500;
+							footerBorderR.color = ColorPalette.green500;
 						} else {
-							footerBorder.color = ColorPalette.Green500;
+							footerBorder.color = ColorPalette.green500;
 						}
 						break;
 					case "Light Blue":
 						if (cardState.onlyColorCorners) {
-							footerBorderL.color = ColorPalette.LightBlue500;
-							footerBorderR.color = ColorPalette.LightBlue500;
+							footerBorderL.color = ColorPalette.lightBlue500;
+							footerBorderR.color = ColorPalette.lightBlue500;
 						} else {
-							footerBorder.color = ColorPalette.LightBlue500;
+							footerBorder.color = ColorPalette.lightBlue500;
 						}
 						break;
 					case "Yellow":
 						if (cardState.onlyColorCorners) {
-							footerBorderL.color = ColorPalette.Yellow500;
-							footerBorderR.color = ColorPalette.Yellow500;
+							footerBorderL.color = ColorPalette.yellow500;
+							footerBorderR.color = ColorPalette.yellow500;
 						} else {
-							footerBorder.color = ColorPalette.Yellow500;
+							footerBorder.color = ColorPalette.yellow500;
 						}
 						break;
 					case "Pink":
 						if (cardState.onlyColorCorners) {
-							footerBorderL.color = ColorPalette.Pink500;
-							footerBorderR.color = ColorPalette.Pink500;
+							footerBorderL.color = ColorPalette.pink500;
+							footerBorderR.color = ColorPalette.pink500;
 						} else {
-							footerBorder.color = ColorPalette.Pink500;
+							footerBorder.color = ColorPalette.pink500;
 						}
 						break;
 					case "Blue":
 						if (cardState.onlyColorCorners) {
-							footerBorderL.color = ColorPalette.LightBlue500;
-							footerBorderR.color = ColorPalette.LightBlue500;
+							footerBorderL.color = ColorPalette.lightBlue500;
+							footerBorderR.color = ColorPalette.lightBlue500;
 						} else {
-							footerBorder.color = ColorPalette.LightBlue500;
+							footerBorder.color = ColorPalette.lightBlue500;
 						}
 						break;
 					case "Dark Blue":
 						if (cardState.onlyColorCorners) {
-							footerBorderL.color = ColorPalette.Indigo500;
-							footerBorderR.color = ColorPalette.Indigo500;
+							footerBorderL.color = ColorPalette.indigo500;
+							footerBorderR.color = ColorPalette.indigo500;
 						} else {
-							footerBorder.color = ColorPalette.Indigo500;
+							footerBorder.color = ColorPalette.indigo500;
 						}
 						break;
 					case "":
@@ -384,11 +384,11 @@ public class CardDisplay : NetworkBehaviour {
 				footerBorder.color = ColorPalette.cardDark;
 
 				if (card.footerColor == "Red") { // Red
-					footerBorderL.color = ColorPalette.Red500;
-					footerBorderR.color = ColorPalette.Red500;
+					footerBorderL.color = ColorPalette.red500;
+					footerBorderR.color = ColorPalette.red500;
 				} else if (card.footerColor == "Green") { // Green
-					footerBorderL.color = ColorPalette.Green500;
-					footerBorderR.color = ColorPalette.Green500;
+					footerBorderL.color = ColorPalette.green500;
+					footerBorderR.color = ColorPalette.green500;
 				}
 
 			} else {
@@ -400,19 +400,19 @@ public class CardDisplay : NetworkBehaviour {
 				if (card.footerColor == "Black") { // Black
 					footerBorder.color = ColorPalette.cardDark;
 				} else if (card.footerColor == "Red") { // Red
-					footerBorder.color = ColorPalette.Red500;
+					footerBorder.color = ColorPalette.red500;
 				} else if (card.footerColor == "Green") { // Green
-					footerBorder.color = ColorPalette.Green500;
+					footerBorder.color = ColorPalette.green500;
 				} else if (card.footerColor == "Light Blue") { // Light Blue
-					footerBorder.color = ColorPalette.LightBlue500;
+					footerBorder.color = ColorPalette.lightBlue500;
 				} else if (card.footerColor == "Yellow") { // Yellow
-					footerBorder.color = ColorPalette.Yellow500;
+					footerBorder.color = ColorPalette.yellow500;
 				} else if (card.footerColor == "Pink") { // Pink
-					footerBorder.color = ColorPalette.Pink500;
+					footerBorder.color = ColorPalette.pink500;
 				} else if (card.footerColor == "Blue") { // Blue
-					footerBorder.color = ColorPalette.LightBlue500;
+					footerBorder.color = ColorPalette.lightBlue500;
 				} else if (card.footerColor == "Dark Blue") { // Dark Blue
-					footerBorder.color = ColorPalette.Indigo500;
+					footerBorder.color = ColorPalette.indigo500;
 				} // if-else
 
 			} // if Market Mod else
@@ -451,19 +451,19 @@ public class CardDisplay : NetworkBehaviour {
 			if (card.footerColor == "Black") { // Black
 				footerBorder.color = ColorPalette.cardDark;
 			} else if (card.footerColor == "Red") { // Red
-				footerBorder.color = ColorPalette.Red500;
+				footerBorder.color = ColorPalette.red500;
 			} else if (card.footerColor == "Green") { // Green
-				footerBorder.color = ColorPalette.Green500;
+				footerBorder.color = ColorPalette.green500;
 			} else if (card.footerColor == "Light Blue") { // Light Blue
-				footerBorder.color = ColorPalette.LightBlue500;
+				footerBorder.color = ColorPalette.lightBlue500;
 			} else if (card.footerColor == "Yellow") { // Yellow
-				footerBorder.color = ColorPalette.Yellow500;
+				footerBorder.color = ColorPalette.yellow500;
 			} else if (card.footerColor == "Pink") { // Pink
-				footerBorder.color = ColorPalette.Pink500;
+				footerBorder.color = ColorPalette.pink500;
 			} else if (card.footerColor == "Blue") { // Blue
-				footerBorder.color = ColorPalette.LightBlue500;
+				footerBorder.color = ColorPalette.lightBlue500;
 			} else if (card.footerColor == "Dark Blue") { // Dark Blue
-				footerBorder.color = ColorPalette.Indigo500;
+				footerBorder.color = ColorPalette.indigo500;
 			} // if-else
 
 		} // LandTile specifics
@@ -503,16 +503,16 @@ public class CardDisplay : NetworkBehaviour {
 	// Performas visual updates to a bankrupt card
 	public static void BankruptVisuals(GameObject tile) {
 
-		tile.GetComponentsInChildren<Renderer>() [0].material.color = ColorPalette.cardDark;
-		tile.GetComponentsInChildren<Renderer>() [1].material.color = ColorPalette.cardDark;
+		tile.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.cardDark;
+		tile.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.cardDark;
 
 		GameObject titleObj = tile.transform.Find("Front Canvas/Title").gameObject;
 		TMP_Text title = titleObj.GetComponent<TMP_Text>();
-		title.color = ColorPalette.Red500;
+		title.color = ColorPalette.red500;
 
 		GameObject titleIconObj = tile.transform.Find("Front Canvas/Icon").gameObject;
 		Image iconImage = titleIconObj.GetComponent<Image>();
-		iconImage.color = ColorPalette.Red500;
+		iconImage.color = ColorPalette.red500;
 
 		// This picks up the title text for some reason?
 		// GameObject footerObj = tile.transform.Find("Front Canvas/Footer").gameObject;
