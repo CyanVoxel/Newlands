@@ -45,11 +45,6 @@ public class GameManager : NetworkBehaviour {
 			return;
 		}
 
-		Debug.Log(debug.head + ColorPalette.testColor.r);
-		Debug.Log(debug.head + ColorPalette.testColor.g);
-		Debug.Log(debug.head + ColorPalette.testColor.b);
-		Debug.Log(debug.head + ColorPalette.testColor.a);
-
 		Debug.Log(debug.head + "Initializing GameManager...");
 
 		Debug.Log(debug.head + "Creating Master Deck \"Vanilla\"");
@@ -773,6 +768,9 @@ public class GameManager : NetworkBehaviour {
 			Debug.Log(debug.head + "Allowing tile purchase. Check for funds later!");
 			Debug.Log(debug.head + GameManager.players);
 			Debug.Log(debug.head + GameManager.players.Count + " - " + (turn - 1));
+			Debug.Log(debug.head + "Turn: " + turn);
+			Debug.Log(debug.head + GameManager.players);
+			Debug.Log(debug.head + GameManager.players[turn - 1]);
 			GameManager.players[turn - 1].ownedTiles.Add(target);
 			Debug.Log(debug.head + "Player " + turn
 				+ " (ID: " + GameManager.players[turn - 1].Id + ") bought tile " + target.ToString());

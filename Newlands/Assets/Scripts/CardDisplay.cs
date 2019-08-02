@@ -8,8 +8,6 @@ using UnityEngine.UI;
 
 public class CardDisplay : NetworkBehaviour {
 
-	private static string debugH = "<color=#64DD17FF><b>[CardDisplay] </b></color>";
-
 	// DATA FIELDS -------------------------------------------------------------
 
 	// Long directories stored as strings

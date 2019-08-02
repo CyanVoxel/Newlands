@@ -137,7 +137,10 @@ public class MouseManager : NetworkBehaviour {
 						// guiMan.CmdUpdateUI();
 
 						// If the tile can be bought
-						CallCmdBuyTile(locX, locY);
+						CmdBuyTile(locX, locY);
+						this.purchaseBufferX = locX;
+						this.purchaseBufferY = locY;
+						// CallCmdBuyTile(locX, locY);
 
 						////////////////////////////////////////////////////////////////////////////
 						// If the grace rounds have passed, start highlighting the neighbors

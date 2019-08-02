@@ -9,7 +9,7 @@ public class ColorPalette {
 	// FIELDS ######################################################################################
 
 	// Material Design =============================================================================
-	// 500 --------------------------------------
+	// 500 ---------------------------------------------------------------------
 	public static readonly Color32 red500 = new Color32(r: 244, g: 67, b: 54, a: 255);
 	public static readonly Color32 deepOrange500 = new Color32(r: 255, g: 87, b: 34, a: 255);
 	public static readonly Color32 orange500 = new Color32(r: 255, g: 152, b: 0, a: 255);
@@ -26,15 +26,14 @@ public class ColorPalette {
 	public static readonly Color32 deepPurple500 = new Color32(r: 103, g: 58, b: 183, a: 255);
 	public static readonly Color32 purple500 = new Color32(r: 156, g: 39, b: 176, a: 255);
 	public static readonly Color32 pink500 = new Color32(r: 233, g: 30, b: 99, a: 255);
-	public static readonly Color32 testColor = new ColorHex("#E64A19");
 
-	// 400 --------------------------------------
+	// 400 ---------------------------------------------------------------------
 	public static readonly Color32 red400 = new Color32(r: 239, g: 83, b: 80, a: 255);
 	public static readonly Color32 amber400 = new Color32(r: 255, g: 202, b: 40, a: 255);
 	public static readonly Color32 lightBlue400 = new Color32(r: 41, g: 182, b: 246, a: 255);
 	public static readonly Color32 purple400 = new Color32(r: 171, g: 71, b: 188, a: 255);
 
-	// 300 --------------------------------------
+	// 300 ---------------------------------------------------------------------
 	public static readonly Color32 red300 = new Color32(r: 229, g: 115, b: 115, a: 255);
 	public static readonly Color32 orange300 = new Color32(r: 255, g: 183, b: 77, a: 255);
 	public static readonly Color32 amber300 = new Color32(r: 255, g: 213, b: 79, a: 255);
@@ -42,42 +41,61 @@ public class ColorPalette {
 	public static readonly Color32 lightBlue300 = new Color32(r: 79, g: 195, b: 247, a: 255);
 	public static readonly Color32 purple300 = new Color32(r: 186, g: 104, b: 200, a: 255);
 
-	// 200 --------------------------------------
+	// 200 ---------------------------------------------------------------------
 	public static readonly Color32 red200 = new Color32(r: 239, g: 154, b: 154, a: 255);
 	public static readonly Color32 orange200 = new Color32(r: 255, g: 204, b: 128, a: 255);
 	public static readonly Color32 amber200 = new Color32(r: 255, g: 224, b: 130, a: 255);
 	public static readonly Color32 lightBlue200 = new Color32(r: 129, g: 212, b: 250, a: 255);
 	public static readonly Color32 purple200 = new Color32(r: 206, g: 147, b: 216, a: 255);
 
-	// 100 --------------------------------------
+	// 100 ---------------------------------------------------------------------
 	public static readonly Color32 lightBlue100 = new Color32(r: 179, g: 229, b: 252, a: 255);
 
 	// Misc ========================================================================================
 	public static readonly Color32 alpha = new Color32(r: 0, g: 0, b: 0, a: 0);
 
 	// Newlands ====================================================================================
-	// Main Colors ------------------------------
-	public static readonly Color32 tintCard = new Color32(r: 252, g: 250, b: 245, a: 255);
-	public static readonly Color32 cardLight = new Color32(r: 250, g: 245, b: 234, a: 255);
-	public static readonly Color32 cardDark = new Color32(r: 17, g: 17, b: 17, a: 255);
 
-	// 500 Tint Colors --------------------------
-	public static readonly Color32 tintRed500 = new Color32();
-	public static readonly Color32 tintOrangeDeep500 = new Color32();
-	public static readonly Color32 tintOrange500 = new Color32();
-	public static readonly Color32 tintAmber500 = new Color32();
-	public static readonly Color32 tintYellow500 = new Color32();
-	public static readonly Color32 tintGreenLight500 = new Color32();
-	public static readonly Color32 tintGreen500 = new Color32();
-	public static readonly Color32 tintTeal500 = new Color32();
-	public static readonly Color32 tintCyan500 = new Color32();
-	public static readonly Color32 tintBlueLight500 = new Color32();
-	public static readonly Color32 tintBlue500 = new Color32();
-	public static readonly Color32 tintBlueDeep500 = new Color32();
-	public static readonly Color32 tintPurpleDeep500 = new Color32();
-	public static readonly Color32 tintPurple500 = new Color32();
-	public static readonly Color32 tintPink500 = new Color32();
-	public static readonly Color32 tintGray500 = new Color32();
+	// Main Colors -------------------------------------------------------------
+	public static readonly Color32 tintCard = new ColorHex("#FCFAF5");
+	public static readonly Color32 cardLight = new ColorHex("#CAC8C4");
+	public static readonly Color32 cardDark = new ColorHex("#111111");
+
+	// 500 Tint Colors ---------------------------------------------------------
+	public static readonly Color32 tintRed500 = new ColorHex("#f14234");
+	public static readonly Color32 tintOrangeDeep500 = new ColorHex("#fc6421");
+	public static readonly Color32 tintOrange500 = new ColorHex("#fc9500");
+	public static readonly Color32 tintAmber500 = new ColorHex("#fcbd07");
+	public static readonly Color32 tintYellow500 = new ColorHex("#fce639");
+	public static readonly Color32 tintGreenLight500 = new ColorHex("#aed837");
+	public static readonly Color32 tintGreen500 = new ColorHex("#4bac4d");
+	public static readonly Color32 tintTeal500 = new ColorHex("#1aa292");
+	public static readonly Color32 tintCyan500 = new ColorHex("#00b8cc");
+	public static readonly Color32 tintBlueLight500 = new ColorHex("#03a6ea");
+	public static readonly Color32 tintBlue500 = new ColorHex("#217de9");
+	public static readonly Color32 tintBlueDeep500 = new ColorHex("#4e54cd");
+	public static readonly Color32 tintPurpleDeep500 = new ColorHex("#7b40dc");
+	public static readonly Color32 tintPurple500 = new ColorHex("#b039bf");
+	public static readonly Color32 tintPink500 = new ColorHex("#e94076");
+	public static readonly Color32 tintGray500 = new ColorHex("#878684");
+
+	// 500 Card Colors ----------------------------------------------------------
+	public static readonly Color32 cardOrangeDeep500 = new ColorHex("#c1352a");
+	public static readonly Color32 cardRed500 = new ColorHex("#ca501a");
+	public static readonly Color32 cardOrange500 = new ColorHex("#ca7700");
+	public static readonly Color32 cardAmber500 = new ColorHex("#ca9705");
+	public static readonly Color32 cardYellow500 = new ColorHex("#cab82d");
+	public static readonly Color32 cardGreenLight500 = new ColorHex("#8bad2c");
+	public static readonly Color32 cardGreen500 = new ColorHex("#3c893d");
+	public static readonly Color32 cardTeal500 = new ColorHex("#158175");
+	public static readonly Color32 cardCyan500 = new ColorHex("#0093a3");
+	public static readonly Color32 cardBlueLight500 = new ColorHex("#0285bc");
+	public static readonly Color32 cardBlue500 = new ColorHex("#1a64bb");
+	public static readonly Color32 cardBlueDeep500 = new ColorHex("#3f43a4");
+	public static readonly Color32 cardPurpleDeep500 = new ColorHex("#6233b0");
+	public static readonly Color32 cardPurple500 = new ColorHex("#8d2d99");
+	public static readonly Color32 cardPink500 = new ColorHex("#bb335f");
+	public static readonly Color32 cardGray500 = new ColorHex("#6d6b69");
 
 	#endregion
 
@@ -85,7 +103,7 @@ public class ColorPalette {
 	// METHODS #####################################################################################
 
 	// Outputs a hex color tag from a Color32
-	public string color32ToHex(Color32 color) {
+	public static string Color32ToHex(Color32 color) {
 		string hex = "<color=#"
 			+ color.r.ToString("X2")
 			+ color.g.ToString("X2")
@@ -98,6 +116,7 @@ public class ColorPalette {
 
 } // ColorPalette class
 
+// ColorHex struct - Mainly used as a way to create a Color32 using a hex code
 public struct ColorHex {
 
 	byte r;
@@ -168,10 +187,10 @@ public struct ColorHex {
 
 	public static bool operator ==(UnityEngine.Color32 left, ColorHex right) {
 
-		if (left.r == right.r && left.r == right.r
-			&& left.g == right.g && left.g == right.g
-			&& left.b == right.b && left.b == right.b
-			&& left.a == right.a && left.a == right.a) {
+		if (left.r == right.r
+			&& left.g == right.g
+			&& left.b == right.b
+			&& left.a == right.a) {
 			return true;
 		} else {
 			return false;
@@ -181,10 +200,10 @@ public struct ColorHex {
 
 	public static bool operator ==(ColorHex left, ColorHex right) {
 
-		if (left.r == right.r && left.r == right.r
-			&& left.g == right.g && left.g == right.g
-			&& left.b == right.b && left.b == right.b
-			&& left.a == right.a && left.a == right.a) {
+		if (left.r == right.r
+			&& left.g == right.g
+			&& left.b == right.b
+			&& left.a == right.a) {
 			return true;
 		} else {
 			return false;
@@ -194,10 +213,10 @@ public struct ColorHex {
 
 	public static bool operator !=(UnityEngine.Color32 left, ColorHex right) {
 
-		if (left.r != right.r || left.r != right.r
-			|| left.g != right.g || left.g != right.g
-			|| left.b != right.b || left.b != right.b
-			|| left.a != right.a || left.a != right.a) {
+		if (left.r != right.r
+			|| left.g != right.g
+			|| left.b != right.b
+			|| left.a != right.a) {
 			return true;
 		} else {
 			return false;
@@ -207,10 +226,10 @@ public struct ColorHex {
 
 	public static bool operator !=(ColorHex left, ColorHex right) {
 
-		if (left.r != right.r || left.r != right.r
-			|| left.g != right.g || left.g != right.g
-			|| left.b != right.b || left.b != right.b
-			|| left.a != right.a || left.a != right.a) {
+		if (left.r != right.r
+			|| left.g != right.g
+			|| left.b != right.b
+			|| left.a != right.a) {
 			return true;
 		} else {
 			return false;
@@ -219,7 +238,7 @@ public struct ColorHex {
 	} // operator !=
 
 	public static implicit operator UnityEngine.Color32(ColorHex c) {
-		return new UnityEngine.Color32(c.r, c.b, c.g, c.a);
+		return new UnityEngine.Color32(c.r, c.g, c.b, c.a);
 	}
 
 	public override int GetHashCode() {

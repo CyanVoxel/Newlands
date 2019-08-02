@@ -781,6 +781,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46d46cc2c49db86498ca570723b0b3c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameMan: {fileID: 160484955}
 --- !u!1 &889834021
 GameObject:
   m_ObjectHideFlags: 0
@@ -1096,7 +1097,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   serverOnly: 0
-  localPlayerAuthority: 1
+  localPlayerAuthority: 0
   m_AssetId: 
   m_SceneId: 756680054
 --- !u!1 &1437400119
