@@ -21,11 +21,12 @@ public class PlayerConnection : NetworkBehaviour {
 
 	// Private =================================================================
 	private static DebugTag debug = new DebugTag("PlayerConnection", "2196F3");
-	[SyncVar(hook = "OnIdChange")]
+	[SyncVar(hook = "OnIdChange")] [SerializeField]
 	private int id = -1;
 	[SyncVar]
 	private bool initIdFlag = false;
 	// public static NetworkConnection connection;
+	// [SyncVar(hook = "OnMouseManObjChange")]
 	private GameObject mouseManObj;
 
 	#endregion
@@ -41,7 +42,6 @@ public class PlayerConnection : NetworkBehaviour {
 		}
 
 		this.hand.Callback += OnHandUpdated;
-		CmdSpawnMouseManager();
 		// connection = connectionToClient;
 
 		if (TryToGrabComponents()) {
@@ -49,6 +49,8 @@ public class PlayerConnection : NetworkBehaviour {
 			if (!initIdFlag) {
 				InitId();
 			}
+
+			// CmdSpawnMouseManager();
 
 			CmdGetHand();
 			// Debug.Log(debug.head + "Hand size: " + this.hand.Count);
@@ -108,6 +110,8 @@ public class PlayerConnection : NetworkBehaviour {
 
 		Debug.Log(debug.head + "Assigned ID of " + this.id);
 
+		CmdSpawnMouseManager();
+
 		// Debug.Log(debug.head + "Verifying new PlayerIndex: "
 		// 	+ gameMan.GetPlayerIndex());
 
@@ -135,6 +139,17 @@ public class PlayerConnection : NetworkBehaviour {
 		}
 
 	} // OnHandUpdated()
+
+	// private void OnMouseManObjChange(GameObject mouseManObj) {
+
+	// 	if (this.mouseManObj == null) {
+	// 		return;
+	// 	}
+
+	// 	MouseManager localMouseMan = mouseManObj.GetComponent<MouseManager>();
+	// 	localMouseMan.ownerID = this.id;
+
+	// } // OnMouseManObjChange()
 
 	#endregion
 
@@ -178,13 +193,15 @@ public class PlayerConnection : NetworkBehaviour {
 	[Command]
 	private void CmdSpawnMouseManager() {
 
-		mouseManObj = (GameObject)Instantiate(mouseManPrefab,
+		this.mouseManObj = (GameObject)Instantiate(mouseManPrefab,
 			new Vector3(0, 0, 0),
 			Quaternion.identity);
 
 		NetworkServer.SpawnWithClientAuthority(mouseManObj, connectionToClient);
 		MouseManager localMouseMan = mouseManObj.GetComponent<MouseManager>();
 		localMouseMan.myClient = this.connectionToClient;
+		Debug.Log(debug.head + "Giving MouseManager my ID of " + this.id);
+		localMouseMan.ownerID = this.id;
 
 	} // CmdSpawnMouseManager()
 

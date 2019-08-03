@@ -14,9 +14,11 @@ public class MouseManager : NetworkBehaviour {
 	private GridManager gridMan;
 	public static int selection = -1;
 	// TODO: Create a dictionary of flags
-	private  int purchaseSuccessFlag = -1; // -1: Reset | 0: False | 1: True
+	private int purchaseSuccessFlag = -1; // -1: Reset | 0: False | 1: True
 	public static bool highlightFlag = false; // True if AttemptPurchaseVisuals() already highlighted
 	private static GameObject objectHit;
+	[SyncVar]
+	public int ownerID = -1;
 
 	// [SyncVar]
 	public NetworkConnection myClient;
@@ -72,7 +74,6 @@ public class MouseManager : NetworkBehaviour {
 			gridMan = FindObjectOfType<GridManager>();
 			Debug.Log(debug.head + "GridManager was set during update");
 		}
-
 
 		// Flag Checkers -------------------------------------------------------
 		CheckPurchaseSuccess();
@@ -166,10 +167,18 @@ public class MouseManager : NetworkBehaviour {
 						// guiMan.CmdUpdateUI();
 
 						// If the tile can be bought
-						Debug.Log(debug.head + "Trying to buy tile!");
-						CmdBuyTile(locX, locY);
-						this.purchaseBufferX = locX;
-						this.purchaseBufferY = locY;
+						if (gameMan.turn == this.ownerID) {
+							Debug.Log(debug.head + "Trying to buy tile!");
+							CmdBuyTile(locX, locY);
+							this.purchaseBufferX = locX;
+							this.purchaseBufferY = locY;
+						} else if (this.ownerID == -1) {
+							Debug.LogWarning(debug.warning + "This MouseManager has an ownerID of -1!");
+						} else {
+							Debug.Log(debug.head + "Player " + this.ownerID
+								+ " can't buy a tile on Player " + gameMan.turn + "'s Turn!");
+						}
+
 						// CallCmdBuyTile(locX, locY);
 
 						////////////////////////////////////////////////////////////////////////////

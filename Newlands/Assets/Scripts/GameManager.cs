@@ -776,6 +776,7 @@ public class GameManager : NetworkBehaviour {
 			// Debug.Log(debug.head + "Turn: " + turn);
 			// Debug.Log(debug.head + GameManager.players);
 			// Debug.Log(debug.head + GameManager.players[turn - 1]);
+
 			GameManager.players[turn - 1].ownedTiles.Add(target);
 			Debug.Log(debug.head + "Player " + turn
 				+ " (ID: " + GameManager.players[turn - 1].Id + ") bought tile " + target.ToString());
