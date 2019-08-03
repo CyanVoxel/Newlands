@@ -3,8 +3,8 @@
 
 public struct Coordinate2 {
 
-    int x;
-    int y;
+    public int x;
+    public int y;
 
     public Coordinate2(int x, int y) {
 

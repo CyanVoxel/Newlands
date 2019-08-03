@@ -778,6 +778,17 @@ public class GameManager : NetworkBehaviour {
 			// Debug.Log(debug.head + GameManager.players[turn - 1]);
 
 			GameManager.players[turn - 1].ownedTiles.Add(target);
+
+			// GameObject playerRef = GameObject.Find("Player (" + turn + ")");
+
+			// if (playerRef != null) {
+			// 	Debug.Log(debug.head + playerRef.GetComponent<PlayerConnection>());
+			// 	Debug.Log(debug.head + playerRef.GetComponent<PlayerConnection>().ownedTiles);
+			// 	playerRef.GetComponent<PlayerConnection>().ownedTiles.Add(target);
+			// } else {
+			// 	Debug.LogError(debug.error + "Player Connection was null!");
+			// }
+
 			Debug.Log(debug.head + "Player " + turn
 				+ " (ID: " + GameManager.players[turn - 1].Id + ") bought tile " + target.ToString());
 			// Debug.Log(debug.head + "Advancing Turn; This is a temporary mechanic!");
@@ -797,5 +808,6 @@ public class GameManager : NetworkBehaviour {
 		return BuyTile(target);
 
 	} // BuyTile()
+
 
 } // GameManager class

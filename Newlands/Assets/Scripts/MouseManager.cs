@@ -22,6 +22,7 @@ public class MouseManager : NetworkBehaviour {
 
 	// [SyncVar]
 	public NetworkConnection myClient;
+	public GameObject myPlayerObj;
 
 	private int purchaseBufferX = -1;
 	private int purchaseBufferY = -1;
@@ -423,6 +424,11 @@ public class MouseManager : NetworkBehaviour {
 				// True
 				Debug.Log(debug.head + "Purchase Successful!");
 				CmdFlipCard("Tile", this.purchaseBufferX, this.purchaseBufferY);
+
+				// GameObject playerRef = GameObject.Find("Player (" + turn + ")");
+
+				CmdUmm(this.purchaseBufferX, this.purchaseBufferY);
+
 				this.purchaseSuccessFlag = -1;
 				break;
 			default:
@@ -457,6 +463,16 @@ public class MouseManager : NetworkBehaviour {
 		TargetBuyTile(myClient, success);
 
 	} // CmdBuyTile()
+
+	[Command]
+	private void CmdUmm(int locX, int locY) {
+		if (myPlayerObj != null) {
+			myPlayerObj.GetComponent<PlayerConnection>().ownedTiles.Add(new Coordinate2(locX, locY));
+		} else {
+			Debug.LogError(debug.error + "Player Connection was null!");
+		}
+
+	}
 
 	[TargetRpc]
 	private void TargetBuyTile(NetworkConnection target, bool success) {

@@ -51,11 +51,14 @@ public struct CardData {
     // Does this card get discarded if used? (Rather than being stacked under a Tile)
     public bool doesDiscard;
 
+    // public int ownerId;
+
     // CONSTRUCTORS ################################################################################
 
     public CardData(Card cardScript) {
 
         objectName = "Default"; // The Card Object's Name (Uninitialized)
+        // ownerId = -1;
 
         title = cardScript.title; // The Card's Title
         subtitle = cardScript.subtitle; // The Card's Subtitle
@@ -73,5 +76,12 @@ public struct CardData {
         onlyColorCorners = cardScript.onlyColorCorners;
 
     } // CardData(Card) constructor
+
+    // public CardData(Card cardScript, int ownerId) {
+
+    //     this = new CardData(cardScript);
+    //     this.ownerId = ownerId;
+
+    // } // CardData(Card, int) constructor
 
 } // CardData struct

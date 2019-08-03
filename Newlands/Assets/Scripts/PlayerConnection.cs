@@ -1,11 +1,13 @@
 ﻿// The class responsible for representing a Player Connection over the network. Required by Mirror.
 
 // using System.Collections;
-// using System.Collections.Generic;
+using System.Collections.Generic;
 using Mirror;
 using UnityEngine;
 
 public class SyncListCardData : SyncList<CardData> { }
+
+public class SyncListCoordinate2 : SyncList<Coordinate2> { }
 
 public class PlayerConnection : NetworkBehaviour {
 
@@ -18,6 +20,9 @@ public class PlayerConnection : NetworkBehaviour {
 	// public GuiManager guiMan;
 	public GameObject mouseManPrefab;
 	public SyncListCardData hand;
+
+	// A local copy of Tiles known to be owned by this player
+	public SyncListCoordinate2 ownedTiles;
 
 	// Private =================================================================
 	private static DebugTag debug = new DebugTag("PlayerConnection", "2196F3");
@@ -42,6 +47,7 @@ public class PlayerConnection : NetworkBehaviour {
 		}
 
 		this.hand.Callback += OnHandUpdated;
+		this.ownedTiles.Callback += OnOwnedTilesUpdated;
 		// connection = connectionToClient;
 
 		if (TryToGrabComponents()) {
@@ -143,6 +149,44 @@ public class PlayerConnection : NetworkBehaviour {
 
 	} // OnHandUpdated()
 
+	private void OnOwnedTilesUpdated(SyncListCoordinate2.Operation op, int index, Coordinate2 card) {
+
+		if (!isLocalPlayer) {
+			return;
+		}
+
+		string xZeroes = "0";
+		string yZeroes = "0";
+
+		// Determines the number of zeroes to add in the object name
+		if (GameManager.width >= 10) {
+			xZeroes = "";
+		} else {
+			xZeroes = "0";
+		}
+		if (GameManager.height >= 10) {
+			yZeroes = "";
+		} else {
+			yZeroes = "0";
+		} // zeroes calc
+
+		Debug.Log(debug.head + "I'm the proud owner of card " + card);
+
+		GameObject tileToColor = GameObject.Find("x" + xZeroes + card.x + "_"
+			+ "y" + yZeroes + card.y + "_"
+			+ "Tile");
+
+		if (tileToColor != null) {
+			tileToColor.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.tintBlueLight500;
+			tileToColor.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.tintBlueLight500;
+		} else {
+			Debug.LogError(debug.error + "Could not find tile " + "x" + xZeroes + card.x + "_"
+				+ "y" + yZeroes + card.y + "_"
+				+ "Tile");
+		}
+
+	} // OnHandUpdated()
+
 	// private void OnMouseManObjChange(GameObject mouseManObj) {
 
 	// 	if (this.mouseManObj == null) {
@@ -203,6 +247,7 @@ public class PlayerConnection : NetworkBehaviour {
 		NetworkServer.SpawnWithClientAuthority(mouseManObj, connectionToClient);
 		MouseManager localMouseMan = mouseManObj.GetComponent<MouseManager>();
 		localMouseMan.myClient = this.connectionToClient;
+		localMouseMan.myPlayerObj = this.gameObject;
 		Debug.Log(debug.head + "Giving MouseManager my ID of " + this.id);
 		localMouseMan.ownerID = this.id;
 
