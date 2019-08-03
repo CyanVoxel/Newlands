@@ -47,6 +47,8 @@ public class GameManager : NetworkBehaviour {
 
 		Debug.Log(debug.head + "Initializing GameManager...");
 
+		// this.gameObject.AddComponent<MouseManager>();
+
 		Debug.Log(debug.head + "Creating Master Deck \"Vanilla\"");
 		masterDeck = new MasterDeck("Vanilla");
 		masterDeckMutable = new MasterDeck("Vanilla");
@@ -745,6 +747,8 @@ public class GameManager : NetworkBehaviour {
 	}
 
 	public bool BuyTile(Coordinate2 target) {
+
+		Debug.Log(debug.head + "Is Server? " + isServer);
 
 		int turn = this.turn; // Don't want the turn changing while this is running
 		bool tileOwned = false;

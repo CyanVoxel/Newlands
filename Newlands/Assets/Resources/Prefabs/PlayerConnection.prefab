@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 3270482152339420148}
   - component: {fileID: 4324053712955826095}
   - component: {fileID: 5761470722364289254}
+  - component: {fileID: -5463100450039654254}
   m_Layer: 0
   m_Name: PlayerConnection
   m_TagString: Untagged
@@ -45,9 +46,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   serverOnly: 0
-  localPlayerAuthority: 0
-  m_AssetId: 802080a562a57454ca08cc6a1fd32c3a
-  m_SceneId: 0
+  localPlayerAuthority: 1
+  m_AssetId: 
+  m_SceneId: 3463987919
 --- !u!114 &5761470722364289254
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -61,5 +62,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   syncInterval: 0.1
-  PlayerUnit: {fileID: 641646719284810671, guid: 802080a562a57454ca08cc6a1fd32c3a,
+  guiMan: {fileID: 0}
+  gameMan: {fileID: 0}
+  gridMan: {fileID: 0}
+  mouseManPrefab: {fileID: 1397857731208177466, guid: abd0a7a2ceebea845a021bda2ad1fc25,
     type: 3}
+--- !u!114 &-5463100450039654254
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3270482152339648468}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 502963f7d99302443b26567c95f814c6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncInterval: 0.1

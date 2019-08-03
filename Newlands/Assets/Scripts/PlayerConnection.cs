@@ -16,6 +16,7 @@ public class PlayerConnection : NetworkBehaviour {
 	[SyncVar]
 	private bool initIdFlag = false;
 	public static NetworkConnection connection;
+	public GameObject mouseManPrefab;
 	private static DebugTag debug = new DebugTag("PlayerConnection", "2196F3");
 
 	// Start is called before the first frame update
@@ -27,6 +28,8 @@ public class PlayerConnection : NetworkBehaviour {
 
 		hand.Callback += OnHandUpdated;
 		connection = connectionToClient;
+
+		// CmdSpawnMouseManager();
 
 		if (TryToGrabComponents()) {
 
@@ -115,6 +118,15 @@ public class PlayerConnection : NetworkBehaviour {
 		// TargetCreateHandObjects(connectionToClient, this.hand);
 
 	} // CmdGetHand()
+
+	[Command]
+	private void CmdSpawnMouseManager() {
+		GameObject mouseMan = (GameObject)Instantiate(mouseManPrefab,
+					new Vector3(0, 0, 0),
+					Quaternion.identity);
+
+		NetworkServer.SpawnWithClientAuthority(mouseMan, connectionToClient);
+	}
 
 	private void OnIdChange(int newId) {
 		this.id = newId;

@@ -9,9 +9,9 @@ public class MouseManager : NetworkBehaviour {
 
 	private static DebugTag debug = new DebugTag("MouseManager", "AA00FF");
 
-	public GameManager gameMan;
-	public GuiManager guiMan;
-	public GridManager gridMan;
+	private GameManager gameMan;
+	// public GuiManager guiMan;
+	private GridManager gridMan;
 	public static int selection = -1;
 	// TODO: Create a dictionary of flags
 	private static int purchaseSuccessFlag = -1; // -1: Reset | 0: False | 1: True
@@ -31,12 +31,25 @@ public class MouseManager : NetworkBehaviour {
 
 	void Start() {
 
-		// gridMan = FindObjectOfType<GridManager>();
+		if (!isLocalPlayer) {
+			return;
+		}
+
+		gridMan = FindObjectOfType<GridManager>();
+		gameMan = FindObjectOfType<GameManager>();
+		// this.GetComponent<NetworkIdentity>().AssignClientAuthority(this.GetComponent<NetworkIdentity>().connectionToClient);
 
 	} // Start()
 
 	// Update is called once per frame
 	void Update() {
+
+		if (!hasAuthority) {
+			// Debug.LogWarning(debug.warning + "No Authority!");
+			return;
+		} else {
+			// Debug.Log(debug.head + "Authority!");
+		}
 
 		// If the cursor is over a UI element, return from Update()
 		// NOTE: In order for Canvases on objects such as Cards to be ignored,
@@ -402,20 +415,28 @@ public class MouseManager : NetworkBehaviour {
 
 	[Command]
 	private void CmdBuyTile(int locX, int locY) {
+
+		Debug.Log(debug.head + "Is Server? " + isServer);
+
 		bool success = false;
 		if (gameMan.BuyTile(locX, locY)) {
 			success = true;
 		}
-		TargetBuyTile(PlayerConnection.connection, success);
+		Debug.Log(debug.head + "About to call TargetBuyTile...");
+		TargetBuyTile(connectionToClient, success);
+
 	} // CmdBuyTile()
 
 	[TargetRpc]
 	private void TargetBuyTile(NetworkConnection target, bool success) {
+
+		Debug.Log(debug.head + "Called TargetBuyTile!");
 		if (success) {
 			purchaseSuccessFlag = 1;
 		} else {
 			purchaseSuccessFlag = 0;
 		}
+
 	} // TargetBuyTile()
 
 } // MouseManager class
