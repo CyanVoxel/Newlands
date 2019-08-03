@@ -340,163 +340,163 @@ public class CardDisplay : NetworkBehaviour {
 
 	} // DisplayFooter()
 
-	// Displays card scriptable object data onto a card prefab
-	// NOTE: This method is DEPRECATED! Use the new specific methods such as DisplayTitle()!
-	public void DisplayCard(GameObject obj, Card card) {
-		// Debug.Log("[CardDisplay] Trying to display the card "
-		// 	+ card.title
-		// 	+ " on object "
-		// 	+ obj);
+	// // Displays card scriptable object data onto a card prefab
+	// // NOTE: This method is DEPRECATED! Use the new specific methods such as DisplayTitle()!
+	// public void DisplayCard(GameObject obj, Card card) {
+	// 	// Debug.Log("[CardDisplay] Trying to display the card "
+	// 	// 	+ card.title
+	// 	// 	+ " on object "
+	// 	// 	+ obj);
 
-		// Grab the display elements from this parent object
-		GameObject titleObj = obj.transform.Find("Front Canvas/Title").gameObject;
+	// 	// Grab the display elements from this parent object
+	// 	GameObject titleObj = obj.transform.Find("Front Canvas/Title").gameObject;
 
-		GameObject bodyObj = obj.transform.Find("Front Canvas/Body").gameObject;
-		GameObject footerObj = obj.transform.Find("Front Canvas/Footer").gameObject;
-		GameObject footerBorderObj = obj.transform.Find(dirFtrBdr).gameObject;
+	// 	GameObject bodyObj = obj.transform.Find("Front Canvas/Body").gameObject;
+	// 	GameObject footerObj = obj.transform.Find("Front Canvas/Footer").gameObject;
+	// 	GameObject footerBorderObj = obj.transform.Find(dirFtrBdr).gameObject;
 
-		// Pick out the appropriate elements from the GameObjects that were grabbed
-		TMP_Text title = titleObj.GetComponent<TMP_Text>();
+	// 	// Pick out the appropriate elements from the GameObjects that were grabbed
+	// 	TMP_Text title = titleObj.GetComponent<TMP_Text>();
 
-		TMP_Text body = bodyObj.GetComponent<TMP_Text>();
-		TMP_Text footer = footerObj.GetComponent<TMP_Text>();
-		Image footerBorder = footerBorderObj.GetComponent<Image>();
+	// 	TMP_Text body = bodyObj.GetComponent<TMP_Text>();
+	// 	TMP_Text footer = footerObj.GetComponent<TMP_Text>();
+	// 	Image footerBorder = footerBorderObj.GetComponent<Image>();
 
-		// GAMECARD SPECIFICS -------------------------------------------------
-		if (card.category == "Game Card" || card.category == "Market") {
+	// 	// GAMECARD SPECIFICS -------------------------------------------------
+	// 	if (card.category == "Game Card" || card.category == "Market") {
 
-			GameObject subtitleObj = obj.transform.Find("Front Canvas/Subtitle").gameObject;
-			TMP_Text subtitle = subtitleObj.GetComponent<TMP_Text>();
+	// 		GameObject subtitleObj = obj.transform.Find("Front Canvas/Subtitle").gameObject;
+	// 		TMP_Text subtitle = subtitleObj.GetComponent<TMP_Text>();
 
-			GameObject footerBorderObjL = obj.transform.Find(dirFtrBdrL).gameObject;
-			GameObject footerBorderObjR = obj.transform.Find(dirFtrBdrR).gameObject;
-			Image footerBorderL = footerBorderObjL.GetComponent<Image>();
-			Image footerBorderR = footerBorderObjR.GetComponent<Image>();
+	// 		GameObject footerBorderObjL = obj.transform.Find(dirFtrBdrL).gameObject;
+	// 		GameObject footerBorderObjR = obj.transform.Find(dirFtrBdrR).gameObject;
+	// 		Image footerBorderL = footerBorderObjL.GetComponent<Image>();
+	// 		Image footerBorderR = footerBorderObjR.GetComponent<Image>();
 
-			// Set the TMP subtitle text based on the card object's enum
-			subtitle.text = card.subtitle;
+	// 		// Set the TMP subtitle text based on the card object's enum
+	// 		subtitle.text = card.subtitle;
 
-			// Color the footer border
-			if (card.title == "Market Mod") {
+	// 		// Color the footer border
+	// 		if (card.title == "Market Mod") {
 
-				footerBorder.color = ColorPalette.cardDark;
+	// 			footerBorder.color = ColorPalette.cardDark;
 
-				if (card.footerColor == "Red") { // Red
-					footerBorderL.color = ColorPalette.red500;
-					footerBorderR.color = ColorPalette.red500;
-				} else if (card.footerColor == "Green") { // Green
-					footerBorderL.color = ColorPalette.green500;
-					footerBorderR.color = ColorPalette.green500;
-				}
+	// 			if (card.footerColor == "Red") { // Red
+	// 				footerBorderL.color = ColorPalette.red500;
+	// 				footerBorderR.color = ColorPalette.red500;
+	// 			} else if (card.footerColor == "Green") { // Green
+	// 				footerBorderL.color = ColorPalette.green500;
+	// 				footerBorderR.color = ColorPalette.green500;
+	// 			}
 
-			} else {
+	// 		} else {
 
-				footerBorderL.color = ColorPalette.alpha;
-				footerBorderR.color = ColorPalette.alpha;
+	// 			footerBorderL.color = ColorPalette.alpha;
+	// 			footerBorderR.color = ColorPalette.alpha;
 
-				// Color the footer border
-				if (card.footerColor == "Black") { // Black
-					footerBorder.color = ColorPalette.cardDark;
-				} else if (card.footerColor == "Red") { // Red
-					footerBorder.color = ColorPalette.red500;
-				} else if (card.footerColor == "Green") { // Green
-					footerBorder.color = ColorPalette.green500;
-				} else if (card.footerColor == "Light Blue") { // Light Blue
-					footerBorder.color = ColorPalette.lightBlue500;
-				} else if (card.footerColor == "Yellow") { // Yellow
-					footerBorder.color = ColorPalette.yellow500;
-				} else if (card.footerColor == "Pink") { // Pink
-					footerBorder.color = ColorPalette.pink500;
-				} else if (card.footerColor == "Blue") { // Blue
-					footerBorder.color = ColorPalette.lightBlue500;
-				} else if (card.footerColor == "Dark Blue") { // Dark Blue
-					footerBorder.color = ColorPalette.indigo500;
-				} // if-else
+	// 			// Color the footer border
+	// 			if (card.footerColor == "Black") { // Black
+	// 				footerBorder.color = ColorPalette.cardDark;
+	// 			} else if (card.footerColor == "Red") { // Red
+	// 				footerBorder.color = ColorPalette.red500;
+	// 			} else if (card.footerColor == "Green") { // Green
+	// 				footerBorder.color = ColorPalette.green500;
+	// 			} else if (card.footerColor == "Light Blue") { // Light Blue
+	// 				footerBorder.color = ColorPalette.lightBlue500;
+	// 			} else if (card.footerColor == "Yellow") { // Yellow
+	// 				footerBorder.color = ColorPalette.yellow500;
+	// 			} else if (card.footerColor == "Pink") { // Pink
+	// 				footerBorder.color = ColorPalette.pink500;
+	// 			} else if (card.footerColor == "Blue") { // Blue
+	// 				footerBorder.color = ColorPalette.lightBlue500;
+	// 			} else if (card.footerColor == "Dark Blue") { // Dark Blue
+	// 				footerBorder.color = ColorPalette.indigo500;
+	// 			} // if-else
 
-			} // if Market Mod else
+	// 		} // if Market Mod else
 
-			// NOTE: 7/30/19 - Commented out illegal method calls that conflict with new display system
-			// subtitle.text = TagToCardData(MdToTag(subtitle.text), card);
+	// 		// NOTE: 7/30/19 - Commented out illegal method calls that conflict with new display system
+	// 		// subtitle.text = TagToCardData(MdToTag(subtitle.text), card);
 
-		} // GameCard specifics
+	// 	} // GameCard specifics
 
-		if (card.category == "Market") {
+	// 	if (card.category == "Market") {
 
-			title.text = "\u2013Market Card\u2013";
+	// 		title.text = "\u2013Market Card\u2013";
 
-			ResourceInfo.prices.TryGetValue(card.resource, out card.footerValue);
-			// NOTE: 7/30/19 - Commented out illegal method calls that conflict with new display system
-			// footer.text = TagToCardData(MdToTag(footer.text), card);
-		}
+	// 		ResourceInfo.prices.TryGetValue(card.resource, out card.footerValue);
+	// 		// NOTE: 7/30/19 - Commented out illegal method calls that conflict with new display system
+	// 		// footer.text = TagToCardData(MdToTag(footer.text), card);
+	// 	}
 
-		// TILE SPECIFICS -----------------------------------------------------
-		if (card.category == "Tile") {
+	// 	// TILE SPECIFICS -----------------------------------------------------
+	// 	if (card.category == "Tile") {
 
-			GameObject titleIconObj = obj.transform.Find("Front Canvas/Icon").gameObject;
-			Image iconImage = titleIconObj.GetComponent<Image>();
+	// 		GameObject titleIconObj = obj.transform.Find("Front Canvas/Icon").gameObject;
+	// 		Image iconImage = titleIconObj.GetComponent<Image>();
 
-			if (card.title == "Forest") {
-				iconImage.sprite = Resources.Load<Sprite>("Sprites/icon_forest"); // Forest
-			} else if (card.title == "Plains") {
-				iconImage.sprite = Resources.Load<Sprite>("Sprites/icon_plains"); // Plains
-			} else if (card.title == "Quarry") {
-				iconImage.sprite = Resources.Load<Sprite>("Sprites/icon_quarry"); // Quarry
-			} else if (card.title == "Farmland") {
-				iconImage.sprite = Resources.Load<Sprite>("Sprites/icon_farmland"); // Farmland
-			} // else-if
+	// 		if (card.title == "Forest") {
+	// 			iconImage.sprite = Resources.Load<Sprite>("Sprites/icon_forest"); // Forest
+	// 		} else if (card.title == "Plains") {
+	// 			iconImage.sprite = Resources.Load<Sprite>("Sprites/icon_plains"); // Plains
+	// 		} else if (card.title == "Quarry") {
+	// 			iconImage.sprite = Resources.Load<Sprite>("Sprites/icon_quarry"); // Quarry
+	// 		} else if (card.title == "Farmland") {
+	// 			iconImage.sprite = Resources.Load<Sprite>("Sprites/icon_farmland"); // Farmland
+	// 		} // else-if
 
-			// Color the footer border
-			if (card.footerColor == "Black") { // Black
-				footerBorder.color = ColorPalette.cardDark;
-			} else if (card.footerColor == "Red") { // Red
-				footerBorder.color = ColorPalette.red500;
-			} else if (card.footerColor == "Green") { // Green
-				footerBorder.color = ColorPalette.green500;
-			} else if (card.footerColor == "Light Blue") { // Light Blue
-				footerBorder.color = ColorPalette.lightBlue500;
-			} else if (card.footerColor == "Yellow") { // Yellow
-				footerBorder.color = ColorPalette.yellow500;
-			} else if (card.footerColor == "Pink") { // Pink
-				footerBorder.color = ColorPalette.pink500;
-			} else if (card.footerColor == "Blue") { // Blue
-				footerBorder.color = ColorPalette.lightBlue500;
-			} else if (card.footerColor == "Dark Blue") { // Dark Blue
-				footerBorder.color = ColorPalette.indigo500;
-			} // if-else
+	// 		// Color the footer border
+	// 		if (card.footerColor == "Black") { // Black
+	// 			footerBorder.color = ColorPalette.cardDark;
+	// 		} else if (card.footerColor == "Red") { // Red
+	// 			footerBorder.color = ColorPalette.red500;
+	// 		} else if (card.footerColor == "Green") { // Green
+	// 			footerBorder.color = ColorPalette.green500;
+	// 		} else if (card.footerColor == "Light Blue") { // Light Blue
+	// 			footerBorder.color = ColorPalette.lightBlue500;
+	// 		} else if (card.footerColor == "Yellow") { // Yellow
+	// 			footerBorder.color = ColorPalette.yellow500;
+	// 		} else if (card.footerColor == "Pink") { // Pink
+	// 			footerBorder.color = ColorPalette.pink500;
+	// 		} else if (card.footerColor == "Blue") { // Blue
+	// 			footerBorder.color = ColorPalette.lightBlue500;
+	// 		} else if (card.footerColor == "Dark Blue") { // Dark Blue
+	// 			footerBorder.color = ColorPalette.indigo500;
+	// 		} // if-else
 
-		} // LandTile specifics
+	// 	} // LandTile specifics
 
-		// Set the TMP title text.
-		// TODO: Optimize this under the new string system, as well as when Land Tile titles
-		//	are finally auto-centered with along with their icons.
-		if (card.title == "Market Mod") { // Market Mod
-			title.text = "\u2013Market Mod\u2013";
-		} else if (card.title == "Market Card") { // Price Card
-			title.text = "\u2013Market Card\u2013";
-		} else if (card.title == "Resource") { // Resource
-			title.text = "\u2013Resource\u2013";
-		} else if (card.title == "Tile Mod") { // Tile Mod
-			title.text = "\u2013Tile Mod\u2013";
-		} else if (card.title == "Forest") { // Forest Tile
-			title.text = " Forest";
-		} else if (card.title == "Plains") { // Plains Tile
-			title.text = " Plains";
-		} else if (card.title == "Quarry") { // Quarry Tile
-			title.text = "    Quarry";
-		} else if (card.title == "Farmland") { // Farmland Tile
-			title.text = "       Farmland";
-		} // if-else
+	// 	// Set the TMP title text.
+	// 	// TODO: Optimize this under the new string system, as well as when Land Tile titles
+	// 	//	are finally auto-centered with along with their icons.
+	// 	if (card.title == "Market Mod") { // Market Mod
+	// 		title.text = "\u2013Market Mod\u2013";
+	// 	} else if (card.title == "Market Card") { // Price Card
+	// 		title.text = "\u2013Market Card\u2013";
+	// 	} else if (card.title == "Resource") { // Resource
+	// 		title.text = "\u2013Resource\u2013";
+	// 	} else if (card.title == "Tile Mod") { // Tile Mod
+	// 		title.text = "\u2013Tile Mod\u2013";
+	// 	} else if (card.title == "Forest") { // Forest Tile
+	// 		title.text = " Forest";
+	// 	} else if (card.title == "Plains") { // Plains Tile
+	// 		title.text = " Plains";
+	// 	} else if (card.title == "Quarry") { // Quarry Tile
+	// 		title.text = "    Quarry";
+	// 	} else if (card.title == "Farmland") { // Farmland Tile
+	// 		title.text = "       Farmland";
+	// 	} // if-else
 
-		// String members are assigned to the text labels after being formatted
-		// NOTE: 7/30/19 - Commented out illegal method calls that conflict with new display system
-		// body.text = TagToCardData(MdToTag(card.bodyText), card);
-		// footer.text = InsertFooterValue(card, card.footerText, card.percFlag,
-		// 	card.moneyFlag, card.footerOpr);
+	// 	// String members are assigned to the text labels after being formatted
+	// 	// NOTE: 7/30/19 - Commented out illegal method calls that conflict with new display system
+	// 	// body.text = TagToCardData(MdToTag(card.bodyText), card);
+	// 	// footer.text = InsertFooterValue(card, card.footerText, card.percFlag,
+	// 	// 	card.moneyFlag, card.footerOpr);
 
-		body.text = MdToTag(body.text);
-		// footer.text = TagToCardData(MdToTag(footer.text), card);
+	// 	body.text = MdToTag(body.text);
+	// 	// footer.text = TagToCardData(MdToTag(footer.text), card);
 
-	} // displayCard()
+	// } // displayCard()
 
 	// Performas visual updates to a bankrupt card
 	public static void BankruptVisuals(GameObject tile) {

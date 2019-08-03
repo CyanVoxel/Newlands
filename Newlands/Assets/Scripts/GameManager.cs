@@ -35,6 +35,9 @@ public class GameManager : NetworkBehaviour {
 	[SerializeField]
 	public static List<Player> players = new List<Player>(); // The player data objects
 
+	[SyncVar]
+	public string purchasedTileInfo = "";
+
 	// private static List<GameObject> playerMoneyObj = new List<GameObject>();
 	// private static List<TMP_Text> playerMoneyText = new List<TMP_Text>();
 
@@ -46,8 +49,6 @@ public class GameManager : NetworkBehaviour {
 		}
 
 		Debug.Log(debug.head + "Initializing GameManager...");
-
-		// this.gameObject.AddComponent<MouseManager>();
 
 		Debug.Log(debug.head + "Creating Master Deck \"Vanilla\"");
 		masterDeck = new MasterDeck("Vanilla");
@@ -748,14 +749,9 @@ public class GameManager : NetworkBehaviour {
 
 	public bool BuyTile(Coordinate2 target) {
 
-		// Debug.Log(debug.head + "Is Server? " + isServer);
-
 		int turn = this.turn; // Don't want the turn changing while this is running
 		bool tileOwned = false;
 		bool validPurchase = false;
-
-		// Debug.Log(debug.head + "#############################################################");
-		// Debug.Log(debug.head + "Turn " + turn);
 
 		// Interate through each player, then each tile they have owned.
 		// Sets tileOwned to true if a match is found.
@@ -770,30 +766,15 @@ public class GameManager : NetworkBehaviour {
 		}
 
 		if (!tileOwned) {
-			// Debug.Log(debug.head + "Allowing tile purchase. Check for funds later!");
-			// Debug.Log(debug.head + GameManager.players);
-			// Debug.Log(debug.head + GameManager.players.Count + " - " + (turn - 1));
-			// Debug.Log(debug.head + "Turn: " + turn);
-			// Debug.Log(debug.head + GameManager.players);
-			// Debug.Log(debug.head + GameManager.players[turn - 1]);
 
-			GameManager.players[turn - 1].ownedTiles.Add(target);
+			GameManager.players[turn - 1].ownedTiles.Add(target); // Only the server can see this
 
-			// GameObject playerRef = GameObject.Find("Player (" + turn + ")");
-
-			// if (playerRef != null) {
-			// 	Debug.Log(debug.head + playerRef.GetComponent<PlayerConnection>());
-			// 	Debug.Log(debug.head + playerRef.GetComponent<PlayerConnection>().ownedTiles);
-			// 	playerRef.GetComponent<PlayerConnection>().ownedTiles.Add(target);
-			// } else {
-			// 	Debug.LogError(debug.error + "Player Connection was null!");
-			// }
+			this.purchasedTileInfo = turn + "_x" + target.x + "_y" + target.y;
 
 			Debug.Log(debug.head + "Player " + turn
 				+ " (ID: " + GameManager.players[turn - 1].Id + ") bought tile " + target.ToString());
 			// Debug.Log(debug.head + "Advancing Turn; This is a temporary mechanic!");
 			this.IncrementTurn();
-			// Debug.Log(debug.head + "#############################################################");
 			validPurchase = true;
 		}
 
@@ -808,6 +789,5 @@ public class GameManager : NetworkBehaviour {
 		return BuyTile(target);
 
 	} // BuyTile()
-
 
 } // GameManager class
