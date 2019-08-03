@@ -15,7 +15,7 @@ MonoBehaviour:
   category: Game Card
   title: Tile Mod
   subtitle: Resource
-  bodyText: Place this under any **Quarry**.
+  bodyText: Place this under any **Quarry** Tile.
   footerText: '**<x>** <r>'
   resource: Silver
   footerValue: 1

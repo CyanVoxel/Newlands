@@ -21,13 +21,13 @@ public class PlayerConnection : NetworkBehaviour {
 
 	// Private =================================================================
 	private static DebugTag debug = new DebugTag("PlayerConnection", "2196F3");
-	[SyncVar(hook = "OnIdChange")] [SerializeField]
+	[SyncVar(hook = "OnIdChange")][SerializeField]
 	private int id = -1;
 	[SyncVar]
 	private bool initIdFlag = false;
 	// public static NetworkConnection connection;
 	// [SyncVar(hook = "OnMouseManObjChange")]
-	private GameObject mouseManObj;
+	// private GameObject mouseManObj;
 
 	#endregion
 
@@ -110,7 +110,10 @@ public class PlayerConnection : NetworkBehaviour {
 
 		Debug.Log(debug.head + "Assigned ID of " + this.id);
 
-		CmdSpawnMouseManager();
+		// Check for authority or else it'll try to spawn an extra one
+		if (hasAuthority) {
+			CmdSpawnMouseManager();
+		}
 
 		// Debug.Log(debug.head + "Verifying new PlayerIndex: "
 		// 	+ gameMan.GetPlayerIndex());
@@ -193,7 +196,7 @@ public class PlayerConnection : NetworkBehaviour {
 	[Command]
 	private void CmdSpawnMouseManager() {
 
-		this.mouseManObj = (GameObject)Instantiate(mouseManPrefab,
+		GameObject mouseManObj = (GameObject)Instantiate(mouseManPrefab,
 			new Vector3(0, 0, 0),
 			Quaternion.identity);
 

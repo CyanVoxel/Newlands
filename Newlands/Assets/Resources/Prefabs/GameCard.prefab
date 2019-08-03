@@ -438,8 +438,8 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_text: Footer
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 0e43b712ebad33f4c83a8044eaec070b, type: 2}
-  m_sharedMaterial: {fileID: 21099939017498762, guid: 0e43b712ebad33f4c83a8044eaec070b,
+  m_fontAsset: {fileID: 11400000, guid: 5d026042c19f5bc438c7763c2b8a1a52, type: 2}
+  m_sharedMaterial: {fileID: 1979364309642615130, guid: 5d026042c19f5bc438c7763c2b8a1a52,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -465,8 +465,8 @@ MonoBehaviour:
   m_outlineColor:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontSize: 45
-  m_fontSizeBase: 45
+  m_fontSize: 40
+  m_fontSizeBase: 40
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -615,7 +615,7 @@ GameObject:
   - component: {fileID: 222717461279872048}
   - component: {fileID: 114027094851344348}
   m_Layer: 0
-  m_Name: TMP SubMeshUI [TwC Material + TwC Bold Atlas]
+  m_Name: TMP SubMeshUI [LeagueSpartan Bold Material + LiberationSans SDF Atlas]
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -668,7 +668,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_fontAsset: {fileID: 11400000, guid: bb9d6f69f6200774084172d866bd7f01, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_spriteAsset: {fileID: 0}
   m_material: {fileID: 0}
   m_sharedMaterial: {fileID: 0}
@@ -788,7 +788,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -100}
+  m_AnchoredPosition: {x: 0, y: -104.5}
   m_SizeDelta: {x: 450, y: 43}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &222109328059104480
@@ -823,8 +823,8 @@ MonoBehaviour:
 
 '
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 64e10270a66416b41a8523f500088cca, type: 2}
-  m_sharedMaterial: {fileID: 21278362757928500, guid: 64e10270a66416b41a8523f500088cca,
+  m_fontAsset: {fileID: 11400000, guid: 13e0bc36c34affd4c81dc36e5f949168, type: 2}
+  m_sharedMaterial: {fileID: 77527028910809854, guid: 13e0bc36c34affd4c81dc36e5f949168,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -850,15 +850,15 @@ MonoBehaviour:
   m_outlineColor:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontSize: 50
-  m_fontSizeBase: 50
+  m_fontSize: 40
+  m_fontSizeBase: 40
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 17
+  m_fontStyle: 16
   m_textAlignment: 514
-  m_characterSpacing: 0
+  m_characterSpacing: 2
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -898,7 +898,7 @@ MonoBehaviour:
     linkCount: 0
     lineCount: 1
     pageCount: 1
-    materialCount: 2
+    materialCount: 1
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_spriteAnimator: {fileID: 0}
@@ -1038,7 +1038,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -46}
+  m_AnchoredPosition: {x: 0, y: -52}
   m_SizeDelta: {x: 450, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &222084327975669010
@@ -1071,8 +1071,8 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_text: "\u2013Card Title\u2013\n"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 64e10270a66416b41a8523f500088cca, type: 2}
-  m_sharedMaterial: {fileID: 21278362757928500, guid: 64e10270a66416b41a8523f500088cca,
+  m_fontAsset: {fileID: 11400000, guid: 13e0bc36c34affd4c81dc36e5f949168, type: 2}
+  m_sharedMaterial: {fileID: 77527028910809854, guid: 13e0bc36c34affd4c81dc36e5f949168,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -1098,15 +1098,15 @@ MonoBehaviour:
   m_outlineColor:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontSize: 60
-  m_fontSizeBase: 60
+  m_fontSize: 50
+  m_fontSizeBase: 50
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 17
+  m_fontStyle: 16
   m_textAlignment: 514
-  m_characterSpacing: 0
+  m_characterSpacing: 2
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -1322,7 +1322,7 @@ GameObject:
   - component: {fileID: 222468759743902640}
   - component: {fileID: 114004518387318834}
   m_Layer: 0
-  m_Name: TMP SubMeshUI [Tw Cen MT Condensed Material + TwC Cond Bold Atlas]
+  m_Name: TMP SubMeshUI [Oswald Material + LiberationSans SDF Atlas]
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1375,12 +1375,12 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_fontAsset: {fileID: 11400000, guid: 30e3ea8560d09be4e8822f0e34797757, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_spriteAsset: {fileID: 0}
   m_material: {fileID: 0}
   m_sharedMaterial: {fileID: 0}
   m_isDefaultMaterial: 0
-  m_padding: 0
+  m_padding: 1.25
   m_canvasRenderer: {fileID: 222468759743902640}
   m_TextComponent: {fileID: 114691509433910674}
   m_materialReferenceIndex: 1
@@ -1526,8 +1526,8 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_text: Lorem ipsum
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 0e43b712ebad33f4c83a8044eaec070b, type: 2}
-  m_sharedMaterial: {fileID: 21099939017498762, guid: 0e43b712ebad33f4c83a8044eaec070b,
+  m_fontAsset: {fileID: 11400000, guid: 5d026042c19f5bc438c7763c2b8a1a52, type: 2}
+  m_sharedMaterial: {fileID: 1979364309642615130, guid: 5d026042c19f5bc438c7763c2b8a1a52,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -1553,12 +1553,12 @@ MonoBehaviour:
   m_outlineColor:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontSize: 60
+  m_fontSize: 50
   m_fontSizeBase: 40
   m_fontWeight: 400
   m_enableAutoSizing: 1
   m_fontSizeMin: 18
-  m_fontSizeMax: 60
+  m_fontSizeMax: 50
   m_fontStyle: 16
   m_textAlignment: 514
   m_characterSpacing: 0
@@ -1601,7 +1601,7 @@ MonoBehaviour:
     linkCount: 0
     lineCount: 1
     pageCount: 1
-    materialCount: 1
+    materialCount: 2
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_spriteAnimator: {fileID: 0}
@@ -1680,8 +1680,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   serverOnly: 0
   localPlayerAuthority: 0
-  m_AssetId: 
-  m_SceneId: 1959566697
+  m_AssetId: 51fb3f7ac2da8354bb24e66d233f9cdc
+  m_SceneId: 0
 --- !u!114 &-546225513333686585
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1710,19 +1710,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   syncInterval: 0.1
+  cardDis: {fileID: 0}
   gridMan: {fileID: 0}
   objectName: 
   title: 
   subtitle: 
-  body: 
-  footer: 
+  bodyText: 
+  footerText: 
   footerValue: 0
   percFlag: 0
   moneyFlag: 0
   footerOpr: 0
+  onlyColorCorners: 0
   category: Tile
   resource: 
   target: 
+  footerColor: 
 --- !u!1 &1949806437575516
 GameObject:
   m_ObjectHideFlags: 0
