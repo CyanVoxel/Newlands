@@ -14,9 +14,12 @@ public class MouseManager : NetworkBehaviour {
 	private GridManager gridMan;
 	public static int selection = -1;
 	// TODO: Create a dictionary of flags
-	private static int purchaseSuccessFlag = -1; // -1: Reset | 0: False | 1: True
+	private  int purchaseSuccessFlag = -1; // -1: Reset | 0: False | 1: True
 	public static bool highlightFlag = false; // True if AttemptPurchaseVisuals() already highlighted
 	private static GameObject objectHit;
+
+	// [SyncVar]
+	public NetworkConnection myClient;
 
 	private int purchaseBufferX = -1;
 	private int purchaseBufferY = -1;
@@ -31,12 +34,14 @@ public class MouseManager : NetworkBehaviour {
 
 	void Start() {
 
-		if (!isLocalPlayer) {
-			return;
-		}
+		// if (!hasAuthority) {
+		// 	return;
+		// }
 
 		gridMan = FindObjectOfType<GridManager>();
 		gameMan = FindObjectOfType<GameManager>();
+
+		// myClient = GameObject.Find("Player (" + gameMan.GetPlayerIndex() + ")").GetComponent<NetworkIdentity>().connectionToClient;
 		// this.GetComponent<NetworkIdentity>().AssignClientAuthority(this.GetComponent<NetworkIdentity>().connectionToClient);
 
 	} // Start()
@@ -57,6 +62,17 @@ public class MouseManager : NetworkBehaviour {
 		if (EventSystem.current.IsPointerOverGameObject()) {
 			return;
 		}
+
+		if (gameMan == null) {
+			gameMan = FindObjectOfType<GameManager>();
+			Debug.Log(debug.head + "GameManager was set during update");
+		}
+
+		if (gridMan == null) {
+			gridMan = FindObjectOfType<GridManager>();
+			Debug.Log(debug.head + "GridManager was set during update");
+		}
+
 
 		// Flag Checkers -------------------------------------------------------
 		CheckPurchaseSuccess();
@@ -150,6 +166,7 @@ public class MouseManager : NetworkBehaviour {
 						// guiMan.CmdUpdateUI();
 
 						// If the tile can be bought
+						Debug.Log(debug.head + "Trying to buy tile!");
 						CmdBuyTile(locX, locY);
 						this.purchaseBufferX = locX;
 						this.purchaseBufferY = locY;
@@ -385,23 +402,23 @@ public class MouseManager : NetworkBehaviour {
 
 	private void CheckPurchaseSuccess() {
 
-		switch (purchaseSuccessFlag) {
+		switch (this.purchaseSuccessFlag) {
 			case -1:
 				break;
 			case 0:
 				// False
 				Debug.Log(debug.head + "Purchase Unsuccessful!");
-				purchaseSuccessFlag = -1;
+				this.purchaseSuccessFlag = -1;
 				break;
 			case 1:
 				// True
 				Debug.Log(debug.head + "Purchase Successful!");
-				CardAnimations.FlipCard("Tile", purchaseBufferX, purchaseBufferY);
-				purchaseSuccessFlag = -1;
+				CmdFlipCard("Tile", this.purchaseBufferX, this.purchaseBufferY);
+				this.purchaseSuccessFlag = -1;
 				break;
 			default:
-				Debug.LogWarning(debug.head + "PurchaseSuccessFlag was set to " + purchaseSuccessFlag);
-				purchaseSuccessFlag = -1;
+				Debug.LogWarning(debug.head + "PurchaseSuccessFlag was set to " + this.purchaseSuccessFlag);
+				this.purchaseSuccessFlag = -1;
 				break;
 		} // switch (purchaseSuccessFlag)
 
@@ -414,21 +431,30 @@ public class MouseManager : NetworkBehaviour {
 	} // CallCmdBuyTile()
 
 	[Command]
+	private void CmdFlipCard(string cardType, int locX, int locY) {
+		CardAnimations.FlipCard(cardType, locX, locY);
+	}
+
+	[Command]
 	private void CmdBuyTile(int locX, int locY) {
 
-		Debug.Log(debug.head + "Is Server? " + isServer);
+		// Debug.Log(debug.head + "Is Server? " + isServer);
 
 		bool success = false;
 		if (gameMan.BuyTile(locX, locY)) {
 			success = true;
 		}
-		Debug.Log(debug.head + "About to call TargetBuyTile...");
-		TargetBuyTile(connectionToClient, success);
+		Debug.Log(debug.head + "About to call TargetBuyTile with connection: " + myClient);
+		TargetBuyTile(myClient, success);
 
 	} // CmdBuyTile()
 
 	[TargetRpc]
 	private void TargetBuyTile(NetworkConnection target, bool success) {
+
+		// if (!isLocalPlayer) {
+		// 	return;
+		// }
 
 		Debug.Log(debug.head + "Called TargetBuyTile!");
 		if (success) {

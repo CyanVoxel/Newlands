@@ -39,6 +39,10 @@ public class CardAnimations : MonoBehaviour {
         switch (cardType) {
 
             case "Tile":
+                Debug.Log(debug.head + "Trying to flip " + "x"
+                    + xZeroes + x + "_"
+                    + "y" + yZeroes + y + "_"
+                    + cardType);
                 cardObj = GameObject.Find("x" + xZeroes + x + "_"
                     + "y" + yZeroes + y + "_"
                     + cardType);
@@ -74,7 +78,7 @@ public class CardAnimations : MonoBehaviour {
                 break;
 
             default:
-                Debug.LogError(debug.head + "No Card Type matches: " + cardType);
+                Debug.LogError(debug.error + "No Card Type matches: " + cardType);
                 break;
 
         } // switch

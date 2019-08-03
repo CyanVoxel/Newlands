@@ -729,12 +729,12 @@ public class GameManager : NetworkBehaviour {
 
 		MouseManager.highlightFlag = false;
 
-		bool highlightAllowed = false;
-		if (round > GameManager.graceRounds) {
-			highlightAllowed = true;
-		}
-		Debug.Log(debug.head + "Round: " + round + "/" + GameManager.graceRounds + " | " + highlightAllowed);
-		Debug.Log(debug.head + "Turn: " + newTurn);
+		// bool highlightAllowed = false;
+		// if (round > GameManager.graceRounds) {
+		// 	highlightAllowed = true;
+		// }
+		// Debug.Log(debug.head + "Round: " + round + "/" + GameManager.graceRounds + " | " + highlightAllowed);
+		// Debug.Log(debug.head + "Turn: " + newTurn);
 
 		// if (round > graceRounds) {
 		// 	// VerifyHighlight();
@@ -748,39 +748,40 @@ public class GameManager : NetworkBehaviour {
 
 	public bool BuyTile(Coordinate2 target) {
 
-		Debug.Log(debug.head + "Is Server? " + isServer);
+		// Debug.Log(debug.head + "Is Server? " + isServer);
 
 		int turn = this.turn; // Don't want the turn changing while this is running
 		bool tileOwned = false;
 		bool validPurchase = false;
 
-		Debug.Log(debug.head + "#############################################################");
-		Debug.Log(debug.head + "Turn " + turn);
+		// Debug.Log(debug.head + "#############################################################");
+		// Debug.Log(debug.head + "Turn " + turn);
 
 		// Interate through each player, then each tile they have owned.
 		// Sets tileOwned to true if a match is found.
 		for (int i = 0; i < GameManager.players.Count; i++) {
 			for (int j = 0; j < GameManager.players[i].ownedTiles.Count; j++) {
 				if (GameManager.players[i].ownedTiles[j] == target) {
-					Debug.Log(debug.head + "Can't purchase, tile " + target.ToString() + " is already owned!");
+					Debug.Log(debug.head + "Can't purchase, tile " + target.ToString()
+						+ " is already owned by Player " + (i + 1) + "!");
 					tileOwned = true;
 				}
 			}
 		}
 
 		if (!tileOwned) {
-			Debug.Log(debug.head + "Allowing tile purchase. Check for funds later!");
-			Debug.Log(debug.head + GameManager.players);
-			Debug.Log(debug.head + GameManager.players.Count + " - " + (turn - 1));
-			Debug.Log(debug.head + "Turn: " + turn);
-			Debug.Log(debug.head + GameManager.players);
-			Debug.Log(debug.head + GameManager.players[turn - 1]);
+			// Debug.Log(debug.head + "Allowing tile purchase. Check for funds later!");
+			// Debug.Log(debug.head + GameManager.players);
+			// Debug.Log(debug.head + GameManager.players.Count + " - " + (turn - 1));
+			// Debug.Log(debug.head + "Turn: " + turn);
+			// Debug.Log(debug.head + GameManager.players);
+			// Debug.Log(debug.head + GameManager.players[turn - 1]);
 			GameManager.players[turn - 1].ownedTiles.Add(target);
 			Debug.Log(debug.head + "Player " + turn
 				+ " (ID: " + GameManager.players[turn - 1].Id + ") bought tile " + target.ToString());
-			Debug.Log(debug.head + "Advancing Turn; This is a temporary mechanic!");
+			// Debug.Log(debug.head + "Advancing Turn; This is a temporary mechanic!");
 			this.IncrementTurn();
-			Debug.Log(debug.head + "#############################################################");
+			// Debug.Log(debug.head + "#############################################################");
 			validPurchase = true;
 		}
 

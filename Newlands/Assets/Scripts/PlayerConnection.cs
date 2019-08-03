@@ -15,7 +15,7 @@ public class PlayerConnection : NetworkBehaviour {
 	public SyncListCardData hand;
 	[SyncVar]
 	private bool initIdFlag = false;
-	public static NetworkConnection connection;
+	// public static NetworkConnection connection;
 	public GameObject mouseManPrefab;
 	private static DebugTag debug = new DebugTag("PlayerConnection", "2196F3");
 
@@ -26,10 +26,9 @@ public class PlayerConnection : NetworkBehaviour {
 			return;
 		}
 
-		hand.Callback += OnHandUpdated;
-		connection = connectionToClient;
-
-		// CmdSpawnMouseManager();
+		this.hand.Callback += OnHandUpdated;
+		CmdSpawnMouseManager();
+		// connection = connectionToClient;
 
 		if (TryToGrabComponents()) {
 
@@ -126,6 +125,8 @@ public class PlayerConnection : NetworkBehaviour {
 					Quaternion.identity);
 
 		NetworkServer.SpawnWithClientAuthority(mouseMan, connectionToClient);
+		MouseManager mouse = mouseMan.GetComponent<MouseManager>();
+		mouse.myClient = this.connectionToClient;
 	}
 
 	private void OnIdChange(int newId) {
