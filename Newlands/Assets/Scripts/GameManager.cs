@@ -7,7 +7,7 @@ using UnityEngine;
 public class GameManager : NetworkBehaviour {
 
 	public CardDisplay cardDis;
-	public GuiManager guiMan;
+	// public GuiManager guiMan;
 	public GridManager gridMan;
 
 	// VARIABLES ##################################################################################
@@ -71,8 +71,8 @@ public class GameManager : NetworkBehaviour {
 		// mainCam = cameraObj.GetComponent<Camera>();
 
 		// Push the first UI Update
-		guiMan.InitGuiManager();
-		guiMan.CmdUpdateUI();
+		// guiMan.InitGuiManager();
+		// guiMan.UpdateUI();
 
 	} // Start()
 
@@ -533,7 +533,7 @@ public class GameManager : NetworkBehaviour {
 
 			ruleSet.PlayCard(gridTile, gameCard.card);
 			UpdatePlayersInfo();
-			guiMan.CmdUpdateUI();
+			// guiMan.UpdateUI();
 
 			Vector3 oldCardPosition = gameCard.tileObj.transform.position;
 			int oldCardIndex = gameCard.x;
@@ -542,7 +542,7 @@ public class GameManager : NetworkBehaviour {
 			if (gridTile.bankrupt) {
 				BankruptTile(gridTile);
 				UpdatePlayersInfo();
-				guiMan.CmdUpdateUI();
+				// guiMan.UpdateUI();
 				Debug.Log(debug.head + "Tile bankrupt! has value of " + gridTile.totalValue);
 			}
 
@@ -552,7 +552,7 @@ public class GameManager : NetworkBehaviour {
 				gridTile.cardStack.Add(gameCard.card);
 				gridTile.CalcTotalValue(); // This fixes Market Cards not calculating first time
 				UpdatePlayersInfo();
-				guiMan.CmdUpdateUI();
+				// guiMan.UpdateUI();
 
 				if (gameCard.card.title == "Tile Mod") {
 
@@ -603,7 +603,7 @@ public class GameManager : NetworkBehaviour {
 			} else {
 				// After ALL processing is done, destroy the game object
 				Destroy(gameCard.tileObj);
-				guiMan.CmdUpdateUI();
+				// guiMan.UpdateUI();
 			} // if stackable
 
 			// Create a new card to replace the old one

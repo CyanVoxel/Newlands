@@ -1,5 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿// The class responsible for representing a Player Connection over the network. Required by Mirror.
+
+// using System.Collections;
+// using System.Collections.Generic;
 using Mirror;
 using UnityEngine;
 
@@ -7,19 +9,31 @@ public class SyncListCardData : SyncList<CardData> { }
 
 public class PlayerConnection : NetworkBehaviour {
 
-	public GuiManager guiMan;
+	// DATA FIELDS #################################################################################
+	#region DATA FIELDS
+
+	// Public ==================================================================
 	public GameManager gameMan;
 	public GridManager gridMan;
+	// public GuiManager guiMan;
+	public GameObject mouseManPrefab;
+	public SyncListCardData hand;
+
+	// Private =================================================================
+	private static DebugTag debug = new DebugTag("PlayerConnection", "2196F3");
 	[SyncVar(hook = "OnIdChange")]
 	private int id = -1;
-	public SyncListCardData hand;
 	[SyncVar]
 	private bool initIdFlag = false;
 	// public static NetworkConnection connection;
-	public GameObject mouseManPrefab;
-	private static DebugTag debug = new DebugTag("PlayerConnection", "2196F3");
+	private GameObject mouseManObj;
 
-	// Start is called before the first frame update
+	#endregion
+
+	// METHODS #####################################################################################
+	#region METHODS
+
+	// Start is called before the first frame update.
 	void Start() {
 
 		if (!isLocalPlayer) {
@@ -46,19 +60,8 @@ public class PlayerConnection : NetworkBehaviour {
 
 	} //Start()
 
-	// // Update is called once per frame
-	// void Update() {
-
-	// 	if (!isLocalPlayer) {
-	// 		return;
-	// 	}
-
-	// 	// Debug.Log(debug.head + "Hand size: " + this.hand.Count);
-
-	// } // Update()
-
 	// Tries to grab necessary components if they haven't been already.
-	// Returns true if all components were verified to be grabbed
+	// Returns true if all components were verified to be grabbed.
 	private bool TryToGrabComponents() {
 
 		if (this.gameMan == null) {
@@ -69,24 +72,76 @@ public class PlayerConnection : NetworkBehaviour {
 			this.gridMan = FindObjectOfType<GridManager>();
 		}
 
-		if (this.guiMan == null) {
-			this.guiMan = FindObjectOfType<GuiManager>();
-		}
+		// if (this.guiMan == null) {
+		// 	this.guiMan = FindObjectOfType<GuiManager>();
+		// }
 
-		if (this.gameMan == null) {
-			return false;
-		} else if (this.gridMan == null) {
-			return false;
-		} else if (this.guiMan == null) {
-			return false;
-		} else {
-			return true;
-		}
+		if (this.gameMan == null)return false;
+		if (this.gridMan == null)return false;
+		// if (this.guiMan == null) return false;
+		return true;
 
 	} // GrabComponents()
 
-	// COMMANDS ####################################################################################
+	// Fires when this PlayerConnection's ID changes.
+	private void OnIdChange(int newId) {
 
+		this.id = newId;
+		this.transform.name = "Player (" + this.id + ")";
+		// mouseManObj.transform.name = "MouseManager (" + this.id + ")";
+		GameManager.localPlayerId = this.id;
+
+	} // OnIdChange()
+
+	// Initializes this PlayerConnection's ID by asking the Server to assign one.
+	private void InitId() {
+
+		TryToGrabComponents();
+
+		// Debug.Log(debug.head + "Chainging default id of "
+		// 	+ this.id
+		// 	+ " to " + gameMan.GetPlayerIndex());
+
+		this.id = gameMan.GetPlayerIndex();
+		gameMan.IncrementPlayerIndex();
+		// mouseManObj.transform.name = "MouseManager (" + this.id + ")";
+
+		Debug.Log(debug.head + "Assigned ID of " + this.id);
+
+		// Debug.Log(debug.head + "Verifying new PlayerIndex: "
+		// 	+ gameMan.GetPlayerIndex());
+
+		// this.transform.name = "Player (" + this.id + ")";
+
+		// Debug.Log(debug.head + "GameManager.handSize =  "
+		// 	+ GameManager.handSize
+		// 	+ " for player " + this.id);
+
+		this.initIdFlag = true;
+
+	} // InitId()
+
+	// Fire's when this Player's hand of cards updates
+	private void OnHandUpdated(SyncListCardData.Operation op, int index, CardData card) {
+
+		if (!isLocalPlayer) {
+			return;
+		}
+
+		// Debug.Log(debug.head + "Index: " + index);
+
+		if (index == (GameManager.handSize - 1) && op == SyncListCardData.Operation.OP_ADD) {
+			gridMan.CreateHandObjects(this.id, this.hand);
+		}
+
+	} // OnHandUpdated()
+
+	#endregion
+
+	// COMMANDS ####################################################################################
+	#region COMMANDS
+
+	// Asks the Server to give this Player a hand of cards
 	[Command]
 	public void CmdGetHand() {
 
@@ -118,61 +173,21 @@ public class PlayerConnection : NetworkBehaviour {
 
 	} // CmdGetHand()
 
+	// Spawns in a copy of MouseManager with Client Authority and feeds it a reference
+	// to this PlayerConnection's connection.
 	[Command]
 	private void CmdSpawnMouseManager() {
-		GameObject mouseMan = (GameObject)Instantiate(mouseManPrefab,
-					new Vector3(0, 0, 0),
-					Quaternion.identity);
 
-		NetworkServer.SpawnWithClientAuthority(mouseMan, connectionToClient);
-		MouseManager mouse = mouseMan.GetComponent<MouseManager>();
-		mouse.myClient = this.connectionToClient;
-	}
+		mouseManObj = (GameObject)Instantiate(mouseManPrefab,
+			new Vector3(0, 0, 0),
+			Quaternion.identity);
 
-	private void OnIdChange(int newId) {
-		this.id = newId;
-		this.transform.name = "Player (" + this.id + ")";
-		GameManager.localPlayerId = this.id;
-	} // OnIdChange()
+		NetworkServer.SpawnWithClientAuthority(mouseManObj, connectionToClient);
+		MouseManager localMouseMan = mouseManObj.GetComponent<MouseManager>();
+		localMouseMan.myClient = this.connectionToClient;
 
-	private void InitId() {
+	} // CmdSpawnMouseManager()
 
-		TryToGrabComponents();
-
-		// Debug.Log(debug.head + "Chainging default id of "
-		// 	+ this.id
-		// 	+ " to " + gameMan.GetPlayerIndex());
-
-		this.id = gameMan.GetPlayerIndex();
-		gameMan.IncrementPlayerIndex();
-
-		Debug.Log(debug.head + "Assigned ID of " + this.id);
-
-		// Debug.Log(debug.head + "Verifying new PlayerIndex: "
-		// 	+ gameMan.GetPlayerIndex());
-
-		// this.transform.name = "Player (" + this.id + ")";
-
-		// Debug.Log(debug.head + "GameManager.handSize =  "
-		// 	+ GameManager.handSize
-		// 	+ " for player " + this.id);
-
-		this.initIdFlag = true;
-
-	} // InitId()
-
-	private void OnHandUpdated(SyncListCardData.Operation op, int index, CardData card) {
-
-		if (!isLocalPlayer) {
-			return;
-		}
-
-		// Debug.Log(debug.head + "Index: " + index);
-
-		if (index == (GameManager.handSize - 1) && op == SyncListCardData.Operation.OP_ADD) {
-			gridMan.CreateHandObjects(this.id, this.hand);
-		}
-
-	} // OnHandUpdated()
+	#endregion
 
 } // PlayerConnection class
