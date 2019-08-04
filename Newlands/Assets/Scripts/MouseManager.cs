@@ -217,7 +217,7 @@ public class MouseManager : NetworkBehaviour {
 						// "Sells" the tile - NOTE: this is for debugging ONLY
 						GridManager.grid[locX, locY].ownerId = 0;
 
-						gameMan.RollbackTurn();
+						// gameMan.RollbackTurn();
 						// guiMan.CmdUpdateUI();
 
 					} // if Right Click

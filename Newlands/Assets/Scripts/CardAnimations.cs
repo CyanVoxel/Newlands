@@ -84,4 +84,61 @@ public class CardAnimations : MonoBehaviour {
         } // switch
 
     } // FlipCard()
+
+    public static void HighlightCards(List<Coordinate2> cards, int colorId = 0) {
+
+        for (int i = 0; i < cards.Count; i++) {
+
+            GameObject cardObj;
+            string xZeroes = "0";
+            string yZeroes = "0";
+            // Determines the number of zeroes to add in the object name
+            if (cards[i].x >= 10) {
+                xZeroes = "";
+            } else {
+                xZeroes = "0";
+            }
+            if (cards[i].y >= 10) {
+                yZeroes = "";
+            } else {
+                yZeroes = "0";
+            } // zeroes calc
+
+            Debug.Log(debug.head + "Trying to Color " + "x"
+                + xZeroes + cards[i].x + "_"
+                + "y" + yZeroes + cards[i].y + "_"
+                + "Tile");
+            cardObj = GameObject.Find("x" + xZeroes + cards[i].x + "_"
+                + "y" + yZeroes + cards[i].y + "_"
+                + "Tile");
+            if (cardObj != null) {
+
+                switch (colorId) {
+                    case 0: // Default Player ID, used for wiping selection
+                        cardObj.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.tintCard;
+                        cardObj.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.tintCard;
+                        break;
+                    case 1:
+                        cardObj.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.tintRed300;
+                        cardObj.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.tintRed300;
+                        break;
+                    case 2:
+                        cardObj.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.tintBlueLight300;
+                        cardObj.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.tintBlueLight300;
+                        break;
+                    default:
+                        break;
+                }
+
+            } else {
+                Debug.Log(debug.head + "Null value found for GameObject "
+                    + "x" + xZeroes + cards[i].x + "_"
+                    + "y" + yZeroes + cards[i].y + "_"
+                    + "Tile");
+            } // Null check
+
+        }
+
+    } // HighlightNeighbors()
+
 }

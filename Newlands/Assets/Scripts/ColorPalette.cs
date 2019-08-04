@@ -79,6 +79,24 @@ public class ColorPalette {
 	public static readonly Color32 tintPink500 = new ColorHex("#e94076");
 	public static readonly Color32 tintGray500 = new ColorHex("#878684");
 
+	// 300 Tint Colors ---------------------------------------------------------
+	public static readonly Color32 tintRed300 = new ColorHex("#ea6f68");
+	public static readonly Color32 tintOrangeDeep300 = new ColorHex("#f28366");
+	public static readonly Color32 tintOrange300 = new ColorHex("#f1a366");
+	public static readonly Color32 tintAmber300 = new ColorHex("#f0c06c");
+	public static readonly Color32 tintYellow300 = new ColorHex("#eddc80");
+	public static readonly Color32 tintGreenLight300 = new ColorHex("#b8d37d");
+	public static readonly Color32 tintGreen300 = new ColorHex("#79b377");
+	public static readonly Color32 tintTeal300 = new ColorHex("#5ca99c");
+	public static readonly Color32 tintCyan300 = new ColorHex("#63bcca");
+	public static readonly Color32 tintBlueLight300 = new ColorHex("#61ade3");
+	public static readonly Color32 tintBlue300 = new ColorHex("#5e8de3");
+	public static readonly Color32 tintBlueDeep300 = new ColorHex("#6c6fcc");
+	public static readonly Color32 tintPurpleDeep300 = new ColorHex("#8a63d9");
+	public static readonly Color32 tintPurple300 = new ColorHex("#b45dc0");
+	public static readonly Color32 tintPink300 = new ColorHex("#e56385");
+	public static readonly Color32 tintGray300 = new ColorHex("#969592");
+
 	// 500 Card Colors ----------------------------------------------------------
 	public static readonly Color32 cardOrangeDeep500 = new ColorHex("#c1352a");
 	public static readonly Color32 cardRed500 = new ColorHex("#ca501a");
@@ -103,7 +121,7 @@ public class ColorPalette {
 	// METHODS #####################################################################################
 
 	// Outputs a hex color tag from a Color32
-	public static string Color32ToHex(Color32 color) {
+	public static string Color32ToTag(Color32 color) {
 		string hex = "<color=#"
 			+ color.r.ToString("X2")
 			+ color.g.ToString("X2")

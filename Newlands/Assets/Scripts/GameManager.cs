@@ -35,8 +35,16 @@ public class GameManager : NetworkBehaviour {
 	[SerializeField]
 	public static List<Player> players = new List<Player>(); // The player data objects
 
+	// Broadcasts the results of the turn to all clients in the form of a parsable string.
+	// NOTE: Currently, this in only used for broadcasting tile purchases.
 	[SyncVar]
-	public string purchasedTileInfo = "";
+	public string turnEventBroadcast = "";
+	// FUTURE IDEA: When the clients parse the string above, have them increment this number by one.
+	// When this string is set by GameManager, reset this number to 0.
+	// While the clients check for parsing, have them check this number to make sure it's not
+	// equal to the number of players, implying a stale string.
+	// [SyncVar]
+	// public int purchasedTileInfoReceived = 0;
 
 	// private static List<GameObject> playerMoneyObj = new List<GameObject>();
 	// private static List<TMP_Text> playerMoneyText = new List<TMP_Text>();
@@ -80,54 +88,6 @@ public class GameManager : NetworkBehaviour {
 	void Update() {
 
 	} // Update()
-
-	// // Creates card game objects, places them on the screen, and populates them with deck data
-	// private void DisplayCard(Card card, int playerNum, int index) {
-
-	// 	// Populate the Card prefab
-	// 	GameObject gameCardPrefab = Resources.Load<GameObject>("Prefabs/GameCard");
-	// 	// NOTE: As of the time of the addition of the GridManager class, this should be split off into it's own class.
-	// 	string pZeroes = "0";
-	// 	string iZeroes = "0";
-
-	// 	// Creates card prefabs and places them on the screen
-
-	// 	float xOff = index * 11 + (((width - handSize) / 2f) * 11);
-	// 	float yOff = -10;
-
-	// 	// Determines the number of zeroes to add in the object name
-	// 	if (playerCount >= 10) {
-	// 		pZeroes = "";
-	// 	} else {
-	// 		pZeroes = "0";
-	// 	}
-	// 	if (index >= 10) {
-	// 		iZeroes = "";
-	// 	} else {
-	// 		iZeroes = "0";
-	// 	} // zeroes calc
-
-	// 	GameObject cardObj = (GameObject) Instantiate(gameCardPrefab, new Vector3(xOff, yOff, 40), Quaternion.identity);
-	// 	cardObj.name = ("p" + pZeroes + playerNum + "_"
-	// 		+ "i" + iZeroes + index + "_"
-	// 		+ "GameCard");
-	// 	// cardObj.name = ("GameCard_p" + playerNum + "_i"+ i);
-
-	// 	cardObj.transform.SetParent(this.transform);
-	// 	cardObj.transform.rotation = new Quaternion(0, 0, 0, 0);
-
-	// 	players[playerNum].handUnits[index] = new GridUnit(players[playerNum].hand[index],
-	// 		cardObj,
-	// 		index, 0);
-
-	// 	try {
-	// 		cardObj.SendMessage("DisplayCard", card);
-	// 	} catch (UnassignedReferenceException e) {
-	// 		Debug.LogError(debugE + "Error: "
-	// 			+ "Card error at deck index " + index + ": " + e);
-	// 	}
-
-	// } // DisplayCard()
 
 	// Draws a card from a deck. Random by default.
 	public static bool DrawCard(Deck deckMut, Deck deckPerm, out Card card, bool random = true) {
@@ -175,295 +135,32 @@ public class GameManager : NetworkBehaviour {
 				if (skipThis) { // And the turn passed should always be skipped now
 					this.turn = turnChecked; // Set the turn to one past the skipable turn
 				}
+				this.round++;
 			} else {
-				round++; // NOTE: In the future where round are capped, this needs error detection too
+				this.round++; // NOTE: In the future where round are capped, this needs error detection too
 				this.turn = 1;
 			}
 
 		}
 
+		Debug.Log(debug.head + "########## Turn Advanced to " + this.turn);
+		Debug.Log(debug.head + "########## Round Advanced to " + this.round);
+
 	} //IncrementTurn()
-
-	// Rollback to the previous turn (for debugging only)
-	public void RollbackTurn() {
-
-		turn--;
-		if (turn == 0) {
-			// If the round is 1 or more, decrement it
-			if (round > 0) {
-				round--;
-			} // if round > 0
-
-			turn = playerCount;
-		} // if turn == 0
-
-	} //RollbackTurn()
 
 	// End the current round, starts at next turn 0
 	public void EndRound() {
-
 		round++;
-		turn = 0;
-
+		turn = 1;
 	} //EndRound()
 
 	// End the current phase, starts at next round and turn 0
 	public void EndPhase() {
-
 		phase++;
 		round = 1;
 		turn = 1;
-
 	} //EndPhase()
 
-	// public void HighlightNeighbors(int turn) {
-
-	// 	int oldTurn = this.turn;
-	// 	int id = (turn - 1);
-
-	// 	// if (turn != oldTurn) {
-	// 	WipeSelectionColors("LandTile", ColorPalette.tintCard);
-	// 	// }
-
-	// 	// Search through the grid
-	// 	for (int x = 0; x < width; x++) {
-	// 		for (int y = 0; y < height; y++) {
-	// 			if (GridManager.grid[x, y].ownerId == players[id].Id) {
-	// 				Highlight(x, y);
-	// 			} // if Tile is owned by the player
-	// 		} // for y
-	// 	} // for x
-
-	// 	// Local function that recolors unowned neighbor tiles
-	// 	void Highlight(int gridX, int gridY) {
-
-	// 		Color playerColor = GetPlayerColor(turn, 200);
-	// 		bool[, ] highlighted = new bool[width, height];
-	// 		// needToSkip = true;
-
-	// 		// Find each unowned neighbor tiles
-	// 		for (int i = -1; i <= 1; i++) {
-	// 			for (int j = -1; j <= 1; j++) {
-	// 				if (gridX + i >= 0
-	// 					&& gridX + i < width
-	// 					&& gridY + j >= 0
-	// 					&& gridY + j < height) {
-
-	// 					if (GridManager.grid[gridX + i, gridY + j].ownerId == 0
-	// 						&& !GridManager.grid[gridX + i, gridY + j].bankrupt) {
-
-	// 						GameObject temp = FindCard("Tile", (gridX + i), (gridY + j));
-	// 						temp.GetComponentsInChildren<Renderer>()[0].material.color = playerColor;
-	// 						temp.GetComponentsInChildren<Renderer>()[1].material.color = playerColor;
-	// 					} // if the Tile is unowned
-	// 				} // if grid in bounds
-	// 			} // for j
-	// 		} // for i
-	// 	} // Highlight()
-
-	// } // HighlightNeighbors()
-
-	// Verifies that the Tile highlighting used in Phase 1 is correct.
-	// NOTE: This function will skip a players turn if they are unable to buy any more tiles.
-	// Returns TRUE if it needs to go through a recursive iteration.
-	// public bool VerifyHighlight() {
-
-	// 	int id = (turn - 1);
-
-	// 	bool[, ] highlighted = new bool[width, height];
-	// 	int highlightCount = 0;
-
-	// 	if (round > graceRounds && phase == 1) {
-
-	// 		// Search through the grid
-	// 		for (int x = 0; x < width; x++) {
-	// 			for (int y = 0; y < height; y++) {
-	// 				// Debug.Log("[VerifyHighlight] Turn " + turn + ", Player ID (Turn) " + id + ", (Real) " + players[id].Id);
-	// 				if (GridManager.grid[x, y].ownerId == players[id].Id) {
-	// 					Highlight(x, y);
-	// 				} // if player owns Tile
-	// 			} // for y
-	// 		} // for x
-	// 		// Debug.Log("[VerifyHighlight] Highlights: " + highlightCount);
-
-	// 		for (int x = 0; x < width; x++) {
-	// 			for (int y = 0; y < height; y++) {
-	// 				if (highlighted[x, y]) {
-	// 					highlightCount++;
-	// 					// Debug.Log("Highlighted:" + x + ", " + y);
-	// 				} //if grid location was highlighted
-	// 			} // for y
-	// 		} // for x
-
-	// 		// Debug.Log("Highlight Count:" + highlightCount);
-	// 		if (highlightCount == 0) {
-	// 			// Debug.Log("[VerifyHighlight] Turn " + turn + ", advancing...");
-	// 			IncrementTurn(turnChecked: this.turn, skipThis: true);
-	// 			// Debug.Log("[VerifyHighlight] Turn " + turn);
-
-	// 			int gridSpaceLeft = 0;
-
-	// 			// Test to see if the grid is full
-	// 			for (int x = 0; x < width; x++) {
-	// 				for (int y = 0; y < height; y++) {
-	// 					if (GridManager.grid[x, y].ownerId == 0
-	// 						&& !GridManager.grid[x, y].bankrupt) {
-	// 						gridSpaceLeft++;
-	// 						// Debug.Log("Grid must NOT be full!");
-	// 					} // if Tile is unowned
-	// 				} // for y
-	// 			} // for x
-	// 			// Debug.Log("Grid Space Left: " + gridSpaceLeft);
-
-	// 			// If the grid is full, end the phase.
-	// 			// Else, continue recursively checking if this turn should be skipped
-	// 			if (gridSpaceLeft == 0) {
-	// 				// Debug.Log("Grid was full!");
-	// 				EndPhase();
-	// 				return false;
-	// 			} else {
-	// 				// return true;
-	// 				VerifyHighlight();
-	// 				// Debug.Log("[VerifyHighlight2] Turn "
-	// 				// 	+ turn + ", Player ID (Turn) " + id
-	// 				// 	+ ", (Real) " + players[id].Id);
-	// 			} // if-else
-	// 		} // if nothing was highlighted
-	// 	} else {
-	// 		return false;
-	// 	} // If the round was greater than 1 during phase 1
-
-	// 	return false;
-
-	// 	// Local function that recolors unowned neighbor tiles.
-	// 	void Highlight(int gridX, int gridY) {
-
-	// 		// Find each unowned neighbor tiles
-	// 		for (int i = -1; i <= 1; i++) {
-	// 			for (int j = -1; j <= 1; j++) {
-	// 				if (gridX + i >= 0
-	// 					&& gridX + i < width
-	// 					&& gridY + j >= 0
-	// 					&& gridY + j < height) {
-	// 					if (GridManager.grid[gridX + i, gridY + j].ownerId == 0
-	// 						&& !GridManager.grid[gridX + i, gridY + j].bankrupt) {
-
-	// 						highlighted[gridX + i, gridY + j] = true;
-	// 					} // if Tile is unowned
-	// 				} // if grid in bounds
-	// 			} // for j
-	// 		} // for i
-	// 	} // Highlight()
-	// } // GetHighlightCount()
-
-	// Attempts to buy an unowned tile. Returns true if successful, or false if already owned.
-	public bool OldBuyTile(int gridX, int gridY) {
-
-		int id = (turn - 1);
-
-		// TODO: When money is implemented, factor that into the buying process.
-		//	It would also be nice to have a purchase conformation message
-
-		bool followsRules = false; // Assume rules are not being followed
-
-		// First check is the first round is finished
-		if (round > graceRounds) {
-			// Search through the grid
-			for (int x = 0; x < width; x++) {
-				for (int y = 0; y < height; y++) {
-					if (GridManager.grid[x, y].ownerId == players[id].Id) {
-						ValidTile(x, y);
-					} // if player owns tile
-				} // for y
-			} // for x
-		} else {
-			followsRules = true;
-		} // if past first round
-
-		// If the tile is unowned (Had owner ID of 0), assign this owner to it
-		if (GridManager.grid[gridX, gridY].ownerId == 0
-			&& followsRules && !GridManager.grid[gridX, gridY].bankrupt) {
-			// players[id].ModifyMoney(-100);
-			// players[id].CalcMoney();	//NOTE: Only need this OR ModifyMoney()
-			players[id].CalcTotalMoney();
-			GridManager.grid[gridX, gridY].ownerId = players[id].Id;
-			// Debug.Log("Turn " + turn + ", buying for Player " + players[id].Id);
-			return true;
-		} else if (!followsRules) {
-			Debug.Log(debug.head + "You can't buy this tile!");
-			return false;
-		} else {
-			Debug.Log(debug.head + "This Tile is already owned!");
-			return false;
-		}
-
-		// Local function that recolors unowned neighbor tiles
-		void ValidTile(int gridLocX, int gridLocY) {
-
-			// Find each unowned neighbor tiles
-			for (int i = -1; i <= 1; i++) {
-				for (int j = -1; j <= 1; j++) {
-					if (gridLocX + i >= 0
-						&& gridLocX + i < width
-						&& gridLocY + j >= 0
-						&& gridLocY + j < height) {
-
-						if (GridManager.grid[gridLocX + i, gridLocY + j].ownerId == 0
-							&& GridManager.grid[gridLocX + i, gridLocY + j] == GridManager.grid[gridX, gridY]
-							&& !GridManager.grid[gridX, gridY].bankrupt) {
-							followsRules = true; // Signal that this is a valid purchase
-						} // if tile owned and in a valid spot
-					} // if grid in bounds
-				} // for j
-			} // for i
-		} // ValidTile()
-	} // BuyTile()
-
-	// // Turns all Land Tiles on the grid white.
-	// public void WipeSelectionColors(string cardType, Color32 color) {
-
-	// 	if (cardType == "LandTile") {
-	// 		for (int x = 0; x < width; x++) {
-	// 			for (int y = 0; y < height; y++) {
-	// 				if (GridManager.grid[x, y].ownerId == 0
-	// 					&& !GridManager.grid[x, y].bankrupt) {
-	// 					GameObject temp = FindCard("Tile", x, y);
-	// 					temp.GetComponentsInChildren<Renderer>()[0].material.color = color;
-	// 					temp.GetComponentsInChildren<Renderer>()[1].material.color = color;
-	// 				} //if tile unowned
-	// 			} // for height
-	// 		} // for width
-	// 	} else if (cardType == "GameCard") {
-	// 		for (int i = 0; i < handSize; i++) {
-	// 			if (FindCard("GameCard", localPlayerId, i)) {
-	// 				// GameObject temp = transform.Find("GameCard_p0_i" + i).gameObject;
-	// 				GameObject temp = FindCard("GameCard", localPlayerId, i);
-	// 				float x = temp.transform.position.x;
-	// 				float y = temp.transform.position.y;
-	// 				temp.transform.position = new Vector3(x, y, 40);
-	// 				temp.GetComponentsInChildren<Renderer>()[0].material.color = color;
-	// 				temp.GetComponentsInChildren<Renderer>()[1].material.color = color;
-	// 			} else {
-	// 				// Debug.LogWarning("[GameManager] Warning: Could not find a GameCard selection to wipe!");
-	// 			} // if the card could be found
-
-	// 		} // for handSize
-	// 	} else if (cardType == "MarketCard") {
-	// 		int marketWidth = Mathf.CeilToInt((float)GameManager.masterDeck.marketCardDeck.Count()
-	// 			/ (float)height);
-	// 		for (int x = 0; x < marketWidth; x++) {
-	// 			for (int y = 0; y < height; y++) {
-	// 				GameObject temp = FindCard("MarketCard", x, y);
-	// 				float posX = temp.transform.position.x;
-	// 				float posY = temp.transform.position.y;
-	// 				temp.transform.position = new Vector3(posX, posY, 40);
-	// 				temp.GetComponentsInChildren<Renderer>()[0].material.color = color;
-	// 				temp.GetComponentsInChildren<Renderer>()[1].material.color = color;
-	// 			} // for height
-	// 		} // for width
-	// 	} // if
-
-	// } // WipeSelectionColors()
 
 	// Returns the color associated with a player ID.
 	// Strength paramater refers to a possible brighter color variant.
@@ -727,67 +424,98 @@ public class GameManager : NetworkBehaviour {
 	}
 
 	public void OnTurnChange(int newTurn) {
-
 		MouseManager.highlightFlag = false;
-
-		// bool highlightAllowed = false;
-		// if (round > GameManager.graceRounds) {
-		// 	highlightAllowed = true;
-		// }
-		// Debug.Log(debug.head + "Round: " + round + "/" + GameManager.graceRounds + " | " + highlightAllowed);
-		// Debug.Log(debug.head + "Turn: " + newTurn);
-
-		// if (round > graceRounds) {
-		// 	// VerifyHighlight();
-		// 	if (!MouseManager.highlightFlag) {
-		// 		Debug.Log(debug.head + "Highlighting...");
-		// 		HighlightNeighbors(newTurn);
-		// 		MouseManager.highlightFlag = true;
-		// 	}
-		// } // if
-	}
+	} // OnTurnChange()
 
 	public bool BuyTile(Coordinate2 target) {
 
 		int turn = this.turn; // Don't want the turn changing while this is running
-		bool tileOwned = false;
-		bool validPurchase = false;
+		bool purchaseSuccess = false;
 
-		// Interate through each player, then each tile they have owned.
-		// Sets tileOwned to true if a match is found.
-		for (int i = 0; i < GameManager.players.Count; i++) {
-			for (int j = 0; j < GameManager.players[i].ownedTiles.Count; j++) {
-				if (GameManager.players[i].ownedTiles[j] == target) {
-					Debug.Log(debug.head + "Can't purchase, tile " + target.ToString()
-						+ " is already owned by Player " + (i + 1) + "!");
-					tileOwned = true;
-				}
-			}
-		}
+		// Check against the rest of the purchasing rules before proceding
+		if (IsValidPurchase(target, turn)) {
 
-		if (!tileOwned) {
-
-			GameManager.players[turn - 1].ownedTiles.Add(target); // Only the server can see this
-
-			this.purchasedTileInfo = turn + "_x" + target.x + "_y" + target.y;
-
+			GameManager.players[turn - 1].ownedTiles.Add(target); // Server-side
+			// GridManager.grid[target.x, target.y].ownerId = turn;
+			this.turnEventBroadcast = turn + "_x" + target.x + "_y" + target.y;
 			Debug.Log(debug.head + "Player " + turn
-				+ " (ID: " + GameManager.players[turn - 1].Id + ") bought tile " + target.ToString());
+				+ " (ID: " + GameManager.players[turn - 1].Id
+				+ ") bought tile " + target.ToString());
 			// Debug.Log(debug.head + "Advancing Turn; This is a temporary mechanic!");
+			purchaseSuccess = true;
 			this.IncrementTurn();
-			validPurchase = true;
+
+		} else {
+			Debug.Log(debug.head + "Can't purchase, tile " + target.ToString()
+				+ " is not valid for you! \nAlready Owned?\nOut of Range?\nBankrupt Tile?");
 		}
 
-		return validPurchase;
+		return purchaseSuccess;
 
 	} // BuyTile()
 
 	// Overload of BuyTile(), taking in two ints instead of a Coordinate2.
 	public bool BuyTile(int x, int y) {
-
-		Coordinate2 target = new Coordinate2(x, y);
-		return BuyTile(target);
-
+		return BuyTile(new Coordinate2(x, y));
 	} // BuyTile()
+
+	private bool IsValidPurchase(Coordinate2 tileBeingPurchased, int playerId) {
+
+		bool isValid = false;
+		List<Coordinate2> validCards = new List<Coordinate2>();
+
+		if (this.round > graceRounds) {
+			// Find each unowned neighbor tiles for this player
+			for (int k = 0; k < GameManager.players[playerId - 1].ownedTiles.Count; k++) {
+				for (int i = -1; i <= 1; i++) {
+					for (int j = -1; j <= 1; j++) {
+
+						// Set x and y equal to the coordinate of the owned tile being checked
+						int x = GameManager.players[playerId - 1].ownedTiles[k].x;
+						int y = GameManager.players[playerId - 1].ownedTiles[k].y;
+
+						// Is the neighbor tile within the grid bounds?
+						if (x + i >= 0
+							&& x + i < GridManager.grid.GetLength(0)
+							&& y + j >= 0
+							&& y + j < GridManager.grid.GetLength(1)) {
+
+							// This is where the tile is checked against purchasing rules
+							if (GridManager.grid[x + i, y + j].ownerId == 0 // Is the tile unowned?
+								&& !GridManager.grid[x + i, y + j].bankrupt // Is the tile not bankrupt?
+								&& !validCards.Contains(new Coordinate2((x + i), (y + j)))) {
+
+								validCards.Add(new Coordinate2((x + i), (y + j)));
+
+							}
+
+						}
+					}
+				}
+			}
+
+		} else {
+			int x = tileBeingPurchased.x;
+			int y = tileBeingPurchased.y;
+			// This is where the tile is checked against purchasing rules
+			if (GridManager.grid[x, y].ownerId == 0 // Is the tile unowned?
+				&& !GridManager.grid[x, y].bankrupt) { // Is the tile not bankrupt?
+
+				isValid = true;
+			}
+		}
+
+		if (validCards.Contains(tileBeingPurchased)) {
+			isValid = true;
+		}
+
+		return isValid;
+
+	} // GetValidTiles()
+
+	// Overload of IsValidPurchase(), taking in two ints instead of a Coordinate2.
+	public bool IsValidPurchase(int x, int y, int playerId) {
+		return IsValidPurchase(new Coordinate2(x, y), playerId);
+	} // IsValidPurchase()
 
 } // GameManager class
