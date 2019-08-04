@@ -73,6 +73,11 @@ public class PlayerConnection : NetworkBehaviour {
 			this.lastKnownTurn = gameMan.turn;
 			this.lastKnownRound = gameMan.round;
 
+			// If this is Player 1 and it's the first Turn of the first Round
+			if (this.id == 1 && this.lastKnownTurn == 1 && this.lastKnownRound == 1) {
+				CardAnimations.HighlightCards(GetUnownedCards(), this.id);
+			}
+
 		} else {
 			Debug.LogError(debug.head + "ERROR: Could not grab all components!");
 		}
@@ -93,8 +98,12 @@ public class PlayerConnection : NetworkBehaviour {
 			// If the new turn is the player's turn and is past the grace rounds
 			//&& gameMan.turn > GameManager.graceRounds
 			if (gameMan.turn == this.id) {
-				Debug.Log(debug.head + "Trying to highlight neighbors for player " + this.id);
-				CardAnimations.HighlightCards(GetNeighbors(), this.id);
+				if (gameMan.round > GameManager.graceRounds) {
+					CardAnimations.HighlightCards(GetNeighbors(), this.id);
+				} else {
+					CardAnimations.HighlightCards(GetUnownedCards(), this.id);
+				}
+
 			} else {
 				CardAnimations.HighlightCards(GetUnownedCards(), 0);
 			}

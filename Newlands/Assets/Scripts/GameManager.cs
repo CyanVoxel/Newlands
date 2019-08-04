@@ -436,7 +436,7 @@ public class GameManager : NetworkBehaviour {
 		if (IsValidPurchase(target, turn)) {
 
 			GameManager.players[turn - 1].ownedTiles.Add(target); // Server-side
-			// GridManager.grid[target.x, target.y].ownerId = turn;
+			GridManager.grid[target.x, target.y].ownerId = turn;
 			this.turnEventBroadcast = turn + "_x" + target.x + "_y" + target.y;
 			Debug.Log(debug.head + "Player " + turn
 				+ " (ID: " + GameManager.players[turn - 1].Id
