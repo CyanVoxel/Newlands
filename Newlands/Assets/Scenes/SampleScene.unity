@@ -172,7 +172,7 @@ GameObject:
   - component: {fileID: 57665618}
   - component: {fileID: 57665617}
   m_Layer: 5
-  m_Name: Gui
+  m_Name: Hud
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -312,6 +312,7 @@ MonoBehaviour:
   phase: 1
   round: 1
   turn: 1
+  turnEventBroadcast: 
 --- !u!114 &160484956
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -339,7 +340,7 @@ GameObject:
   - component: {fileID: 412696963}
   - component: {fileID: 412696964}
   m_Layer: 0
-  m_Name: GuiManager
+  m_Name: HudControler
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -369,9 +370,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 412696962}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c28c8a58b976f8844a7e7566aa584467, type: 3}
+  m_Script: {fileID: 11500000, guid: a4297a1df644fdb449bb6a1d98a6ecf0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameMan: {fileID: 160484955}
 --- !u!1 &516230485
 GameObject:
   m_ObjectHideFlags: 0

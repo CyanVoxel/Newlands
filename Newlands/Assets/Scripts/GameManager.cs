@@ -26,7 +26,7 @@ public class GameManager : NetworkBehaviour {
 	public int turn = 1; // The current turn in the round
 	public static int graceRounds = 1; // The # of rounds without neighbor rules
 
-	public static readonly int width = 7; // Width of the game grid in cards
+	public static readonly int width = 3; // Width of the game grid in cards
 	public static readonly int height = 3; // Height of the game grid in cards
 	public static readonly int handSize = 10; // How many cards the player is dealt
 
@@ -82,6 +82,10 @@ public class GameManager : NetworkBehaviour {
 		// Push the first UI Update
 		// guiMan.InitGuiManager();
 		// guiMan.UpdateUI();
+
+		Debug.Log(debug.head + "#################### Turn " + this.turn
+			+ " | Round " + this.round
+			+ " | Phase " + this.phase + " ####################");
 
 	} // Start()
 
@@ -151,22 +155,29 @@ public class GameManager : NetworkBehaviour {
 		SkipChecker();
 
 		if (GetValidNextTurn(turn) <= playerCount) {
-			Debug.Log(debug.head + "1 ValidNextTurn = " + GetValidNextTurn(turn));
+			// The next player can go with no issues.
+			Debug.Log(debug.head + "ValidNextTurn = " + GetValidNextTurn(turn));
 			this.turn = GetValidNextTurn(turn);
+			this.round++;
 		} else {
 			if (GetValidNextTurn(0) <= playerCount) {
-				Debug.Log(debug.head + "2 ValidNextTurn = " + GetValidNextTurn(1));
+				// The next player is not available, but some still are.
+				Debug.Log(debug.head + "ValidNextTurn = " + GetValidNextTurn(1));
 				this.turn = GetValidNextTurn(0);
-				this.round++; // NOTE: In the future when round are capped, this needs error detection too
+				this.round++;
 			} else {
-				Debug.Log(debug.head + "3 ValidNextTurn = " + GetValidNextTurn(turn));
-				this.phase++; // NOTE: In the future when round are phases, this needs error detection too
+				// Nobody else can go, signaling the end of the phase.
+				Debug.Log(debug.head + "ValidNextTurn = " + GetValidNextTurn(turn));
+				this.turn = 1;
+				this.round = 1;
+				this.phase++;
 			}
 
 		}
 
-		Debug.Log(debug.head + "#################### Turn Advanced to "
-			+ this.turn + " | Round " + this.round + " ####################");
+		Debug.Log(debug.head + "#################### Turn " + this.turn
+			+ " | Round " + this.round
+			+ " | Phase " + this.phase + " ####################");
 
 	} //IncrementTurn()
 

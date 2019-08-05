@@ -31,6 +31,8 @@ public class PlayerConnection : NetworkBehaviour {
 	private int lastKnownTurn = -1;
 	[SyncVar]
 	private int lastKnownRound = -1;
+	[SyncVar]
+	private int lastKnownPhase = -1;
 	// An array of Lists containing coordinates of all known Tiles owned by all players.
 	// This is used for quicker access of THESE CARDS.
 	private List<Coordinate2>[] knownOwnersList;
@@ -72,9 +74,12 @@ public class PlayerConnection : NetworkBehaviour {
 
 			this.lastKnownTurn = gameMan.turn;
 			this.lastKnownRound = gameMan.round;
+			this.lastKnownPhase = gameMan.phase;
 
 			// If this is Player 1 and it's the first Turn of the first Round
-			if (this.id == 1 && this.lastKnownTurn == 1 && this.lastKnownRound == 1) {
+			if (this.id == 1 && this.lastKnownTurn == 1
+				&& this.lastKnownRound == 1
+				&& this.lastKnownPhase == 1) {
 				CardAnimations.HighlightCards(GetUnownedCards(), this.id);
 			}
 
@@ -91,7 +96,9 @@ public class PlayerConnection : NetworkBehaviour {
 		}
 
 		// On New Turn
-		if (gameMan.turn != this.lastKnownTurn || gameMan.round != this.lastKnownRound) {
+		if (gameMan.turn != this.lastKnownTurn
+			|| gameMan.round != this.lastKnownRound
+			&& gameMan.phase == 1) {
 
 			ColorPurchasedTile();
 
@@ -110,6 +117,9 @@ public class PlayerConnection : NetworkBehaviour {
 
 			this.lastKnownTurn = gameMan.turn;
 			this.lastKnownRound = gameMan.round;
+
+		} else if (this.lastKnownPhase != gameMan.phase) {
+			this.lastKnownPhase = gameMan.phase;
 		}
 
 	}
