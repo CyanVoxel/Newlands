@@ -6,8 +6,8 @@ using System.Collections.Generic;
 using Mirror;
 using UnityEngine;
 
-public class CardState : NetworkBehaviour {
-
+public class CardState : NetworkBehaviour
+{
 	// DATA FIELDS #################################################################################
 
 	[SerializeField]
@@ -50,8 +50,8 @@ public class CardState : NetworkBehaviour {
 	// METHODS #################################################################################
 
 	// Start is called before the first frame update
-	void Start() {
-
+	void Start()
+	{
 		TryToGrabComponents();
 
 		OnObjectNameChange("Jerry");
@@ -60,7 +60,6 @@ public class CardState : NetworkBehaviour {
 		OnBodyChange("Elaine");
 		OnFooterChange("Newman");
 		OnCategoryChange("Leo");
-
 	} // Start()
 
 	// // Update is called once per frame
@@ -86,74 +85,84 @@ public class CardState : NetworkBehaviour {
 	// By extention, any calls of these methods can use any throwaway string.
 
 	// Fires when the name destined for this object changes (Should only happen once!)
-	private void OnObjectNameChange(string newName) {
+	private void OnObjectNameChange(string newName)
+	{
 		this.transform.name = this.objectName;
-		if (FindObjectOfType<GridManager>() != null) {
+		if (FindObjectOfType<GridManager>() != null)
+		{
 			this.transform.SetParent(FindObjectOfType<GridManager>().transform);
 		}
 	} // OnObjectNameChange()
 
-	private void OnFooterChange(string newFooterText) {
-
+	private void OnFooterChange(string newFooterText)
+	{
 		TryToGrabComponents();
 
-		if (this.footerText != "") {
+		if (this.footerText != "")
+		{
 			cardDis.DisplayFooter(this.transform.gameObject);
 		}
-
 	} // OnFooterChange()
 
-	private void OnCategoryChange(string newCategory) { }
+	private void OnCategoryChange(string newCategory)
+	{
 
-	private void OnTitleChange(string newTitle) {
+	} // OnCategoryChange()
 
+	private void OnTitleChange(string newTitle)
+	{
 		TryToGrabComponents();
 
-		if (this.title != "") {
+		if (this.title != "")
+		{
 			cardDis.DisplayTitle(this.transform.gameObject);
 		}
-
 	} // OnTitleChange()
 
-	private void OnSubtitleChange(string newSubtitle) {
-
+	private void OnSubtitleChange(string newSubtitle)
+	{
 		TryToGrabComponents();
 
-		if (this.subtitle != "") {
+		if (this.subtitle != "")
+		{
 			cardDis.DisplaySubtitle(this.transform.gameObject);
 		}
-
 	} // OnSubtitleChange()
 
-	private void OnBodyChange(string newBody) {
-
+	private void OnBodyChange(string newBody)
+	{
 		TryToGrabComponents();
 
-		if (this.bodyText != "") {
+		if (this.bodyText != "")
+		{
 			cardDis.DisplayBody(this.transform.gameObject);
 		}
-
 	} // OnBodyChange()
 
 	// Tries to grab necessary components if they haven't been already.
-	private bool TryToGrabComponents() {
-
-		if (this.cardDis == null) {
+	private bool TryToGrabComponents()
+	{
+		if (this.cardDis == null)
+		{
 			this.cardDis = this.GetComponent<CardDisplay>();
 		}
 
-		if (this.gridMan == null) {
+		if (this.gridMan == null)
+		{
 			this.gridMan = FindObjectOfType<GridManager>();
 		}
 
-		if (this.cardDis == null) {
+		if (this.cardDis == null)
+		{
 			return false;
-		} else if (this.gridMan == null) {
+		}
+		else if (this.gridMan == null)
+		{
 			return false;
-		} else {
+		}
+		else
+		{
 			return true;
 		}
-
 	} // TryToGrabComponents()
-
-} // CardState class
+} // class CardState

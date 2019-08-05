@@ -5,73 +5,71 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class HudController : MonoBehaviour {
+public class HudController : MonoBehaviour
+{
+	public GameManager gameMan;
 
-    public GameManager gameMan;
+	private TMP_Text phaseNumberText;
+	private TMP_Text roundNumberText;
+	private TMP_Text turnNumberText;
+	private int lastKnownTurn = -1;
+	private int lastKnownRound = -1;
+	private int lastKnownPhase = -1;
 
-    private TMP_Text phaseNumberText;
-    private TMP_Text roundNumberText;
-    private TMP_Text turnNumberText;
-    private int lastKnownTurn = -1;
-    private int lastKnownRound = -1;
-    private int lastKnownPhase = -1;
+	// Start is called before the first frame update
+	void Start()
+	{
+		InitPlayerText();
 
-    // Start is called before the first frame update
-    void Start() {
+		this.lastKnownTurn = gameMan.turn;
+		this.lastKnownRound = gameMan.round;
+		this.lastKnownPhase = gameMan.phase;
 
-        InitPlayerText();
+		UpdateUI();
+	} // Start()
 
-        this.lastKnownTurn = gameMan.turn;
-        this.lastKnownRound = gameMan.round;
-        this.lastKnownPhase = gameMan.phase;
+	// Update is called once per frame
+	void Update()
+	{
+		// On New Turn
+		if (gameMan.turn != this.lastKnownTurn
+			|| gameMan.round != this.lastKnownRound
+			|| gameMan.phase != this.lastKnownPhase)
+		{
+			UpdateUI();
+		}
 
-        UpdateUI();
+	} // Update()
 
-    } // Start()
+	private void InitPlayerText()
+	{
+		if (transform.Find("Hud/PhaseNumber") != null
+			&& (transform.Find("Hud/PhaseNumber").GetComponent<TMP_Text>() != null))
+		{
+			phaseNumberText = transform.Find("Hud/PhaseNumber").gameObject.GetComponent<TMP_Text>();
+		}
 
-    // Update is called once per frame
-    void Update() {
+		if (transform.Find("Hud/RoundNumber") != null
+			&& (transform.Find("Hud/RoundNumber").GetComponent<TMP_Text>() != null))
+		{
+			roundNumberText = transform.Find("Hud/RoundNumber").gameObject.GetComponent<TMP_Text>();
+		}
 
-        // On New Turn
-        if (gameMan.turn != this.lastKnownTurn
-            || gameMan.round != this.lastKnownRound
-            || gameMan.phase != this.lastKnownPhase) {
+		if (transform.Find("Hud/TurnNumber") != null
+			&& (transform.Find("Hud/TurnNumber").GetComponent<TMP_Text>() != null))
+		{
+			turnNumberText = transform.Find("Hud/TurnNumber").gameObject.GetComponent<TMP_Text>();
+		}
+	} //InitPlayerText()
 
-            UpdateUI();
+	private void UpdateUI()
+	{
+		this.lastKnownTurn = gameMan.turn;
+		this.lastKnownRound = gameMan.round;
+		this.lastKnownPhase = gameMan.phase;
 
-        }
-
-    } // Update()
-
-    private void InitPlayerText() {
-
-        if (transform.Find("Hud/PhaseNumber") != null
-            && (transform.Find("Hud/PhaseNumber").GetComponent<TMP_Text>() != null)) {
-            phaseNumberText = transform.Find("Hud/PhaseNumber").gameObject.GetComponent<TMP_Text>();
-        }
-
-        if (transform.Find("Hud/RoundNumber") != null
-            && (transform.Find("Hud/RoundNumber").GetComponent<TMP_Text>() != null)) {
-            roundNumberText = transform.Find("Hud/RoundNumber").gameObject.GetComponent<TMP_Text>();
-        }
-
-        if (transform.Find("Hud/TurnNumber") != null
-            && (transform.Find("Hud/TurnNumber").GetComponent<TMP_Text>() != null)) {
-            turnNumberText = transform.Find("Hud/TurnNumber").gameObject.GetComponent<TMP_Text>();
-        }
-
-    } //InitPlayerText()
-
-    private void UpdateUI() {
-
-        this.lastKnownTurn = gameMan.turn;
-        this.lastKnownRound = gameMan.round;
-        this.lastKnownPhase = gameMan.phase;
-
-        this.phaseNumberText.text = ("Phase " + this.lastKnownPhase);
-        this.roundNumberText.text = ("Round " + this.lastKnownRound);
-        this.turnNumberText.text = ("Player " + this.lastKnownTurn + "'s Turn");
-
-    } // UpdateUI()
-
+		this.phaseNumberText.text = ("Phase " + this.lastKnownPhase);
+		this.roundNumberText.text = ("Round " + this.lastKnownRound);
+		this.turnNumberText.text = ("Player " + this.lastKnownTurn + "'s Turn");
+	} // UpdateUI()
 } // class HudController

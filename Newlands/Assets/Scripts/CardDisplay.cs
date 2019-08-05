@@ -6,8 +6,8 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CardDisplay : NetworkBehaviour {
-
+public class CardDisplay : NetworkBehaviour
+{
 	// DATA FIELDS -------------------------------------------------------------
 
 	// Long directories stored as strings
@@ -16,113 +16,128 @@ public class CardDisplay : NetworkBehaviour {
 	private string dirFtrBdrR = "Front Canvas/Footer Mask Right/Footer Border Mask/Footer Border";
 
 	// Converts a string with bold and italic markdown into html-like tags
-	private string MdToTag(string inputText) {
-
+	private string MdToTag(string inputText)
+	{
 		string outputText = inputText; // String to output
 
 		// While there's still BOLD markdown left in input string
-		while (outputText.IndexOf("**") >= 0) {
+		while (outputText.IndexOf("**") >= 0)
+		{
 			int index = outputText.IndexOf("**"); // Set known index
 			outputText = outputText.Remove(startIndex: index, count: 2); // Remove markdown
 			outputText = outputText.Insert(startIndex: index, value: "<b>"); // Insert start tag
 
 			// Making sure there's a place to insert an end tag
-			if (outputText.IndexOf("**") >= 0) {
+			if (outputText.IndexOf("**") >= 0)
+			{
 				index = outputText.IndexOf("**"); // Reset the index
 				outputText = outputText.Remove(startIndex: index, count: 2); // Remove markdown
 				outputText = outputText.Insert(startIndex: index, value: "</b>"); // Insert end tag
-			} else {
+			}
+			else
+			{
 				Debug.Log("Error parsing markdown: No closing statement found!");
 			}
-
 		} // while BOLD left
 
 		// While there's still ITALIC markdown left in input string
-		while (outputText.IndexOf('*') >= 0) {
+		while (outputText.IndexOf('*') >= 0)
+		{
 			int index = outputText.IndexOf('*'); // Set known index
 			outputText = outputText.Remove(startIndex: index, count: 1); // Remove markdown
 			outputText = outputText.Insert(startIndex: index, value: "<i>"); // Insert start tag
 
 			// Making sure there's a place to insert an end tag
-			if (outputText.IndexOf('*') >= 0) {
+			if (outputText.IndexOf('*') >= 0)
+			{
 				index = outputText.IndexOf('*'); // Reset the index
 				outputText = outputText.Remove(startIndex: index, count: 1); // Remove markdown
 				outputText = outputText.Insert(startIndex: index, value: "</i>"); // Insert end tag
-			} else {
+			}
+			else
+			{
 				Debug.Log("Error parsing markdown: No closing statement found!");
 			}
 
 		} // while ITALIC left
 
 		return outputText;
-
 	} // mdToTag()
 
 	// Converts a custom tag to Card Data
 	// TODO: Expand the parser to dynamically generate most of the needed body text for cards,
 	//	including frequent phrases and dynamically generated scope info text.
-	private string TagToCardData(string inputText, CardState cardState) {
-
+	private string TagToCardData(string inputText, CardState cardState)
+	{
 		string outputText = inputText; // String to output
 
 		// Processes an <r> tag
-		while (outputText.IndexOf("<r>") >= 0) {
+		while (outputText.IndexOf("<r>") >= 0)
+		{
 			int index = outputText.IndexOf("<r>"); // Set known index
 			outputText = outputText.Remove(startIndex: index, count: 3); // Remove tag
 			outputText = outputText.Insert(startIndex: index, value: cardState.resource);
 		} // while <r> left
 
 		// Processes an <c> tag
-		while (outputText.IndexOf("<c>") >= 0) {
+		while (outputText.IndexOf("<c>") >= 0)
+		{
 			int index = outputText.IndexOf("<c>"); // Set known index
 			outputText = outputText.Remove(startIndex: index, count: 3); // Remove tag
 			outputText = outputText.Insert(startIndex: index, value: cardState.category);
 		} // while <c> left
 
 		// Processes an <ts> tag
-		while (outputText.IndexOf("<ts>") >= 0) {
+		while (outputText.IndexOf("<ts>") >= 0)
+		{
 			int index = outputText.IndexOf("<ts>"); // Set known index
 			outputText = outputText.Remove(startIndex: index, count: 4); // Remove tag
 			outputText = outputText.Insert(startIndex: index, value: cardState.target);
 		} // while <ts> left
 
-		// Processes an <tc> tag
-		// while (outputText.IndexOf("<tc>") >= 0) {
-		// 	int index = outputText.IndexOf("<tc>");								// Set known index
-		// 	outputText = outputText.Remove(startIndex: index, count: 4);		// Remove tag
+		// // Processes an <tc> tag
+		// while (outputText.IndexOf("<tc>") >= 0)
+		// {
+		// 	int index = outputText.IndexOf("<tc>");                             // Set known index
+		// 	outputText = outputText.Remove(startIndex: index, count: 4);        // Remove tag
 		// 	outputText = outputText.Insert(startIndex: index, value: card.targetCategory);
 		// } // while <tc> left
 
 		return outputText;
-
 	} // TagToCardData(string inputText, Card card)
 
 	// Inserts the footerValue into a string meant for the footer text
-	private string InsertFooterValue(CardState cardState, string inputText) {
-
+	private string InsertFooterValue(CardState cardState, string inputText)
+	{
 		string outputText = inputText; // String to output
 		string footerValueStr = cardState.footerValue.ToString("n0"); // The formatted footer value
 
 		// While there's still ITALIC markdown left in input string
-		while (outputText.IndexOf("<x>") >= 0) {
+		while (outputText.IndexOf("<x>") >= 0)
+		{
 			// Set known index
 			int index = outputText.IndexOf("<x>");
 			// Remove markdown
 			outputText = outputText.Remove(startIndex: index, count: 3);
 
 			// If the value is a percentage, add a %
-			if (cardState.percFlag) {
+			if (cardState.percFlag)
+			{
 				footerValueStr = (footerValueStr + "%");
 			}
 			// If the value is a percentage, add a $
-			if (cardState.moneyFlag) {
+			if (cardState.moneyFlag)
+			{
 				footerValueStr = ("$" + footerValueStr);
 			}
 
 			// Add the appropriate operator to the string
-			if (cardState.footerOpr == '+') {
+			if (cardState.footerOpr == '+')
+			{
 				footerValueStr = ("+" + footerValueStr);
-			} else if (cardState.footerOpr == '-') {
+			}
+			else if (cardState.footerOpr == '-')
+			{
 				footerValueStr = ("\u2013" + footerValueStr);
 			}
 
@@ -137,8 +152,8 @@ public class CardDisplay : NetworkBehaviour {
 
 	// Formats card elements based on a new Title
 	// TODO: Probably want to break this up into smaller private methods
-	public void DisplayTitle(GameObject cardObj) {
-
+	public void DisplayTitle(GameObject cardObj)
+	{
 		CardState cardState = cardObj.GetComponent<CardState>();
 		GameObject titleObj = this.transform.Find("Front Canvas/Title").gameObject;
 		TMP_Text title = titleObj.GetComponent<TMP_Text>();
@@ -151,12 +166,14 @@ public class CardDisplay : NetworkBehaviour {
 		GameObject footerBorderObjR;
 		Image footerBorderR;
 
-		switch (cardState.category) {
+		switch (cardState.category)
+		{
 			case "Tile":
 				// Title Text --------------------------------------------------
 				// TODO: Create a dynamic text-centering system based on the physical size of
 				// the TMP asset plus the icon width.
-				switch (cardState.title) {
+				switch (cardState.title)
+				{
 					case "Forest":
 						title.text = " Forest";
 						break;
@@ -176,11 +193,14 @@ public class CardDisplay : NetworkBehaviour {
 				// Icon --------------------------------------------------------
 				GameObject titleIconObj = this.transform.Find("Front Canvas/Icon").gameObject;
 				Image iconImage = titleIconObj.GetComponent<Image>();
-				if (iconImage.sprite = Resources.Load<Sprite>("Sprites/icon_" + cardState.title.ToLower())) {
+				if (iconImage.sprite = Resources.Load<Sprite>("Sprites/icon_" + cardState.title.ToLower()))
+				{
 					// Debug.Log("[CardDisplay] Successfully loaded image sprite \""
 					// 	+ "Sprites/icon_"
 					// 	+ cardState.title.ToLower() + "\"");
-				} else {
+				}
+				else
+				{
 					Debug.LogError("[CardDisplay] ERROR: Could not load image sprite \""
 						+ "Sprites/icon_"
 						+ cardState.title.ToLower() + "\"");
@@ -189,7 +209,8 @@ public class CardDisplay : NetworkBehaviour {
 
 			case "Game Card":
 				// Title Text --------------------------------------------------
-				switch (cardState.title) {
+				switch (cardState.title)
+				{
 					case "Market Mod":
 						title.text = "\u2013Market Mod\u2013";
 						break;
@@ -203,83 +224,112 @@ public class CardDisplay : NetworkBehaviour {
 						title.text = cardState.title;
 						break;
 				} // switch (cardState.title)
-				// Footer Border -----------------------------------------------
+				  // Footer Border -----------------------------------------------
 				footerBorderObjL = this.transform.Find(dirFtrBdrL).gameObject;
 				footerBorderL = footerBorderObjL.GetComponent<Image>();
 				footerBorderObjR = this.transform.Find(dirFtrBdrR).gameObject;
 				footerBorderR = footerBorderObjR.GetComponent<Image>();
 				footerBorderL.color = ColorPalette.alpha;
 				footerBorderR.color = ColorPalette.alpha;
-				switch (cardState.footerColor) {
+
+				switch (cardState.footerColor)
+				{
 					case "Black":
-						if (cardState.onlyColorCorners) {
+						if (cardState.onlyColorCorners)
+						{
 							footerBorderL.color = ColorPalette.cardDark;
 							footerBorderR.color = ColorPalette.cardDark;
-						} else {
+						}
+						else
+						{
 							footerBorder.color = ColorPalette.cardDark;
 						}
 						break;
 					case "Red":
-						if (cardState.onlyColorCorners) {
+						if (cardState.onlyColorCorners)
+						{
 							footerBorderL.color = ColorPalette.red500;
 							footerBorderR.color = ColorPalette.red500;
-						} else {
+						}
+						else
+						{
 							footerBorder.color = ColorPalette.red500;
 						}
 						break;
 					case "Green":
-						if (cardState.onlyColorCorners) {
+						if (cardState.onlyColorCorners)
+						{
 							footerBorderL.color = ColorPalette.green500;
 							footerBorderR.color = ColorPalette.green500;
-						} else {
+						}
+						else
+						{
 							footerBorder.color = ColorPalette.green500;
 						}
 						break;
 					case "Light Blue":
-						if (cardState.onlyColorCorners) {
+						if (cardState.onlyColorCorners)
+						{
 							footerBorderL.color = ColorPalette.lightBlue500;
 							footerBorderR.color = ColorPalette.lightBlue500;
-						} else {
+						}
+						else
+						{
 							footerBorder.color = ColorPalette.lightBlue500;
 						}
 						break;
 					case "Yellow":
-						if (cardState.onlyColorCorners) {
+						if (cardState.onlyColorCorners)
+						{
 							footerBorderL.color = ColorPalette.yellow500;
 							footerBorderR.color = ColorPalette.yellow500;
-						} else {
+						}
+						else
+						{
 							footerBorder.color = ColorPalette.yellow500;
 						}
 						break;
 					case "Pink":
-						if (cardState.onlyColorCorners) {
+						if (cardState.onlyColorCorners)
+						{
 							footerBorderL.color = ColorPalette.pink500;
 							footerBorderR.color = ColorPalette.pink500;
-						} else {
+						}
+						else
+						{
 							footerBorder.color = ColorPalette.pink500;
 						}
 						break;
 					case "Blue":
-						if (cardState.onlyColorCorners) {
+						if (cardState.onlyColorCorners)
+						{
 							footerBorderL.color = ColorPalette.lightBlue500;
 							footerBorderR.color = ColorPalette.lightBlue500;
-						} else {
+						}
+						else
+						{
 							footerBorder.color = ColorPalette.lightBlue500;
 						}
 						break;
 					case "Dark Blue":
-						if (cardState.onlyColorCorners) {
+						if (cardState.onlyColorCorners)
+						{
 							footerBorderL.color = ColorPalette.indigo500;
 							footerBorderR.color = ColorPalette.indigo500;
-						} else {
+						}
+						else
+						{
 							footerBorder.color = ColorPalette.indigo500;
 						}
 						break;
 					case "":
-						if (cardState.onlyColorCorners) {
+						if (cardState.onlyColorCorners)
+						{
 							footerBorderL.color = Color.magenta;
 							footerBorderR.color = Color.magenta;
-						} else {
+						}
+						else
+						{
 							footerBorder.color = Color.magenta;
 						}
 						break;
@@ -305,30 +355,29 @@ public class CardDisplay : NetworkBehaviour {
 
 	} // DisplayTitle()
 
-	public void DisplaySubtitle(GameObject cardObj) {
-
+	public void DisplaySubtitle(GameObject cardObj)
+	{
 		CardState cardState = cardObj.GetComponent<CardState>();
 
-		if (cardState.category != "Tile") {
+		if (cardState.category != "Tile")
+		{
 			GameObject subtitleObj = this.transform.Find("Front Canvas/Subtitle").gameObject;
 			TMP_Text subtitle = subtitleObj.GetComponent<TMP_Text>();
 			subtitle.text = TagToCardData(MdToTag(cardState.subtitle), cardState);
 		}
-
 	} // DisplaySubtitle()
 
-	public void DisplayBody(GameObject cardObj) {
-
+	public void DisplayBody(GameObject cardObj)
+	{
 		CardState cardState = cardObj.GetComponent<CardState>();
 		GameObject bodyObj = this.transform.Find("Front Canvas/Body").gameObject;
 		TMP_Text body = bodyObj.GetComponent<TMP_Text>();
 
 		body.text = TagToCardData(MdToTag(cardState.bodyText), cardState);
-
 	} // DisplayBody()
 
-	public void DisplayFooter(GameObject cardObj) {
-
+	public void DisplayFooter(GameObject cardObj)
+	{
 		CardState cardState = cardObj.GetComponent<CardState>();
 		GameObject footerObj = this.transform.Find("Front Canvas/Footer").gameObject;
 		TMP_Text footer = footerObj.GetComponent<TMP_Text>();
@@ -337,170 +386,11 @@ public class CardDisplay : NetworkBehaviour {
 
 		tempFooter = InsertFooterValue(cardState, cardState.footerText);
 		footer.text = TagToCardData(MdToTag(tempFooter), cardState);
-
 	} // DisplayFooter()
 
-	// // Displays card scriptable object data onto a card prefab
-	// // NOTE: This method is DEPRECATED! Use the new specific methods such as DisplayTitle()!
-	// public void DisplayCard(GameObject obj, Card card) {
-	// 	// Debug.Log("[CardDisplay] Trying to display the card "
-	// 	// 	+ card.title
-	// 	// 	+ " on object "
-	// 	// 	+ obj);
-
-	// 	// Grab the display elements from this parent object
-	// 	GameObject titleObj = obj.transform.Find("Front Canvas/Title").gameObject;
-
-	// 	GameObject bodyObj = obj.transform.Find("Front Canvas/Body").gameObject;
-	// 	GameObject footerObj = obj.transform.Find("Front Canvas/Footer").gameObject;
-	// 	GameObject footerBorderObj = obj.transform.Find(dirFtrBdr).gameObject;
-
-	// 	// Pick out the appropriate elements from the GameObjects that were grabbed
-	// 	TMP_Text title = titleObj.GetComponent<TMP_Text>();
-
-	// 	TMP_Text body = bodyObj.GetComponent<TMP_Text>();
-	// 	TMP_Text footer = footerObj.GetComponent<TMP_Text>();
-	// 	Image footerBorder = footerBorderObj.GetComponent<Image>();
-
-	// 	// GAMECARD SPECIFICS -------------------------------------------------
-	// 	if (card.category == "Game Card" || card.category == "Market") {
-
-	// 		GameObject subtitleObj = obj.transform.Find("Front Canvas/Subtitle").gameObject;
-	// 		TMP_Text subtitle = subtitleObj.GetComponent<TMP_Text>();
-
-	// 		GameObject footerBorderObjL = obj.transform.Find(dirFtrBdrL).gameObject;
-	// 		GameObject footerBorderObjR = obj.transform.Find(dirFtrBdrR).gameObject;
-	// 		Image footerBorderL = footerBorderObjL.GetComponent<Image>();
-	// 		Image footerBorderR = footerBorderObjR.GetComponent<Image>();
-
-	// 		// Set the TMP subtitle text based on the card object's enum
-	// 		subtitle.text = card.subtitle;
-
-	// 		// Color the footer border
-	// 		if (card.title == "Market Mod") {
-
-	// 			footerBorder.color = ColorPalette.cardDark;
-
-	// 			if (card.footerColor == "Red") { // Red
-	// 				footerBorderL.color = ColorPalette.red500;
-	// 				footerBorderR.color = ColorPalette.red500;
-	// 			} else if (card.footerColor == "Green") { // Green
-	// 				footerBorderL.color = ColorPalette.green500;
-	// 				footerBorderR.color = ColorPalette.green500;
-	// 			}
-
-	// 		} else {
-
-	// 			footerBorderL.color = ColorPalette.alpha;
-	// 			footerBorderR.color = ColorPalette.alpha;
-
-	// 			// Color the footer border
-	// 			if (card.footerColor == "Black") { // Black
-	// 				footerBorder.color = ColorPalette.cardDark;
-	// 			} else if (card.footerColor == "Red") { // Red
-	// 				footerBorder.color = ColorPalette.red500;
-	// 			} else if (card.footerColor == "Green") { // Green
-	// 				footerBorder.color = ColorPalette.green500;
-	// 			} else if (card.footerColor == "Light Blue") { // Light Blue
-	// 				footerBorder.color = ColorPalette.lightBlue500;
-	// 			} else if (card.footerColor == "Yellow") { // Yellow
-	// 				footerBorder.color = ColorPalette.yellow500;
-	// 			} else if (card.footerColor == "Pink") { // Pink
-	// 				footerBorder.color = ColorPalette.pink500;
-	// 			} else if (card.footerColor == "Blue") { // Blue
-	// 				footerBorder.color = ColorPalette.lightBlue500;
-	// 			} else if (card.footerColor == "Dark Blue") { // Dark Blue
-	// 				footerBorder.color = ColorPalette.indigo500;
-	// 			} // if-else
-
-	// 		} // if Market Mod else
-
-	// 		// NOTE: 7/30/19 - Commented out illegal method calls that conflict with new display system
-	// 		// subtitle.text = TagToCardData(MdToTag(subtitle.text), card);
-
-	// 	} // GameCard specifics
-
-	// 	if (card.category == "Market") {
-
-	// 		title.text = "\u2013Market Card\u2013";
-
-	// 		ResourceInfo.prices.TryGetValue(card.resource, out card.footerValue);
-	// 		// NOTE: 7/30/19 - Commented out illegal method calls that conflict with new display system
-	// 		// footer.text = TagToCardData(MdToTag(footer.text), card);
-	// 	}
-
-	// 	// TILE SPECIFICS -----------------------------------------------------
-	// 	if (card.category == "Tile") {
-
-	// 		GameObject titleIconObj = obj.transform.Find("Front Canvas/Icon").gameObject;
-	// 		Image iconImage = titleIconObj.GetComponent<Image>();
-
-	// 		if (card.title == "Forest") {
-	// 			iconImage.sprite = Resources.Load<Sprite>("Sprites/icon_forest"); // Forest
-	// 		} else if (card.title == "Plains") {
-	// 			iconImage.sprite = Resources.Load<Sprite>("Sprites/icon_plains"); // Plains
-	// 		} else if (card.title == "Quarry") {
-	// 			iconImage.sprite = Resources.Load<Sprite>("Sprites/icon_quarry"); // Quarry
-	// 		} else if (card.title == "Farmland") {
-	// 			iconImage.sprite = Resources.Load<Sprite>("Sprites/icon_farmland"); // Farmland
-	// 		} // else-if
-
-	// 		// Color the footer border
-	// 		if (card.footerColor == "Black") { // Black
-	// 			footerBorder.color = ColorPalette.cardDark;
-	// 		} else if (card.footerColor == "Red") { // Red
-	// 			footerBorder.color = ColorPalette.red500;
-	// 		} else if (card.footerColor == "Green") { // Green
-	// 			footerBorder.color = ColorPalette.green500;
-	// 		} else if (card.footerColor == "Light Blue") { // Light Blue
-	// 			footerBorder.color = ColorPalette.lightBlue500;
-	// 		} else if (card.footerColor == "Yellow") { // Yellow
-	// 			footerBorder.color = ColorPalette.yellow500;
-	// 		} else if (card.footerColor == "Pink") { // Pink
-	// 			footerBorder.color = ColorPalette.pink500;
-	// 		} else if (card.footerColor == "Blue") { // Blue
-	// 			footerBorder.color = ColorPalette.lightBlue500;
-	// 		} else if (card.footerColor == "Dark Blue") { // Dark Blue
-	// 			footerBorder.color = ColorPalette.indigo500;
-	// 		} // if-else
-
-	// 	} // LandTile specifics
-
-	// 	// Set the TMP title text.
-	// 	// TODO: Optimize this under the new string system, as well as when Land Tile titles
-	// 	//	are finally auto-centered with along with their icons.
-	// 	if (card.title == "Market Mod") { // Market Mod
-	// 		title.text = "\u2013Market Mod\u2013";
-	// 	} else if (card.title == "Market Card") { // Price Card
-	// 		title.text = "\u2013Market Card\u2013";
-	// 	} else if (card.title == "Resource") { // Resource
-	// 		title.text = "\u2013Resource\u2013";
-	// 	} else if (card.title == "Tile Mod") { // Tile Mod
-	// 		title.text = "\u2013Tile Mod\u2013";
-	// 	} else if (card.title == "Forest") { // Forest Tile
-	// 		title.text = " Forest";
-	// 	} else if (card.title == "Plains") { // Plains Tile
-	// 		title.text = " Plains";
-	// 	} else if (card.title == "Quarry") { // Quarry Tile
-	// 		title.text = "    Quarry";
-	// 	} else if (card.title == "Farmland") { // Farmland Tile
-	// 		title.text = "       Farmland";
-	// 	} // if-else
-
-	// 	// String members are assigned to the text labels after being formatted
-	// 	// NOTE: 7/30/19 - Commented out illegal method calls that conflict with new display system
-	// 	// body.text = TagToCardData(MdToTag(card.bodyText), card);
-	// 	// footer.text = InsertFooterValue(card, card.footerText, card.percFlag,
-	// 	// 	card.moneyFlag, card.footerOpr);
-
-	// 	body.text = MdToTag(body.text);
-	// 	// footer.text = TagToCardData(MdToTag(footer.text), card);
-
-	// } // displayCard()
-
 	// Performas visual updates to a bankrupt card
-	public static void BankruptVisuals(GameObject tile) {
-
+	public static void BankruptVisuals(GameObject tile)
+	{
 		tile.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.cardDark;
 		tile.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.cardDark;
 
@@ -517,11 +407,10 @@ public class CardDisplay : NetworkBehaviour {
 		// TMP_Text footer = titleObj.GetComponent<TMP_Text>();
 		// footer.color = ColorPalette.red500;
 		// footer.text = "";
-
 	} //BankruptVisuals()
 
-	public void UpdateFooter(GridUnit unit, double value) {
-
+	public void UpdateFooter(GridUnit unit, double value)
+	{
 		GameObject footerObj = transform.Find("Front Canvas/Footer").gameObject;
 		TMP_Text footer = footerObj.GetComponent<TMP_Text>();
 
@@ -530,7 +419,5 @@ public class CardDisplay : NetworkBehaviour {
 		footer.text = TagToCardData(MdToTag(footer.text), unit.tileObj.GetComponent<CardState>());
 		GameManager.UpdatePlayersInfo();
 		// GuiManager.CmdUpdateUI();
-
 	} //UpdateFooter()
-
-} // CardDisplay class
+} // class CardDisplay

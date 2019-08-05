@@ -1,18 +1,21 @@
 // A class designed to hold various Market Cards in a Deck
 
-public class MarketCardDeck : Deck {
-
-	// CONSTRUCTORS -----------------------------------------------------------
+public class MarketCardDeck : Deck
+{
+	// CONSTRUCTORS ################################################################################
 
 	// Default no-arg constructor
-	public MarketCardDeck() { }
+	public MarketCardDeck()
+	{
+
+	} // MarketCardDeck() constructor
 
 	// Constructor that takes in a string representing the name of premade deck
-	public MarketCardDeck(string deckType) {
-
+	public MarketCardDeck(string deckType)
+	{
 		// The Vanilla Standard Deck's Price Cards
-		if (deckType == "Vanilla") {
-
+		if (deckType == "Vanilla")
+		{
 			// NOTE: These are organized adding the most expensive first
 			this.Add(dirMc + "/platinum");
 			this.Add(dirMc + "/gold");
@@ -23,9 +26,6 @@ public class MarketCardDeck : Deck {
 			// this.Add(dirMc + "/fish");
 			this.Add(dirMc + "/cashcrops");
 			this.Add(dirMc + "/lumber");
-
 		} // if Vanilla Standard deck
-
 	} // MarketCardDeck(deckType) constructor
-
-} //MarketCardDeck class
+} // class MarketCardDeck

@@ -5,8 +5,8 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class Player {
-
+public class Player
+{
 	public GridManager gridMan;
 
 	// DATA FIELDS ################################################################################
@@ -36,26 +36,30 @@ public class Player {
 	// 	gridMan = FindObjectOfType<GridManager>();
 	// }
 
-	public void CalcTotalMoney() {
+	public void CalcTotalMoney()
+	{
 		this.totalMoney = 0;
 		this.tileMoney = 0; // Reset tile money before recalculating
 
 		// Checks to see if the object has been initialized. If not, assume it will be afterwards.
-		if (this.initialized) {
+		if (this.initialized)
+		{
 			// Search the grid for owned tiles
 			// TODO: Implement a list of known owned tile coordinates to replace these for loops
-			for (int x = 0; x < GameManager.width; x++) {
-				for (int y = 0; y < GameManager.height; y++) {
-					if (GridManager.grid[x, y].ownerId == this.Id) {
-
+			for (int x = 0; x < GameManager.width; x++)
+			{
+				for (int y = 0; y < GameManager.height; y++)
+				{
+					if (GridManager.grid[x, y].ownerId == this.Id)
+					{
 						GridManager.grid[x, y].CalcTotalValue();
 						this.tileMoney += (GridManager.grid[x, y].totalValue);
-
 					} // if player owns tile
 				} // for y
 			} // for x
-
-		} else {
+		}
+		else
+		{
 			this.initialized = true;
 		} // if initialized
 
@@ -65,9 +69,9 @@ public class Player {
 
 	// CONSTRUCTORS ###############################################################################
 
-	public Player() {
+	public Player()
+	{
 		this.CalcTotalMoney();
 		this.handUnits = new GridUnit[GameManager.handSize];
 	} // Player() constructor
-
-} // Player class
+} // class Player

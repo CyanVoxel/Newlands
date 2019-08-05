@@ -6,8 +6,8 @@ using System.Collections.Generic;
 using UnityEngine;
 // using Mirror;
 
-public class GridUnit {
-
+public class GridUnit
+{
 	CardDisplay cardDis;
 
 	// DATA FIELDS ################################################################################
@@ -45,82 +45,92 @@ public class GridUnit {
 
 	// Calculates the value of all resources attached to this card, and updates the
 	// resourceValue field on this GridUnit object
-	public void CalcBaseValue() {
+	public void CalcBaseValue()
+	{
 		// Calculates the value of the resources built-in to the card
-
-		if (this.category == "Tile") {
-
+		if (this.category == "Tile")
+		{
 			this.baseValue = 0;
 			int retrievedPrice = 0;
 			ResourceInfo.pricesMut.TryGetValue(this.resource, out retrievedPrice);
 			this.baseValue = (retrievedPrice * this.quantity); //Could be 0, that's okay
 
 			// Calculates the value of the resources on cards in the stack, if any
-			for (int i = 0; i < this.cardStack.Count; i++) {
+			for (int i = 0; i < this.cardStack.Count; i++)
+			{
 				retrievedPrice = 0;
 
-				if (this.cardStack[i].subtitle == "Resource") {
+				if (this.cardStack[i].subtitle == "Resource")
+				{
 					ResourceInfo.pricesMut.TryGetValue(this.cardStack[i].resource, out retrievedPrice);
 					this.baseValue += (retrievedPrice * this.cardStack[i].footerValue);
-				} else if (this.cardStack[i].subtitle == "Investment" && !this.cardStack[i].percFlag) {
+				}
+				else if (this.cardStack[i].subtitle == "Investment" && !this.cardStack[i].percFlag)
+				{
 					this.baseValue += this.cardStack[i].footerValue;
-				} else if (this.cardStack[i].subtitle == "Sabotage" && !this.cardStack[i].percFlag) {
+				}
+				else if (this.cardStack[i].subtitle == "Sabotage" && !this.cardStack[i].percFlag)
+				{
 					this.baseValue -= this.cardStack[i].footerValue;
 				} // if
-
 			} // for cardStack size
-		} else if (this.card.category == "Market") {
+		}
+		else if (this.card.category == "Market")
+		{
 			ResourceInfo.prices.TryGetValue(this.resource, out this.baseValue);
 		}
 
 	} // CalcBaseValue()
 
 	// Calculates the value of the resources on cards in the stack, if any
-	public void CalcValueMod() {
-
-		if (this.category == "Tile") {
-
+	public void CalcValueMod()
+	{
+		if (this.category == "Tile")
+		{
 			this.valueMod = 0;
-			for (int i = 0; i < this.cardStack.Count; i++) {
-
-				if (this.cardStack[i].subtitle == "Investment" && this.cardStack[i].percFlag) {
+			for (int i = 0; i < this.cardStack.Count; i++)
+			{
+				if (this.cardStack[i].subtitle == "Investment" && this.cardStack[i].percFlag)
+				{
 					this.valueMod += this.cardStack[i].footerValue;
-				} else if (this.cardStack[i].subtitle == "Sabotage" && this.cardStack[i].percFlag) {
+				}
+				else if (this.cardStack[i].subtitle == "Sabotage" && this.cardStack[i].percFlag)
+				{
 					this.valueMod -= this.cardStack[i].footerValue;
 				} // if-else
-
 			} // for cardStack size
-
-		} else if (this.category == "Market") {
-
+		}
+		else if (this.category == "Market")
+		{
 			// NOTE: Currently, this is the same code for Tile. This is here incase it needs to
 			// to change at some point.
 			this.valueMod = 0;
 			Debug.Log("Stack Size  :" + this.stackSize);
 			Debug.Log("Stack Count: " + this.cardStack.Count);
 
-			for (int i = 0; i < this.cardStack.Count; i++) {
-
-				if (this.cardStack[i].subtitle == "Investment" && this.cardStack[i].percFlag) {
+			for (int i = 0; i < this.cardStack.Count; i++)
+			{
+				if (this.cardStack[i].subtitle == "Investment" && this.cardStack[i].percFlag)
+				{
 					this.valueMod += this.cardStack[i].footerValue;
 					Debug.Log("Should be working! " + this.cardStack[i].footerValue);
-				} else if (this.cardStack[i].subtitle == "Sabotage" && this.cardStack[i].percFlag) {
+				}
+				else if (this.cardStack[i].subtitle == "Sabotage" && this.cardStack[i].percFlag)
+				{
 					Debug.Log("Should be working! -" + this.cardStack[i].footerValue);
 					this.valueMod -= this.cardStack[i].footerValue;
 				} // if-else
-
 			} // for cardStack size
-
 		} // if-else category
-
 	} // CalcValueMod()
 
 	// Calculates the total value this card, and updates the
 	//	totalValue field on this GridUnit object
-	public void CalcTotalValue() {
-
+	public void CalcTotalValue()
+	{
 		// Reset all value data and recalculate
-		if (this.category == "Tile") {
+		if (this.category == "Tile")
+		{
 			this.totalValue = 0;
 			this.CalcBaseValue();
 			this.CalcValueMod();
@@ -133,12 +143,14 @@ public class GridUnit {
 			// Debug.Log("[GridUnit] Tile " + this.x + ", " + this.y + " total value: " +
 			// 	this.totalValue);
 
-			if (this.totalValue < 0) {
+			if (this.totalValue < 0)
+			{
 				this.bankrupt = true;
 				GameManager.BankruptTile(this);
 			} // bankrupt check
-
-		} else if (this.category == "Market") {
+		}
+		else if (this.category == "Market")
+		{
 
 			// Reset all value data and recalculate
 			this.totalValue = 0;
@@ -161,47 +173,50 @@ public class GridUnit {
 			// Debug.Log("New PriceMut: " + ResourceInfo.pricesMut[this.resource]);
 			// Debug.Log("Base Value  : " + this.baseValue);
 			// Debug.Log("Value Mod   : " + this.valueMod);
-
 		} // if tile
-
 	} // CalcTotalValue()
 
-	private GameObject FindCard(string type, int x, int y) {
-
+	private GameObject FindCard(string type, int x, int y)
+	{
 		string strX = "x";
 		string strY = "y";
 
 		// Determines the number of zeroes to add in the object name
 		string xZeroes = "0";
 		string yZeroes = "0";
-		if (x >= 10) {
+		if (x >= 10)
+		{
 			xZeroes = "";
 		} // if x >= 10
-		if (y >= 10) {
+		if (y >= 10)
+		{
 			yZeroes = "";
 		} // if y >= 10
 
 		// Specific type changes
-		if (type == "GameCard") {
+		if (type == "GameCard")
+		{
 			strX = "p"; // Instead of x, use p for PlayerID
 			strY = "i"; // Instead of y, use i for Index
 		} // if GameCard
 
-		if (this.tileObj.transform.Find(strX + xZeroes + x + "_" + strY + yZeroes + y + "_" + type)) {
+		if (this.tileObj.transform.Find(strX + xZeroes + x + "_" + strY + yZeroes + y + "_" + type))
+		{
 			// GameObject gameObject = new GameObject();
 			GameObject gameObject = this.tileObj.transform.Find(strX + xZeroes + x + "_"
 				+ strY + yZeroes + y + "_"
 				+ type).gameObject;
 			return gameObject;
-		} else {
+		}
+		else
+		{
 			// Debug.LogError("[GameManager] Error: Could not find GameObject!");
 			return null;
 		}
-
 	} // FindCard()
 
-	public void LoadNewCard(Card card, GameObject tileObj) {
-
+	public void LoadNewCard(Card card, GameObject tileObj)
+	{
 		this.card = card;
 		this.tileObj = tileObj;
 
@@ -216,21 +231,21 @@ public class GridUnit {
 		// this.x = x;
 		// this.y = y;
 
-		if (card.category == "Game Card") {
+		if (card.category == "Game Card")
+		{
 			// this.targetCat = card.targetCategory;
 			this.target = card.target; // The Scope that this card targets
 			this.stackable = !card.doesDiscard;
 		}
 
 		this.CalcBaseValue();
-
 	} // GridUnit constructor
 
 	// CONSTRUCTORS ###############################################################################
 
 	// Constructor that takes in necessary card info and populates the rest
-	public GridUnit(Card card, GameObject tileObj, int x, int y) {
-
+	public GridUnit(Card card, GameObject tileObj, int x, int y)
+	{
 		this.card = card;
 		this.tileObj = tileObj;
 		cardDis = this.tileObj.AddComponent<CardDisplay>();
@@ -246,13 +261,15 @@ public class GridUnit {
 		this.x = x;
 		this.y = y;
 
-		if (card.category == "Game Card") {
+		if (card.category == "Game Card")
+		{
 			// this.targetCat = card.targetCategory;
 			this.target = card.target; // The Scope that this card targets
 			this.stackable = !card.doesDiscard;
 		}
 
-		if (card.category == "Market") {
+		if (card.category == "Market")
+		{
 			// this.targetCat = card.targetCategory;
 			this.target = card.target; // The Scope that this card targets
 			this.stackable = !card.doesDiscard;
@@ -261,13 +278,12 @@ public class GridUnit {
 		}
 
 		this.CalcBaseValue();
-
 	} // GridUnit constructor
 
 	// Constructor that takes in necessary card info and populates the rest.
 	// This uses a CardState instead of a Card object.
-	public GridUnit(CardData cardData, GameObject tileObj, int x, int y) {
-
+	public GridUnit(CardData cardData, GameObject tileObj, int x, int y)
+	{
 		this.card = Card.CreateInstance<Card>();
 
 		Debug.Log(debug.head + "Storing CardData for: " + cardData.title);
@@ -300,13 +316,15 @@ public class GridUnit {
 		this.x = x;
 		this.y = y;
 
-		if (card.category == "Game Card") {
+		if (card.category == "Game Card")
+		{
 			// this.targetCat = card.targetCategory;
 			this.target = card.target; // The Scope that this card targets
 			this.stackable = !card.doesDiscard;
 		}
 
-		if (card.category == "Market") {
+		if (card.category == "Market")
+		{
 			// this.targetCat = card.targetCategory;
 			this.target = card.target; // The Scope that this card targets
 			this.stackable = !card.doesDiscard;
@@ -315,12 +333,11 @@ public class GridUnit {
 		}
 
 		this.CalcBaseValue();
-
 	} // GridUnit constructor
 
 	// Constructor that takes in necessary card info and populates the rest
-	public GridUnit(Card card, int x, int y) {
-
+	public GridUnit(Card card, int x, int y)
+	{
 		this.card = card;
 		// this.tileObj = tileObj;
 		// cardDis = this.tileObj.AddComponent<CardDisplay>();
@@ -336,13 +353,15 @@ public class GridUnit {
 		this.x = x;
 		this.y = y;
 
-		if (card.category == "Game Card") {
+		if (card.category == "Game Card")
+		{
 			// this.targetCat = card.targetCategory;
 			this.target = card.target; // The Scope that this card targets
 			this.stackable = !card.doesDiscard;
 		}
 
-		if (card.category == "Market") {
+		if (card.category == "Market")
+		{
 			// this.targetCat = card.targetCategory;
 			this.target = card.target; // The Scope that this card targets
 			this.stackable = !card.doesDiscard;
@@ -351,10 +370,8 @@ public class GridUnit {
 		}
 
 		this.CalcBaseValue();
-
 	} // GridUnit constructor
 
 	// Default no-argument constructor
 	// public GridUnit() { }
-
 } // GridUnit class

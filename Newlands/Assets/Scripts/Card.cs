@@ -6,8 +6,8 @@
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Card", menuName = "Card")]
-public class Card : ScriptableObject {
-
+public class Card : ScriptableObject
+{
 	// FIELDS #####################################################################################
 
 	// The overall category of the Card (ex. Game Card, Price Card)
@@ -38,7 +38,6 @@ public class Card : ScriptableObject {
 	public string target;
 	// Does this card get discarded if used? (Rather than being stacked under a Tile)
 	public bool doesDiscard;
-
 	// public CardData data;
 
 } // Card class

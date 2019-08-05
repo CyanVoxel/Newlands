@@ -1,17 +1,21 @@
 // A class designed to hold various Game Cards in a Deck
 
-public class GameCardDeck : Deck {
-
+public class GameCardDeck : Deck
+{
 	// CONSTRUCTORS -----------------------------------------------------------
 
 	// Default no-arg constructor
-	public GameCardDeck() { }
+	public GameCardDeck()
+	{
+
+	} // GameCardDeck() constructor
 
 	// Constructor that takes in a string representing the name of premade deck
-	public GameCardDeck(string flavor) {
-
+	public GameCardDeck(string flavor)
+	{
 		// The Vanilla Standard Deck's Game Cards
-		if (flavor == "Vanilla") {
+		if (flavor == "Vanilla")
+		{
 			// Card cardToAdd;
 
 			// Market Mods
@@ -57,9 +61,6 @@ public class GameCardDeck : Deck {
 			// Tile Mods (Other)
 			this.Add(dirGcTmO + "/upgrade_plains", 10);
 			this.Add(dirGcTmO + "/foreclosure", 2);
-
 		} // if Vanilla Standard
-
 	} // GameCardDeck(flavor) constructor
-
-} //GameCardDeck class
+} // class GameCardDeck

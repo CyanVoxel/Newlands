@@ -1,10 +1,9 @@
 // A class containing various colors stored as Color32 variables
-// TODO: Add final colors to palette, replacing Material Design ones.
 
 using UnityEngine;
 
-public class ColorPalette {
-
+public class ColorPalette
+{
 	#region FIELDS
 	// FIELDS ######################################################################################
 
@@ -121,7 +120,8 @@ public class ColorPalette {
 	// METHODS #####################################################################################
 
 	// Outputs a hex color tag from a Color32
-	public static string Color32ToTag(Color32 color) {
+	public static string Color32ToTag(Color32 color)
+	{
 		string hex = "<color=#"
 			+ color.r.ToString("X2")
 			+ color.g.ToString("X2")
@@ -132,18 +132,19 @@ public class ColorPalette {
 
 	#endregion
 
-} // ColorPalette class
+} // class ColorPalette
 
 // ColorHex struct - Mainly used as a way to create a Color32 using a hex code
-public struct ColorHex {
-
+// @Author: Travis Abendshien (https://github.com/CyanVoxel)
+public struct ColorHex
+{
 	byte r;
 	byte g;
 	byte b;
 	byte a;
 
-	public ColorHex(byte r, byte g, byte b, byte a) {
-
+	public ColorHex(byte r, byte g, byte b, byte a)
+	{
 		this.r = r;
 		this.g = g;
 		this.b = b;
@@ -151,16 +152,17 @@ public struct ColorHex {
 
 	} // ColorHex(byte r, byte g, byte b, byte a)
 
-	public ColorHex(string hex) {
-
+	public ColorHex(string hex)
+	{
 		string h = hex;
 
-		if (h.Contains("#")) {
+		if (h.Contains("#"))
+		{
 			h = h.Remove(hex.IndexOf("#"), 1);
 		}
 
-		switch (h.Length) {
-
+		switch (h.Length)
+		{
 			case 6:
 				this.r = byte.Parse(h.Substring(0, 2), System.Globalization.NumberStyles.HexNumber);
 				this.g = byte.Parse(h.Substring(2, 2), System.Globalization.NumberStyles.HexNumber);
@@ -181,88 +183,96 @@ public struct ColorHex {
 				this.b = 0;
 				this.a = 0;
 				break;
-
 		} // switch (hex.Length)
-
 	} // ColorHex(byte r, byte g, byte b, byte a)
 
-	public override bool Equals(object obj) {
-
+	public override bool Equals(object obj)
+	{
 		bool typeCheck = false;
 
-		if (this.GetType().Equals(obj.GetType()) || obj is UnityEngine.Color32) {
+		if (this.GetType().Equals(obj.GetType()) || obj is UnityEngine.Color32)
+		{
 			typeCheck = true;
 		}
 
-		if (obj == null || !typeCheck) {
+		if (obj == null || !typeCheck)
+		{
 			return false;
-		} else {
+		}
+		else
+		{
 			ColorHex c = (ColorHex)obj;
 			return (r == c.r && g == c.g && b == c.b && a == c.a);
 		}
-
 	} // override Equals()
 
-	public static bool operator ==(UnityEngine.Color32 left, ColorHex right) {
-
+	public static bool operator ==(UnityEngine.Color32 left, ColorHex right)
+	{
 		if (left.r == right.r
 			&& left.g == right.g
 			&& left.b == right.b
-			&& left.a == right.a) {
+			&& left.a == right.a)
+		{
 			return true;
-		} else {
+		}
+		else
+		{
 			return false;
 		}
-
 	} // operator ==
 
-	public static bool operator ==(ColorHex left, ColorHex right) {
-
+	public static bool operator ==(ColorHex left, ColorHex right)
+	{
 		if (left.r == right.r
 			&& left.g == right.g
 			&& left.b == right.b
-			&& left.a == right.a) {
+			&& left.a == right.a)
+		{
 			return true;
-		} else {
+		}
+		else
+		{
 			return false;
 		}
-
 	} // operator ==
 
-	public static bool operator !=(UnityEngine.Color32 left, ColorHex right) {
-
+	public static bool operator !=(UnityEngine.Color32 left, ColorHex right)
+	{
 		if (left.r != right.r
 			|| left.g != right.g
 			|| left.b != right.b
-			|| left.a != right.a) {
+			|| left.a != right.a)
+		{
 			return true;
-		} else {
+		}
+		else
+		{
 			return false;
 		}
-
 	} // operator !=
 
-	public static bool operator !=(ColorHex left, ColorHex right) {
-
+	public static bool operator !=(ColorHex left, ColorHex right)
+	{
 		if (left.r != right.r
 			|| left.g != right.g
 			|| left.b != right.b
-			|| left.a != right.a) {
+			|| left.a != right.a)
+		{
 			return true;
-		} else {
+		}
+		else
+		{
 			return false;
 		}
-
 	} // operator !=
 
-	public static implicit operator UnityEngine.Color32(ColorHex c) {
+	public static implicit operator UnityEngine.Color32(ColorHex c)
+	{
 		return new UnityEngine.Color32(c.r, c.g, c.b, c.a);
 	}
 
-	public override int GetHashCode() {
-
+	public override int GetHashCode()
+	{
 		return r ^ g ^ b ^ a;
-
 	} // override GetHashCode()
-
-} // ColorHex struct
+} // struct ColorHex

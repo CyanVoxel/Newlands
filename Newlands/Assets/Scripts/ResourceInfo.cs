@@ -3,8 +3,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ResourceInfo : MonoBehaviour {
-
+public class ResourceInfo : MonoBehaviour
+{
 	// DATA FIELDS #################################################################################
 
 	public static List<string> resources = new List<string>();
@@ -16,8 +16,8 @@ public class ResourceInfo : MonoBehaviour {
 	// CONSTRUCTORS ################################################################################
 
 	// Default static constructor
-	static ResourceInfo() {
-
+	static ResourceInfo()
+	{
 		// Create the Standard Vanilla resource list, used by default.
 		resources.Add("None");
 		resources.Add("Lumber");
@@ -45,15 +45,20 @@ public class ResourceInfo : MonoBehaviour {
 
 		// Error checking; verify that each resource corresponds to a price
 		// If there's an equal number of resources and prices, continue
-		if (resources.Count == prices.Count) {
-			for (int i = 0; i < resources.Count; i++) {
-				if (!prices.ContainsKey(resources[i])) {
+		if (resources.Count == prices.Count)
+		{
+			for (int i = 0; i < resources.Count; i++)
+			{
+				if (!prices.ContainsKey(resources[i]))
+				{
 					Debug.LogError("<b>[ResourceInfo]</b> Error: "
 						+ "The resource \"" + resources[i] + "\""
 						+ " could not be found in the price dictionary!");
 				} // if prices does not contain key for a resource
 			} // for
-		} else {
+		}
+		else
+		{
 			Debug.LogError("<b>[ResourceInfo]</b> Error: "
 				+ "The number of resources (" + resources.Count + ") "
 				+ "does not match the number of prices (" + resources.Count + ")!");
@@ -61,10 +66,8 @@ public class ResourceInfo : MonoBehaviour {
 
 	} // ResourceInfo() constructor
 
-	public ResourceInfo(string deckType) {
-
+	public ResourceInfo(string deckType)
+	{
 		// NOTE: Only custom resources or price changes need to be put here.
-
 	} // Prices(deckType) constructor
-
-} // ResourceInfo class
+} // class ResourceInfo
