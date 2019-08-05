@@ -21,6 +21,7 @@ public class Player {
 	public double totalMoney = 0;
 
 	private bool initialized = false;
+	public bool shouldSkip = false;
 
 	// UI ELEMENTS ------------------------------------------------------------
 

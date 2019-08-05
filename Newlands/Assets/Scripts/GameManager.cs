@@ -28,7 +28,7 @@ public class GameManager : NetworkBehaviour {
 
 	public static readonly int width = 7; // Width of the game grid in cards
 	public static readonly int height = 3; // Height of the game grid in cards
-	public static readonly int handSize = 5; // How many cards the player is dealt
+	public static readonly int handSize = 10; // How many cards the player is dealt
 
 	private static DebugTag debug = new DebugTag("GameManager", "FF6D00");
 
@@ -125,26 +125,48 @@ public class GameManager : NetworkBehaviour {
 
 	} // DrawCard()
 
-	// Advance to the next turn
-	public void IncrementTurn(int turnChecked = 0, bool skipThis = false) {
+	private int GetValidNextTurn(int turn) {
 
-		if (this.turn < playerCount) {
-			this.turn++;
+		// If the turn exceeds the player count, return the value anyway.
+		if ((turn + 1) > GameManager.playerCount) {
+			Debug.Log(debug.head + "Returning " + (turn + 1));
+			return (turn + 1);
+		}
+
+		// If the turn should be skipped, try again with the next turn up.
+		if (GameManager.players[turn].shouldSkip) { // This doesn't need -1 because it's checking +1
+			Debug.Log(debug.head + "Recursive...");
+			return GetValidNextTurn(turn + 1);
+		}
+
+		// If nothing interresting happens, return the next turn.
+		Debug.Log(debug.head + "Returning " + (turn + 1) + " (Nothing happened)");
+		return (turn + 1);
+
+	} // GetNextValidTurn()
+
+	// Advance to the next turn
+	public void IncrementTurn() {
+
+		SkipChecker();
+
+		if (GetValidNextTurn(turn) <= playerCount) {
+			Debug.Log(debug.head + "1 ValidNextTurn = " + GetValidNextTurn(turn));
+			this.turn = GetValidNextTurn(turn);
 		} else {
-			if (turnChecked > 0) { // If the turn checked was passed
-				if (skipThis) { // And the turn passed should always be skipped now
-					this.turn = turnChecked; // Set the turn to one past the skipable turn
-				}
-				this.round++;
+			if (GetValidNextTurn(0) <= playerCount) {
+				Debug.Log(debug.head + "2 ValidNextTurn = " + GetValidNextTurn(1));
+				this.turn = GetValidNextTurn(0);
+				this.round++; // NOTE: In the future when round are capped, this needs error detection too
 			} else {
-				this.round++; // NOTE: In the future where round are capped, this needs error detection too
-				this.turn = 1;
+				Debug.Log(debug.head + "3 ValidNextTurn = " + GetValidNextTurn(turn));
+				this.phase++; // NOTE: In the future when round are phases, this needs error detection too
 			}
 
 		}
 
-		Debug.Log(debug.head + "########## Turn Advanced to " + this.turn);
-		Debug.Log(debug.head + "########## Round Advanced to " + this.round);
+		Debug.Log(debug.head + "#################### Turn Advanced to "
+			+ this.turn + " | Round " + this.round + " ####################");
 
 	} //IncrementTurn()
 
@@ -160,7 +182,6 @@ public class GameManager : NetworkBehaviour {
 		round = 1;
 		turn = 1;
 	} //EndPhase()
-
 
 	// Returns the color associated with a player ID.
 	// Strength paramater refers to a possible brighter color variant.
@@ -423,9 +444,7 @@ public class GameManager : NetworkBehaviour {
 		return this.playerIndex;
 	}
 
-	public void OnTurnChange(int newTurn) {
-		MouseManager.highlightFlag = false;
-	} // OnTurnChange()
+	public void OnTurnChange(int newTurn) { } // OnTurnChange()
 
 	public bool BuyTile(Coordinate2 target) {
 
@@ -443,9 +462,11 @@ public class GameManager : NetworkBehaviour {
 				+ ") bought tile " + target.ToString());
 			// Debug.Log(debug.head + "Advancing Turn; This is a temporary mechanic!");
 			purchaseSuccess = true;
+
 			this.IncrementTurn();
 
 		} else {
+
 			Debug.Log(debug.head + "Can't purchase, tile " + target.ToString()
 				+ " is not valid for you! \nAlready Owned?\nOut of Range?\nBankrupt Tile?");
 		}
@@ -466,33 +487,7 @@ public class GameManager : NetworkBehaviour {
 
 		if (this.round > graceRounds) {
 			// Find each unowned neighbor tiles for this player
-			for (int k = 0; k < GameManager.players[playerId - 1].ownedTiles.Count; k++) {
-				for (int i = -1; i <= 1; i++) {
-					for (int j = -1; j <= 1; j++) {
-
-						// Set x and y equal to the coordinate of the owned tile being checked
-						int x = GameManager.players[playerId - 1].ownedTiles[k].x;
-						int y = GameManager.players[playerId - 1].ownedTiles[k].y;
-
-						// Is the neighbor tile within the grid bounds?
-						if (x + i >= 0
-							&& x + i < GridManager.grid.GetLength(0)
-							&& y + j >= 0
-							&& y + j < GridManager.grid.GetLength(1)) {
-
-							// This is where the tile is checked against purchasing rules
-							if (GridManager.grid[x + i, y + j].ownerId == 0 // Is the tile unowned?
-								&& !GridManager.grid[x + i, y + j].bankrupt // Is the tile not bankrupt?
-								&& !validCards.Contains(new Coordinate2((x + i), (y + j)))) {
-
-								validCards.Add(new Coordinate2((x + i), (y + j)));
-
-							}
-
-						}
-					}
-				}
-			}
+			validCards = GetValidCards(playerId);
 
 		} else {
 			int x = tileBeingPurchased.x;
@@ -514,8 +509,59 @@ public class GameManager : NetworkBehaviour {
 	} // GetValidTiles()
 
 	// Overload of IsValidPurchase(), taking in two ints instead of a Coordinate2.
-	public bool IsValidPurchase(int x, int y, int playerId) {
+	private bool IsValidPurchase(int x, int y, int playerId) {
 		return IsValidPurchase(new Coordinate2(x, y), playerId);
 	} // IsValidPurchase()
+
+	private List<Coordinate2> GetValidCards(int playerId) {
+
+		List<Coordinate2> validCards = new List<Coordinate2>();
+
+		for (int k = 0; k < GameManager.players[playerId - 1].ownedTiles.Count; k++) {
+			for (int i = -1; i <= 1; i++) {
+				for (int j = -1; j <= 1; j++) {
+
+					// Set x and y equal to the coordinate of the owned tile being checked
+					int x = GameManager.players[playerId - 1].ownedTiles[k].x;
+					int y = GameManager.players[playerId - 1].ownedTiles[k].y;
+
+					// Is the neighbor tile within the grid bounds?
+					if (x + i >= 0
+						&& x + i < GridManager.grid.GetLength(0)
+						&& y + j >= 0
+						&& y + j < GridManager.grid.GetLength(1)) {
+
+						// This is where the tile is checked against purchasing rules
+						if (GridManager.grid[x + i, y + j].ownerId == 0 // Is the tile unowned?
+							&& !GridManager.grid[x + i, y + j].bankrupt // Is the tile not bankrupt?
+							&& !validCards.Contains(new Coordinate2((x + i), (y + j)))) {
+
+							Debug.Log(debug.head + "Found Valid Neighbor [" + (x + i) + ", " + (y + j) + "] for Player " + playerId);
+							validCards.Add(new Coordinate2((x + i), (y + j)));
+
+						}
+
+					}
+				}
+			}
+		}
+
+		return validCards;
+
+	} // GetValidCards()
+
+	// Checks if it's possible for any more cards to be bought by the player and sets a skip flag
+	// on the player if necessary.
+	private void SkipChecker() {
+		for (int i = 0; i < GameManager.playerCount; i++) {
+			if (this.round > graceRounds) {
+				if (GetValidCards(i + 1).Count == 0) {
+					Debug.Log(debug.head + "Setting shouldSkip true for Player " + (i + 1));
+					GameManager.players[i].shouldSkip = true;
+				}
+			}
+		}
+
+	} // CheckForSpaces()
 
 } // GameManager class

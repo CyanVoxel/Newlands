@@ -39,10 +39,10 @@ public class CardAnimations : MonoBehaviour {
         switch (cardType) {
 
             case "Tile":
-                Debug.Log(debug.head + "Trying to flip " + "x"
-                    + xZeroes + x + "_"
-                    + "y" + yZeroes + y + "_"
-                    + cardType);
+                // Debug.Log(debug.head + "Trying to flip " + "x"
+                //     + xZeroes + x + "_"
+                //     + "y" + yZeroes + y + "_"
+                //     + cardType);
                 cardObj = GameObject.Find("x" + xZeroes + x + "_"
                     + "y" + yZeroes + y + "_"
                     + cardType);
@@ -104,10 +104,10 @@ public class CardAnimations : MonoBehaviour {
                 yZeroes = "0";
             } // zeroes calc
 
-            Debug.Log(debug.head + "Trying to Color " + "x"
-                + xZeroes + cards[i].x + "_"
-                + "y" + yZeroes + cards[i].y + "_"
-                + "Tile");
+            // Debug.Log(debug.head + "Trying to Color " + "x"
+            //     + xZeroes + cards[i].x + "_"
+            //     + "y" + yZeroes + cards[i].y + "_"
+            //     + "Tile");
             cardObj = GameObject.Find("x" + xZeroes + cards[i].x + "_"
                 + "y" + yZeroes + cards[i].y + "_"
                 + "Tile");

@@ -15,7 +15,6 @@ public class MouseManager : NetworkBehaviour {
 	public static int selection = -1;
 	// TODO: Create a dictionary of flags
 	private int purchaseSuccessFlag = -1; // -1: Reset | 0: False | 1: True
-	public static bool highlightFlag = false; // True if AttemptPurchaseVisuals() already highlighted
 	private static GameObject objectHit;
 	[SyncVar]
 	public int ownerID = -1;
@@ -85,23 +84,6 @@ public class MouseManager : NetworkBehaviour {
 			// guiMan.CmdUpdateUI();
 		}
 
-		////////////////////////////////////////////////////////////////////////////////////////////
-		// bool highlightAllowed = false;
-		// if (gameMan.round > GameManager.graceRounds) {
-		// 	highlightAllowed = true;
-		// }
-		// Debug.Log(debug.head + "Round: " + gameMan.round + "/" + GameManager.graceRounds + " | " + highlightAllowed);
-		// Debug.Log(debug.head + "Turn: " + gameMan.turn);
-		// if (gameMan.round > GameManager.graceRounds) {
-		// 	// gameMan.VerifyHighlight();
-		// 	if (!highlightFlag) {
-		// 		Debug.Log(debug.head + "Highlighting...");
-		// 		gameMan.HighlightNeighbors(gameMan.turn);
-		// 		highlightFlag = true;
-		// 	}
-		// } // if
-		////////////////////////////////////////////////////////////////////////////////////////////
-
 		// Initialize ray
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 		RaycastHit hitInfo;
@@ -147,23 +129,6 @@ public class MouseManager : NetworkBehaviour {
 
 						// gameMan.WipeSelectionColors("GameCard", ColorPalette.tintCard);
 
-						////////////////////////////////////////////////////////////////////////////
-						// If the grace rounds have passes, start highlighting the neighbors
-						// highlightAllowed = false;
-						// if (gameMan.round > GameManager.graceRounds) {
-						// 	highlightAllowed = true;
-						// }
-						// Debug.Log(debug.head + "Round: " + gameMan.round + "/" + GameManager.graceRounds + " | " + highlightAllowed);
-						// if (gameMan.round > GameManager.graceRounds) {
-						// 	gameMan.VerifyHighlight();
-						// 	if (!highlightFlag) {
-						// 		Debug.Log(debug.head + "Highlighting...");
-						// 		gameMan.HighlightNeighbors(gameMan.turn);
-						// 		highlightFlag = true;
-						// 	}
-						// } // if
-						////////////////////////////////////////////////////////////////////////////
-
 						selection = -1;
 						// guiMan.CmdUpdateUI();
 
@@ -181,22 +146,6 @@ public class MouseManager : NetworkBehaviour {
 						}
 
 						// CallCmdBuyTile(locX, locY);
-
-						////////////////////////////////////////////////////////////////////////////
-						// If the grace rounds have passed, start highlighting the neighbors
-						// if (gameMan.round > GameManager.graceRounds) {
-						// 	highlightAllowed = true;
-						// }
-						// Debug.Log(debug.head + "Round: " + gameMan.round + "/" + GameManager.graceRounds + " | " + highlightAllowed);
-						// if (gameMan.round > GameManager.graceRounds) {
-						// 	gameMan.VerifyHighlight();
-						// 	if (!highlightFlag) {
-						// 		Debug.Log(debug.head + "Highlighting...");
-						// 		gameMan.HighlightNeighbors(gameMan.turn);
-						// 		highlightFlag = true;
-						// 	}
-						// } // if
-						////////////////////////////////////////////////////////////////////////////
 						// guiMan.CmdUpdateUI();
 
 					} // if Left Click
