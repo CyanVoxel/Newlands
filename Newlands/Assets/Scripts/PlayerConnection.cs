@@ -417,7 +417,7 @@ public class PlayerConnection : NetworkBehaviour
 		localMouseMan.myClient = this.connectionToClient;
 		localMouseMan.myPlayerObj = this.gameObject;
 		Debug.Log(debug.head + "Giving MouseManager my ID of " + this.id);
-		localMouseMan.ownerID = this.id;
+		localMouseMan.ownerId = this.id;
 	} // CmdSpawnMouseManager()
 
 	#endregion

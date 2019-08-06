@@ -14,7 +14,7 @@ public class GameManager : NetworkBehaviour
 
 	public static MasterDeck masterDeck;
 	public static MasterDeck masterDeckMutable;
-	public static readonly int playerCount = 2; // Number of players in the match
+	public static readonly int playerCount = 1; // Number of players in the match
 	[SyncVar]
 	private int playerIndex = 1; // This value increments when a new player joins
 	public static int localPlayerId = -1;
@@ -297,6 +297,11 @@ public class GameManager : NetworkBehaviour
 		return color;
 	} // GetPlayerColor()
 
+	public bool PlayCard(int cardIndex, string targetTile) {
+
+		return false;
+	}
+
 	// Checks if a GameCard is allowed to be played on a Tile.
 	public bool TryToPlay(GridUnit gridTile, GridUnit gameCard)
 	{
@@ -397,14 +402,14 @@ public class GameManager : NetworkBehaviour
 			} // if card can be drawn
 
 			// gridTile.cardStack.Add(gameCard.tile);
-			MouseManager.selection = -1;
+			// MouseManager.selection = -1;
 			// WipeSelectionColors("Game Card", ColorPalette.tintCard);
 			return true;
 		}
 		else
 		{
 			Debug.Log(debug.head + "Card move is illegal!");
-			MouseManager.selection = -1;
+			// MouseManager.selection = -1;
 			// WipeSelectionColors("Game Card", ColorPalette.tintCard);
 			return false;
 		} // If the Category AND Scope match

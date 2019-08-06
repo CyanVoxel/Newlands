@@ -1,4 +1,4 @@
-﻿// A struct used to store any possible card data in a format that's able to be instantaied, used
+﻿// A struct used to store any possible card data in a format that's able to be instantiated, used
 // internally, or over the network.
 
 public struct CardData
