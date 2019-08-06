@@ -1,5 +1,8 @@
 ﻿// A class that manages mouse hit detection
 
+// TODO: Move the responsibility of knowing what turn you're allowed to play on
+// to the server. Otherwise a modified client could send a command on any turn.
+
 using System.Collections;
 using Mirror;
 using UnityEngine;
@@ -14,8 +17,8 @@ public class MouseManager : NetworkBehaviour
 	private GridManager gridMan;
 	public int selection = -1;
 	// TODO: Create a dictionary of flags
-	private int purchaseSuccessFlag = -1;   // -1: Reset | 0: False | 1: True
-	private int playSuccessFlag = -1;       // -1: Reset | 0: False | 1: True
+	private int purchaseSuccessFlag = -1; // -1: Reset | 0: False | 1: True
+	private int playSuccessFlag = -1; // -1: Reset | 0: False | 1: True
 	private static GameObject objectHit;
 	[SyncVar]
 	public int ownerId = -1;
@@ -37,14 +40,11 @@ public class MouseManager : NetworkBehaviour
 
 	void Start()
 	{
-		// if (!hasAuthority) {
-		// 	return;
-		// }
-
 		gridMan = FindObjectOfType<GridManager>();
 		gameMan = FindObjectOfType<GameManager>();
 	} // Start()
 
+	// TODO: Clean this bad boy up and break it up into smaller methods
 	// Update is called once per frame
 	void Update()
 	{
@@ -193,7 +193,7 @@ public class MouseManager : NetworkBehaviour
 						if (selection >= 0 && gameMan.turn == this.ownerId)
 						{
 							Debug.Log(debug.head + "Trying to play card " + selection
-							+ " on " + objectHit.transform.parent.name);
+								+ " on " + objectHit.transform.parent.name);
 							CmdPlayCard(selection, objectHit.transform.parent.name);
 						}
 						else
@@ -271,7 +271,7 @@ public class MouseManager : NetworkBehaviour
 
 						if (selection >= 1)
 						{
-							if (gameMan.TryToPlay(GridManager.marketGrid[locX, locY],
+							if (gameMan.OldTryToPlay(GridManager.marketGrid[locX, locY],
 									GameManager.players[0].handUnits[selection - 1]))
 							{
 								// Debug.Log("Using GameCard " + selection +

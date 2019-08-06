@@ -297,20 +297,93 @@ public class GameManager : NetworkBehaviour
 		return color;
 	} // GetPlayerColor()
 
-	public bool PlayCard(int cardIndex, string targetTile) {
+	// Tries to play a Card on a TIle. Returns true is successful.
+	// Assumes that the player whose turn it is can be the only one who calls this (for now).
+	public bool PlayCard(int cardIndex, string targetTile)
+	{
+		bool wasPlayed = false;
+		int locX = int.Parse(targetTile.Substring(1, 2));
+		int locY = int.Parse(targetTile.Substring(5, 2));
+		string tileType = targetTile.Substring(8);
+		GridUnit target = GridManager.grid[locX, locY];
+		CardData card = new CardData(players[this.turn - 1].hand[cardIndex]);
 
-		return false;
-	}
+		Debug.Log(debug.head + "Trying to play Card " + cardIndex + " on " + tileType
+			+ " at " + locX + ", " + locY);
+
+		switch (tileType)
+		{
+			case "Tile":
+				if (!target.bankrupt
+					&& RuleSet.IsLegal(target, card))
+				{
+					// Carry out the actions of a Successful play
+					UpdatePlayersInfo(); // Test to see if there only needs to be one of these at the end
+					if (target.bankrupt) // Bankrupt check
+					{
+						BankruptTile(GridManager.grid[locX, locY]);
+						UpdatePlayersInfo();
+						// guiMan.UpdateUI();
+						Debug.Log(debug.head + "Tile bankrupt! has value of "
+							+ GridManager.grid[locX, locY].totalValue);
+					}
+					if (target.stackable)
+					{
+						GridManager.grid[locX, locY].stackSize++;
+						GridManager.grid[locX, locY].cardStack.Add(card); //HEY change cardstacks to carddata?
+						target.CalcTotalValue(); // This fixes Market Cards not calculating first time
+						UpdatePlayersInfo();
+						// guiMan.UpdateUI();
+
+						// if (gameCard.card.title == "Tile Mod")
+						// {
+						// 	// If the stack on the unit is larger than the stack count on the row, increase
+						// 	if (gridTile.stackSize > GridManager.maxStack[gridTile.y])
+						// 	{
+						// 		GridManager.maxStack[gridTile.y]++;
+						// 		gridMan.ShiftRow(gridTile.category, gridTile.y, 1);
+						// 	} // if stack size exceeds max stack recorded for row
+
+						// 	gameCard.tileObj.transform.position = new Vector3(gridTile.tileObj.transform.position.x,
+						// 		gridTile.tileObj.transform.position.y
+						// 		- (GridManager.shiftUnit * gridTile.stackSize),
+						// 		(gridTile.tileObj.transform.position.z)
+						// 		+ (GridManager.cardThickness * gridTile.stackSize));
+
+						// 	gameCard.tileObj.transform.parent = gridTile.tileObj.transform;
+
+						// 	// TODO: Adjust for more than 10 cards on a given stack (unlikely, but possible)
+						// 	// TODO: Account for different players
+						// 	gameCard.tileObj.name = ("p00_"
+						// 		+ "i0" + (gridTile.stackSize - 1) + "_"
+						// 		+ "StackedCard");
+
+						// }
+						wasPlayed = true;
+					}
+				}
+				break;
+
+			case "Market":
+				break;
+
+			default:
+				Debug.LogError(debug.error + "Couldn't find Tile of type \"" + tileType + "\"");
+				break;
+		} // switch (tileType)
+
+		return wasPlayed;
+	} // PlayCard()
 
 	// Checks if a GameCard is allowed to be played on a Tile.
-	public bool TryToPlay(GridUnit gridTile, GridUnit gameCard)
+	public bool OldTryToPlay(GridUnit gridTile, GridUnit gameCard)
 	{
-		if (!gridTile.bankrupt && RuleSet.IsLegal(gridTile, gameCard))
+		if (!gridTile.bankrupt /*&& RuleSet.IsLegal(gridTile, gameCard)*/ )
 		{
 
-			RuleSet ruleSet = new RuleSet();
+			// RuleSet ruleSet = new RuleSet();
 
-			ruleSet.PlayCard(gridTile, gameCard.card);
+			RuleSet.PlayCard(gridTile, gameCard.card);
 			UpdatePlayersInfo();
 			// guiMan.UpdateUI();
 
@@ -329,7 +402,7 @@ public class GameManager : NetworkBehaviour
 			if (gameCard.stackable)
 			{
 				gridTile.stackSize++;
-				gridTile.cardStack.Add(gameCard.card);
+				gridTile.cardStack.Add(new CardData(gameCard.card));
 				gridTile.CalcTotalValue(); // This fixes Market Cards not calculating first time
 				UpdatePlayersInfo();
 				// guiMan.UpdateUI();
@@ -551,6 +624,7 @@ public class GameManager : NetworkBehaviour
 	} // BuyTile()
 
 	// Overload of BuyTile(), taking in two ints instead of a Coordinate2.
+	// Assumes that the player whose turn it is can be the only one who calls this (for now).
 	public bool BuyTile(int x, int y)
 	{
 		return BuyTile(new Coordinate2(x, y));

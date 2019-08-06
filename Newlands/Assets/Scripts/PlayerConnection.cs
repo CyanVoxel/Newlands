@@ -39,7 +39,7 @@ public class PlayerConnection : NetworkBehaviour
 	private List<Coordinate2>[] knownOwnersList;
 	// A 2-Dimensional array containing the location of all known Tiles owned by all players.
 	// This is used for quicker access to NEIGHBOR CARDS.
-	private int[,] knownOwnersGrid;
+	private int[, ] knownOwnersGrid;
 
 	#endregion
 
@@ -155,8 +155,8 @@ public class PlayerConnection : NetworkBehaviour
 		// 	this.guiMan = FindObjectOfType<GuiManager>();
 		// }
 
-		if (this.gameMan == null) return false;
-		if (this.gridMan == null) return false;
+		if (this.gameMan == null)return false;
+		if (this.gridMan == null)return false;
 		// if (this.guiMan == null) return false;
 		return true;
 	} // GrabComponents()

@@ -18,20 +18,20 @@ public class RuleSet : MonoBehaviour
 
 	// Compares a Game Card against a target Card/Tle to determine if it is allowed to be played
 	// given the scope of the Game Card.
-	public static bool IsLegal(GridUnit target, GridUnit card)
+	public static bool IsLegal(GridUnit target, CardData card)
 	{
 		string[] scopeLevel;
 		string[] targetLevel = new string[3];
 		bool[] scopeResults;
 
-		if (card != null && card.target != null)
+		if (card.target != null)
 		{
 			scopeLevel = card.target.Split('_');
 			scopeResults = new bool[scopeLevel.Length];
 		}
 		else
 		{
-			Debug.Log(debugH + "The card or it's target is null!");
+			Debug.Log(debugH + "The card's target is null!");
 			return false;
 		}
 
@@ -177,7 +177,7 @@ public class RuleSet : MonoBehaviour
 						{
 							return true;
 						}
-						else if (targetLevel[2] == "Farmland" && card.scope != "Upgrade")
+						else if (targetLevel[2] == "Farmland" && card.subtitle != "Upgrade")
 						{
 							return true;
 						}
@@ -280,7 +280,7 @@ public class RuleSet : MonoBehaviour
 	} // IsLegal
 
 	// Carries out the action that a legal Game Card intends
-	public void PlayCard(GridUnit target, Card cardToPlay)
+	public static void PlayCard(GridUnit target, Card cardToPlay)
 	{
 		string action = cardToPlay.subtitle;
 		// NOTE: Cards promting tile value calculation have their calculations offset to

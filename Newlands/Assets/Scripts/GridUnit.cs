@@ -17,7 +17,7 @@ public class GridUnit
 	public GameObject tileObj;
 	public int stackSize = 0;
 	public Card card;
-	public List<Card> cardStack = new List<Card>();
+	public List<CardData> cardStack = new List<CardData>();
 	public bool bankrupt = false;
 
 	// public string landType;
