@@ -165,7 +165,7 @@ public class GameManager : NetworkBehaviour
 			// The next player can go with no issues.
 			Debug.Log(debug.head + "ValidNextTurn = " + GetValidNextTurn(turn));
 			this.turn = GetValidNextTurn(turn);
-			this.round++;
+			// this.round++;
 		}
 		else
 		{
@@ -327,38 +327,45 @@ public class GameManager : NetworkBehaviour
 						Debug.Log(debug.head + "Tile bankrupt! has value of "
 							+ GridManager.grid[locX, locY].totalValue);
 					}
-					if (target.stackable)
+
+					if (!card.doesDiscard)
 					{
 						GridManager.grid[locX, locY].stackSize++;
-						GridManager.grid[locX, locY].cardStack.Add(card); //HEY change cardstacks to carddata?
-						target.CalcTotalValue(); // This fixes Market Cards not calculating first time
+						GridManager.grid[locX, locY].cardStack.Add(card);
+						// target.CalcTotalValue(); // This fixes Market Cards not calculating first time
 						UpdatePlayersInfo();
 						// guiMan.UpdateUI();
+						if (card.title == "Tile Mod")
+						{
+							if (target.stackSize > GridManager.maxStack[target.y])
+							{
+								GridManager.maxStack[target.y]++;
+								gridMan.ShiftRow(target.category, target.y, 1);
+							} // if stack size exceeds max stack recorded for row
 
-						// if (gameCard.card.title == "Tile Mod")
-						// {
-						// 	// If the stack on the unit is larger than the stack count on the row, increase
-						// 	if (gridTile.stackSize > GridManager.maxStack[gridTile.y])
-						// 	{
-						// 		GridManager.maxStack[gridTile.y]++;
-						// 		gridMan.ShiftRow(gridTile.category, gridTile.y, 1);
-						// 	} // if stack size exceeds max stack recorded for row
+							GameObject cardObj = (GameObject)Instantiate(gridMan.gameCardPrefab,
+								new Vector3(target.tileObj.transform.position.x,
+									target.tileObj.transform.position.y - (GridManager.shiftUnit * target.stackSize),
+									(target.tileObj.transform.position.z)
+									+ (GridManager.cardThickness * target.stackSize)),
+								Quaternion.identity);
 
-						// 	gameCard.tileObj.transform.position = new Vector3(gridTile.tileObj.transform.position.x,
-						// 		gridTile.tileObj.transform.position.y
-						// 		- (GridManager.shiftUnit * gridTile.stackSize),
-						// 		(gridTile.tileObj.transform.position.z)
-						// 		+ (GridManager.cardThickness * gridTile.stackSize));
+							NetworkServer.Spawn(cardObj);
 
-						// 	gameCard.tileObj.transform.parent = gridTile.tileObj.transform;
+							CardState cardState = cardObj.GetComponent<CardState>();
 
-						// 	// TODO: Adjust for more than 10 cards on a given stack (unlikely, but possible)
-						// 	// TODO: Account for different players
-						// 	gameCard.tileObj.name = ("p00_"
-						// 		+ "i0" + (gridTile.stackSize - 1) + "_"
-						// 		+ "StackedCard");
-
-						// }
+							if (cardState != null)
+							{
+								// Generate and Push the string of the object's name
+								cardState.objectName = (GameManager.CreateCardObjectName("PlayedCard", locX, locY));
+								// Push new values to the CardState to be synchronized across the network
+								GridManager.FillOutCardState(card, ref cardState);
+							}
+							else
+							{
+								Debug.Log(debug.head + "This object's card state was null!");
+							} // if (cardState != null)
+						}
 						wasPlayed = true;
 					}
 				}
@@ -489,44 +496,44 @@ public class GameManager : NetworkBehaviour
 
 	} // TryToPlay()
 
-	public GameObject FindCard(string type, int x, int y)
-	{
-		string strX = "x";
-		string strY = "y";
+	// public GameObject FindCard(string type, int x, int y)
+	// {
+	// 	string strX = "x";
+	// 	string strY = "y";
 
-		// Determines the number of zeroes to add in the object name
-		string xZeroes = "0";
-		string yZeroes = "0";
-		if (x >= 10)
-		{
-			xZeroes = "";
-		} // if x >= 10
-		if (y >= 10)
-		{
-			yZeroes = "";
-		} // if y >= 10
+	// 	// Determines the number of zeroes to add in the object name
+	// 	string xZeroes = "0";
+	// 	string yZeroes = "0";
+	// 	if (x >= 10)
+	// 	{
+	// 		xZeroes = "";
+	// 	} // if x >= 10
+	// 	if (y >= 10)
+	// 	{
+	// 		yZeroes = "";
+	// 	} // if y >= 10
 
-		// Specific type changes
-		if (type == "GameCard")
-		{
-			strX = "p"; // Instead of x, use p for PlayerID
-			strY = "i"; // Instead of y, use i for Index
-		} // if GameCard
+	// 	// Specific type changes
+	// 	if (type == "GameCard")
+	// 	{
+	// 		strX = "p"; // Instead of x, use p for PlayerID
+	// 		strY = "i"; // Instead of y, use i for Index
+	// 	} // if GameCard
 
-		if (gridMan.transform.Find(strX + xZeroes + x + "_" + strY + yZeroes + y + "_" + type))
-		{
-			// GameObject gameObject = new GameObject();
-			GameObject gameObject = gridMan.transform.Find(strX + xZeroes + x + "_"
-				+ strY + yZeroes + y + "_"
-				+ type).gameObject;
-			return gameObject;
-		}
-		else
-		{
-			// Debug.LogError("[GameManager] Error: Could not find GameObject!");
-			return null;
-		}
-	} // FindCard()
+	// 	if (gridMan.transform.Find(strX + xZeroes + x + "_" + strY + yZeroes + y + "_" + type))
+	// 	{
+	// 		// GameObject gameObject = new GameObject();
+	// 		GameObject gameObject = gridMan.transform.Find(strX + xZeroes + x + "_"
+	// 			+ strY + yZeroes + y + "_"
+	// 			+ type).gameObject;
+	// 		return gameObject;
+	// 	}
+	// 	else
+	// 	{
+	// 		// Debug.LogError("[GameManager] Error: Could not find GameObject!");
+	// 		return null;
+	// 	}
+	// } // FindCard()
 
 	public static void UpdatePlayersInfo()
 	{
@@ -599,6 +606,10 @@ public class GameManager : NetworkBehaviour
 	{
 		int turn = this.turn; // Don't want the turn changing while this is running
 		bool purchaseSuccess = false;
+
+		Debug.Log(debug.head + "Player " + turn
+			+ " (ID: " + GameManager.players[turn - 1].Id
+			+ ") trying to buy tile " + target.ToString());
 
 		// Check against the rest of the purchasing rules before proceding
 		if (IsValidPurchase(target, turn))
@@ -719,4 +730,45 @@ public class GameManager : NetworkBehaviour
 			}
 		}
 	} // CheckForSpaces()
+
+	// Returns a formatted object name based on type and coordinate info
+	public static string CreateCardObjectName(string type, int x, int y)
+	{
+		string xZeroes = "0";
+		string yZeroes = "0";
+		char xChar = 'x';
+		char yChar = 'y';
+
+		if (type == "GameCard")
+		{
+			xChar = 'p';
+			yChar = 'i';
+		}
+
+		if (x >= 10)
+		{
+			xZeroes = "";
+		}
+		else
+		{
+			xZeroes = "0";
+		}
+
+		if (y >= 10)
+		{
+			yZeroes = "";
+		}
+		else
+		{
+			yZeroes = "0";
+		} // zeroes calc
+
+		return (xChar + xZeroes + x + "_" + yChar + yZeroes + y + "_" + type);
+	} // CreateCardObjectName()
+
+	// An overload of CreateCardObjectName that takes in a Coordinate2
+	public static string CreateCardObjectName(string type, Coordinate2 location)
+	{
+		return CreateCardObjectName(type, location.x, location.y);
+	} // CreateCardObjectName()
 } // GameManager class

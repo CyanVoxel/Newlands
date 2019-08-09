@@ -9,6 +9,7 @@ using UnityEngine.UI;
 public class CardDisplay : NetworkBehaviour
 {
 	// DATA FIELDS -------------------------------------------------------------
+	private static DebugTag debug = new DebugTag("CardDisplay", "00BCD4");
 
 	// Long directories stored as strings
 	private string dirFtrBdr = "Front Canvas/Footer Mask/Footer Border Mask/Footer Border";
@@ -166,6 +167,7 @@ public class CardDisplay : NetworkBehaviour
 		GameObject footerBorderObjR;
 		Image footerBorderR;
 
+		Debug.Log(debug.head + "Category: " + cardState.category);
 		switch (cardState.category)
 		{
 			case "Tile":
