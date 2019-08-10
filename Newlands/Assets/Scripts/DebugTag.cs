@@ -22,6 +22,10 @@ public class DebugTag
 		this.warning = "<color=#" + color + "FF><b>[" + className + "] </b></color><color=#FFAB00FF><b>Warning: </b></color>";
 		this.error = "<color=#" + color + "FF><b>[" + className + "] </b></color><color=#D50000FF><b>Error: </b></color>";
 	}
+
+	public override string ToString() {
+		return this.head;
+	}
 }
 
 // USAGE:

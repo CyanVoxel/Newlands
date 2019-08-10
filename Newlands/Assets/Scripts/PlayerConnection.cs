@@ -67,7 +67,7 @@ public class PlayerConnection : NetworkBehaviour
 			// CmdSpawnMouseManager();
 
 			CmdGetHand();
-			// Debug.Log(debug.head + "Hand size: " + this.hand.Count);
+			// Debug.Log(debug + "Hand size: " + this.hand.Count);
 			// gridMan.CreateHandObjects(this.id, this.hand);
 			this.knownOwnersList = new List<Coordinate2>[GameManager.playerCount];
 			this.knownOwnersGrid = new int[GameManager.width, GameManager.height];
@@ -77,9 +77,7 @@ public class PlayerConnection : NetworkBehaviour
 				this.knownOwnersList[i] = new List<Coordinate2>();
 			}
 
-			this.lastKnownTurn = gameMan.turn;
-			this.lastKnownRound = gameMan.round;
-			this.lastKnownPhase = gameMan.phase;
+			UpdateKnownRounds();
 
 			// If this is Player 1 and it's the first Turn of the first Round
 			if (this.id == 1 && this.lastKnownTurn == 1
@@ -91,7 +89,7 @@ public class PlayerConnection : NetworkBehaviour
 		}
 		else
 		{
-			Debug.LogError(debug.head + "ERROR: Could not grab all components!");
+			Debug.LogError(debug + "ERROR: Could not grab all components!");
 		}
 
 	} //Start()
@@ -104,9 +102,7 @@ public class PlayerConnection : NetworkBehaviour
 		}
 
 		// On New Turn
-		if (gameMan.turn != this.lastKnownTurn
-			|| gameMan.round != this.lastKnownRound
-			&& gameMan.phase == 1)
+		if (PhaseCheck(1))
 		{
 			ColorPurchasedTile();
 			// If the new turn is the player's turn and is past the grace rounds
@@ -126,14 +122,13 @@ public class PlayerConnection : NetworkBehaviour
 			{
 				CardAnimations.HighlightCards(GetUnownedCards(), 0);
 			}
-
-			this.lastKnownTurn = gameMan.turn;
-			this.lastKnownRound = gameMan.round;
 		}
-		else if (this.lastKnownPhase != gameMan.phase)
+		else if (PhaseCheck(2))
 		{
-			this.lastKnownPhase = gameMan.phase;
+			// Phase 2 Operations go here
+
 		}
+		UpdateKnownRounds();
 	} // Update()
 
 	// Tries to grab necessary components if they haven't been already.
@@ -175,79 +170,23 @@ public class PlayerConnection : NetworkBehaviour
 	// NOTE: This method currently does a lot more than it should and will be broken up.
 	private void ColorPurchasedTile()
 	{
-		string tile = gameMan.turnEventBroadcast;
 
-		// Debug.Log(debug.head + tile);
+		string turnEventStr = gameMan.turnEventBroadcast;
+		TurnEvent turnEvent = JsonUtility.FromJson<TurnEvent>(turnEventStr);
 
-		int pLength = 0;
-		int xLength = 0;
-		int yLength = 0;
-
-		// Determines the number of zeroes to add
-		if (GameManager.playerCount >= 10)
-		{
-			pLength = 0;
-		}
-		else
-		{
-			pLength = 1;
-		}
-		if (GameManager.width >= 10)
-		{
-			xLength = 0;
-		}
-		else
-		{
-			xLength = 1;
-		}
-		if (GameManager.height >= 10)
-		{
-			yLength = 0;
-		}
-		else
-		{
-			yLength = 1;
-		} // zeroes calc
-
-		int playerId = int.Parse(tile.Substring(0, pLength));
-		// Debug.Log(debug.head + tile.Substring(tile.IndexOf("_x") + 2, xLength));
-		// Debug.Log(debug.head + tile.Substring(tile.IndexOf("_y") + 2, yLength));
-		int locX = int.Parse(tile.Substring(tile.IndexOf("_x") + 2, xLength));
-		int locY = int.Parse(tile.Substring(tile.IndexOf("_y") + 2, yLength));
 		// Register cards and their owners with local List and Grid
-		this.knownOwnersGrid[locX, locY] = playerId;
-		this.knownOwnersList[playerId - 1].Add(new Coordinate2(locX, locY));
+		this.knownOwnersGrid[turnEvent.x, turnEvent.y] = turnEvent.playerId;
+		this.knownOwnersList[turnEvent.playerId - 1].Add(new Coordinate2(turnEvent.x, turnEvent.y));
 
-		string xZeroes = "0";
-		string yZeroes = "0";
+		Debug.Log(debug + GameManager.CreateCardObjectName("Tile",
+			turnEvent.x,
+			turnEvent.y));
 
-		// Determines the number of zeroes to add in the object name
-		if (GameManager.width >= 10)
-		{
-			xZeroes = "";
-		}
-		else
-		{
-			xZeroes = "0";
-		}
-		if (GameManager.height >= 10)
-		{
-			yZeroes = "";
-		}
-		else
-		{
-			yZeroes = "0";
-		} // zeroes calc
+		GameObject cardObj = GameObject.Find(GameManager.CreateCardObjectName("Tile",
+			turnEvent.x,
+			turnEvent.y));
 
-		Debug.Log(debug.head + "x" + xZeroes + locX + "_"
-			+ "y" + yZeroes + locY + "_"
-			+ "Tile" + " - " + tile);
-
-		GameObject cardObj = GameObject.Find("x" + xZeroes + locX + "_"
-			+ "y" + yZeroes + locY + "_"
-			+ "Tile");
-
-		switch (playerId)
+		switch (turnEvent.playerId)
 		{
 			case 1:
 				cardObj.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.tintRed500;
@@ -285,7 +224,7 @@ public class PlayerConnection : NetworkBehaviour
 							&& !cardsToSend.Contains(new Coordinate2((x + i), (y + j))))
 						{
 							cardsToSend.Add(new Coordinate2((x + i), (y + j)));
-							// Debug.Log(debug.head + "Adding card to add [" + (x + i) + ", " + (y + j) + "]");
+							// Debug.Log(debug + "Adding card to add [" + (x + i) + ", " + (y + j) + "]");
 						}
 					}
 				}
@@ -318,7 +257,7 @@ public class PlayerConnection : NetworkBehaviour
 	{
 		TryToGrabComponents();
 
-		// Debug.Log(debug.head + "Chainging default id of "
+		// Debug.Log(debug + "Chainging default id of "
 		// 	+ this.id
 		// 	+ " to " + gameMan.GetPlayerIndex());
 
@@ -326,7 +265,7 @@ public class PlayerConnection : NetworkBehaviour
 		gameMan.IncrementPlayerIndex();
 		// mouseManObj.transform.name = "MouseManager (" + this.id + ")";
 
-		Debug.Log(debug.head + "Assigned ID of " + this.id);
+		Debug.Log(debug + "Assigned ID of " + this.id);
 
 		// Check for authority or else it'll try to spawn an extra one
 		if (hasAuthority)
@@ -334,17 +273,23 @@ public class PlayerConnection : NetworkBehaviour
 			CmdSpawnMouseManager();
 		}
 
-		// Debug.Log(debug.head + "Verifying new PlayerIndex: "
+		// Debug.Log(debug + "Verifying new PlayerIndex: "
 		// 	+ gameMan.GetPlayerIndex());
 
 		// this.transform.name = "Player (" + this.id + ")";
 
-		// Debug.Log(debug.head + "GameManager.handSize =  "
+		// Debug.Log(debug + "GameManager.handSize =  "
 		// 	+ GameManager.handSize
 		// 	+ " for player " + this.id);
 
 		this.initIdFlag = true;
 	} // InitId()
+
+	public void DestroyCard(string objectName)
+	{
+		Debug.Log(debug + "Trying to destroy " + objectName);
+		Destroy(GameObject.Find(objectName));
+	}
 
 	// Fire's when this Player's hand of cards updates
 	private void OnHandUpdated(SyncListCardData.Operation op, int index, CardData card)
@@ -354,13 +299,35 @@ public class PlayerConnection : NetworkBehaviour
 			return;
 		}
 
-		// Debug.Log(debug.head + "Index: " + index);
+		// Debug.Log(debug + "Index: " + index);
 
 		if (index == (GameManager.handSize - 1) && op == SyncListCardData.Operation.OP_ADD)
 		{
 			gridMan.CreateHandObjects(this.id, this.hand);
 		}
 	} // OnHandUpdated()
+
+	// Checks of operations should be performed, given a phase to watch for
+	private bool PhaseCheck(int phase)
+	{
+		if (gameMan.turn != this.lastKnownTurn
+			|| gameMan.round != this.lastKnownRound
+			&& gameMan.phase == phase)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	} // PhaseCheck()
+
+	private void UpdateKnownRounds()
+	{
+		this.lastKnownTurn = gameMan.turn;
+		this.lastKnownRound = gameMan.round;
+		this.lastKnownPhase = gameMan.phase;
+	} // UpdateKnownRounds()
 
 	#endregion
 
@@ -376,27 +343,27 @@ public class PlayerConnection : NetworkBehaviour
 			InitId();
 		}
 
-		// Debug.Log(debug.head + "[CmdGetHand] GameManager.handSize =  "
+		// Debug.Log(debug + "[CmdGetHand] GameManager.handSize =  "
 		// 	+ GameManager.handSize
 		// 	+ " for player " + this.id);
 
 		for (int i = 0; i < GameManager.handSize; i++)
 		{
-			if (GameManager.players[this.id - 1].hand[i] != null)
-			{
-				CardData card = new CardData(GameManager.players[this.id - 1].hand[i]);
-				// Debug.Log(debug.head + "[CmdGetHand] Adding Card " + i
-				// 	+ " to SyncList for player " + this.id);
-				this.hand.Add(card);
-			}
-			else
-			{
-				Debug.LogWarning(debug.head + "[CmdGetHand] Warning: "
-					+ "The player did not have a card in slot " + i);
-			}
+			// if (GameManager.players[this.id - 1].hand[i] != null)
+			// {
+			CardData card = GameManager.players[this.id - 1].hand[i];
+			// Debug.Log(debug + "[CmdGetHand] Adding Card " + i
+			// 	+ " to SyncList for player " + this.id);
+			this.hand.Add(card);
+			// }
+			// else
+			// {
+			// 	Debug.LogWarning(debug + "[CmdGetHand] Warning: "
+			// 		+ "The player did not have a card in slot " + i);
+			// }
 		} // for
 
-		// Debug.Log(debug.head + "[CmdGetHand] Finished grabbing "
+		// Debug.Log(debug + "[CmdGetHand] Finished grabbing "
 		// 	+ this.hand.Count
 		// 	+ " cards for player " + this.id);
 
@@ -416,7 +383,7 @@ public class PlayerConnection : NetworkBehaviour
 		MouseManager localMouseMan = mouseManObj.GetComponent<MouseManager>();
 		localMouseMan.myClient = this.connectionToClient;
 		localMouseMan.myPlayerObj = this.gameObject;
-		Debug.Log(debug.head + "Giving MouseManager my ID of " + this.id);
+		Debug.Log(debug + "Giving MouseManager my ID of " + this.id);
 		localMouseMan.ownerId = this.id;
 	} // CmdSpawnMouseManager()
 

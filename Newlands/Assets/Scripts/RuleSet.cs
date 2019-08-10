@@ -280,7 +280,7 @@ public class RuleSet : MonoBehaviour
 	} // IsLegal
 
 	// Carries out the action that a legal Game Card intends
-	public static void PlayCard(GridUnit target, Card cardToPlay)
+	public static void PlayCard(GridUnit target, CardData cardToPlay)
 	{
 		string action = cardToPlay.subtitle;
 		// NOTE: Cards promting tile value calculation have their calculations offset to
@@ -314,8 +314,9 @@ public class RuleSet : MonoBehaviour
 			case "Upgrade":
 				if (GetScope(cardToPlay, 2) == "Plains" && target.subScope != "Farmland")
 				{
-					Card newCard = Card.CreateInstance<Card>();
-					newCard = Resources.Load<Card>("Cards/Tiles/Land/farmland_cashcrops_5");
+					// Card newCard = Card.CreateInstance<Card>();
+					// CardData newCard;
+					CardData newCard = new CardData(Resources.Load<Card>("Cards/Tiles/Land/farmland_cashcrops_5"));
 					target.tileObj.SendMessage("DisplayCard", newCard);
 
 					GridManager.grid[target.x, target.y].LoadNewCard(newCard, target.tileObj);
@@ -339,7 +340,7 @@ public class RuleSet : MonoBehaviour
 		PlayCard(target, cardToPlay.card);
 	} // PlayCard(GridUnit, GridUnit)
 
-	private static string GetScope(Card card, int level = -1)
+	private static string GetScope(CardData card, int level = -1)
 	{
 		string[] scopeLevel = new string[3];
 

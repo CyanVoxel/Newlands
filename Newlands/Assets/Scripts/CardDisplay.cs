@@ -226,7 +226,7 @@ public class CardDisplay : NetworkBehaviour
 						title.text = cardState.title;
 						break;
 				} // switch (cardState.title)
-				  // Footer Border -----------------------------------------------
+				// Footer Border -----------------------------------------------
 				footerBorderObjL = this.transform.Find(dirFtrBdrL).gameObject;
 				footerBorderL = footerBorderObjL.GetComponent<Image>();
 				footerBorderObjR = this.transform.Find(dirFtrBdrR).gameObject;

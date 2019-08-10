@@ -76,7 +76,7 @@ public class GridManager : NetworkBehaviour
 				}
 				else
 				{
-					Debug.Log(debug.head + "This object's card state was null!");
+					Debug.Log(debug + "This object's card state was null!");
 				}
 			} // y
 		} // x
@@ -123,7 +123,7 @@ public class GridManager : NetworkBehaviour
 					}
 					else
 					{
-						Debug.Log(debug.head + "This object's card state was null!");
+						Debug.Log(debug + "This object's card state was null!");
 					} // if (cardState != null)
 				} // if (marketGrid[x, y] != null)
 			} // y
@@ -139,8 +139,8 @@ public class GridManager : NetworkBehaviour
 		// 	return;
 		// }
 
-		// Debug.Log(debug.head + "Spawning Cards for ID " + playerNum);
-		// Debug.Log(debug.head + "Hand size of: " + hand.Count);
+		// Debug.Log(debug + "Spawning Cards for ID " + playerNum);
+		// Debug.Log(debug + "Hand size of: " + hand.Count);
 
 		// Populate the Card prefab
 
@@ -169,7 +169,7 @@ public class GridManager : NetworkBehaviour
 			}
 			else
 			{
-				Debug.Log(debug.head + "This object's card state was null!");
+				Debug.Log(debug + "This object's card state was null!");
 			} // if (cardState != null)
 		} // for
 	} // CreateHandObjects()
@@ -179,7 +179,7 @@ public class GridManager : NetworkBehaviour
 	{
 		if (!hasAuthority)
 		{
-			// Debug.Log(debug.head + "No authority to initialize the internal game grid!");
+			// Debug.Log(debug + "No authority to initialize the internal game grid!");
 			return;
 		}
 
@@ -193,7 +193,8 @@ public class GridManager : NetworkBehaviour
 			for (int y = 0; y < GameManager.height; y++)
 			{
 				// Draw a card from the Land Tile deck
-				Card card = Card.CreateInstance<Card>();
+				// Card card = Card.CreateInstance<Card>();
+				CardData card;
 
 				if (GameManager.DrawCard(GameManager.masterDeckMutable.landTileDeck,
 						GameManager.masterDeck.landTileDeck,
@@ -205,7 +206,7 @@ public class GridManager : NetworkBehaviour
 				}
 				else
 				{
-					Debug.Log(debug.head + "Tile Draw failure!");
+					Debug.Log(debug + "Tile Draw failure!");
 				}
 			} // y
 		} // x
@@ -216,7 +217,7 @@ public class GridManager : NetworkBehaviour
 	{
 		if (!hasAuthority)
 		{
-			Debug.Log(debug.head + "No authority to initialize the internal market grid!");
+			Debug.Log(debug + "No authority to initialize the internal market grid!");
 			return;
 		}
 
@@ -233,7 +234,8 @@ public class GridManager : NetworkBehaviour
 			for (int y = 0; y < GameManager.height; y++)
 			{
 				// Draw a card from the Market Card deck
-				Card card = Card.CreateInstance<Card>();
+				// Card card = Card.CreateInstance<Card>();
+				CardData card;
 				if (GameManager.DrawCard(GameManager.masterDeckMutable.marketCardDeck,
 						GameManager.masterDeck.marketCardDeck,
 						out card, false))
@@ -257,7 +259,7 @@ public class GridManager : NetworkBehaviour
 			{
 				for (int y = row; y < GameManager.height; y++)
 				{
-					Debug.Log(debug.head + "Shifting [" + x + ", " + y + "]");
+					Debug.Log(debug + "Shifting [" + x + ", " + y + "]");
 					Debug.Log(debug.head + grid[x, y]);
 					Debug.Log(debug.head + grid[x, y].tileObj);
 					float oldX = grid[x, y].tileObj.transform.position.x;
@@ -293,7 +295,7 @@ public class GridManager : NetworkBehaviour
 		}
 		else
 		{
-			Debug.Log(debug.head + "Not doing anything");
+			Debug.Log(debug + "Not doing anything");
 		} // type
 	} // ShiftRow()
 

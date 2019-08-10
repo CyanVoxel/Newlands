@@ -14,7 +14,7 @@ public class GameManager : NetworkBehaviour
 
 	public static MasterDeck masterDeck;
 	public static MasterDeck masterDeckMutable;
-	public static readonly int playerCount = 1; // Number of players in the match
+	public static readonly int playerCount = 2; // Number of players in the match
 	[SyncVar]
 	private int playerIndex = 1; // This value increments when a new player joins
 	public static int localPlayerId = -1;
@@ -57,12 +57,12 @@ public class GameManager : NetworkBehaviour
 			return;
 		}
 
-		Debug.Log(debug.head + "Initializing GameManager...");
-		Debug.Log(debug.head + "Creating Master Deck \"Vanilla\"");
+		Debug.Log(debug + "Initializing GameManager...");
+		Debug.Log(debug + "Creating Master Deck \"Vanilla\"");
 		masterDeck = new MasterDeck("Vanilla");
 		masterDeckMutable = new MasterDeck("Vanilla");
 
-		Debug.Log(debug.head + "Initializing Players...");
+		Debug.Log(debug + "Initializing Players...");
 		InitPlayers();
 
 		// Initialize the internal grids
@@ -84,7 +84,7 @@ public class GameManager : NetworkBehaviour
 		// guiMan.InitGuiManager();
 		// guiMan.UpdateUI();
 
-		Debug.Log(debug.head + "#################### Turn " + this.turn
+		Debug.Log(debug + "#################### Turn " + this.turn
 			+ " | Round " + this.round
 			+ " | Phase " + this.phase + " ####################");
 	} // Start()
@@ -95,7 +95,7 @@ public class GameManager : NetworkBehaviour
 	} // Update()
 
 	// Draws a card from a deck. Random by default.
-	public static bool DrawCard(Deck deckMut, Deck deckPerm, out Card card, bool random = true)
+	public static bool DrawCard(Deck deckMut, Deck deckPerm, out CardData card, bool random = true)
 	{
 		// Card card;	// Card to return
 		int cardsLeft = deckMut.Count(); // Number of cards left from mutable deck
@@ -139,19 +139,19 @@ public class GameManager : NetworkBehaviour
 		// If the turn exceeds the player count, return the value anyway.
 		if ((turn + 1) > GameManager.playerCount)
 		{
-			Debug.Log(debug.head + "Returning " + (turn + 1));
+			Debug.Log(debug + "Returning " + (turn + 1));
 			return (turn + 1);
 		}
 
 		// If the turn should be skipped, try again with the next turn up.
 		if (GameManager.players[turn].shouldSkip)
 		{ // This doesn't need -1 because it's checking +1
-			Debug.Log(debug.head + "Recursive...");
+			Debug.Log(debug + "Recursive...");
 			return GetValidNextTurn(turn + 1);
 		}
 
 		// If nothing interresting happens, return the next turn.
-		Debug.Log(debug.head + "Returning " + (turn + 1) + " (Nothing happened)");
+		Debug.Log(debug + "Returning " + (turn + 1) + " (Nothing happened)");
 		return (turn + 1);
 	} // GetNextValidTurn()
 
@@ -163,7 +163,7 @@ public class GameManager : NetworkBehaviour
 		if (GetValidNextTurn(turn) <= playerCount)
 		{
 			// The next player can go with no issues.
-			Debug.Log(debug.head + "ValidNextTurn = " + GetValidNextTurn(turn));
+			Debug.Log(debug + "ValidNextTurn = " + GetValidNextTurn(turn));
 			this.turn = GetValidNextTurn(turn);
 			// this.round++;
 		}
@@ -172,21 +172,21 @@ public class GameManager : NetworkBehaviour
 			if (GetValidNextTurn(0) <= playerCount)
 			{
 				// The next player is not available, but some still are.
-				Debug.Log(debug.head + "ValidNextTurn = " + GetValidNextTurn(1));
+				Debug.Log(debug + "ValidNextTurn = " + GetValidNextTurn(1));
 				this.turn = GetValidNextTurn(0);
 				this.round++;
 			}
 			else
 			{
 				// Nobody else can go, signaling the end of the phase.
-				Debug.Log(debug.head + "ValidNextTurn = " + GetValidNextTurn(turn));
+				Debug.Log(debug + "ValidNextTurn = " + GetValidNextTurn(turn));
 				this.turn = 1;
 				this.round = 1;
 				this.phase++;
 			}
 		}
 
-		Debug.Log(debug.head + "#################### Turn " + this.turn
+		Debug.Log(debug + "#################### Turn " + this.turn
 			+ " | Round " + this.round
 			+ " | Phase " + this.phase + " ####################");
 	} //IncrementTurn()
@@ -306,9 +306,9 @@ public class GameManager : NetworkBehaviour
 		int locY = int.Parse(targetTile.Substring(5, 2));
 		string tileType = targetTile.Substring(8);
 		GridUnit target = GridManager.grid[locX, locY];
-		CardData card = new CardData(players[this.turn - 1].hand[cardIndex]);
+		CardData card = players[this.turn - 1].hand[cardIndex];
 
-		Debug.Log(debug.head + "Trying to play Card " + cardIndex + " on " + tileType
+		Debug.Log(debug + "Trying to play Card " + cardIndex + " on " + tileType
 			+ " at " + locX + ", " + locY);
 
 		switch (tileType)
@@ -324,7 +324,7 @@ public class GameManager : NetworkBehaviour
 						BankruptTile(GridManager.grid[locX, locY]);
 						UpdatePlayersInfo();
 						// guiMan.UpdateUI();
-						Debug.Log(debug.head + "Tile bankrupt! has value of "
+						Debug.Log(debug + "Tile bankrupt! has value of "
 							+ GridManager.grid[locX, locY].totalValue);
 					}
 
@@ -352,26 +352,30 @@ public class GameManager : NetworkBehaviour
 
 							NetworkServer.Spawn(cardObj);
 
-							// NOTE: For now, this only needs to be done on the server.
-							// If this relationship becomes important for the client,
-							// add a method to do this in CardDisplay.
-							// cardObj.transform.parent = target.tileObj.transform;
-							cardObj.transform.SetParent(target.tileObj.transform);
+							// This is also done of the client via CardState
+							// cardObj.transform.SetParent(target.tileObj.transform);
 
 							CardState cardState = cardObj.GetComponent<CardState>();
 
-							if (cardState != null)
-							{
-								// Generate and Push the string of the object's name
-								cardState.objectName = GameManager.CreateCardObjectName("PlayedCard", 0, target.stackSize - 1);
-								cardState.parent = GameManager.CreateCardObjectName("Tile", locX, locY);
-								// Push new values to the CardState to be synchronized across the network
-								GridManager.FillOutCardState(card, ref cardState);
-							}
-							else
-							{
-								Debug.Log(debug.head + "This object's card state was null!");
-							} // if (cardState != null)
+							// Generate and Push the string of the object's name
+							cardState.objectName = GameManager.CreateCardObjectName("PlayedCard", 0, target.stackSize - 1);
+							cardState.parent = GameManager.CreateCardObjectName("Tile", locX, locY);
+							// Push new values to the CardState to be synchronized across the network
+							GridManager.FillOutCardState(card, ref cardState);
+
+							// Target
+							string cardToDestroy = CreateCardObjectName("GameCard", this.turn - 1, cardIndex);
+							// TargetDestroyGameObject(connectionToClient, cardToDestroy);
+							turnEventBroadcast = this.turn + "_Destroy_" + cardToDestroy;
+							// players[this.turn - 1].hand[cardIndex] = null;
+							// Debug.Log(debug + "Finding Player (" + this.turn + ")");
+							// PlayerConnection con = GameObject.Find("Player (" + this.turn + ")").GetComponent<PlayerConnection>();
+							// Debug.Log(debug + con);
+							// Debug.Log(debug + con.hand);
+							// Debug.Log(debug + con.hand[cardIndex]);
+							// con.hand.RemoveAt(cardIndex);
+							// con.hand.Insert(cardIndex, new CardData());
+
 						}
 						wasPlayed = true;
 					}
@@ -403,20 +407,20 @@ public class GameManager : NetworkBehaviour
 
 			Vector3 oldCardPosition = gameCard.tileObj.transform.position;
 			int oldCardIndex = gameCard.x;
-			Debug.Log(debug.head + "Old Card Index: " + oldCardIndex);
+			Debug.Log(debug + "Old Card Index: " + oldCardIndex);
 
 			if (gridTile.bankrupt)
 			{
 				BankruptTile(gridTile);
 				UpdatePlayersInfo();
 				// guiMan.UpdateUI();
-				Debug.Log(debug.head + "Tile bankrupt! has value of " + gridTile.totalValue);
+				Debug.Log(debug + "Tile bankrupt! has value of " + gridTile.totalValue);
 			}
 
 			if (gameCard.stackable)
 			{
 				gridTile.stackSize++;
-				gridTile.cardStack.Add(new CardData(gameCard.card));
+				gridTile.cardStack.Add(gameCard.card);
 				gridTile.CalcTotalValue(); // This fixes Market Cards not calculating first time
 				UpdatePlayersInfo();
 				// guiMan.UpdateUI();
@@ -477,7 +481,8 @@ public class GameManager : NetworkBehaviour
 			} // if stackable
 
 			// Create a new card to replace the old one
-			Card newCard = Card.CreateInstance<Card>();
+			// Card newCard = Card.CreateInstance<Card>();
+			CardData newCard;
 			if (DrawCard(masterDeckMutable.gameCardDeck, masterDeck.gameCardDeck, out newCard)
 				&& masterDeckMutable.gameCardDeck.Count() > 0)
 			{
@@ -495,7 +500,7 @@ public class GameManager : NetworkBehaviour
 		}
 		else
 		{
-			Debug.Log(debug.head + "Card move is illegal!");
+			Debug.Log(debug + "Card move is illegal!");
 			// MouseManager.selection = -1;
 			// WipeSelectionColors("Game Card", ColorPalette.tintCard);
 			return false;
@@ -554,7 +559,7 @@ public class GameManager : NetworkBehaviour
 
 	public static void BankruptTile(GridUnit tile)
 	{
-		Debug.Log(debug.head + "Bankrupting tile!");
+		Debug.Log(debug + "Bankrupting tile!");
 		tile.ownerId = 0;
 		CardDisplay.BankruptVisuals(tile.tileObj);
 	} // BankruptTile()
@@ -580,14 +585,15 @@ public class GameManager : NetworkBehaviour
 			// Draw a card from the deck provided and add it to the deck to return.
 			// NOTE: In the future, masterDeckMutable might need to be checked for cards
 			// 	before preceding.
-			Card card = Card.CreateInstance<Card>();
+			// Card card = Card.CreateInstance<Card>();
+			CardData card;
 			if (DrawCard(masterDeckMutable.gameCardDeck, masterDeck.gameCardDeck, out card))
 			{
 				deck.Add(card);
 			}
 			else
 			{
-				Destroy(card);
+				// Destroy(card);
 			}
 		} // for
 
@@ -614,7 +620,7 @@ public class GameManager : NetworkBehaviour
 		int turn = this.turn; // Don't want the turn changing while this is running
 		bool purchaseSuccess = false;
 
-		Debug.Log(debug.head + "Player " + turn
+		Debug.Log(debug + "Player " + turn
 			+ " (ID: " + GameManager.players[turn - 1].Id
 			+ ") trying to buy tile " + target.ToString());
 
@@ -623,18 +629,23 @@ public class GameManager : NetworkBehaviour
 		{
 			GameManager.players[turn - 1].ownedTiles.Add(target); // Server-side
 			GridManager.grid[target.x, target.y].ownerId = turn;
-			this.turnEventBroadcast = turn + "_x" + target.x + "_y" + target.y;
-			Debug.Log(debug.head + "Player " + turn
+
+			TurnEvent turnEvent = new TurnEvent(this.phase, turn, "Buy", "Tile", target.x, target.y);
+			this.turnEventBroadcast = JsonUtility.ToJson(turnEvent);
+			Debug.Log(debug + "JSON: " + turnEvent);
+
+			// this.turnEventBroadcast = turn + "_x" + target.x + "_y" + target.y;
+			Debug.Log(debug + "Player " + turn
 				+ " (ID: " + GameManager.players[turn - 1].Id
 				+ ") bought tile " + target.ToString());
-			// Debug.Log(debug.head + "Advancing Turn; This is a temporary mechanic!");
+			// Debug.Log(debug + "Advancing Turn; This is a temporary mechanic!");
 			purchaseSuccess = true;
 
 			this.IncrementTurn();
 		}
 		else
 		{
-			Debug.Log(debug.head + "Can't purchase, tile " + target.ToString()
+			Debug.Log(debug + "Can't purchase, tile " + target.ToString()
 				+ " is not valid for you! \nAlready Owned?\nOut of Range?\nBankrupt Tile?");
 		}
 
@@ -710,7 +721,7 @@ public class GameManager : NetworkBehaviour
 							&& !GridManager.grid[x + i, y + j].bankrupt // Is the tile not bankrupt?
 							&& !validCards.Contains(new Coordinate2((x + i), (y + j))))
 						{
-							Debug.Log(debug.head + "Found Valid Neighbor [" + (x + i) + ", " + (y + j) + "] for Player " + playerId);
+							Debug.Log(debug + "Found Valid Neighbor [" + (x + i) + ", " + (y + j) + "] for Player " + playerId);
 							validCards.Add(new Coordinate2((x + i), (y + j)));
 						}
 					}
@@ -731,7 +742,7 @@ public class GameManager : NetworkBehaviour
 			{
 				if (GetValidCards(i + 1).Count == 0)
 				{
-					Debug.Log(debug.head + "Setting shouldSkip true for Player " + (i + 1));
+					Debug.Log(debug + "Setting shouldSkip true for Player " + (i + 1));
 					GameManager.players[i].shouldSkip = true;
 				}
 			}
@@ -778,4 +789,5 @@ public class GameManager : NetworkBehaviour
 	{
 		return CreateCardObjectName(type, location.x, location.y);
 	} // CreateCardObjectName()
+
 } // GameManager class

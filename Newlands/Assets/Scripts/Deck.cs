@@ -7,7 +7,7 @@ public class Deck
 {
 	// DATA FIELDS #################################################################################
 
-	private List<Card> deck = new List<Card>();
+	private List<CardData> deck = new List<CardData>();
 
 	// Resource Directories ====================================================
 	protected string dirGcMmI = "Cards/Game Cards/Market Mods/Investment";
@@ -25,6 +25,12 @@ public class Deck
 	// Add a card to the deck
 	public void Add(Card card)
 	{
+		this.deck.Add(new CardData(card));
+	} // Add()
+
+	// Add a card to the deck
+	public void Add(CardData card)
+	{
 		this.deck.Add(card);
 	} // Add()
 
@@ -36,7 +42,7 @@ public class Deck
 		{
 			try
 			{
-				this.deck.Add(Resources.Load<Card>(dir));
+				this.deck.Add(new CardData(Resources.Load<Card>(dir)));
 			} // try
 			catch (UnassignedReferenceException e)
 			{
@@ -48,6 +54,12 @@ public class Deck
 
 	// Remove a card from the deck
 	public void Remove(Card card)
+	{
+		this.deck.Remove(new CardData(card));
+	} // Remove()
+
+	// Remove a card from the deck
+	public void Remove(CardData card)
 	{
 		this.deck.Remove(card);
 	} // Remove()
@@ -61,17 +73,17 @@ public class Deck
 	// Determine whether the deck contains a certain card
 	public bool Contains(Card card)
 	{
-		return (this.deck.Contains(card));
+		return (this.deck.Contains(new CardData(card)));
 	} // Contains()
 
 	// Get the index of a card
 	public int IndexOf(Card card)
 	{
-		return this.deck.IndexOf(card);
+		return this.deck.IndexOf(new CardData(card));
 	} // IndexOf()
 
 	//Indexer for the Deck class
-	public Card this[int i]
+	public CardData this[int i]
 	{
 		get { return this.deck[i]; }
 		set { this.deck[i] = value; }
