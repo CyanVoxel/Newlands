@@ -46,6 +46,10 @@ public class CardState : NetworkBehaviour
 	public string target;
 	[SyncVar]
 	public string footerColor;
+	[SyncVar(hook = "OnParentChange")]
+	public string parent;
+
+	private bool initialized = false;
 
 	// METHODS #################################################################################
 
@@ -88,10 +92,16 @@ public class CardState : NetworkBehaviour
 	private void OnObjectNameChange(string newName)
 	{
 		this.transform.name = this.objectName;
-		if (FindObjectOfType<GridManager>() != null)
+
+		if (!initialized)
 		{
-			this.transform.SetParent(FindObjectOfType<GridManager>().transform);
+			if (FindObjectOfType<GridManager>() != null)
+			{
+				this.transform.SetParent(FindObjectOfType<GridManager>().transform);
+				this.initialized = true;
+			}
 		}
+
 	} // OnObjectNameChange()
 
 	private void OnFooterChange(string newFooterText)
@@ -138,6 +148,24 @@ public class CardState : NetworkBehaviour
 			cardDis.DisplayBody(this.transform.gameObject);
 		}
 	} // OnBodyChange()
+
+	private void OnParentChange(string newParent)
+	{
+		TryToGrabComponents();
+
+		if (newParent != "")
+		{
+			GameObject newParentObj;
+			if (newParentObj = GameObject.Find(newParent))
+			{
+				Debug.Log("Setting parent to " + newParent);
+				Debug.Log(this.transform.parent);
+				this.transform.SetParent(GameObject.Find(newParent).transform);
+				// this.transform.parent = GameObject.Find(newParent).transform;
+				Debug.Log(this.transform.parent);
+			}
+		}
+	} // OnParentChange()
 
 	// Tries to grab necessary components if they haven't been already.
 	private bool TryToGrabComponents()

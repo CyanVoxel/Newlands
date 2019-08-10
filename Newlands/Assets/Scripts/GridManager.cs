@@ -55,8 +55,6 @@ public class GridManager : NetworkBehaviour
 					new Vector3(xOff, yOff, 50),
 					Quaternion.identity);
 
-				// Debug.Log("[GridManager] Trying to set parent of " + cardObj + " to " + this);
-				// cardObj.transform.SetParent(this.transform);
 				cardObj.transform.rotation = new Quaternion(0, 180, 0, 0); // 0, 180, 0, 0
 
 				// Debug.Log("[GridManager] Spawning Card...");

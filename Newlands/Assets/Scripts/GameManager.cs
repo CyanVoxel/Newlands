@@ -352,12 +352,19 @@ public class GameManager : NetworkBehaviour
 
 							NetworkServer.Spawn(cardObj);
 
+							// NOTE: For now, this only needs to be done on the server.
+							// If this relationship becomes important for the client,
+							// add a method to do this in CardDisplay.
+							// cardObj.transform.parent = target.tileObj.transform;
+							cardObj.transform.SetParent(target.tileObj.transform);
+
 							CardState cardState = cardObj.GetComponent<CardState>();
 
 							if (cardState != null)
 							{
 								// Generate and Push the string of the object's name
-								cardState.objectName = (GameManager.CreateCardObjectName("PlayedCard", locX, locY));
+								cardState.objectName = GameManager.CreateCardObjectName("PlayedCard", 0, target.stackSize - 1);
+								cardState.parent = GameManager.CreateCardObjectName("Tile", locX, locY);
 								// Push new values to the CardState to be synchronized across the network
 								GridManager.FillOutCardState(card, ref cardState);
 							}
