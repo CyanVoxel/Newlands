@@ -158,11 +158,9 @@ public class CardState : NetworkBehaviour
 			GameObject newParentObj;
 			if (newParentObj = GameObject.Find(newParent))
 			{
-				Debug.Log("Setting parent to " + newParent);
-				Debug.Log(this.transform.parent);
+				// Debug.Log("Setting parent to " + newParent);
 				this.transform.SetParent(GameObject.Find(newParent).transform);
 				// this.transform.parent = GameObject.Find(newParent).transform;
-				Debug.Log(this.transform.parent);
 			}
 		}
 	} // OnParentChange()

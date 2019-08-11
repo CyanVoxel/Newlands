@@ -40,6 +40,7 @@ public class PlayerConnection : NetworkBehaviour
 	// A 2-Dimensional array containing the location of all known Tiles owned by all players.
 	// This is used for quicker access to NEIGHBOR CARDS.
 	private int[, ] knownOwnersGrid;
+	private string turnEventStr;
 
 	#endregion
 
@@ -104,6 +105,7 @@ public class PlayerConnection : NetworkBehaviour
 		// On New Turn
 		if (PhaseCheck(1))
 		{
+			Debug.Log(debug + "It must be Phase 1 (" + this.lastKnownPhase + " - " + gameMan.phase);
 			ColorPurchasedTile();
 			// If the new turn is the player's turn and is past the grace rounds
 			//&& gameMan.turn > GameManager.graceRounds
@@ -123,9 +125,17 @@ public class PlayerConnection : NetworkBehaviour
 				CardAnimations.HighlightCards(GetUnownedCards(), 0);
 			}
 		}
-		else if (PhaseCheck(2))
+		else if (PhaseCheck(2) && gameMan.turnEventBroadcast != this.turnEventStr)
 		{
+
+			HandleEvent(phase: 2);
+
 			// Phase 2 Operations go here
+			// if (gameMan.turn == this.id)
+			// {
+			// 	Debug.Log("HEYO");
+			// 	HandleEvent(phase: 2);
+			// }
 
 		}
 		UpdateKnownRounds();
@@ -170,9 +180,9 @@ public class PlayerConnection : NetworkBehaviour
 	// NOTE: This method currently does a lot more than it should and will be broken up.
 	private void ColorPurchasedTile()
 	{
-
-		string turnEventStr = gameMan.turnEventBroadcast;
-		TurnEvent turnEvent = JsonUtility.FromJson<TurnEvent>(turnEventStr);
+		this.turnEventStr = gameMan.turnEventBroadcast;
+		TurnEvent turnEvent = JsonUtility.FromJson<TurnEvent>(this.turnEventStr);
+		Debug.Log(debug.head + turnEvent);
 
 		// Register cards and their owners with local List and Grid
 		this.knownOwnersGrid[turnEvent.x, turnEvent.y] = turnEvent.playerId;
@@ -285,11 +295,11 @@ public class PlayerConnection : NetworkBehaviour
 		this.initIdFlag = true;
 	} // InitId()
 
-	public void DestroyCard(string objectName)
-	{
-		Debug.Log(debug + "Trying to destroy " + objectName);
-		Destroy(GameObject.Find(objectName));
-	}
+	// public void DestroyCard(string objectName)
+	// {
+	// 	Debug.Log(debug + "Trying to destroy " + objectName);
+	// 	Destroy(GameObject.Find(objectName));
+	// }
 
 	// Fire's when this Player's hand of cards updates
 	private void OnHandUpdated(SyncListCardData.Operation op, int index, CardData card)
@@ -310,9 +320,9 @@ public class PlayerConnection : NetworkBehaviour
 	// Checks of operations should be performed, given a phase to watch for
 	private bool PhaseCheck(int phase)
 	{
-		if (gameMan.turn != this.lastKnownTurn
-			|| gameMan.round != this.lastKnownRound
-			&& gameMan.phase == phase)
+		if ((gameMan.turn != this.lastKnownTurn
+			|| gameMan.round != this.lastKnownRound)
+			&& this.lastKnownPhase == phase)
 		{
 			return true;
 		}
@@ -327,7 +337,41 @@ public class PlayerConnection : NetworkBehaviour
 		this.lastKnownTurn = gameMan.turn;
 		this.lastKnownRound = gameMan.round;
 		this.lastKnownPhase = gameMan.phase;
+		this.turnEventStr = gameMan.turnEventBroadcast;
 	} // UpdateKnownRounds()
+
+	// TODO: Rename to something more descriptive, or expand functionality.
+	private void HandleEvent(int phase)
+	{
+		//Handle an event during Phase 2 on your turn
+		this.turnEventStr = gameMan.turnEventBroadcast;
+		TurnEvent turnEvent = JsonUtility.FromJson<TurnEvent>(this.turnEventStr);
+		Debug.Log(debug + "TurnEvent: " + turnEvent);
+
+		// Check if the message should be addressed by this player
+		if (turnEvent.phase != phase || turnEvent.playerId != this.id)
+		{
+			return;
+		}
+
+		// Operations ==========================================================
+
+		if (turnEvent.operation == "Play")
+		{
+			GameObject cardObj = GameObject.Find(GameManager.CreateCardObjectName(turnEvent.cardType,
+				turnEvent.x, turnEvent.y));
+			if (cardObj != null)
+			{
+				Debug.Log(debug + "Trying to destroy " + cardObj.name);
+				Destroy(cardObj);
+			}
+			else
+			{
+				Debug.Log(debug + "Could not find " + GameManager.CreateCardObjectName(turnEvent.cardType,
+					turnEvent.x, turnEvent.y));
+			}
+		}
+	}
 
 	#endregion
 

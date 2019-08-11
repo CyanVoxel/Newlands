@@ -259,9 +259,7 @@ public class GridManager : NetworkBehaviour
 			{
 				for (int y = row; y < GameManager.height; y++)
 				{
-					Debug.Log(debug + "Shifting [" + x + ", " + y + "]");
-					Debug.Log(debug.head + grid[x, y]);
-					Debug.Log(debug.head + grid[x, y].tileObj);
+					// Debug.Log(debug + "Shifting [" + x + ", " + y + "]");
 					float oldX = grid[x, y].tileObj.transform.position.x;
 					float oldY = grid[x, y].tileObj.transform.position.y;
 					float oldZ = grid[x, y].tileObj.transform.position.z;

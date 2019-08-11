@@ -10,7 +10,7 @@ public class GameManager : NetworkBehaviour
 	// public GuiManager guiMan;
 	public GridManager gridMan;
 
-	// VARIABLES ##################################################################################
+	// VARIABLES ###################################################################################
 
 	public static MasterDeck masterDeck;
 	public static MasterDeck masterDeckMutable;
@@ -69,7 +69,7 @@ public class GameManager : NetworkBehaviour
 		gridMan.InitGameGrid();
 		gridMan.InitMarketGrid();
 
-		// FINAL ##############################################################
+		// FINAL ###############################################################
 
 		// Make sure that there is at least 1 Grace Round
 		if (graceRounds < 1)
@@ -139,19 +139,19 @@ public class GameManager : NetworkBehaviour
 		// If the turn exceeds the player count, return the value anyway.
 		if ((turn + 1) > GameManager.playerCount)
 		{
-			Debug.Log(debug + "Returning " + (turn + 1));
+			// Debug.Log(debug + "Returning " + (turn + 1));
 			return (turn + 1);
 		}
 
 		// If the turn should be skipped, try again with the next turn up.
 		if (GameManager.players[turn].shouldSkip)
 		{ // This doesn't need -1 because it's checking +1
-			Debug.Log(debug + "Recursive...");
+			// Debug.Log(debug + "Recursive...");
 			return GetValidNextTurn(turn + 1);
 		}
 
 		// If nothing interresting happens, return the next turn.
-		Debug.Log(debug + "Returning " + (turn + 1) + " (Nothing happened)");
+		// Debug.Log(debug + "Returning " + (turn + 1) + " (Nothing happened)");
 		return (turn + 1);
 	} // GetNextValidTurn()
 
@@ -163,7 +163,7 @@ public class GameManager : NetworkBehaviour
 		if (GetValidNextTurn(turn) <= playerCount)
 		{
 			// The next player can go with no issues.
-			Debug.Log(debug + "ValidNextTurn = " + GetValidNextTurn(turn));
+			// Debug.Log(debug + "ValidNextTurn = " + GetValidNextTurn(turn));
 			this.turn = GetValidNextTurn(turn);
 			// this.round++;
 		}
@@ -172,17 +172,21 @@ public class GameManager : NetworkBehaviour
 			if (GetValidNextTurn(0) <= playerCount)
 			{
 				// The next player is not available, but some still are.
-				Debug.Log(debug + "ValidNextTurn = " + GetValidNextTurn(1));
+				// Debug.Log(debug + "ValidNextTurn = " + GetValidNextTurn(1));
 				this.turn = GetValidNextTurn(0);
 				this.round++;
 			}
 			else
 			{
 				// Nobody else can go, signaling the end of the phase.
-				Debug.Log(debug + "ValidNextTurn = " + GetValidNextTurn(turn));
+				// Debug.Log(debug + "ValidNextTurn = " + GetValidNextTurn(turn));
 				this.turn = 1;
 				this.round = 1;
 				this.phase++;
+				foreach (Player player in players)
+				{
+					player.shouldSkip = false;
+				}
 			}
 		}
 
@@ -304,9 +308,10 @@ public class GameManager : NetworkBehaviour
 		bool wasPlayed = false;
 		int locX = int.Parse(targetTile.Substring(1, 2));
 		int locY = int.Parse(targetTile.Substring(5, 2));
+		int turn = this.turn;
 		string tileType = targetTile.Substring(8);
 		GridUnit target = GridManager.grid[locX, locY];
-		CardData card = players[this.turn - 1].hand[cardIndex];
+		CardData card = players[turn - 1].hand[cardIndex];
 
 		Debug.Log(debug + "Trying to play Card " + cardIndex + " on " + tileType
 			+ " at " + locX + ", " + locY);
@@ -332,7 +337,7 @@ public class GameManager : NetworkBehaviour
 					{
 						GridManager.grid[locX, locY].stackSize++;
 						GridManager.grid[locX, locY].cardStack.Add(card);
-						// target.CalcTotalValue(); // This fixes Market Cards not calculating first time
+						// target.CalcTotalValue(); // This fixes Market Cards not calcing first time
 						UpdatePlayersInfo();
 						// guiMan.UpdateUI();
 						if (card.title == "Tile Mod")
@@ -345,7 +350,8 @@ public class GameManager : NetworkBehaviour
 
 							GameObject cardObj = (GameObject)Instantiate(gridMan.gameCardPrefab,
 								new Vector3(target.tileObj.transform.position.x,
-									target.tileObj.transform.position.y - (GridManager.shiftUnit * target.stackSize),
+									target.tileObj.transform.position.y
+									- (GridManager.shiftUnit * target.stackSize),
 									(target.tileObj.transform.position.z)
 									+ (GridManager.cardThickness * target.stackSize)),
 								Quaternion.identity);
@@ -356,20 +362,25 @@ public class GameManager : NetworkBehaviour
 							// cardObj.transform.SetParent(target.tileObj.transform);
 
 							CardState cardState = cardObj.GetComponent<CardState>();
-
-							// Generate and Push the string of the object's name
-							cardState.objectName = GameManager.CreateCardObjectName("PlayedCard", 0, target.stackSize - 1);
-							cardState.parent = GameManager.CreateCardObjectName("Tile", locX, locY);
-							// Push new values to the CardState to be synchronized across the network
+							// Push new values to the CardState to be synced across the network
 							GridManager.FillOutCardState(card, ref cardState);
 
+							// Generate and Push the string of the object's name
+							cardState.objectName = GameManager.CreateCardObjectName("PlayedCard", 0,
+								target.stackSize - 1);
+							cardState.parent = GameManager.CreateCardObjectName("Tile", locX, locY);
+
 							// Target
-							string cardToDestroy = CreateCardObjectName("GameCard", this.turn - 1, cardIndex);
+							string cardToDestroy = CreateCardObjectName("GameCard", turn - 1,
+								cardIndex);
 							// TargetDestroyGameObject(connectionToClient, cardToDestroy);
-							turnEventBroadcast = this.turn + "_Destroy_" + cardToDestroy;
+							TurnEvent turnEvent = new TurnEvent(2, this.turn, "Play",
+								"GameCard", turn, cardIndex);
+							this.turnEventBroadcast = JsonUtility.ToJson(turnEvent);
 							// players[this.turn - 1].hand[cardIndex] = null;
 							// Debug.Log(debug + "Finding Player (" + this.turn + ")");
-							// PlayerConnection con = GameObject.Find("Player (" + this.turn + ")").GetComponent<PlayerConnection>();
+							// PlayerConnection con = GameObject.Find("Player ("
+							// + this.turn + ")").GetComponent<PlayerConnection>();
 							// Debug.Log(debug + con);
 							// Debug.Log(debug + con.hand);
 							// Debug.Log(debug + con.hand[cardIndex]);
@@ -378,6 +389,7 @@ public class GameManager : NetworkBehaviour
 
 						}
 						wasPlayed = true;
+						this.IncrementTurn();
 					}
 				}
 				break;
@@ -738,11 +750,12 @@ public class GameManager : NetworkBehaviour
 	{
 		for (int i = 0; i < GameManager.playerCount; i++)
 		{
-			if (this.round > graceRounds)
+			if (this.round > graceRounds && this.phase == 1)
 			{
 				if (GetValidCards(i + 1).Count == 0)
 				{
-					Debug.Log(debug + "Setting shouldSkip true for Player " + (i + 1));
+					Debug.Log(debug + "Setting shouldSkip true for Player " + (i + 1)
+						+ " on Phase " + this.phase);
 					GameManager.players[i].shouldSkip = true;
 				}
 			}

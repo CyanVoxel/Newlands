@@ -167,7 +167,7 @@ public class CardDisplay : NetworkBehaviour
 		GameObject footerBorderObjR;
 		Image footerBorderR;
 
-		Debug.Log(debug.head + "Category: " + cardState.category);
+		// Debug.Log(debug.head + "Category: " + cardState.category);
 		switch (cardState.category)
 		{
 			case "Tile":
