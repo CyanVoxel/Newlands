@@ -66,21 +66,25 @@ public class CardState : NetworkBehaviour
 		OnCategoryChange("Leo");
 	} // Start()
 
-	// // Update is called once per frame
-	// void Update() {
-
-	// 	// this.titleStr = gridMan.tempTitle;
-	// 	// Debug.Log("Title:" + this.title);
-
-	// 	// if (gridMan == null) {
-	// 	// 	gridMan = FindObjectOfType<GridManager>();
-	// 	// }
-
-	// 	// GameObject titleObj = this.transform.Find("Front Canvas/Title").gameObject;
-	// 	// TMP_Text title = titleObj.GetComponent<TMP_Text>();
-	// 	// title.text = titleStr;
-
-	// }
+	// NOTE: This is a super-bodgy fix for the stacked cards sometimes not calling CardDisplay
+	// properly. Already tried different things involving setting fields in hooks, removing
+	// seinfeld paramaters, and removing hooks in Start. One fix was able to fix empty transform
+	// names, but using that bug I'm able to patch this fix together with Update.
+	// When the underlying cause is found, REMOVE THIS UPDATE METHOD!
+	void Update()
+	{
+		if (this.transform.name == "")
+		{
+			Debug.Log("[CardState] Object's name was null, setting it to the variable!");
+			OnObjectNameChange(this.objectName);
+			OnObjectNameChange("Jerry");
+			OnTitleChange("George");
+			OnSubtitleChange("Kramer");
+			OnBodyChange("Elaine");
+			OnFooterChange("Newman");
+			OnCategoryChange("Leo");
+		}
+	}
 
 	// NOTE: The paramaters in the hook methods are not used, however they are required by Mirror.
 	// The if-statement is there so that the display functions do not get run with empty internal
