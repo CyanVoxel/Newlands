@@ -159,27 +159,6 @@ public class MouseManager : NetworkBehaviour
 						// CallCmdBuyTile(locX, locY);
 						// guiMan.CmdUpdateUI();
 					} // if Left Click
-
-					// Right Click ########################
-					if (Input.GetMouseButtonDown(1))
-					{
-						objRotX = objectHit.transform.parent.rotation.x;
-						objRotY = objectHit.transform.parent.rotation.y;
-						objRotZ = objectHit.transform.parent.rotation.z;
-
-						// gameMan.WipeSelectionColors("GameCard", ColorPalette.tintCard);
-
-						objectHit.transform.parent.rotation = new Quaternion(objRotX, 1 + objRotY, objRotZ, 0);
-
-						objectHit.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.tintCard;
-						objectHit.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.tintCard;
-
-						// "Sells" the tile - NOTE: this is for debugging ONLY
-						GridManager.grid[locX, locY].ownerId = 0;
-
-						// gameMan.RollbackTurn();
-						// guiMan.CmdUpdateUI();
-					} // if Right Click
 				} // Phase 1
 				else if (gameMan.phase == 2)
 				{
@@ -271,13 +250,22 @@ public class MouseManager : NetworkBehaviour
 
 						if (selection >= 1)
 						{
-							if (gameMan.OldTryToPlay(GridManager.marketGrid[locX, locY],
-									GameManager.players[0].handUnits[selection - 1]))
+							// Left Click #########################
+							if (Input.GetMouseButtonDown(0))
 							{
-								// Debug.Log("Using GameCard " + selection +
-								//   " on LandTile " + locX + ", " + locY);
-								//GameManager.players[0].hand[selection]
-							}
+								// gameMan.WipeSelectionColors("GameCard", ColorPalette.tintCard);
+
+								if (selection >= 0 && gameMan.turn == this.ownerId)
+								{
+									Debug.Log(debug.head + "Trying to play card " + selection
+										+ " on " + objectHit.transform.parent.name);
+									CmdPlayCard(selection, objectHit.transform.parent.name);
+								}
+								else
+								{
+									return;
+								} // if a GameCard is selected
+							} // Left Click
 						}
 						else
 						{

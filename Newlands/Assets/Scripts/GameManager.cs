@@ -14,7 +14,7 @@ public class GameManager : NetworkBehaviour
 
 	public static MasterDeck masterDeck;
 	public static MasterDeck masterDeckMutable;
-	public static readonly int playerCount = 2; // Number of players in the match
+	public static readonly int playerCount = 1; // Number of players in the match
 	[SyncVar]
 	private int playerIndex = 1; // This value increments when a new player joins
 	public static int localPlayerId = -1;
@@ -26,8 +26,8 @@ public class GameManager : NetworkBehaviour
 	public int turn = 1; // The current turn in the round
 	public static int graceRounds = 1; // The # of rounds without neighbor rules
 
-	public static readonly int width = 3; // Width of the game grid in cards
-	public static readonly int height = 3; // Height of the game grid in cards
+	public static readonly int width = 7; // Width of the game grid in cards
+	public static readonly int height = 7; // Height of the game grid in cards
 	public static readonly int handSize = 10; // How many cards the player is dealt
 
 	private static DebugTag debug = new DebugTag("GameManager", "FF6D00");
@@ -310,7 +310,8 @@ public class GameManager : NetworkBehaviour
 		int locY = int.Parse(targetTile.Substring(5, 2));
 		int turn = this.turn;
 		string tileType = targetTile.Substring(8);
-		GridUnit target = GridManager.grid[locX, locY];
+		// GridUnit target = GridManager.grid[locX, locY];
+		GridUnit target;
 		CardData card = players[turn - 1].hand[cardIndex];
 
 		Debug.Log(debug + "Trying to play Card " + cardIndex + " on " + tileType
@@ -319,6 +320,7 @@ public class GameManager : NetworkBehaviour
 		switch (tileType)
 		{
 			case "Tile":
+				target = GridManager.grid[locX, locY];
 				if (!target.bankrupt
 					&& RuleSet.IsLegal(target, card))
 				{
@@ -366,7 +368,7 @@ public class GameManager : NetworkBehaviour
 							GridManager.FillOutCardState(card, ref cardState);
 
 							// Generate and Push the string of the object's name
-							cardState.objectName = GameManager.CreateCardObjectName("PlayedCard", 0,
+							cardState.objectName = GameManager.CreateCardObjectName("StackedCard", 0,
 								target.stackSize - 1);
 							cardState.parent = GameManager.CreateCardObjectName("Tile", locX, locY);
 
@@ -377,16 +379,6 @@ public class GameManager : NetworkBehaviour
 							TurnEvent turnEvent = new TurnEvent(2, this.turn, "Play",
 								"GameCard", turn, cardIndex);
 							this.turnEventBroadcast = JsonUtility.ToJson(turnEvent);
-							// players[this.turn - 1].hand[cardIndex] = null;
-							// Debug.Log(debug + "Finding Player (" + this.turn + ")");
-							// PlayerConnection con = GameObject.Find("Player ("
-							// + this.turn + ")").GetComponent<PlayerConnection>();
-							// Debug.Log(debug + con);
-							// Debug.Log(debug + con.hand);
-							// Debug.Log(debug + con.hand[cardIndex]);
-							// con.hand.RemoveAt(cardIndex);
-							// con.hand.Insert(cardIndex, new CardData());
-
 						}
 						wasPlayed = true;
 						this.IncrementTurn();
@@ -394,7 +386,71 @@ public class GameManager : NetworkBehaviour
 				}
 				break;
 
-			case "Market":
+			case "MarketCard":
+				target = GridManager.marketGrid[locX, locY];
+				if (!target.bankrupt
+					&& RuleSet.IsLegal(target, card))
+				{
+					// Carry out the actions of a Successful play
+					UpdatePlayersInfo(); // Test to see if there only needs to be one of these at the end
+					if (target.bankrupt) // Bankrupt check
+					{
+						BankruptTile(GridManager.marketGrid[locX, locY]);
+						UpdatePlayersInfo();
+						// guiMan.UpdateUI();
+						Debug.Log(debug + "Market Card bankrupt! has value of "
+							+ GridManager.marketGrid[locX, locY].totalValue);
+					}
+
+					if (!card.doesDiscard)
+					{
+						GridManager.marketGrid[locX, locY].stackSize++;
+						GridManager.marketGrid[locX, locY].cardStack.Add(card);
+						// target.CalcTotalValue(); // This fixes Market Cards not calcing first time
+						UpdatePlayersInfo();
+						// guiMan.UpdateUI();
+						if (card.title == "Market Mod")
+						{
+							if (target.stackSize > GridManager.maxMarketStack[target.y])
+							{
+								GridManager.maxMarketStack[target.y]++;
+								gridMan.ShiftRow(target.category, target.y, 1);
+							} // if stack size exceeds max stack recorded for row
+
+							GameObject cardObj = (GameObject)Instantiate(gridMan.gameCardPrefab,
+								new Vector3(target.tileObj.transform.position.x,
+									target.tileObj.transform.position.y
+									- (GridManager.shiftUnit * target.stackSize),
+									(target.tileObj.transform.position.z)
+									+ (GridManager.cardThickness * target.stackSize)),
+								Quaternion.identity);
+
+							NetworkServer.Spawn(cardObj);
+
+							// This is also done of the client via CardState
+							// cardObj.transform.SetParent(target.tileObj.transform);
+
+							CardState cardState = cardObj.GetComponent<CardState>();
+							// Push new values to the CardState to be synced across the network
+							GridManager.FillOutCardState(card, ref cardState);
+
+							// Generate and Push the string of the object's name
+							cardState.objectName = GameManager.CreateCardObjectName("StackedCard", 0,
+								target.stackSize - 1);
+							cardState.parent = GameManager.CreateCardObjectName("MarketCard", locX, locY);
+
+							// Target
+							string cardToDestroy = CreateCardObjectName("GameCard", turn - 1,
+								cardIndex);
+							// TargetDestroyGameObject(connectionToClient, cardToDestroy);
+							TurnEvent turnEvent = new TurnEvent(2, this.turn, "Play",
+								"GameCard", turn, cardIndex);
+							this.turnEventBroadcast = JsonUtility.ToJson(turnEvent);
+						}
+						wasPlayed = true;
+						this.IncrementTurn();
+					}
+				}
 				break;
 
 			default:
@@ -405,120 +461,120 @@ public class GameManager : NetworkBehaviour
 		return wasPlayed;
 	} // PlayCard()
 
-	// Checks if a GameCard is allowed to be played on a Tile.
-	public bool OldTryToPlay(GridUnit gridTile, GridUnit gameCard)
-	{
-		if (!gridTile.bankrupt /*&& RuleSet.IsLegal(gridTile, gameCard)*/ )
-		{
+	// // Checks if a GameCard is allowed to be played on a Tile.
+	// public bool OldTryToPlay(GridUnit gridTile, GridUnit gameCard)
+	// {
+	// 	if (!gridTile.bankrupt /*&& RuleSet.IsLegal(gridTile, gameCard)*/ )
+	// 	{
 
-			// RuleSet ruleSet = new RuleSet();
+	// 		// RuleSet ruleSet = new RuleSet();
 
-			RuleSet.PlayCard(gridTile, gameCard.card);
-			UpdatePlayersInfo();
-			// guiMan.UpdateUI();
+	// 		RuleSet.PlayCard(gridTile, gameCard.card);
+	// 		UpdatePlayersInfo();
+	// 		// guiMan.UpdateUI();
 
-			Vector3 oldCardPosition = gameCard.tileObj.transform.position;
-			int oldCardIndex = gameCard.x;
-			Debug.Log(debug + "Old Card Index: " + oldCardIndex);
+	// 		Vector3 oldCardPosition = gameCard.tileObj.transform.position;
+	// 		int oldCardIndex = gameCard.x;
+	// 		Debug.Log(debug + "Old Card Index: " + oldCardIndex);
 
-			if (gridTile.bankrupt)
-			{
-				BankruptTile(gridTile);
-				UpdatePlayersInfo();
-				// guiMan.UpdateUI();
-				Debug.Log(debug + "Tile bankrupt! has value of " + gridTile.totalValue);
-			}
+	// 		if (gridTile.bankrupt)
+	// 		{
+	// 			BankruptTile(gridTile);
+	// 			UpdatePlayersInfo();
+	// 			// guiMan.UpdateUI();
+	// 			Debug.Log(debug + "Tile bankrupt! has value of " + gridTile.totalValue);
+	// 		}
 
-			if (gameCard.stackable)
-			{
-				gridTile.stackSize++;
-				gridTile.cardStack.Add(gameCard.card);
-				gridTile.CalcTotalValue(); // This fixes Market Cards not calculating first time
-				UpdatePlayersInfo();
-				// guiMan.UpdateUI();
+	// 		if (gameCard.stackable)
+	// 		{
+	// 			gridTile.stackSize++;
+	// 			gridTile.cardStack.Add(gameCard.card);
+	// 			gridTile.CalcTotalValue(); // This fixes Market Cards not calculating first time
+	// 			UpdatePlayersInfo();
+	// 			// guiMan.UpdateUI();
 
-				if (gameCard.card.title == "Tile Mod")
-				{
-					// If the stack on the unit is larger than the stack count on the row, increase
-					if (gridTile.stackSize > GridManager.maxStack[gridTile.y])
-					{
-						GridManager.maxStack[gridTile.y]++;
-						gridMan.ShiftRow(gridTile.category, gridTile.y, 1);
-					} // if stack size exceeds max stack recorded for row
+	// 			if (gameCard.card.title == "Tile Mod")
+	// 			{
+	// 				// If the stack on the unit is larger than the stack count on the row, increase
+	// 				if (gridTile.stackSize > GridManager.maxStack[gridTile.y])
+	// 				{
+	// 					GridManager.maxStack[gridTile.y]++;
+	// 					gridMan.ShiftRow(gridTile.category, gridTile.y, 1);
+	// 				} // if stack size exceeds max stack recorded for row
 
-					gameCard.tileObj.transform.position = new Vector3(gridTile.tileObj.transform.position.x,
-						gridTile.tileObj.transform.position.y
-						- (GridManager.shiftUnit * gridTile.stackSize),
-						(gridTile.tileObj.transform.position.z)
-						+ (GridManager.cardThickness * gridTile.stackSize));
+	// 				gameCard.tileObj.transform.position = new Vector3(gridTile.tileObj.transform.position.x,
+	// 					gridTile.tileObj.transform.position.y
+	// 					- (GridManager.shiftUnit * gridTile.stackSize),
+	// 					(gridTile.tileObj.transform.position.z)
+	// 					+ (GridManager.cardThickness * gridTile.stackSize));
 
-					gameCard.tileObj.transform.parent = gridTile.tileObj.transform;
+	// 				gameCard.tileObj.transform.parent = gridTile.tileObj.transform;
 
-					// TODO: Adjust for more than 10 cards on a given stack (unlikely, but possible)
-					// TODO: Account for different players
-					gameCard.tileObj.name = ("p00_"
-						+ "i0" + (gridTile.stackSize - 1) + "_"
-						+ "StackedCard");
+	// 				// TODO: Adjust for more than 10 cards on a given stack (unlikely, but possible)
+	// 				// TODO: Account for different players
+	// 				gameCard.tileObj.name = ("p00_"
+	// 					+ "i0" + (gridTile.stackSize - 1) + "_"
+	// 					+ "StackedCard");
 
-				}
-				else if (gameCard.card.title == "Market Mod")
-				{
-					// If the stack on the unit is larger than the stack count on the row, increase
-					if (gridTile.stackSize > GridManager.maxMarketStack[gridTile.y])
-					{
-						GridManager.maxMarketStack[gridTile.y]++;
-						gridMan.ShiftRow(gridTile.card.category, gridTile.y, 1);
-					} // if stack size exceeds max stack recorded for row
+	// 			}
+	// 			else if (gameCard.card.title == "Market Mod")
+	// 			{
+	// 				// If the stack on the unit is larger than the stack count on the row, increase
+	// 				if (gridTile.stackSize > GridManager.maxMarketStack[gridTile.y])
+	// 				{
+	// 					GridManager.maxMarketStack[gridTile.y]++;
+	// 					gridMan.ShiftRow(gridTile.card.category, gridTile.y, 1);
+	// 				} // if stack size exceeds max stack recorded for row
 
-					gameCard.tileObj.transform.position = new Vector3(gridTile.tileObj.transform.position.x,
-						gridTile.tileObj.transform.position.y
-						- (GridManager.shiftUnit * gridTile.stackSize),
-						(gridTile.tileObj.transform.position.z)
-						+ (GridManager.cardThickness * gridTile.stackSize));
+	// 				gameCard.tileObj.transform.position = new Vector3(gridTile.tileObj.transform.position.x,
+	// 					gridTile.tileObj.transform.position.y
+	// 					- (GridManager.shiftUnit * gridTile.stackSize),
+	// 					(gridTile.tileObj.transform.position.z)
+	// 					+ (GridManager.cardThickness * gridTile.stackSize));
 
-					gameCard.tileObj.transform.parent = gridTile.tileObj.transform;
+	// 				gameCard.tileObj.transform.parent = gridTile.tileObj.transform;
 
-					// TODO: Adjust for more than 10 cards on a given stack (unlikely, but possible)
-					// TODO: Account for different players
-					gameCard.tileObj.name = ("p00_"
-						+ "i0" + (gridTile.stackSize - 1) + "_"
-						+ "StackedCard");
-				} // if market mod
-			}
-			else
-			{
-				// After ALL processing is done, destroy the game object
-				Destroy(gameCard.tileObj);
-				// guiMan.UpdateUI();
-			} // if stackable
+	// 				// TODO: Adjust for more than 10 cards on a given stack (unlikely, but possible)
+	// 				// TODO: Account for different players
+	// 				gameCard.tileObj.name = ("p00_"
+	// 					+ "i0" + (gridTile.stackSize - 1) + "_"
+	// 					+ "StackedCard");
+	// 			} // if market mod
+	// 		}
+	// 		else
+	// 		{
+	// 			// After ALL processing is done, destroy the game object
+	// 			Destroy(gameCard.tileObj);
+	// 			// guiMan.UpdateUI();
+	// 		} // if stackable
 
-			// Create a new card to replace the old one
-			// Card newCard = Card.CreateInstance<Card>();
-			CardData newCard;
-			if (DrawCard(masterDeckMutable.gameCardDeck, masterDeck.gameCardDeck, out newCard)
-				&& masterDeckMutable.gameCardDeck.Count() > 0)
-			{
-				players[0].hand.Add(newCard);
-				players[0].handUnits[oldCardIndex].LoadNewCard(newCard, players[0].handUnits[oldCardIndex].tileObj);
-				players[0].hand[oldCardIndex] = newCard;
-				// DisplayCard(newCard, 0, oldCardIndex);
-				players[0].handUnits[oldCardIndex].tileObj.transform.position = oldCardPosition;
-			} // if card can be drawn
+	// 		// Create a new card to replace the old one
+	// 		// Card newCard = Card.CreateInstance<Card>();
+	// 		CardData newCard;
+	// 		if (DrawCard(masterDeckMutable.gameCardDeck, masterDeck.gameCardDeck, out newCard)
+	// 			&& masterDeckMutable.gameCardDeck.Count() > 0)
+	// 		{
+	// 			players[0].hand.Add(newCard);
+	// 			players[0].handUnits[oldCardIndex].LoadNewCard(newCard, players[0].handUnits[oldCardIndex].tileObj);
+	// 			players[0].hand[oldCardIndex] = newCard;
+	// 			// DisplayCard(newCard, 0, oldCardIndex);
+	// 			players[0].handUnits[oldCardIndex].tileObj.transform.position = oldCardPosition;
+	// 		} // if card can be drawn
 
-			// gridTile.cardStack.Add(gameCard.tile);
-			// MouseManager.selection = -1;
-			// WipeSelectionColors("Game Card", ColorPalette.tintCard);
-			return true;
-		}
-		else
-		{
-			Debug.Log(debug + "Card move is illegal!");
-			// MouseManager.selection = -1;
-			// WipeSelectionColors("Game Card", ColorPalette.tintCard);
-			return false;
-		} // If the Category AND Scope match
+	// 		// gridTile.cardStack.Add(gameCard.tile);
+	// 		// MouseManager.selection = -1;
+	// 		// WipeSelectionColors("Game Card", ColorPalette.tintCard);
+	// 		return true;
+	// 	}
+	// 	else
+	// 	{
+	// 		Debug.Log(debug + "Card move is illegal!");
+	// 		// MouseManager.selection = -1;
+	// 		// WipeSelectionColors("Game Card", ColorPalette.tintCard);
+	// 		return false;
+	// 	} // If the Category AND Scope match
 
-	} // TryToPlay()
+	// } // TryToPlay()
 
 	// public GameObject FindCard(string type, int x, int y)
 	// {
