@@ -248,7 +248,7 @@ public class MouseManager : NetworkBehaviour
 					{
 						// gameMan.WipeSelectionColors("GameCard", ColorPalette.tintCard);
 
-						if (selection >= 1)
+						if (selection >= 0)
 						{
 							// Left Click #########################
 							if (Input.GetMouseButtonDown(0))
