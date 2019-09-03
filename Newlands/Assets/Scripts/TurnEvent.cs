@@ -8,8 +8,9 @@ public class TurnEvent
     public string cardType;
     public int x;
     public int y;
+    public string topCard;
 
-    public TurnEvent(int phase, int playerId, string operation, string cardType, int x, int y)
+    public TurnEvent(int phase, int playerId, string operation, string cardType, int x, int y, string topCard)
     {
         this.phase = phase;
         this.playerId = playerId;
@@ -17,6 +18,7 @@ public class TurnEvent
         this.cardType = cardType;
         this.x = x;
         this.y = y;
+        this.topCard = topCard;
     }
 
     public override string ToString()

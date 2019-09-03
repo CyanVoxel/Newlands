@@ -14,7 +14,7 @@ public class GameManager : NetworkBehaviour
 
 	public static MasterDeck masterDeck;
 	public static MasterDeck masterDeckMutable;
-	public static readonly int playerCount = 1; // Number of players in the match
+	public static readonly int playerCount = 2; // Number of players in the match
 	[SyncVar]
 	private int playerIndex = 1; // This value increments when a new player joins
 	public static int localPlayerId = -1;
@@ -26,9 +26,12 @@ public class GameManager : NetworkBehaviour
 	public int turn = 1; // The current turn in the round
 	public static int graceRounds = 1; // The # of rounds without neighbor rules
 
-	public static readonly int width = 7; // Width of the game grid in cards
-	public static readonly int height = 7; // Height of the game grid in cards
-	public static readonly int handSize = 10; // How many cards the player is dealt
+	[SyncVar]
+	public string topCardStr = "";
+
+	public static readonly int width = 3; // Width of the game grid in cards
+	public static readonly int height = 3; // Height of the game grid in cards
+	public static readonly int handSize = 5; // How many cards the player is dealt
 
 	private static DebugTag debug = new DebugTag("GameManager", "FF6D00");
 
@@ -181,7 +184,7 @@ public class GameManager : NetworkBehaviour
 				// Nobody else can go, signaling the end of the phase.
 				// Debug.Log(debug + "ValidNextTurn = " + GetValidNextTurn(turn));
 				this.turn = 1;
-				this.round = 1;
+				// this.round = 1;
 				this.phase++;
 				foreach (Player player in players)
 				{
@@ -206,7 +209,7 @@ public class GameManager : NetworkBehaviour
 	public void EndPhase()
 	{
 		phase++;
-		round = 1;
+		// round = 1;
 		turn = 1;
 	} //EndPhase()
 
@@ -308,6 +311,7 @@ public class GameManager : NetworkBehaviour
 		bool wasPlayed = false;
 		int locX = int.Parse(targetTile.Substring(1, 2));
 		int locY = int.Parse(targetTile.Substring(5, 2));
+		int round = this.round;
 		int turn = this.turn;
 		string tileType = targetTile.Substring(8);
 		// GridUnit target = GridManager.grid[locX, locY];
@@ -376,11 +380,23 @@ public class GameManager : NetworkBehaviour
 							string cardToDestroy = CreateCardObjectName("GameCard", turn - 1,
 								cardIndex);
 							// TargetDestroyGameObject(connectionToClient, cardToDestroy);
-							TurnEvent turnEvent = new TurnEvent(2, this.turn, "Play",
-								"GameCard", turn, cardIndex);
-							this.turnEventBroadcast = JsonUtility.ToJson(turnEvent);
+
 						}
 						wasPlayed = true;
+						CardData topCard;
+
+						if (DrawCard(masterDeckMutable.gameCardDeck, masterDeck.gameCardDeck, out topCard))
+						{
+							this.topCardStr = JsonUtility.ToJson(topCard);
+							players[turn - 1].hand[cardIndex] = topCard;
+						}
+						else
+						{
+							this.topCardStr = "empty";
+						}
+						TurnEvent turnEvent = new TurnEvent(2, turn, "Play",
+							"GameCard", turn, cardIndex, this.topCardStr);
+						this.turnEventBroadcast = JsonUtility.ToJson(turnEvent);
 						this.IncrementTurn();
 					}
 				}
@@ -443,11 +459,23 @@ public class GameManager : NetworkBehaviour
 							string cardToDestroy = CreateCardObjectName("GameCard", turn - 1,
 								cardIndex);
 							// TargetDestroyGameObject(connectionToClient, cardToDestroy);
-							TurnEvent turnEvent = new TurnEvent(2, this.turn, "Play",
-								"GameCard", turn, cardIndex);
-							this.turnEventBroadcast = JsonUtility.ToJson(turnEvent);
+
 						}
 						wasPlayed = true;
+						CardData topCard;
+
+						if (DrawCard(masterDeckMutable.gameCardDeck, masterDeck.gameCardDeck, out topCard))
+						{
+							this.topCardStr = JsonUtility.ToJson(topCard);
+							players[turn - 1].hand[cardIndex] = topCard;
+						}
+						else
+						{
+							this.topCardStr = "empty";
+						}
+						TurnEvent turnEvent = new TurnEvent(2, turn, "Play",
+							"GameCard", turn, cardIndex, this.topCardStr);
+						this.turnEventBroadcast = JsonUtility.ToJson(turnEvent);
 						this.IncrementTurn();
 					}
 				}
@@ -458,162 +486,10 @@ public class GameManager : NetworkBehaviour
 				break;
 		} // switch (tileType)
 
+		Debug.Log(debug + "GameCards left: " + masterDeckMutable.gameCardDeck.Count());
+
 		return wasPlayed;
 	} // PlayCard()
-
-	// // Checks if a GameCard is allowed to be played on a Tile.
-	// public bool OldTryToPlay(GridUnit gridTile, GridUnit gameCard)
-	// {
-	// 	if (!gridTile.bankrupt /*&& RuleSet.IsLegal(gridTile, gameCard)*/ )
-	// 	{
-
-	// 		// RuleSet ruleSet = new RuleSet();
-
-	// 		RuleSet.PlayCard(gridTile, gameCard.card);
-	// 		UpdatePlayersInfo();
-	// 		// guiMan.UpdateUI();
-
-	// 		Vector3 oldCardPosition = gameCard.tileObj.transform.position;
-	// 		int oldCardIndex = gameCard.x;
-	// 		Debug.Log(debug + "Old Card Index: " + oldCardIndex);
-
-	// 		if (gridTile.bankrupt)
-	// 		{
-	// 			BankruptTile(gridTile);
-	// 			UpdatePlayersInfo();
-	// 			// guiMan.UpdateUI();
-	// 			Debug.Log(debug + "Tile bankrupt! has value of " + gridTile.totalValue);
-	// 		}
-
-	// 		if (gameCard.stackable)
-	// 		{
-	// 			gridTile.stackSize++;
-	// 			gridTile.cardStack.Add(gameCard.card);
-	// 			gridTile.CalcTotalValue(); // This fixes Market Cards not calculating first time
-	// 			UpdatePlayersInfo();
-	// 			// guiMan.UpdateUI();
-
-	// 			if (gameCard.card.title == "Tile Mod")
-	// 			{
-	// 				// If the stack on the unit is larger than the stack count on the row, increase
-	// 				if (gridTile.stackSize > GridManager.maxStack[gridTile.y])
-	// 				{
-	// 					GridManager.maxStack[gridTile.y]++;
-	// 					gridMan.ShiftRow(gridTile.category, gridTile.y, 1);
-	// 				} // if stack size exceeds max stack recorded for row
-
-	// 				gameCard.tileObj.transform.position = new Vector3(gridTile.tileObj.transform.position.x,
-	// 					gridTile.tileObj.transform.position.y
-	// 					- (GridManager.shiftUnit * gridTile.stackSize),
-	// 					(gridTile.tileObj.transform.position.z)
-	// 					+ (GridManager.cardThickness * gridTile.stackSize));
-
-	// 				gameCard.tileObj.transform.parent = gridTile.tileObj.transform;
-
-	// 				// TODO: Adjust for more than 10 cards on a given stack (unlikely, but possible)
-	// 				// TODO: Account for different players
-	// 				gameCard.tileObj.name = ("p00_"
-	// 					+ "i0" + (gridTile.stackSize - 1) + "_"
-	// 					+ "StackedCard");
-
-	// 			}
-	// 			else if (gameCard.card.title == "Market Mod")
-	// 			{
-	// 				// If the stack on the unit is larger than the stack count on the row, increase
-	// 				if (gridTile.stackSize > GridManager.maxMarketStack[gridTile.y])
-	// 				{
-	// 					GridManager.maxMarketStack[gridTile.y]++;
-	// 					gridMan.ShiftRow(gridTile.card.category, gridTile.y, 1);
-	// 				} // if stack size exceeds max stack recorded for row
-
-	// 				gameCard.tileObj.transform.position = new Vector3(gridTile.tileObj.transform.position.x,
-	// 					gridTile.tileObj.transform.position.y
-	// 					- (GridManager.shiftUnit * gridTile.stackSize),
-	// 					(gridTile.tileObj.transform.position.z)
-	// 					+ (GridManager.cardThickness * gridTile.stackSize));
-
-	// 				gameCard.tileObj.transform.parent = gridTile.tileObj.transform;
-
-	// 				// TODO: Adjust for more than 10 cards on a given stack (unlikely, but possible)
-	// 				// TODO: Account for different players
-	// 				gameCard.tileObj.name = ("p00_"
-	// 					+ "i0" + (gridTile.stackSize - 1) + "_"
-	// 					+ "StackedCard");
-	// 			} // if market mod
-	// 		}
-	// 		else
-	// 		{
-	// 			// After ALL processing is done, destroy the game object
-	// 			Destroy(gameCard.tileObj);
-	// 			// guiMan.UpdateUI();
-	// 		} // if stackable
-
-	// 		// Create a new card to replace the old one
-	// 		// Card newCard = Card.CreateInstance<Card>();
-	// 		CardData newCard;
-	// 		if (DrawCard(masterDeckMutable.gameCardDeck, masterDeck.gameCardDeck, out newCard)
-	// 			&& masterDeckMutable.gameCardDeck.Count() > 0)
-	// 		{
-	// 			players[0].hand.Add(newCard);
-	// 			players[0].handUnits[oldCardIndex].LoadNewCard(newCard, players[0].handUnits[oldCardIndex].tileObj);
-	// 			players[0].hand[oldCardIndex] = newCard;
-	// 			// DisplayCard(newCard, 0, oldCardIndex);
-	// 			players[0].handUnits[oldCardIndex].tileObj.transform.position = oldCardPosition;
-	// 		} // if card can be drawn
-
-	// 		// gridTile.cardStack.Add(gameCard.tile);
-	// 		// MouseManager.selection = -1;
-	// 		// WipeSelectionColors("Game Card", ColorPalette.tintCard);
-	// 		return true;
-	// 	}
-	// 	else
-	// 	{
-	// 		Debug.Log(debug + "Card move is illegal!");
-	// 		// MouseManager.selection = -1;
-	// 		// WipeSelectionColors("Game Card", ColorPalette.tintCard);
-	// 		return false;
-	// 	} // If the Category AND Scope match
-
-	// } // TryToPlay()
-
-	// public GameObject FindCard(string type, int x, int y)
-	// {
-	// 	string strX = "x";
-	// 	string strY = "y";
-
-	// 	// Determines the number of zeroes to add in the object name
-	// 	string xZeroes = "0";
-	// 	string yZeroes = "0";
-	// 	if (x >= 10)
-	// 	{
-	// 		xZeroes = "";
-	// 	} // if x >= 10
-	// 	if (y >= 10)
-	// 	{
-	// 		yZeroes = "";
-	// 	} // if y >= 10
-
-	// 	// Specific type changes
-	// 	if (type == "GameCard")
-	// 	{
-	// 		strX = "p"; // Instead of x, use p for PlayerID
-	// 		strY = "i"; // Instead of y, use i for Index
-	// 	} // if GameCard
-
-	// 	if (gridMan.transform.Find(strX + xZeroes + x + "_" + strY + yZeroes + y + "_" + type))
-	// 	{
-	// 		// GameObject gameObject = new GameObject();
-	// 		GameObject gameObject = gridMan.transform.Find(strX + xZeroes + x + "_"
-	// 			+ strY + yZeroes + y + "_"
-	// 			+ type).gameObject;
-	// 		return gameObject;
-	// 	}
-	// 	else
-	// 	{
-	// 		// Debug.LogError("[GameManager] Error: Could not find GameObject!");
-	// 		return null;
-	// 	}
-	// } // FindCard()
 
 	public static void UpdatePlayersInfo()
 	{
@@ -698,7 +574,8 @@ public class GameManager : NetworkBehaviour
 			GameManager.players[turn - 1].ownedTiles.Add(target); // Server-side
 			GridManager.grid[target.x, target.y].ownerId = turn;
 
-			TurnEvent turnEvent = new TurnEvent(this.phase, turn, "Buy", "Tile", target.x, target.y);
+			TurnEvent turnEvent = new TurnEvent(this.phase, turn, "Buy", "Tile", target.x, target.y,
+				this.topCardStr);
 			this.turnEventBroadcast = JsonUtility.ToJson(turnEvent);
 			Debug.Log(debug + "JSON: " + turnEvent);
 

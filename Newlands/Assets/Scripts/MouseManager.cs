@@ -18,7 +18,8 @@ public class MouseManager : NetworkBehaviour
 	public int selection = -1;
 	// TODO: Create a dictionary of flags
 	private int purchaseSuccessFlag = -1; // -1: Reset | 0: False | 1: True
-	private int playSuccessFlag = -1; // -1: Reset | 0: False | 1: True
+	public int playIndex = -1;
+	public int playSuccessFlag = -1; // -1: Reset | 0: False | 1: True
 	private static GameObject objectHit;
 	[SyncVar]
 	public int ownerId = -1;
@@ -173,6 +174,7 @@ public class MouseManager : NetworkBehaviour
 						{
 							Debug.Log(debug.head + "Trying to play card " + selection
 								+ " on " + objectHit.transform.parent.name);
+							playIndex = selection;
 							CmdPlayCard(selection, objectHit.transform.parent.name);
 						}
 						else
@@ -259,6 +261,7 @@ public class MouseManager : NetworkBehaviour
 								{
 									Debug.Log(debug.head + "Trying to play card " + selection
 										+ " on " + objectHit.transform.parent.name);
+										playIndex = selection;
 									CmdPlayCard(selection, objectHit.transform.parent.name);
 								}
 								else
@@ -403,6 +406,7 @@ public class MouseManager : NetworkBehaviour
 				// True
 				Debug.Log(debug.head + "Play Successful!");
 				// CmdFlipCard("Tile", this.purchaseBufferX, this.purchaseBufferY);
+				// this.purchaseSuccessRound = gameMan.round;
 				this.playSuccessFlag = -1;
 				break;
 
