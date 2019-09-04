@@ -49,6 +49,7 @@ public class MouseManager : NetworkBehaviour
 	// Update is called once per frame
 	void Update()
 	{
+		// Authority Check -------------------------------------------------------------------------
 		if (!hasAuthority)
 		{
 			// Debug.LogWarning(debug.warning + "No Authority!");
@@ -57,6 +58,7 @@ public class MouseManager : NetworkBehaviour
 
 		// Debug.Log(debug.head + this.selection);
 
+		// Component Grabbers if null --------------------------------------------------------------
 		if (gameMan == null)
 		{
 			gameMan = FindObjectOfType<GameManager>();
@@ -69,10 +71,11 @@ public class MouseManager : NetworkBehaviour
 			Debug.Log(debug.head + "GridManager was set during update");
 		}
 
-		// Flag Checkers -------------------------------------------------------
+		// Flag Checkers ---------------------------------------------------------------------------
 		CheckPurchaseSuccess();
 		CheckPlaySuccess();
 
+		// Raycast Handler -------------------------------------------------------------------------
 		// If 'P' is pressed, end the phase - Debugging only
 		if (Input.GetKeyDown(KeyCode.P))
 		{
@@ -105,262 +108,10 @@ public class MouseManager : NetworkBehaviour
 				objectHit = hitInfo.collider.transform.gameObject;
 			}
 
-			// Debug.Log(objectHit.transform.parent.name);
+			HandleObjectHit(objectHit);
 
-			// Containers for object position and rotation info
-			objX = objectHit.transform.parent.position.x;
-			objY = objectHit.transform.parent.position.y;
-			objZ = objectHit.transform.parent.position.z;
-
-			objRotX = objectHit.transform.parent.rotation.x;
-			objRotY = objectHit.transform.parent.rotation.y;
-			objRotZ = objectHit.transform.parent.rotation.z;
-
-			// LAND TILES #########################################################################
-
-			if (objectHit.transform.parent.name.Contains("Tile"))
-			{
-				// TODO: Write a function that takes in Type and element to search for,
-				//	returning the substring. Should be able to return variable lengths.
-				//	e.x. GetValue(type: "Tile", element: "x")
-
-				// Grab the grid coordinates stored in the object name
-				int locX = int.Parse(objectHit.transform.parent.name.Substring(1, 2));
-				int locY = int.Parse(objectHit.transform.parent.name.Substring(5, 2));
-
-				// PHASE 1 ####################################################
-				if (gameMan.phase == 1)
-				{
-					// Left Click #########################
-					if (Input.GetMouseButtonDown(0))
-					{
-						// gameMan.WipeSelectionColors("GameCard", ColorPalette.tintCard);
-
-						selection = -1;
-						// guiMan.CmdUpdateUI();
-
-						// If the tile can be bought
-						if (gameMan.turn == this.ownerId)
-						{
-							Debug.Log(debug.head + "Trying to buy tile!");
-							CmdBuyTile(locX, locY);
-							this.purchaseBufferX = locX;
-							this.purchaseBufferY = locY;
-						}
-						else if (this.ownerId == -1)
-						{
-							Debug.LogWarning(debug.warning + "This MouseManager has an ownerID of -1!");
-						}
-						else
-						{
-							Debug.Log(debug.head + "Player " + this.ownerId
-								+ " can't buy a tile on Player " + gameMan.turn + "'s Turn!");
-						}
-
-						// CallCmdBuyTile(locX, locY);
-						// guiMan.CmdUpdateUI();
-					} // if Left Click
-				} // Phase 1
-				else if (gameMan.phase == 2)
-				{
-					// PHASE 2 #####################################################################
-
-					// Left Click #########################
-					if (Input.GetMouseButtonDown(0))
-					{
-						// gameMan.WipeSelectionColors("GameCard", ColorPalette.tintCard);
-
-						if (selection >= 0 && gameMan.turn == this.ownerId)
-						{
-							Debug.Log(debug.head + "Trying to play card " + selection
-								+ " on " + objectHit.transform.parent.name);
-							playIndex = selection;
-							CmdPlayCard(selection, objectHit.transform.parent.name);
-						}
-						else
-						{
-							return;
-						} // if a GameCard is selected
-					} // Left Click
-				} // Phase 2
-			} // if LandTile
-
-			// GAME CARDS ##########################################################################
-
-			if (objectHit.transform.parent.name.Contains("GameCard"))
-			{
-				// Grab the grid coordinates stored in the object name
-				int locX = int.Parse(objectHit.transform.parent.name.Substring(1, 2));
-				int locY = int.Parse(objectHit.transform.parent.name.Substring(5, 2));
-
-				objX = objectHit.transform.parent.position.x;
-				objY = objectHit.transform.parent.position.y;
-				objZ = objectHit.transform.parent.position.z;
-
-				// Debug.Log(locX + ", " + locY);
-
-				// PHASES 2+ ##################################################
-				if (gameMan.phase > 1)
-				{
-					// Left Click #########################
-					if (Input.GetMouseButtonDown(0))
-					{
-						// If the object clicked was already selected, deselect it
-						if (selection == locY)
-						{
-							selection = -1;
-							objectHit.transform.parent.position = new Vector3(objX, objY, 40f);
-						}
-						else
-						{
-							selection = locY;
-							// gameMan.WipeSelectionColors("GameCard", ColorPalette.tintCard);
-							objectHit.transform.parent.position = new Vector3(objX, objY, 38f);
-							objectHit.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.cyan300;
-							objectHit.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.cyan300;
-						} // if already selected
-
-						if (selection == -1)
-						{
-							// gameMan.WipeSelectionColors("GameCard", ColorPalette.tintCard);
-						}
-						// guiMan.CmdUpdateUI();
-					} // if Left Click
-				} // Phase 2+
-			} // if GameCard
-
-			// MARKET CARDS #######################################################################
-
-			if (objectHit.transform.parent.name.Contains("MarketCard"))
-			{
-				// TODO: Write a function that takes in Type and element to search for,
-				//	returning the substring. Should be able to return variable lengths.
-				//	e.x. GetValue(type: "Tile", element: "x")
-
-				// Grab the grid coordinates stored in the object name
-				int locX = int.Parse(objectHit.transform.parent.name.Substring(1, 2));
-				int locY = int.Parse(objectHit.transform.parent.name.Substring(5, 2));
-
-				if (gameMan.phase == 2)
-				{
-					// PHASE 2 ####################################################################
-
-					// Left Click #########################
-					if (Input.GetMouseButtonDown(0))
-					{
-						// gameMan.WipeSelectionColors("GameCard", ColorPalette.tintCard);
-
-						if (selection >= 0)
-						{
-							// Left Click #########################
-							if (Input.GetMouseButtonDown(0))
-							{
-								// gameMan.WipeSelectionColors("GameCard", ColorPalette.tintCard);
-
-								if (selection >= 0 && gameMan.turn == this.ownerId)
-								{
-									Debug.Log(debug.head + "Trying to play card " + selection
-										+ " on " + objectHit.transform.parent.name);
-										playIndex = selection;
-									CmdPlayCard(selection, objectHit.transform.parent.name);
-								}
-								else
-								{
-									return;
-								} // if a GameCard is selected
-							} // Left Click
-						}
-						else
-						{
-							selection = -1;
-							// gameMan.WipeSelectionColors("GameCard", ColorPalette.tintCard);
-							// guiMan.CmdUpdateUI();
-							return;
-						} // if a GameCard is selected
-					} // Left Click
-				} // Phase 2
-			} // if LandTile
-		} // if object hit
-
-		//Debug.Log("World Point: " + worldPoint);
-		AttemptPurchaseVisuals();
-	} // Update()
-
-	private void AttemptPurchaseVisuals()
-	{
-		switch (purchaseSuccessFlag)
-		{
-			case -1:
-				break;
-
-			case 0:
-				purchaseSuccessFlag = -1;
-				break;
-
-			case 1:
-				objX = objectHit.transform.parent.position.x;
-				objY = objectHit.transform.parent.position.y;
-				objZ = objectHit.transform.parent.position.z;
-
-				objRotX = objectHit.transform.parent.rotation.x;
-				objRotY = objectHit.transform.parent.rotation.y;
-				objRotZ = objectHit.transform.parent.rotation.z;
-
-				// Changes the material of the card depending on who clicked on it.
-				// TODO: Create a method somewhere that changes the desired materials
-				//	based on an object given and a playerId/turn
-				// TODO: Nice card flip animation
-				switch (gameMan.turn)
-				{
-					case 1:
-						objectHit.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.lightBlue300;
-						objectHit.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.lightBlue300;
-						objectHit.transform.parent.rotation = new Quaternion(objRotX, 1 - objRotY, objRotZ, 0);
-						gameMan.IncrementTurn();
-						break;
-
-					case 2:
-						objectHit.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.red400;
-						objectHit.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.red400;
-						objectHit.transform.parent.rotation = new Quaternion(objRotX, 1 - objRotY, objRotZ, 0);
-						gameMan.IncrementTurn();
-						break;
-
-					case 3:
-						objectHit.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.purple300;
-						objectHit.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.purple300;
-						objectHit.transform.parent.rotation = new Quaternion(objRotX, 1 - objRotY, objRotZ, 0);
-						gameMan.IncrementTurn();
-						break;
-
-					case 4:
-						objectHit.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.orange300;
-						objectHit.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.orange300;
-						objectHit.transform.parent.rotation = new Quaternion(objRotX, 1 - objRotY, objRotZ, 0);
-						gameMan.IncrementTurn();
-						break;
-
-					default:
-						break;
-
-				} // switch
-
-				// Update the round/turn display text
-				// GameManager.UpdatePlayersInfo();
-				// if (!highlightFlag) {
-				// 	Debug.Log(debug.head + "Highlighting...");
-				// 	gameMan.HighlightNeighbors(gameMan.turn);
-				// 	highlightFlag = true;
-				// }
-				// guiMan.CmdUpdateUI();
-				purchaseSuccessFlag = -1;
-				break;
-
-			default:
-				purchaseSuccessFlag = -1;
-				break;
-		} // switch (purchaseSuccessFlag)
-	} // AttemptPurchaseVisuals()
+		} // If an object was hit
+	}
 
 	private void CheckPurchaseSuccess()
 	{
@@ -423,6 +174,115 @@ public class MouseManager : NetworkBehaviour
 		this.purchaseBufferY = locY;
 		CmdBuyTile(locX, locY);
 	} // CallCmdBuyTile()
+
+	// Handles what to do when the pointer is over an object
+	private void HandleObjectHit(GameObject objectHit)
+	{
+		// Grab info from object name
+		string[] nameArr = objectHit.transform.parent.name.Split('_');
+		string type = nameArr[2];
+		int x = int.Parse(nameArr[0].Substring(1));
+		int y = int.Parse(nameArr[1].Substring(1));
+
+		// Primary Click =======================================================
+		if (Input.GetMouseButtonDown(0) && nameArr != null)
+		{
+			Debug.Log(debug + "Clicked on " + type + ", x: " + x + ", y: " + y);
+			switch (gameMan.phase)
+			{
+				case 1:
+					BuyingPhasePrimaryClick(type, x, y);
+					break;
+				case 2:
+					PlayingPhasePrimaryClick(type, x, y);
+					break;
+				default:
+					break;
+			}
+		} // Primary Click
+
+	} // HandleObjectHit()
+
+	private void BuyingPhasePrimaryClick(string type, int x, int y)
+	{
+		this.selection = -1;
+		// If the tile can be bought
+		if (gameMan.turn == this.ownerId)
+		{
+			Debug.Log(debug.head + "Trying to buy tile!");
+			CmdBuyTile(x, y);
+			this.purchaseBufferX = x;
+			this.purchaseBufferY = y;
+		}
+		else if (this.ownerId == -1)
+		{
+			Debug.LogWarning(debug.warning + "This MouseManager has an ownerID of -1!");
+		}
+		else
+		{
+			Debug.Log(debug.head + "Player " + this.ownerId
+				+ " can't buy a tile on Player " + gameMan.turn + "'s Turn!");
+		}
+	} // BuyingPhasePrimaryClick()
+
+	private void PlayingPhasePrimaryClick(string type, int x, int y)
+	{
+		GameObject oldSelection;
+		switch (type)
+		{
+			case "Tile":
+			case "MarketCard":
+				if (selection >= 0 && gameMan.turn == this.ownerId)
+				{
+					Debug.Log(debug.head + "Trying to play card " + selection
+						+ " on " + objectHit.transform.parent.name);
+					playIndex = selection;
+					CmdPlayCard(selection, objectHit.transform.parent.name);
+				}
+				Debug.Log(debug + "Trying to find " + GameManager.CreateCardObjectName("GameCard", this.ownerId, selection));
+				oldSelection = GameObject.Find(GameManager.CreateCardObjectName("GameCard", this.ownerId, selection));
+				// oldSelection.transform.parent.position = new Vector3(oldSelection.transform.parent.position.x, oldSelection.transform.parent.position.y, objectHit.transform.parent.position.z);
+				oldSelection.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.tintCard;
+				oldSelection.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.tintCard;
+				selection = -1;
+				break;
+			case "GameCard":
+				// If the object clicked was already selected, deselect it
+				if (selection == y)
+				{
+					selection = -1;
+					// objectHit.transform.parent.position = new Vector3(objectHit.transform.parent.position.x, objectHit.transform.parent.position.y, objectHit.transform.parent.position.z);
+					objectHit.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.tintCard;
+					objectHit.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.tintCard;
+				}
+				else if (selection >= 0)
+				{
+					Debug.Log(debug + "Trying to find " + GameManager.CreateCardObjectName("GameCard", this.ownerId, selection));
+					oldSelection = GameObject.Find(GameManager.CreateCardObjectName("GameCard", this.ownerId, selection));
+					// oldSelection.transform.parent.position = new Vector3(oldSelection.transform.parent.position.x, oldSelection.transform.parent.position.y, objectHit.transform.parent.position.z);
+					oldSelection.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.tintCard;
+					oldSelection.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.tintCard;
+
+					selection = y;
+					// objectHit.transform.parent.position = new Vector3(objectHit.transform.parent.position.x, objectHit.transform.parent.position.y, (objectHit.transform.parent.position.z -2f));
+					objectHit.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.tintCyan500;
+					objectHit.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.tintCyan500;
+				}
+				else
+				{
+					selection = y;
+					// objectHit.transform.parent.position = new Vector3(objectHit.transform.parent.position.x, objectHit.transform.parent.position.y, (objectHit.transform.parent.position.z -2f));
+					objectHit.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.tintCyan500;
+					objectHit.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.tintCyan500;
+				}
+				break;
+			default:
+				break;
+		}
+
+	}
+
+	// COMMANDS ####################################################################################
 
 	[Command]
 	private void CmdFlipCard(string cardType, int locX, int locY)

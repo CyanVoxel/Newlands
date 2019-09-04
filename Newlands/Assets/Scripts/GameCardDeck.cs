@@ -2,7 +2,7 @@
 
 public class GameCardDeck : Deck
 {
-	// CONSTRUCTORS -----------------------------------------------------------
+	// CONSTRUCTORS ------------------------------------------------------------
 
 	// Default no-arg constructor
 	public GameCardDeck()
@@ -59,8 +59,8 @@ public class GameCardDeck : Deck
 			this.Add(dirGcTmS + "/sub_200_money", 4);
 
 			// Tile Mods (Other)
-			this.Add(dirGcTmO + "/upgrade_plains", 10);
-			this.Add(dirGcTmO + "/foreclosure", 2);
+			// this.Add(dirGcTmO + "/upgrade_plains", 10);
+			// this.Add(dirGcTmO + "/foreclosure", 2);
 		} // if Vanilla Standard
 	} // GameCardDeck(flavor) constructor
 } // class GameCardDeck

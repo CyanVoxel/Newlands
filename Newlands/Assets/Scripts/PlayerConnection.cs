@@ -101,75 +101,9 @@ public class PlayerConnection : NetworkBehaviour
 			return;
 		}
 
-		// if (this.lastKnownTopCard != gameMan.topCardStr)
-		// {
-		// 	// MouseManager has signaled that a successful play was made on a certain round.
-		// 	this.lastKnownTopCard = gameMan.topCardStr;
-		// 	if (this.lastKnownTopCard != "" && this.lastKnownTopCard != "empty")
-		// 	{
-
-		// 		string roundStr = this.lastKnownTopCard.Substring(this.lastKnownTopCard.IndexOf("---") + 3);
-
-		// 		Debug.Log(roundStr);
-		// 		int round = int.Parse(roundStr);
-		// 		Debug.Log(round + "!");
-		// 		if (localMouseMan.playSuccessFlag == 1)
-		// 		{
-		// 			string card = this.lastKnownTopCard.Remove(this.lastKnownTopCard.Length
-		// 				- roundStr.Length - 3);
-		// 			Debug.Log(card);
-		// 			int index = localMouseMan.playIndex;
-		// 			this.hand[index] = JsonUtility.FromJson<CardData>(card);
-		// 			localMouseMan.playSuccessFlag = -1;
-
-		// 			float xOff = index * 11 + (((GameManager.width - GameManager.handSize) / 2f) * 11);
-		// 			float yOff = -10;
-
-		// 			// If old card exists, destroy it
-		// 			GameObject oldCardObj = GameObject.Find(GameManager.CreateCardObjectName("GameCard", this.id, index));
-		// 			if (oldCardObj != null)
-		// 			{
-		// 				Debug.Log(debug + "Trying to destroy " + oldCardObj.name);
-		// 				Destroy(oldCardObj);
-		// 			}
-
-		// 			// Create new card
-		// 			GameObject cardObj = (GameObject)Instantiate(gridMan.gameCardPrefab,
-		// 				new Vector3(xOff, yOff, 40),
-		// 				Quaternion.identity);
-
-		// 			// Debug.Log("[GridManager] Trying to fill out Hand Card info...");
-		// 			CardState cardState = cardObj.GetComponent<CardState>();
-
-		// 			if (cardState != null)
-		// 			{
-		// 				// Generate and Push the string of the object's name
-		// 				cardState.objectName = (GameManager.CreateCardObjectName("GameCard", this.id, index));
-		// 				// Push new values to the CardState to be synchronized across the network
-		// 				GridManager.FillOutCardState(hand[index], ref cardState);
-		// 			}
-		// 			else
-		// 			{
-		// 				Debug.Log(debug + "This object's card state was null!");
-		// 			} // if (cardState != null)
-
-		// 			Debug.Log("it worked?");
-		// 		}
-		// 	}
-		// }
-		// else
-		// {
-		// 	if (localMouseMan.playSuccessFlag == 1)
-		// 	{
-		// 		localMouseMan.playSuccessFlag = -1;
-		// 	}
-
-		// }
-
 		// On New Turn
 		if (PhaseCheck(1))
 		{
-			// Debug.Log(debug + "It must be Phase 1 (" + this.lastKnownPhase + " - " + gameMan.phase);
 			ColorPurchasedTile();
 			// If the new turn is the player's turn and is past the grace rounds
 			//&& gameMan.turn > GameManager.graceRounds
@@ -191,16 +125,7 @@ public class PlayerConnection : NetworkBehaviour
 		}
 		else if (PhaseCheck(2) && gameMan.turnEventBroadcast != this.turnEventStr)
 		{
-
 			HandleEvent(phase: 2);
-
-			// Phase 2 Operations go here
-			// if (gameMan.turn == this.id)
-			// {
-			// 	Debug.Log("HEYO");
-			// 	HandleEvent(phase: 2);
-			// }
-
 		} // On New Turn
 
 		UpdateKnownInfo();
@@ -386,8 +311,8 @@ public class PlayerConnection : NetworkBehaviour
 	private bool PhaseCheck(int phase)
 	{
 		if ((gameMan.turn != this.lastKnownTurn
-				|| gameMan.round != this.lastKnownRound)
-			&& this.lastKnownPhase == phase)
+			|| gameMan.round != this.lastKnownRound)
+			&& gameMan.phase == phase)
 		{
 			return true;
 		}
@@ -475,15 +400,12 @@ public class PlayerConnection : NetworkBehaviour
 			// Generate and Push the string of the object's name
 			cardState.objectName = (GameManager.CreateCardObjectName("GameCard", this.id, index));
 			// Push new values to the CardState to be synchronized across the network
-			Debug.Log(cardStr);
 			GridManager.FillOutCardState(JsonUtility.FromJson<CardData>(cardStr), ref cardState);
 		}
 		else
 		{
 			Debug.Log(debug + "This object's card state was null!");
 		} // if (cardState != null)
-
-		Debug.Log("it worked?");
 	}
 
 	#endregion
