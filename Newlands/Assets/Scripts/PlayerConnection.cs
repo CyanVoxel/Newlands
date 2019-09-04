@@ -340,6 +340,9 @@ public class PlayerConnection : NetworkBehaviour
 					Debug.Log(debug + "Could not find " + GameManager.CreateCardObjectName(turnEvent.cardType,
 						turnEvent.x, turnEvent.y));
 				}
+
+				// TODO: Add code to refresh a market card's footer value if a card was played on it.
+
 				break;
 			case "Buy":
 				// Add bought Tile to local knowledge base

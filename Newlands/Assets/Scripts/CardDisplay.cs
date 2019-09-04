@@ -413,13 +413,14 @@ public class CardDisplay : NetworkBehaviour
 
 	public void UpdateFooter(GridUnit unit, double value)
 	{
-		GameObject footerObj = transform.Find("Front Canvas/Footer").gameObject;
+		CardState cardState = unit.tileObj.GetComponent<CardState>();
+		GameObject footerObj = this.transform.Find("Front Canvas/Footer").gameObject;
 		TMP_Text footer = footerObj.GetComponent<TMP_Text>();
 
-		ResourceInfo.pricesMut.TryGetValue(unit.card.resource, out unit.card.footerValue);
-		footer.text = InsertFooterValue(unit.tileObj.GetComponent<CardState>(), unit.card.footerText);
-		footer.text = TagToCardData(MdToTag(footer.text), unit.tileObj.GetComponent<CardState>());
-		GameManager.UpdatePlayersInfo();
-		// GuiManager.CmdUpdateUI();
+		cardState.footerValue = (int)value;
+		string tempFooter = cardState.footerText;
+
+		tempFooter = InsertFooterValue(cardState, cardState.footerText);
+		footer.text = TagToCardData(MdToTag(tempFooter), cardState);
 	} //UpdateFooter()
 } // class CardDisplay

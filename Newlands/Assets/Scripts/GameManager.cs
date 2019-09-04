@@ -29,6 +29,9 @@ public class GameManager : NetworkBehaviour
 	[SyncVar]
 	public string topCardStr = "";
 
+	[SyncVar]
+	public string playersMoneyStr = "";
+
 	public static readonly int width = 3; // Width of the game grid in cards
 	public static readonly int height = 3; // Height of the game grid in cards
 	public static readonly int handSize = 5; // How many cards the player is dealt
@@ -215,94 +218,94 @@ public class GameManager : NetworkBehaviour
 
 	// Returns the color associated with a player ID.
 	// Strength paramater refers to a possible brighter color variant.
-	public Color GetPlayerColor(int playerID, int strength = 500)
-	{
-		Color color = ColorPalette.tintCard;
+	// public Color GetPlayerColor(int playerID, int strength = 500)
+	// {
+	// 	Color color = ColorPalette.tintCard;
 
-		switch (playerID)
-		{
-			case 1:
-				if (strength == 500)
-				{
-					color = ColorPalette.lightBlue500;
-				}
-				else if (strength == 400)
-				{
-					color = ColorPalette.lightBlue400;
-				}
-				else if (strength == 300)
-				{
-					color = ColorPalette.lightBlue300;
-				}
-				else if (strength == 200)
-				{
-					color = ColorPalette.lightBlue200;
-				}
-				break;
+	// 	switch (playerID)
+	// 	{
+	// 		case 1:
+	// 			if (strength == 500)
+	// 			{
+	// 				color = ColorPalette.lightBlue500;
+	// 			}
+	// 			else if (strength == 400)
+	// 			{
+	// 				color = ColorPalette.lightBlue400;
+	// 			}
+	// 			else if (strength == 300)
+	// 			{
+	// 				color = ColorPalette.lightBlue300;
+	// 			}
+	// 			else if (strength == 200)
+	// 			{
+	// 				color = ColorPalette.lightBlue200;
+	// 			}
+	// 			break;
 
-			case 2:
-				if (strength == 500)
-				{
-					color = ColorPalette.red500;
-				}
-				else if (strength == 400)
-				{
-					color = ColorPalette.red400;
-				}
-				else if (strength == 300)
-				{
-					color = ColorPalette.red300;
-				}
-				else if (strength == 200)
-				{
-					color = ColorPalette.red300;
-				}
-				break;
+	// 		case 2:
+	// 			if (strength == 500)
+	// 			{
+	// 				color = ColorPalette.red500;
+	// 			}
+	// 			else if (strength == 400)
+	// 			{
+	// 				color = ColorPalette.red400;
+	// 			}
+	// 			else if (strength == 300)
+	// 			{
+	// 				color = ColorPalette.red300;
+	// 			}
+	// 			else if (strength == 200)
+	// 			{
+	// 				color = ColorPalette.red300;
+	// 			}
+	// 			break;
 
-			case 3:
-				if (strength == 500)
-				{
-					color = ColorPalette.purple500;
-				}
-				else if (strength == 400)
-				{
-					color = ColorPalette.purple400;
-				}
-				else if (strength == 300)
-				{
-					color = ColorPalette.purple300;
-				}
-				else if (strength == 200)
-				{
-					color = ColorPalette.purple200;
-				}
-				break;
+	// 		case 3:
+	// 			if (strength == 500)
+	// 			{
+	// 				color = ColorPalette.purple500;
+	// 			}
+	// 			else if (strength == 400)
+	// 			{
+	// 				color = ColorPalette.purple400;
+	// 			}
+	// 			else if (strength == 300)
+	// 			{
+	// 				color = ColorPalette.purple300;
+	// 			}
+	// 			else if (strength == 200)
+	// 			{
+	// 				color = ColorPalette.purple200;
+	// 			}
+	// 			break;
 
-			case 4:
-				if (strength == 500)
-				{
-					color = ColorPalette.amber500;
-				}
-				else if (strength == 400)
-				{
-					color = ColorPalette.amber400;
-				}
-				else if (strength == 300)
-				{
-					color = ColorPalette.amber300;
-				}
-				else if (strength == 200)
-				{
-					color = ColorPalette.amber200;
-				}
-				break;
+	// 		case 4:
+	// 			if (strength == 500)
+	// 			{
+	// 				color = ColorPalette.amber500;
+	// 			}
+	// 			else if (strength == 400)
+	// 			{
+	// 				color = ColorPalette.amber400;
+	// 			}
+	// 			else if (strength == 300)
+	// 			{
+	// 				color = ColorPalette.amber300;
+	// 			}
+	// 			else if (strength == 200)
+	// 			{
+	// 				color = ColorPalette.amber200;
+	// 			}
+	// 			break;
 
-			default:
-				break;
-		} // switch
+	// 		default:
+	// 			break;
+	// 	} // switch
 
-		return color;
-	} // GetPlayerColor()
+	// 	return color;
+	// } // GetPlayerColor()
 
 	// Tries to play a Card on a TIle. Returns true is successful.
 	// Assumes that the player whose turn it is can be the only one who calls this (for now).
@@ -382,7 +385,7 @@ public class GameManager : NetworkBehaviour
 							// TargetDestroyGameObject(connectionToClient, cardToDestroy);
 
 						}
-						wasPlayed = true;
+
 						CardData topCard;
 
 						if (DrawCard(masterDeckMutable.gameCardDeck, masterDeck.gameCardDeck, out topCard))
@@ -397,7 +400,10 @@ public class GameManager : NetworkBehaviour
 						TurnEvent turnEvent = new TurnEvent(2, turn, "Play",
 							"GameCard", turn, cardIndex, this.topCardStr);
 						this.turnEventBroadcast = JsonUtility.ToJson(turnEvent);
+
+						UpdatePlayersInfo();
 						this.IncrementTurn();
+						wasPlayed = true;
 					}
 				}
 				break;
@@ -461,7 +467,7 @@ public class GameManager : NetworkBehaviour
 							// TargetDestroyGameObject(connectionToClient, cardToDestroy);
 
 						}
-						wasPlayed = true;
+
 						CardData topCard;
 
 						if (DrawCard(masterDeckMutable.gameCardDeck, masterDeck.gameCardDeck, out topCard))
@@ -476,7 +482,10 @@ public class GameManager : NetworkBehaviour
 						TurnEvent turnEvent = new TurnEvent(2, turn, "Play",
 							"GameCard", turn, cardIndex, this.topCardStr);
 						this.turnEventBroadcast = JsonUtility.ToJson(turnEvent);
+
+						UpdatePlayersInfo();
 						this.IncrementTurn();
+						wasPlayed = true;
 					}
 				}
 				break;
@@ -491,14 +500,16 @@ public class GameManager : NetworkBehaviour
 		return wasPlayed;
 	} // PlayCard()
 
-	public static void UpdatePlayersInfo()
+	public void UpdatePlayersInfo()
 	{
+		gridMan.UpdateResourceValues();
 		// Things that need to be updated for all players go here
 		for (int i = 0; i < players.Count; i++)
 		{
 			players[i].CalcTotalMoney();
 			// Debug.Log("Player " + (i + 1) + "'s Money: $" + players[i].totalMoney);
 		} // for array length
+		UpdatePlayerMoneyStr();
 	} // UpdatePlayersInfo()
 
 	public static void BankruptTile(GridUnit tile)
@@ -517,7 +528,24 @@ public class GameManager : NetworkBehaviour
 			players[i].Id = (i + 1);
 			players[i].hand = DrawHand(handSize);
 		} // for playerCount
+		UpdatePlayerMoneyStr();
 	} // InitPlayers()
+
+	private void UpdatePlayerMoneyStr()
+	{
+		playersMoneyStr = "";
+
+		for (int i = 0; i < playerCount; i++)
+		{
+			playersMoneyStr += players[i].totalMoney;
+
+			if (playerCount - i > 1)
+			{
+				playersMoneyStr += "_";
+			}
+		} // for playerCount
+		Debug.Log(debug + "Player Money String: " + playersMoneyStr);
+	} // UpdatePlayerMoneyStr()()
 
 	// Draws random GameCards from the masterDeck and returns a deck of a specified size
 	private Deck DrawHand(int handSize)
@@ -584,9 +612,10 @@ public class GameManager : NetworkBehaviour
 				+ " (ID: " + GameManager.players[turn - 1].Id
 				+ ") bought tile " + target.ToString());
 			// Debug.Log(debug + "Advancing Turn; This is a temporary mechanic!");
-			purchaseSuccess = true;
 
+			UpdatePlayersInfo();
 			this.IncrementTurn();
+			purchaseSuccess = true;
 		}
 		else
 		{

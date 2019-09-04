@@ -8,12 +8,14 @@ public class RuleSet : MonoBehaviour
 	private static string debugH = "<color=#0091EAFF><b>[RuleSet] </b></color>";
 
 	private GridManager gridMan;
+	private GameManager gameMan;
 
 	// METHODS ####################################################################################
 
 	void Start()
 	{
 		gridMan = FindObjectOfType<GridManager>();
+		gameMan = FindObjectOfType<GameManager>();
 	}
 
 	// Compares a Game Card against a target Card/Tle to determine if it is allowed to be played
@@ -280,7 +282,7 @@ public class RuleSet : MonoBehaviour
 	} // IsLegal
 
 	// Carries out the action that a legal Game Card intends
-	public static void PlayCard(GridUnit target, CardData cardToPlay)
+	public void PlayCard(GridUnit target, CardData cardToPlay)
 	{
 		string action = cardToPlay.subtitle;
 		// NOTE: Cards promting tile value calculation have their calculations offset to
@@ -293,23 +295,23 @@ public class RuleSet : MonoBehaviour
 		{
 			case "Investment":
 				target.CalcTotalValue();
-				GameManager.UpdatePlayersInfo();
+				gameMan.UpdatePlayersInfo();
 				break;
 
 			case "Sabotage":
 				target.CalcTotalValue();
-				GameManager.UpdatePlayersInfo();
+				gameMan.UpdatePlayersInfo();
 				break;
 
 			case "Resource":
 				target.CalcTotalValue();
-				GameManager.UpdatePlayersInfo();
+				gameMan.UpdatePlayersInfo();
 				break;
 
 			case "Foreclosure":
 				target.bankrupt = true;
 				GameManager.BankruptTile(target);
-				GameManager.UpdatePlayersInfo();
+				gameMan.UpdatePlayersInfo();
 				break;
 			case "Upgrade":
 				if (GetScope(cardToPlay, 2) == "Plains" && target.subScope != "Farmland")
@@ -323,7 +325,7 @@ public class RuleSet : MonoBehaviour
 					target = GridManager.grid[target.x, target.y];
 
 					target.CalcTotalValue();
-					GameManager.UpdatePlayersInfo();
+					gameMan.UpdatePlayersInfo();
 				} // if Plains
 				break;
 			default:

@@ -3,12 +3,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ResourceInfo : MonoBehaviour
+public class ResourceInfo
 {
 	// DATA FIELDS #################################################################################
 
 	public static List<string> resources = new List<string>();
-	public static Dictionary<string, int> prices = new Dictionary<string, int>();
+	public static readonly Dictionary<string, int> prices = new Dictionary<string, int>();
 	public static Dictionary<string, int> pricesMut = new Dictionary<string, int>();
 
 	// METHODS #####################################################################################
@@ -41,7 +41,6 @@ public class ResourceInfo : MonoBehaviour
 		prices.Add("Silver", 500);
 		prices.Add("Gold", 1000);
 		prices.Add("Platinum", 2000);
-		pricesMut = prices;
 
 		// Error checking; verify that each resource corresponds to a price
 		// If there's an equal number of resources and prices, continue
@@ -55,6 +54,11 @@ public class ResourceInfo : MonoBehaviour
 						+ "The resource \"" + resources[i] + "\""
 						+ " could not be found in the price dictionary!");
 				} // if prices does not contain key for a resource
+				else{
+					int value = -1;
+					prices.TryGetValue(resources[i], out value);
+					pricesMut.Add(resources[i], value);
+				}
 			} // for
 		}
 		else

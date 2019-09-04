@@ -77,7 +77,9 @@ public class GridUnit
 		}
 		else if (this.card.category == "Market")
 		{
-			ResourceInfo.prices.TryGetValue(this.resource, out this.baseValue);
+			// Base Value will not be used for Market Cards - Reference ResourceInfo instead.
+			// ResourceInfo.prices.TryGetValue(this.resource, out this.baseValue);
+			// Debug.Log(debug + "Base value for " + this.resource + " was found to be " + this.baseValue);
 		}
 
 	} // CalcBaseValue()
@@ -105,19 +107,19 @@ public class GridUnit
 			// NOTE: Currently, this is the same code for Tile. This is here incase it needs to
 			// to change at some point.
 			this.valueMod = 0;
-			Debug.Log("Stack Size  :" + this.stackSize);
-			Debug.Log("Stack Count: " + this.cardStack.Count);
+			// Debug.Log("Stack Size  :" + this.stackSize);
+			// Debug.Log("Stack Count: " + this.cardStack.Count);
 
 			for (int i = 0; i < this.cardStack.Count; i++)
 			{
 				if (this.cardStack[i].subtitle == "Investment" && this.cardStack[i].percFlag)
 				{
 					this.valueMod += this.cardStack[i].footerValue;
-					Debug.Log("Should be working! " + this.cardStack[i].footerValue);
+					// Debug.Log("Should be working! " + this.cardStack[i].footerValue);
 				}
 				else if (this.cardStack[i].subtitle == "Sabotage" && this.cardStack[i].percFlag)
 				{
-					Debug.Log("Should be working! -" + this.cardStack[i].footerValue);
+					// Debug.Log("Should be working! -" + this.cardStack[i].footerValue);
 					this.valueMod -= this.cardStack[i].footerValue;
 				} // if-else
 			} // for cardStack size
@@ -128,6 +130,7 @@ public class GridUnit
 	//	totalValue field on this GridUnit object
 	public void CalcTotalValue()
 	{
+		// Debug.Log(debug + "Category: " + this.category);
 		// Reset all value data and recalculate
 		if (this.category == "Tile")
 		{
@@ -138,9 +141,9 @@ public class GridUnit
 			this.totalValue = (double)this.baseValue
 				+ ((double)this.baseValue * ((double)this.valueMod) / 100d);
 
-			// Debug.Log("[GridUnit] Tile " + this.x + ", " + this.y + " base value:  " +
+			// Debug.Log(debug + "[GridUnit] Tile " + this.x + ", " + this.y + " base value:  " +
 			// 	this.baseValue);
-			// Debug.Log("[GridUnit] Tile " + this.x + ", " + this.y + " total value: " +
+			// Debug.Log(debug + "[GridUnit] Tile " + this.x + ", " + this.y + " total value: " +
 			// 	this.totalValue);
 
 			if (this.totalValue < 0)
@@ -157,22 +160,26 @@ public class GridUnit
 			this.CalcBaseValue();
 			this.CalcValueMod();
 
-			// Debug.Log("Old PriceMut: " + ResourceInfo.pricesMut[this.resource]);
-			// Debug.Log("Base Value  : " + this.baseValue);
-			// Debug.Log("Value Mod   : " + this.valueMod);
-			// Debug.Log("Calculating...");
+			// Debug.Log(debug + "Resource: " + this.resource + " ----------------------");
+			// Debug.Log(debug + "Old PriceMut: " + ResourceInfo.pricesMut[this.resource]);
+			// // ResourceInfo.prices.TryGetValue(this.resource, out this.baseValue);
+			// Debug.Log(debug + "Base Value  : " + ResourceInfo.prices[this.resource]);
+			// Debug.Log(debug + "Value Mod   : " + this.valueMod);
+			// Debug.Log(debug + "Calculating...");
 
-			this.totalValue = (double)this.baseValue
-				+ ((double)this.baseValue * ((double)this.valueMod) / 100d);
+			this.totalValue = (double)ResourceInfo.prices[this.resource]
+				+ ((double)ResourceInfo.prices[this.resource] * ((double)this.valueMod) / 100d);
 
 			// Debug.Log("Total Value: " + this.totalValue);
 
 			ResourceInfo.pricesMut[this.resource] = (int)this.totalValue;
-			cardDis.UpdateFooter(this, ResourceInfo.pricesMut[this.resource]);
+			// cardDis.UpdateFooter(this, ResourceInfo.pricesMut[this.resource]);
+			tileObj.GetComponent<CardState>().footerValue = ResourceInfo.pricesMut[this.resource];
 
-			// Debug.Log("New PriceMut: " + ResourceInfo.pricesMut[this.resource]);
-			// Debug.Log("Base Value  : " + this.baseValue);
-			// Debug.Log("Value Mod   : " + this.valueMod);
+			// Debug.Log(debug + "New PriceMut: " + ResourceInfo.pricesMut[this.resource]);
+			// // ResourceInfo.prices.TryGetValue(this.resource, out this.baseValue);
+			// Debug.Log(debug + "Base Value  : " + ResourceInfo.prices[this.resource]);
+			// Debug.Log(debug + "Value Mod   : " + this.valueMod);
 		} // if tile
 	} // CalcTotalValue()
 

@@ -25,9 +25,9 @@ public class CardState : NetworkBehaviour
 	[SyncVar(hook = "OnBodyChange")]
 	public string bodyText; // The Card's Body Text
 
-	[SyncVar(hook = "OnFooterChange")]
+	[SyncVar(hook = "OnFooterTextChange")]
 	public string footerText; // The Card's Footer Text
-	[SyncVar]
+	[SyncVar(hook = "OnFooterValueChange")]
 	public int footerValue;
 	[SyncVar] // No hook on values which won't change under current game rules
 	public bool percFlag;
@@ -62,7 +62,8 @@ public class CardState : NetworkBehaviour
 		OnTitleChange("George");
 		OnSubtitleChange("Kramer");
 		OnBodyChange("Elaine");
-		OnFooterChange("Newman");
+		OnFooterTextChange("Newman");
+		OnFooterValueChange(69);
 		OnCategoryChange("Leo");
 	} // Start()
 
@@ -81,7 +82,8 @@ public class CardState : NetworkBehaviour
 			OnTitleChange("George");
 			OnSubtitleChange("Kramer");
 			OnBodyChange("Elaine");
-			OnFooterChange("Newman");
+			OnFooterTextChange("Newman");
+			OnFooterValueChange(69);
 			OnCategoryChange("Leo");
 		}
 	}
@@ -108,7 +110,7 @@ public class CardState : NetworkBehaviour
 
 	} // OnObjectNameChange()
 
-	private void OnFooterChange(string newFooterText)
+	private void OnFooterTextChange(string newFooterText)
 	{
 		TryToGrabComponents();
 
@@ -116,7 +118,15 @@ public class CardState : NetworkBehaviour
 		{
 			cardDis.DisplayFooter(this.transform.gameObject);
 		}
-	} // OnFooterChange()
+	} // OnFooterTextChange()
+
+	private void OnFooterValueChange(int newFooterValue)
+	{
+		TryToGrabComponents();
+
+		cardDis.DisplayFooter(this.transform.gameObject);
+
+	} // OnFooterValueChange()
 
 	private void OnCategoryChange(string newCategory)
 	{

@@ -250,6 +250,21 @@ public class GridManager : NetworkBehaviour
 
 	} // InitMarketGrid()
 
+	// Recalculates resource values based on the Market Grid
+	public void UpdateResourceValues()
+	{
+		for (int x = 0; x < marketGrid.GetLength(0); x++)
+		{
+			for (int y = 0; y < marketGrid.GetLength(1); y++)
+			{
+				if (marketGrid[x, y] != null)
+				{
+					marketGrid[x, y].CalcTotalValue();
+				}
+			}
+		}
+	} // UpdateResourceValues()
+
 	// Shifts rows of cards up or down. Used to give room for cards under tiles.
 	public void ShiftRow(string type, int row, int units)
 	{

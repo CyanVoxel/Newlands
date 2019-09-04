@@ -15,15 +15,22 @@ public class HudController : MonoBehaviour
 	private int lastKnownTurn = -1;
 	private int lastKnownRound = -1;
 	private int lastKnownPhase = -1;
+	private string lastKnownPlayerMoneyStr = "";
+	private List<TMP_Text> playerMoneyText = new List<TMP_Text>();
+	private List<int> playerMoneyAmounts = new List<int>();
+
+	private static DebugTag debug = new DebugTag("HudController", "4CAF50");
 
 	// Start is called before the first frame update
 	void Start()
 	{
 		InitPlayerText();
+		InitMoneyText();
 
 		this.lastKnownTurn = gameMan.turn;
 		this.lastKnownRound = gameMan.round;
 		this.lastKnownPhase = gameMan.phase;
+		this.lastKnownPlayerMoneyStr = gameMan.playersMoneyStr;
 
 		UpdateUI();
 	} // Start()
@@ -34,7 +41,8 @@ public class HudController : MonoBehaviour
 		// On New Turn
 		if (gameMan.turn != this.lastKnownTurn
 			|| gameMan.round != this.lastKnownRound
-			|| gameMan.phase != this.lastKnownPhase)
+			|| gameMan.phase != this.lastKnownPhase
+			|| gameMan.playersMoneyStr != this.lastKnownPlayerMoneyStr)
 		{
 			UpdateUI();
 		}
@@ -62,7 +70,31 @@ public class HudController : MonoBehaviour
 		}
 	} //InitPlayerText()
 
+	private void InitMoneyText()
+	{
+		for (int i = 0; i < GameManager.playerCount; i++)
+		{
+			if (transform.Find("Hud/Money/Player (" + (i + 1) + ")") != null
+				&& (transform.Find("Hud/Money/Player (" + (i + 1) + ")").GetComponent<TMP_Text>() != null))
+			{
+				TMP_Text newPlayerMoneyText = transform.Find("Hud/Money/Player (" + (i + 1) + ")").gameObject.GetComponent<TMP_Text>();
+				playerMoneyText.Insert(i, newPlayerMoneyText);
+				playerMoneyText[i].text = "Player " + (i + 1) + "'s Cash: $0";
+			}
+			else
+			{
+				Debug.Log(debug + "Hud/Money/Player (" + (i + 1) + ")" + " was null?");
+			}
+		}
+	} // InitMoneyText()
+
 	private void UpdateUI()
+	{
+		UpdatePhaseRoundTurnUI();
+		UpdateMoneyUI();
+	}
+
+	private void UpdatePhaseRoundTurnUI()
 	{
 		this.lastKnownTurn = gameMan.turn;
 		this.lastKnownRound = gameMan.round;
@@ -71,5 +103,22 @@ public class HudController : MonoBehaviour
 		this.phaseNumberText.text = ("Phase " + this.lastKnownPhase);
 		this.roundNumberText.text = ("Round " + this.lastKnownRound);
 		this.turnNumberText.text = ("Player " + this.lastKnownTurn + "'s Turn");
-	} // UpdateUI()
+	}
+
+	private void UpdateMoneyUI()
+	{
+		this.lastKnownPlayerMoneyStr = gameMan.playersMoneyStr;
+
+		if (this.lastKnownPlayerMoneyStr != "")
+		{
+			string[] playersMoneyStr = this.lastKnownPlayerMoneyStr.Split('_');
+
+			for (int i = 0; i < playersMoneyStr.Length; i++)
+			{
+				this.playerMoneyAmounts.Insert(i, int.Parse(playersMoneyStr[i]));
+				this.playerMoneyText[i].text = "Player " + (i + 1) + "'s Cash: $" + playerMoneyAmounts[i];
+			}
+		}
+	}
+
 } // class HudController
