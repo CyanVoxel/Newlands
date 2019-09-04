@@ -101,16 +101,22 @@ public class PlayerConnection : NetworkBehaviour
 			return;
 		}
 
-		// On New Turn
+		if (this.turnEventStr != gameMan.turnEventBroadcast)
+		{
+			HandleEvent();
+			this.turnEventStr = gameMan.turnEventBroadcast;
+		}
+
+		// Highlight cards during Buying Phase
 		if (PhaseCheck(1))
 		{
-			ColorPurchasedTile();
-			// If the new turn is the player's turn and is past the grace rounds
-			//&& gameMan.turn > GameManager.graceRounds
 			if (gameMan.turn == this.id)
 			{
 				if (gameMan.round > GameManager.graceRounds)
 				{
+					Debug.Log(debug + "Highlighting " + GetNeighbors().Count
+						+ " when there's " + GetUnownedCards().Count
+						+ " card(s) left");
 					CardAnimations.HighlightCards(GetNeighbors(), this.id);
 				}
 				else
@@ -123,11 +129,8 @@ public class PlayerConnection : NetworkBehaviour
 				CardAnimations.HighlightCards(GetUnownedCards(), 0);
 			}
 		}
-		else if (PhaseCheck(2) && gameMan.turnEventBroadcast != this.turnEventStr)
-		{
-			HandleEvent(phase: 2);
-		} // On New Turn
 
+		// This is at the bottom so handlers can compare old data with new data
 		UpdateKnownInfo();
 	} // Update()
 
@@ -164,42 +167,6 @@ public class PlayerConnection : NetworkBehaviour
 		// mouseManObj.transform.name = "MouseManager (" + this.id + ")";
 		GameManager.localPlayerId = this.id;
 	} // OnIdChange()
-
-	// TODO: Supplement this with a method that sends a list of coordinate2s to
-	// CardAnimations to color all of
-	// NOTE: This method currently does a lot more than it should and will be broken up.
-	private void ColorPurchasedTile()
-	{
-		this.turnEventStr = gameMan.turnEventBroadcast;
-		TurnEvent turnEvent = JsonUtility.FromJson<TurnEvent>(this.turnEventStr);
-		Debug.Log(debug.head + turnEvent);
-
-		// Register cards and their owners with local List and Grid
-		this.knownOwnersGrid[turnEvent.x, turnEvent.y] = turnEvent.playerId;
-		this.knownOwnersList[turnEvent.playerId - 1].Add(new Coordinate2(turnEvent.x, turnEvent.y));
-
-		Debug.Log(debug + GameManager.CreateCardObjectName("Tile",
-			turnEvent.x,
-			turnEvent.y));
-
-		GameObject cardObj = GameObject.Find(GameManager.CreateCardObjectName("Tile",
-			turnEvent.x,
-			turnEvent.y));
-
-		switch (turnEvent.playerId)
-		{
-			case 1:
-				cardObj.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.tintRed500;
-				cardObj.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.tintRed500;
-				break;
-			case 2:
-				cardObj.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.tintBlueLight500;
-				cardObj.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.tintBlueLight500;
-				break;
-			default:
-				break;
-		}
-	} // ColorOwnedTiles()
 
 	private List<Coordinate2> GetNeighbors()
 	{
@@ -311,7 +278,7 @@ public class PlayerConnection : NetworkBehaviour
 	private bool PhaseCheck(int phase)
 	{
 		if ((gameMan.turn != this.lastKnownTurn
-			|| gameMan.round != this.lastKnownRound)
+				|| gameMan.round != this.lastKnownRound)
 			&& gameMan.phase == phase)
 		{
 			return true;
@@ -332,45 +299,80 @@ public class PlayerConnection : NetworkBehaviour
 	} // UpdateKnownRounds()
 
 	// TODO: Rename to something more descriptive, or expand functionality.
-	private void HandleEvent(int phase)
+	private void HandleEvent()
 	{
+		GameObject cardObj;
 		//Handle an event during Phase 2 on your turn
 		this.turnEventStr = gameMan.turnEventBroadcast;
 		TurnEvent turnEvent = JsonUtility.FromJson<TurnEvent>(this.turnEventStr);
 		Debug.Log(debug + "TurnEvent: " + turnEvent);
 
 		// Check if the message should be addressed by this player
-		if (turnEvent.phase != phase || turnEvent.playerId != this.id)
-		{
-			return;
-		}
+		// if (turnEvent.phase != phase || turnEvent.playerId != this.id)
+		// {
+		// 	return;
+		// }
 
 		// Operations ==========================================================
 
-		if (turnEvent.operation == "Play")
+		switch (turnEvent.operation)
 		{
-			GameObject cardObj = GameObject.Find(GameManager.CreateCardObjectName(turnEvent.cardType,
-				turnEvent.x, turnEvent.y));
-			if (cardObj != null)
-			{
-				Debug.Log(debug + "Trying to destroy " + cardObj.name);
-				Destroy(cardObj);
-				if (turnEvent.topCard != "empty")
+			case "Play":
+				cardObj = GameObject.Find(GameManager.CreateCardObjectName(turnEvent.cardType,
+					turnEvent.x, turnEvent.y));
+				if (cardObj != null)
 				{
-					// this.hand[turnEvent.y] = JsonUtility.FromJson<CardData>(turnEvent.topCard);
-					CreateNewCardObject(turnEvent.y, turnEvent.topCard);
+					Debug.Log(debug + "Trying to destroy " + cardObj.name);
+					Destroy(cardObj);
+					if (turnEvent.topCard != "empty")
+					{
+						// this.hand[turnEvent.y] = JsonUtility.FromJson<CardData>(turnEvent.topCard);
+						CreateNewCardObject(turnEvent.y, turnEvent.topCard);
+					}
+					else
+					{
+						Debug.Log(debug + "GameCard deck must be empty!");
+					}
+
 				}
 				else
 				{
-					Debug.Log(debug + "GameCard deck must be empty!");
+					Debug.Log(debug + "Could not find " + GameManager.CreateCardObjectName(turnEvent.cardType,
+						turnEvent.x, turnEvent.y));
+				}
+				break;
+			case "Buy":
+				// Add bought Tile to local knowledge base
+				this.knownOwnersGrid[turnEvent.x, turnEvent.y] = turnEvent.playerId;
+				this.knownOwnersList[turnEvent.playerId - 1].Add(new Coordinate2(turnEvent.x, turnEvent.y));
+
+				// Grab the Tile GameObject that was bought
+				Debug.Log(debug + GameManager.CreateCardObjectName("Tile",
+					turnEvent.x,
+					turnEvent.y));
+				cardObj = GameObject.Find(GameManager.CreateCardObjectName("Tile",
+					turnEvent.x,
+					turnEvent.y));
+
+				// Depending on the player who bought the tile, change the Tile's color.
+				// NOTE: Move to CardAnimations or something.
+				switch (turnEvent.playerId)
+				{
+					case 1:
+						cardObj.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.tintRed500;
+						cardObj.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.tintRed500;
+						break;
+					case 2:
+						cardObj.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.tintBlueLight500;
+						cardObj.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.tintBlueLight500;
+						break;
+					default:
+						break;
 				}
 
-			}
-			else
-			{
-				Debug.Log(debug + "Could not find " + GameManager.CreateCardObjectName(turnEvent.cardType,
-					turnEvent.x, turnEvent.y));
-			}
+				break;
+			default:
+				break;
 		}
 	}
 
