@@ -63,7 +63,7 @@ public class CardState : NetworkBehaviour
 		OnSubtitleChange("Kramer");
 		OnBodyChange("Elaine");
 		OnFooterTextChange("Newman");
-		OnFooterValueChange(69);
+		OnFooterValueChange(this.footerValue);
 		OnCategoryChange("Leo");
 	} // Start()
 
@@ -83,7 +83,7 @@ public class CardState : NetworkBehaviour
 			OnSubtitleChange("Kramer");
 			OnBodyChange("Elaine");
 			OnFooterTextChange("Newman");
-			OnFooterValueChange(69);
+			OnFooterValueChange(this.footerValue);
 			OnCategoryChange("Leo");
 		}
 	}
@@ -124,6 +124,7 @@ public class CardState : NetworkBehaviour
 	{
 		TryToGrabComponents();
 
+		this.footerValue = newFooterValue;
 		cardDis.DisplayFooter(this.transform.gameObject);
 
 	} // OnFooterValueChange()

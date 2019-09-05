@@ -119,8 +119,9 @@ public class GridUnit
 				}
 				else if (this.cardStack[i].subtitle == "Sabotage" && this.cardStack[i].percFlag)
 				{
-					// Debug.Log("Should be working! -" + this.cardStack[i].footerValue);
 					this.valueMod -= this.cardStack[i].footerValue;
+					// Debug.Log("Should be working! -" + this.cardStack[i].footerValue);
+					// this.valueMod -= this.cardStack[i].footerValue; // NOTE: Only do locally!
 				} // if-else
 			} // for cardStack size
 		} // if-else category

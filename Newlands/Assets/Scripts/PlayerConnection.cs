@@ -33,12 +33,19 @@ public class PlayerConnection : NetworkBehaviour
 	private int lastKnownRound = -1;
 	private int lastKnownPhase = -1;
 	private string lastKnownTopCard = "";
+	private string lastKnownPriceList = "";
 	// An array of Lists containing coordinates of all known Tiles owned by all players.
 	// This is used for quicker access of THESE CARDS.
 	private List<Coordinate2>[] knownOwnersList;
 	// A 2-Dimensional array containing the location of all known Tiles owned by all players.
 	// This is used for quicker access to NEIGHBOR CARDS.
 	private int[, ] knownOwnersGrid;
+	// A 2-Dimensional array of GridUnits used for keeping references of the Market Cards.
+	// Used for acessing the cards' CardStates to update their footer text.
+	List<CardState> localMarketList = new List<CardState>();
+	// private Dictionary<CardState, int> localPrices = new Dictionary<CardState, int>();
+	private List<int> localPrices = new List<int>();
+	private List<string> localResources = new List<string>();
 	private string turnEventStr;
 
 	#endregion
@@ -77,6 +84,7 @@ public class PlayerConnection : NetworkBehaviour
 				this.knownOwnersList[i] = new List<Coordinate2>();
 			}
 
+			InitLocalMarketGrid();
 			UpdateKnownInfo();
 
 			// If this is Player 1 and it's the first Turn of the first Round
@@ -104,7 +112,15 @@ public class PlayerConnection : NetworkBehaviour
 		if (this.turnEventStr != gameMan.turnEventBroadcast)
 		{
 			HandleEvent();
-			this.turnEventStr = gameMan.turnEventBroadcast;
+			// this.turnEventStr = gameMan.turnEventBroadcast; // Unnecessary, this gets done later.
+		}
+
+		if (this.lastKnownPriceList != gameMan.priceListStr)
+		{
+			Debug.Log(debug + "Updating prices...");
+			UpdateLocalPrices();
+			UpdateMarketFooters();
+			// this.lastKnownPriceList = gameMan.priceListStr; // Unnecessary, this gets done later.
 		}
 
 		// Highlight cards during Buying Phase
@@ -296,6 +312,7 @@ public class PlayerConnection : NetworkBehaviour
 		this.lastKnownPhase = gameMan.phase;
 		this.turnEventStr = gameMan.turnEventBroadcast;
 		this.lastKnownTopCard = gameMan.topCardStr;
+		this.lastKnownPriceList = gameMan.priceListStr;
 	} // UpdateKnownRounds()
 
 	// TODO: Rename to something more descriptive, or expand functionality.
@@ -411,7 +428,89 @@ public class PlayerConnection : NetworkBehaviour
 		{
 			Debug.Log(debug + "This object's card state was null!");
 		} // if (cardState != null)
-	}
+	} // CreateNewCardObject()
+
+	private void InitLocalMarketGrid()
+	{
+		// Container used for storing a found Market Card.
+		GameObject marketCardObj;
+		int marketWidth = ResourceInfo.resources.Count / GameManager.height;
+		int marketHeight = GameManager.height;
+		// Initialize the local Market Grid
+		// CardState[,] localMarketGrid = new CardState[marketWidth, marketHeight];
+		// List<CardState> localMarketList = new List<CardState>();
+		// localPrices = new int[localMarketList.Count];
+		// localResources = new string[localMarketList.Count];
+
+		for (int x = 0; x < marketWidth; x++)
+		{
+			for (int y = 0; y < marketHeight; y++)
+			{
+				marketCardObj = GameObject.Find(GameManager.CreateCardObjectName("MarketCard", x, y));
+				if (marketCardObj != null)
+				{
+					// localMarketGrid[x, y] = marketCardObj.GetComponent<CardState>();
+					localMarketList.Add(marketCardObj.GetComponent<CardState>());
+					// Debug.Log(debug + "Added Market Card reference at location " + x + ", " + y);
+				}
+			} // y
+		} // x
+
+		// Initialize localPrices dict
+		for (int i = 0; i < localMarketList.Count; i++)
+		{
+			// if (ResourceInfo.resources.Contains(localMarketList[i].resource))
+			// {
+			// Get the value of the resource matched
+			int index = ResourceInfo.resources.IndexOf(localMarketList[i].resource);
+			int value = -1;
+			ResourceInfo.prices.TryGetValue(ResourceInfo.resources[index], out value);
+			// Use that value as well as the resource's associated CardState to add to dict
+			// localPrices.Add(localMarketList[i], value);
+			localResources.Add(localMarketList[i].resource);
+			localPrices.Add(value);
+			// }
+		}
+
+	} // InitLocalMarketGrid()
+
+	private void UpdateLocalPrices()
+	{
+		// Debug.Log(debug + this.lastKnownPriceList);
+		Debug.Log(debug + gameMan.priceListStr);
+		this.lastKnownPriceList = gameMan.priceListStr;
+
+		string[] resourcesWithPrices = this.lastKnownPriceList.Split('_');
+
+		// List<CardState> tempCardStateList = new List<CardState>();
+
+		// for (int i = 0; i < this.localPrices.Count; i++)
+		// {
+		// 	tempCardStateList.Add(this.localPrices[i]);
+		// }
+
+		for (int i = 0; i < resourcesWithPrices.Length; i++)
+		{
+			string[] tempResPriceHolder = resourcesWithPrices[i].Split('=');
+			// Debug.Log(debug + tempResPriceHolder[0] + "-" + tempResPriceHolder[1]);
+			string resource = tempResPriceHolder[0];
+			int price = int.Parse(tempResPriceHolder[1]);
+
+			int resourceIndex = localResources.IndexOf(resource);
+			localPrices[resourceIndex] = price;
+		}
+	} // UpdateLocalPrices()
+
+	private void UpdateMarketFooters()
+	{
+		Debug.Log(debug + this.lastKnownPriceList);
+		Debug.Log(debug + gameMan.priceListStr);
+
+		for (int i = 0; i < this.localMarketList.Count; i++)
+		{
+			this.localMarketList[i].footerValue = this.localPrices[this.localResources.IndexOf(this.localMarketList[i].resource)];
+		}
+	} // UpdateMarketFooters()
 
 	#endregion
 

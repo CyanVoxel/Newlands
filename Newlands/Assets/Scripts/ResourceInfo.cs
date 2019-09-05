@@ -7,7 +7,7 @@ public class ResourceInfo
 {
 	// DATA FIELDS #################################################################################
 
-	public static List<string> resources = new List<string>();
+	public static readonly List<string> resources = new List<string>();
 	public static readonly Dictionary<string, int> prices = new Dictionary<string, int>();
 	public static Dictionary<string, int> pricesMut = new Dictionary<string, int>();
 
@@ -22,7 +22,7 @@ public class ResourceInfo
 		resources.Add("None");
 		resources.Add("Lumber");
 		resources.Add("Cash Crops");
-		resources.Add("Fish");
+		// resources.Add("Fish");
 		resources.Add("Oil");
 		resources.Add("Iron");
 		resources.Add("Gems");
@@ -34,7 +34,7 @@ public class ResourceInfo
 		prices.Add("None", 0);
 		prices.Add("Lumber", 50);
 		prices.Add("Cash Crops", 50);
-		prices.Add("Fish", 50);
+		// prices.Add("Fish", 50);
 		prices.Add("Oil", 100);
 		prices.Add("Iron", 100);
 		prices.Add("Gems", 500);

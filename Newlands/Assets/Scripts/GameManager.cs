@@ -32,6 +32,9 @@ public class GameManager : NetworkBehaviour
 	[SyncVar]
 	public string playersMoneyStr = "";
 
+	[SyncVar]
+	public string priceListStr = "";
+
 	public static readonly int width = 3; // Width of the game grid in cards
 	public static readonly int height = 3; // Height of the game grid in cards
 	public static readonly int handSize = 5; // How many cards the player is dealt
@@ -479,6 +482,9 @@ public class GameManager : NetworkBehaviour
 						{
 							this.topCardStr = "empty";
 						}
+
+						UpdatePriceListStr();
+
 						TurnEvent turnEvent = new TurnEvent(2, turn, "Play",
 							"GameCard", turn, cardIndex, this.topCardStr);
 						this.turnEventBroadcast = JsonUtility.ToJson(turnEvent);
@@ -764,5 +770,25 @@ public class GameManager : NetworkBehaviour
 	{
 		return CreateCardObjectName(type, location.x, location.y);
 	} // CreateCardObjectName()
+
+	public void UpdatePriceListStr()
+	{
+		string newPriceListStr = "";
+
+		for (int i = 1; i < ResourceInfo.resources.Count; i++)
+		{
+			int value = -1;
+			newPriceListStr += ResourceInfo.resources[i] + "=";
+			ResourceInfo.pricesMut.TryGetValue(ResourceInfo.resources[i], out value);
+			newPriceListStr += value;
+
+			if (ResourceInfo.resources.Count - i > 1)
+			{
+				newPriceListStr += "_";
+			}
+		}
+
+		this.priceListStr = newPriceListStr;
+	}
 
 } // GameManager class
