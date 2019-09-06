@@ -12,8 +12,6 @@ public class CardState : NetworkBehaviour
 
 	[SerializeField]
 	private CardDisplay cardDis;
-	[SerializeField]
-	private GridManager gridMan;
 
 	// USED FOR VISUALS ONLY -----------------------------------------------------------------------
 	[SyncVar(hook = "OnObjectNameChange")]
@@ -106,6 +104,10 @@ public class CardState : NetworkBehaviour
 				this.transform.SetParent(FindObjectOfType<GridManager>().transform);
 				this.initialized = true;
 			}
+			else if (this.transform.name == "DemoTile")
+			{
+				this.initialized = true;
+			}
 		}
 
 	} // OnObjectNameChange()
@@ -188,16 +190,7 @@ public class CardState : NetworkBehaviour
 			this.cardDis = this.GetComponent<CardDisplay>();
 		}
 
-		if (this.gridMan == null)
-		{
-			this.gridMan = FindObjectOfType<GridManager>();
-		}
-
 		if (this.cardDis == null)
-		{
-			return false;
-		}
-		else if (this.gridMan == null)
 		{
 			return false;
 		}

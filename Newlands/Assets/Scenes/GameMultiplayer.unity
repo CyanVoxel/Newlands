@@ -312,6 +312,9 @@ MonoBehaviour:
   phase: 1
   round: 1
   turn: 1
+  topCardStr: 
+  playersMoneyStr: 
+  priceListStr: 
   turnEventBroadcast: 
 --- !u!114 &160484956
 MonoBehaviour:
@@ -782,7 +785,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &706877489
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -35,8 +35,8 @@ public class GameManager : NetworkBehaviour
 	[SyncVar]
 	public string priceListStr = "";
 
-	public static readonly int width = 3; // Width of the game grid in cards
-	public static readonly int height = 3; // Height of the game grid in cards
+	public static readonly int width = 7; // Width of the game grid in cards
+	public static readonly int height = 7; // Height of the game grid in cards
 	public static readonly int handSize = 5; // How many cards the player is dealt
 
 	private static DebugTag debug = new DebugTag("GameManager", "FF6D00");
