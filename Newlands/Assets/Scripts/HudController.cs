@@ -72,7 +72,7 @@ public class HudController : MonoBehaviour
 
 	private void InitMoneyText()
 	{
-		for (int i = 0; i < GameManager.playerCount; i++)
+		for (int i = 0; i < gameMan.playerCount; i++)
 		{
 			if (transform.Find("Hud/Money/Player (" + (i + 1) + ")") != null
 				&& (transform.Find("Hud/Money/Player (" + (i + 1) + ")").GetComponent<TMP_Text>() != null))

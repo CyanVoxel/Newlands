@@ -8,6 +8,7 @@ public class GridManager : NetworkBehaviour
 {
 	// [SerializeField]
 	private CardDisplay cardDis;
+	public GameManager gameMan;
 
 	public static GridUnit[, ] grid; // The internal grid, made up of GridUnits
 	public static GridUnit[, ] marketGrid;
@@ -28,6 +29,7 @@ public class GridManager : NetworkBehaviour
 	void Start()
 	{
 		cardDis = FindObjectOfType<CardDisplay>();
+		gameMan = FindObjectOfType<GameManager>();
 		CreateGameGridObjects();
 		CreateMarketGridObjects();
 		// PreInitGameGrid();
@@ -100,7 +102,7 @@ public class GridManager : NetworkBehaviour
 			{
 				if (marketGrid[x, y] != null)
 				{
-					float xOff = ((GameManager.width + 1) * cardOffX) + x * cardOffX;
+					float xOff = ((gameMan.width + 1) * cardOffX) + x * cardOffX;
 					float yOff = y * cardOffY;
 
 					GameObject cardObj = (GameObject)Instantiate(marketCardPrefab,
@@ -147,7 +149,7 @@ public class GridManager : NetworkBehaviour
 		// Creates card prefabs and places them on the screen
 		for (int i = 0; i < hand.Count; i++)
 		{
-			float xOff = i * 11 + (((GameManager.width - GameManager.handSize) / 2f) * 11);
+			float xOff = i * 11 + (((gameMan.width - gameMan.handSize) / 2f) * 11);
 			float yOff = -10;
 
 			GameObject cardObj = (GameObject)Instantiate(gameCardPrefab,
@@ -184,13 +186,13 @@ public class GridManager : NetworkBehaviour
 		}
 
 		// Game Grid ######################################
-		grid = new GridUnit[GameManager.width, GameManager.height];
-		rowPos = new float[GameManager.height];
-		maxStack = new int[GameManager.height];
+		grid = new GridUnit[gameMan.width, gameMan.height];
+		rowPos = new float[gameMan.height];
+		maxStack = new int[gameMan.height];
 
-		for (int x = 0; x < GameManager.width; x++)
+		for (int x = 0; x < gameMan.width; x++)
 		{
-			for (int y = 0; y < GameManager.height; y++)
+			for (int y = 0; y < gameMan.height; y++)
 			{
 				// Draw a card from the Land Tile deck
 				// Card card = Card.CreateInstance<Card>();
@@ -223,15 +225,15 @@ public class GridManager : NetworkBehaviour
 
 		// Market Grid ####################################
 		marketGrid = new GridUnit[Mathf.CeilToInt((float)GameManager.masterDeck.marketCardDeck.Count()
-			/ (float)GameManager.height), GameManager.height];
-		maxMarketStack = new int[GameManager.height];
+			/ (float)gameMan.height), gameMan.height];
+		maxMarketStack = new int[gameMan.height];
 
 		int marketWidth = Mathf.CeilToInt((float)GameManager.masterDeck.marketCardDeck.Count()
-			/ (float)GameManager.height);
+			/ (float)gameMan.height);
 
 		for (int x = 0; x < marketWidth; x++)
 		{
-			for (int y = 0; y < GameManager.height; y++)
+			for (int y = 0; y < gameMan.height; y++)
 			{
 				// Draw a card from the Market Card deck
 				// Card card = Card.CreateInstance<Card>();
@@ -270,9 +272,9 @@ public class GridManager : NetworkBehaviour
 	{
 		if (type == "Tile")
 		{
-			for (int x = 0; x < GameManager.width; x++)
+			for (int x = 0; x < gameMan.width; x++)
 			{
-				for (int y = row; y < GameManager.height; y++)
+				for (int y = row; y < gameMan.height; y++)
 				{
 					// Debug.Log(debug + "Shifting [" + x + ", " + y + "]");
 					float oldX = grid[x, y].tileObj.transform.position.x;
@@ -287,11 +289,11 @@ public class GridManager : NetworkBehaviour
 		else if (type == "Market")
 		{
 			int marketWidth = Mathf.CeilToInt((float)GameManager.masterDeck.marketCardDeck.Count()
-				/ (float)GameManager.height);
+				/ (float)gameMan.height);
 
 			for (int x = 0; x < marketWidth; x++)
 			{
-				for (int y = row; y < GameManager.height; y++)
+				for (int y = row; y < gameMan.height; y++)
 				{
 
 					if (marketGrid[x, y] != null)

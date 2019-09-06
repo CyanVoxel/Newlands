@@ -5,9 +5,10 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class Player
+public class Player : MonoBehaviour
 {
 	public GridManager gridMan;
+	public GameManager gameMan;
 
 	// DATA FIELDS ################################################################################
 
@@ -32,9 +33,10 @@ public class Player
 
 	public double Money { get { return totalMoney; } }
 
-	// void Start() {
-	// 	gridMan = FindObjectOfType<GridManager>();
-	// }
+	void Start() {
+		gridMan = FindObjectOfType<GridManager>();
+		gameMan = FindObjectOfType<GameManager>();
+	}
 
 	public void CalcTotalMoney()
 	{
@@ -46,9 +48,9 @@ public class Player
 		{
 			// Search the grid for owned tiles
 			// TODO: Implement a list of known owned tile coordinates to replace these for loops
-			for (int x = 0; x < GameManager.width; x++)
+			for (int x = 0; x < gameMan.width; x++)
 			{
-				for (int y = 0; y < GameManager.height; y++)
+				for (int y = 0; y < gameMan.height; y++)
 				{
 					if (GridManager.grid[x, y].ownerId == this.Id)
 					{
@@ -72,6 +74,6 @@ public class Player
 	public Player()
 	{
 		this.CalcTotalMoney();
-		this.handUnits = new GridUnit[GameManager.handSize];
+		this.handUnits = new GridUnit[gameMan.handSize];
 	} // Player() constructor
 } // class Player

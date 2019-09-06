@@ -76,10 +76,10 @@ public class PlayerConnection : NetworkBehaviour
 			CmdGetHand();
 			// Debug.Log(debug + "Hand size: " + this.hand.Count);
 			// gridMan.CreateHandObjects(this.id, this.hand);
-			this.knownOwnersList = new List<Coordinate2>[GameManager.playerCount];
-			this.knownOwnersGrid = new int[GameManager.width, GameManager.height];
+			this.knownOwnersList = new List<Coordinate2>[gameMan.playerCount];
+			this.knownOwnersGrid = new int[gameMan.width, gameMan.height];
 
-			for (int i = 0; i < GameManager.playerCount; i++)
+			for (int i = 0; i < gameMan.playerCount; i++)
 			{
 				this.knownOwnersList[i] = new List<Coordinate2>();
 			}
@@ -284,7 +284,7 @@ public class PlayerConnection : NetworkBehaviour
 
 		// Debug.Log(debug + "Index: " + index);
 
-		if (index == (GameManager.handSize - 1) && op == SyncListCardData.Operation.OP_ADD)
+		if (index == (gameMan.handSize - 1) && op == SyncListCardData.Operation.OP_ADD)
 		{
 			gridMan.CreateHandObjects(this.id, this.hand);
 		}
@@ -398,7 +398,7 @@ public class PlayerConnection : NetworkBehaviour
 
 	private void CreateNewCardObject(int index, string cardStr)
 	{
-		float xOff = index * 11 + (((GameManager.width - GameManager.handSize) / 2f) * 11);
+		float xOff = index * 11 + (((gameMan.width - gameMan.handSize) / 2f) * 11);
 		float yOff = -10;
 
 		// If old card exists, destroy it
@@ -434,8 +434,8 @@ public class PlayerConnection : NetworkBehaviour
 	{
 		// Container used for storing a found Market Card.
 		GameObject marketCardObj;
-		int marketWidth = ResourceInfo.resources.Count / GameManager.height;
-		int marketHeight = GameManager.height;
+		int marketWidth = ResourceInfo.resources.Count / gameMan.height;
+		int marketHeight = gameMan.height;
 		// Initialize the local Market Grid
 		// CardState[,] localMarketGrid = new CardState[marketWidth, marketHeight];
 		// List<CardState> localMarketList = new List<CardState>();
@@ -530,7 +530,7 @@ public class PlayerConnection : NetworkBehaviour
 		// 	+ GameManager.handSize
 		// 	+ " for player " + this.id);
 
-		for (int i = 0; i < GameManager.handSize; i++)
+		for (int i = 0; i < gameMan.handSize; i++)
 		{
 			// if (GameManager.players[this.id - 1].hand[i] != null)
 			// {
