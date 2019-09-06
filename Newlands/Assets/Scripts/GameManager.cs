@@ -14,7 +14,7 @@ public class GameManager : NetworkBehaviour
 
 	public static MasterDeck masterDeck;
 	public static MasterDeck masterDeckMutable;
-	public readonly int playerCount = 2; // Number of players in the match
+	public static readonly int playerCount = 2; // Number of players in the match
 	[SyncVar]
 	private int playerIndex = 1; // This value increments when a new player joins
 	public static int localPlayerId = -1;
@@ -35,9 +35,9 @@ public class GameManager : NetworkBehaviour
 	[SyncVar]
 	public string priceListStr = "";
 
-	public readonly int width = 7; // Width of the game grid in cards
-	public readonly int height = 7; // Height of the game grid in cards
-	public readonly int handSize = 5; // How many cards the player is dealt
+	public static readonly int width = 7; // Width of the game grid in cards
+	public static readonly int height = 7; // Height of the game grid in cards
+	public static readonly int handSize = 5; // How many cards the player is dealt
 
 	private static DebugTag debug = new DebugTag("GameManager", "FF6D00");
 
@@ -59,7 +59,7 @@ public class GameManager : NetworkBehaviour
 	// private static List<TMP_Text> playerMoneyText = new List<TMP_Text>();
 
 	// Used for initialization
-	public void InitGameManager()
+	void Start()
 	{
 		if (!hasAuthority)
 		{
@@ -146,7 +146,7 @@ public class GameManager : NetworkBehaviour
 	private int GetValidNextTurn(int turn)
 	{
 		// If the turn exceeds the player count, return the value anyway.
-		if ((turn + 1) > this.playerCount)
+		if ((turn + 1) > GameManager.playerCount)
 		{
 			// Debug.Log(debug + "Returning " + (turn + 1));
 			return (turn + 1);
@@ -218,6 +218,97 @@ public class GameManager : NetworkBehaviour
 		// round = 1;
 		turn = 1;
 	} //EndPhase()
+
+	// Returns the color associated with a player ID.
+	// Strength paramater refers to a possible brighter color variant.
+	// public Color GetPlayerColor(int playerID, int strength = 500)
+	// {
+	// 	Color color = ColorPalette.tintCard;
+
+	// 	switch (playerID)
+	// 	{
+	// 		case 1:
+	// 			if (strength == 500)
+	// 			{
+	// 				color = ColorPalette.lightBlue500;
+	// 			}
+	// 			else if (strength == 400)
+	// 			{
+	// 				color = ColorPalette.lightBlue400;
+	// 			}
+	// 			else if (strength == 300)
+	// 			{
+	// 				color = ColorPalette.lightBlue300;
+	// 			}
+	// 			else if (strength == 200)
+	// 			{
+	// 				color = ColorPalette.lightBlue200;
+	// 			}
+	// 			break;
+
+	// 		case 2:
+	// 			if (strength == 500)
+	// 			{
+	// 				color = ColorPalette.red500;
+	// 			}
+	// 			else if (strength == 400)
+	// 			{
+	// 				color = ColorPalette.red400;
+	// 			}
+	// 			else if (strength == 300)
+	// 			{
+	// 				color = ColorPalette.red300;
+	// 			}
+	// 			else if (strength == 200)
+	// 			{
+	// 				color = ColorPalette.red300;
+	// 			}
+	// 			break;
+
+	// 		case 3:
+	// 			if (strength == 500)
+	// 			{
+	// 				color = ColorPalette.purple500;
+	// 			}
+	// 			else if (strength == 400)
+	// 			{
+	// 				color = ColorPalette.purple400;
+	// 			}
+	// 			else if (strength == 300)
+	// 			{
+	// 				color = ColorPalette.purple300;
+	// 			}
+	// 			else if (strength == 200)
+	// 			{
+	// 				color = ColorPalette.purple200;
+	// 			}
+	// 			break;
+
+	// 		case 4:
+	// 			if (strength == 500)
+	// 			{
+	// 				color = ColorPalette.amber500;
+	// 			}
+	// 			else if (strength == 400)
+	// 			{
+	// 				color = ColorPalette.amber400;
+	// 			}
+	// 			else if (strength == 300)
+	// 			{
+	// 				color = ColorPalette.amber300;
+	// 			}
+	// 			else if (strength == 200)
+	// 			{
+	// 				color = ColorPalette.amber200;
+	// 			}
+	// 			break;
+
+	// 		default:
+	// 			break;
+	// 	} // switch
+
+	// 	return color;
+	// } // GetPlayerColor()
 
 	// Tries to play a Card on a TIle. Returns true is successful.
 	// Assumes that the player whose turn it is can be the only one who calls this (for now).
@@ -625,7 +716,7 @@ public class GameManager : NetworkBehaviour
 	// on the player if necessary.
 	private void SkipChecker()
 	{
-		for (int i = 0; i < this.playerCount; i++)
+		for (int i = 0; i < GameManager.playerCount; i++)
 		{
 			if (this.round > graceRounds && this.phase == 1)
 			{
