@@ -434,7 +434,7 @@ public class PlayerConnection : NetworkBehaviour
 	{
 		// Container used for storing a found Market Card.
 		GameObject marketCardObj;
-		int marketWidth = ResourceInfo.resources.Count / GameManager.height;
+		int marketWidth = (int)Mathf.Ceil((float)ResourceInfo.resources.Count / (float)GameManager.height);
 		int marketHeight = GameManager.height;
 		// Initialize the local Market Grid
 		// CardState[,] localMarketGrid = new CardState[marketWidth, marketHeight];
@@ -468,6 +468,7 @@ public class PlayerConnection : NetworkBehaviour
 			// Use that value as well as the resource's associated CardState to add to dict
 			// localPrices.Add(localMarketList[i], value);
 			localResources.Add(localMarketList[i].resource);
+			Debug.Log(debug + "Adding " + localMarketList[i].resource + " to the localPrices...");
 			localPrices.Add(value);
 			// }
 		}

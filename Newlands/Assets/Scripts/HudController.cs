@@ -112,10 +112,11 @@ public class HudController : MonoBehaviour
 		if (this.lastKnownPlayerMoneyStr != "")
 		{
 			string[] playersMoneyStr = this.lastKnownPlayerMoneyStr.Split('_');
+			Debug.Log(debug + "Player Money String: " + this.lastKnownPlayerMoneyStr);
 
 			for (int i = 0; i < playersMoneyStr.Length; i++)
 			{
-				this.playerMoneyAmounts.Insert(i, int.Parse(playersMoneyStr[i]));
+				this.playerMoneyAmounts.Insert(i, (int)(double.Parse(playersMoneyStr[i])));
 				this.playerMoneyText[i].text = "Player " + (i + 1) + "'s Cash: $" + playerMoneyAmounts[i];
 			}
 		}

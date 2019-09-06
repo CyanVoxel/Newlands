@@ -7,7 +7,7 @@ using UnityEngine;
 public class GridManager : NetworkBehaviour
 {
 	// [SerializeField]
-	private CardDisplay cardDis;
+	// private CardDisplay cardDis;
 
 	public static GridUnit[, ] grid; // The internal grid, made up of GridUnits
 	public static GridUnit[, ] marketGrid;
@@ -27,7 +27,7 @@ public class GridManager : NetworkBehaviour
 
 	void Start()
 	{
-		cardDis = FindObjectOfType<CardDisplay>();
+		// cardDis = FindObjectOfType<CardDisplay>();
 		CreateGameGridObjects();
 		CreateMarketGridObjects();
 		// PreInitGameGrid();

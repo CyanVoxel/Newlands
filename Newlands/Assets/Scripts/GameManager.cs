@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class GameManager : NetworkBehaviour
 {
-	public CardDisplay cardDis;
+	// public CardDisplay cardDis;
 	// public GuiManager guiMan;
 	public GridManager gridMan;
 
@@ -38,6 +38,8 @@ public class GameManager : NetworkBehaviour
 	public static readonly int width = 7; // Width of the game grid in cards
 	public static readonly int height = 7; // Height of the game grid in cards
 	public static readonly int handSize = 5; // How many cards the player is dealt
+
+	// private bool wasGridManInitialized = false;
 
 	private static DebugTag debug = new DebugTag("GameManager", "FF6D00");
 
@@ -78,20 +80,11 @@ public class GameManager : NetworkBehaviour
 		gridMan.InitGameGrid();
 		gridMan.InitMarketGrid();
 
-		// FINAL ###############################################################
-
 		// Make sure that there is at least 1 Grace Round
 		if (graceRounds < 1)
 		{
 			graceRounds = 1;
-		} // if (graceRounds < 1)
-
-		// GameObject cameraObj = transform.Find("Main Camera").gameObject;
-		// mainCam = cameraObj.GetComponent<Camera>();
-
-		// Push the first UI Update
-		// guiMan.InitGuiManager();
-		// guiMan.UpdateUI();
+		}
 
 		Debug.Log(debug + "#################### Turn " + this.turn
 			+ " | Round " + this.round
