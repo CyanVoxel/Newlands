@@ -17,7 +17,7 @@ public class PlayerConnection : NetworkBehaviour
 	// Public ==================================================================
 	public GameManager gameMan;
 	public GridManager gridMan;
-	public MouseManager localMouseMan;
+	// public MouseManager localMouseMan;
 	// public GuiManager guiMan;
 	public GameObject mouseManPrefab;
 	public SyncListCardData hand;
@@ -535,10 +535,10 @@ public class PlayerConnection : NetworkBehaviour
 		{
 			// if (GameManager.players[this.id - 1].hand[i] != null)
 			// {
-			CardData card = GameManager.players[this.id - 1].hand[i];
+			Card card = GameManager.players[this.id - 1].hand[i];
 			// Debug.Log(debug + "[CmdGetHand] Adding Card " + i
 			// 	+ " to SyncList for player " + this.id);
-			this.hand.Add(card);
+			this.hand.Add(new CardData(card));
 			// }
 			// else
 			// {
@@ -563,12 +563,12 @@ public class PlayerConnection : NetworkBehaviour
 			new Vector3(0, 0, 0),
 			Quaternion.identity);
 
-		NetworkServer.SpawnWithClientAuthority(mouseManObj, connectionToClient);
-		localMouseMan = mouseManObj.GetComponent<MouseManager>();
-		localMouseMan.myClient = this.connectionToClient;
-		localMouseMan.myPlayerObj = this.gameObject;
-		Debug.Log(debug + "Giving MouseManager my ID of " + this.id);
-		localMouseMan.ownerId = this.id;
+		// NetworkServer.SpawnWithClientAuthority(mouseManObj, connectionToClient);
+		// localMouseMan = mouseManObj.GetComponent<MouseManager>();
+		// localMouseMan.myClient = this.connectionToClient;
+		// localMouseMan.myPlayerObj = this.gameObject;
+		// Debug.Log(debug + "Giving MouseManager my ID of " + this.id);
+		// localMouseMan.ownerId = this.id;
 	} // CmdSpawnMouseManager()
 
 	#endregion

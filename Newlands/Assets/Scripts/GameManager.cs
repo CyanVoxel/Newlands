@@ -44,7 +44,7 @@ public class GameManager : NetworkBehaviour
 	private static DebugTag debug = new DebugTag("GameManager", "FF6D00");
 
 	[SerializeField]
-	public static List<Player> players = new List<Player>(); // The player data objects
+	public static List<PlayerData> players = new List<PlayerData>(); // The player data objects
 
 	// Broadcasts the results of the turn to all clients in the form of a parsable string.
 	// NOTE: Currently, this in only used for broadcasting tile purchases.
@@ -97,11 +97,11 @@ public class GameManager : NetworkBehaviour
 	} // Update()
 
 	// Draws a card from a deck. Random by default.
-	public static bool DrawCard(Deck deckMut, Deck deckPerm, out CardData card, bool random = true)
+	public static bool DrawCard(Deck deckMut, Deck deckPerm, out Card card, bool random = true)
 	{
 		// Card card;	// Card to return
-		int cardsLeft = deckMut.Count(); // Number of cards left from mutable deck
-		int cardsTotal = deckPerm.Count(); // Number of cards total from permanent deck
+		int cardsLeft = deckMut.Count; // Number of cards left from mutable deck
+		int cardsTotal = deckPerm.Count; // Number of cards total from permanent deck
 
 		// Draws a card from the mutable deck, then removes that card from the deck.
 		// If all cards are drawn, draw randomly from the immutable deck.
@@ -113,7 +113,7 @@ public class GameManager : NetworkBehaviour
 			}
 			else
 			{
-				card = deckMut[deckMut.Count() - 1];
+				card = deckMut[deckMut.Count - 1];
 			}
 
 			deckMut.Remove(card);
@@ -185,7 +185,7 @@ public class GameManager : NetworkBehaviour
 				this.turn = 1;
 				// this.round = 1;
 				this.phase++;
-				foreach (Player player in players)
+				foreach (PlayerData player in players)
 				{
 					player.shouldSkip = false;
 				}
@@ -315,7 +315,7 @@ public class GameManager : NetworkBehaviour
 		string tileType = targetTile.Substring(8);
 		// GridUnit target = GridManager.grid[locX, locY];
 		GridUnit target;
-		CardData card = players[turn - 1].hand[cardIndex];
+		Card card = players[turn - 1].hand[cardIndex];
 
 		Debug.Log(debug + "Trying to play Card " + cardIndex + " on " + tileType
 			+ " at " + locX + ", " + locY);
@@ -338,14 +338,14 @@ public class GameManager : NetworkBehaviour
 							+ GridManager.grid[locX, locY].totalValue);
 					}
 
-					if (!card.doesDiscard)
+					if (!card.DiscardFlag)
 					{
 						GridManager.grid[locX, locY].stackSize++;
 						GridManager.grid[locX, locY].cardStack.Add(card);
 						// target.CalcTotalValue(); // This fixes Market Cards not calcing first time
 						UpdatePlayersInfo();
 						// guiMan.UpdateUI();
-						if (card.title == "Tile Mod")
+						if (card.Title == "Tile Mod")
 						{
 							if (target.stackSize > GridManager.maxStack[target.y])
 							{
@@ -382,7 +382,7 @@ public class GameManager : NetworkBehaviour
 
 						}
 
-						CardData topCard;
+						Card topCard;
 
 						if (DrawCard(masterDeckMutable.gameCardDeck, masterDeck.gameCardDeck, out topCard))
 						{
@@ -420,14 +420,14 @@ public class GameManager : NetworkBehaviour
 							+ GridManager.marketGrid[locX, locY].totalValue);
 					}
 
-					if (!card.doesDiscard)
+					if (!card.DiscardFlag)
 					{
 						GridManager.marketGrid[locX, locY].stackSize++;
 						GridManager.marketGrid[locX, locY].cardStack.Add(card);
 						// target.CalcTotalValue(); // This fixes Market Cards not calcing first time
 						UpdatePlayersInfo();
 						// guiMan.UpdateUI();
-						if (card.title == "Market Mod")
+						if (card.Title == "Market Mod")
 						{
 							if (target.stackSize > GridManager.maxMarketStack[target.y])
 							{
@@ -464,7 +464,7 @@ public class GameManager : NetworkBehaviour
 
 						}
 
-						CardData topCard;
+						Card topCard;
 
 						if (DrawCard(masterDeckMutable.gameCardDeck, masterDeck.gameCardDeck, out topCard))
 						{
@@ -494,7 +494,7 @@ public class GameManager : NetworkBehaviour
 				break;
 		} // switch (tileType)
 
-		Debug.Log(debug + "GameCards left: " + masterDeckMutable.gameCardDeck.Count());
+		Debug.Log(debug + "GameCards left: " + masterDeckMutable.gameCardDeck.Count);
 
 		return wasPlayed;
 	} // PlayCard()
@@ -523,7 +523,7 @@ public class GameManager : NetworkBehaviour
 	{
 		for (int i = 0; i < playerCount; i++)
 		{
-			players.Add(new Player());
+			players.Add(new PlayerData());
 			players[i].Id = (i + 1);
 			players[i].hand = DrawHand(handSize);
 		} // for playerCount
@@ -557,7 +557,7 @@ public class GameManager : NetworkBehaviour
 			// NOTE: In the future, masterDeckMutable might need to be checked for cards
 			// 	before preceding.
 			// Card card = Card.CreateInstance<Card>();
-			CardData card;
+			Card card;
 			if (DrawCard(masterDeckMutable.gameCardDeck, masterDeck.gameCardDeck, out card))
 			{
 				deck.Add(card);

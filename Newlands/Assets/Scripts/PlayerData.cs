@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class Player
+public class PlayerData
 {
 	public GridManager gridMan;
 
@@ -69,7 +69,7 @@ public class Player
 
 	// CONSTRUCTORS ###############################################################################
 
-	public Player()
+	public PlayerData()
 	{
 		this.CalcTotalMoney();
 		this.handUnits = new GridUnit[GameManager.handSize];

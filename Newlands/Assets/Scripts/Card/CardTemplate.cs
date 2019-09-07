@@ -5,10 +5,11 @@
 
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "New Card", menuName = "Card")]
-public class Card : ScriptableObject
+[CreateAssetMenu(fileName = "New Card Template", menuName = "Card Template")]
+public class CardTemplate : ScriptableObject
 {
 	// FIELDS #####################################################################################
+	// public Card card;
 
 	// The overall category of the Card (ex. Game Card, Price Card)
 	public string category;
@@ -27,7 +28,7 @@ public class Card : ScriptableObject
 	// The color of the footer border
 	public string footerColor;
 	// Flag indicating if only the corners of the footer should be colored
-	public bool onlyColorCorners;
+	public bool colorCornerFlag;
 	// Flag indicating if the footerValue is a percentage
 	public bool percFlag;
 	// Flag indicating if the footerValue is a monetary value
@@ -37,7 +38,7 @@ public class Card : ScriptableObject
 	// What subtypes of Card this Card can target within the category
 	public string target;
 	// Does this card get discarded if used? (Rather than being stacked under a Tile)
-	public bool doesDiscard;
+	public bool discardFlag;
 	// public CardData data;
 
 } // Card class

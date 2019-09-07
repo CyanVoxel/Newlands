@@ -20,15 +20,15 @@ public class RuleSet : MonoBehaviour
 
 	// Compares a Game Card against a target Card/Tle to determine if it is allowed to be played
 	// given the scope of the Game Card.
-	public static bool IsLegal(GridUnit target, CardData card)
+	public static bool IsLegal(GridUnit target, Card card)
 	{
 		string[] scopeLevel;
 		string[] targetLevel = new string[3];
 		bool[] scopeResults;
 
-		if (card.target != null)
+		if (card.Target != null)
 		{
-			scopeLevel = card.target.Split('_');
+			scopeLevel = card.Target.Split('_');
 			scopeResults = new bool[scopeLevel.Length];
 		}
 		else
@@ -42,7 +42,7 @@ public class RuleSet : MonoBehaviour
 		targetLevel[2] = target.subScope;
 
 		Debug.Log("<b>[RuleSet]</b> " + "\n"
-			+ "Scope:" + card.target + "\n"
+			+ "Scope:" + card.Target + "\n"
 			+ "Target:" + targetLevel[0] + "_" + targetLevel[1] + "_" + targetLevel[2] + "\n");
 
 		TestScope0();
@@ -113,7 +113,7 @@ public class RuleSet : MonoBehaviour
 						break;
 					default:
 						Debug.Log("<b>[RuleSet]</b> "
-							+ "The target " + card.target
+							+ "The target " + card.Target
 							+ " is out of scope for the card "
 							+ target.category + " at scope level 0");
 						break;
@@ -145,7 +145,7 @@ public class RuleSet : MonoBehaviour
 						break;
 					default:
 						Debug.Log("<b>[RuleSet]</b> "
-							+ "The target " + card.target
+							+ "The target " + card.Target
 							+ " is out of scope for the card "
 							+ target.category + " at scope level 1");
 						break;
@@ -179,7 +179,7 @@ public class RuleSet : MonoBehaviour
 						{
 							return true;
 						}
-						else if (targetLevel[2] == "Farmland" && card.subtitle != "Upgrade")
+						else if (targetLevel[2] == "Farmland" && card.Subtitle != "Upgrade")
 						{
 							return true;
 						}
@@ -207,7 +207,7 @@ public class RuleSet : MonoBehaviour
 
 					default:
 						Debug.Log("<b>[RuleSet]</b> "
-							+ "The target " + card.target
+							+ "The target " + card.Target
 							+ " is out of scope for the card "
 							+ target.category + " at scope level 2");
 						break;
@@ -282,9 +282,9 @@ public class RuleSet : MonoBehaviour
 	} // IsLegal
 
 	// Carries out the action that a legal Game Card intends
-	public void PlayCard(GridUnit target, CardData cardToPlay)
+	public void PlayCard(GridUnit target, Card cardToPlay)
 	{
-		string action = cardToPlay.subtitle;
+		string action = cardToPlay.Subtitle;
 		// NOTE: Cards promting tile value calculation have their calculations offset to
 		// the GridUnit class. When adding a new case here, you'll need to also add one
 		// in GridUnit so it knows how to do the calculations based on the card info.
@@ -318,7 +318,7 @@ public class RuleSet : MonoBehaviour
 				{
 					// Card newCard = Card.CreateInstance<Card>();
 					// CardData newCard;
-					CardData newCard = new CardData(Resources.Load<Card>("Cards/Tiles/Land/farmland_cashcrops_5"));
+					CardData newCard = new CardData(Resources.Load<CardTemplate>("Cards/Tiles/Land/farmland_cashcrops_5"));
 					target.tileObj.SendMessage("DisplayCard", newCard);
 
 					GridManager.grid[target.x, target.y].LoadNewCard(newCard, target.tileObj);
@@ -342,13 +342,13 @@ public class RuleSet : MonoBehaviour
 		PlayCard(target, cardToPlay.card);
 	} // PlayCard(GridUnit, GridUnit)
 
-	private static string GetScope(CardData card, int level = -1)
+	private static string GetScope(Card card, int level = -1)
 	{
 		string[] scopeLevel = new string[3];
 
-		if (card.target != null)
+		if (card.Target != null)
 		{
-			scopeLevel = card.target.Split('_');
+			scopeLevel = card.Target.Split('_');
 		}
 		else
 		{
@@ -365,7 +365,7 @@ public class RuleSet : MonoBehaviour
 			case 2:
 				return scopeLevel[2];
 			default:
-				return card.target;
+				return card.Target;
 		}
 	} // GetScope()
 } // RuleSet()

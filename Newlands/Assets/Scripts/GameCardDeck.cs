@@ -11,7 +11,7 @@ public class GameCardDeck : Deck
 	} // GameCardDeck() constructor
 
 	// Constructor that takes in a string representing the name of premade deck
-	public GameCardDeck(string flavor)
+	public GameCardDeck(string flavor = "Vanilla")
 	{
 		// The Vanilla Standard Deck's Game Cards
 		if (flavor == "Vanilla")

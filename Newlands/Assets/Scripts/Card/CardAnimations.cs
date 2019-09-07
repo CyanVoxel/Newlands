@@ -7,13 +7,13 @@ using UnityEngine;
 public class CardAnimations : MonoBehaviour
 {
 	[SerializeField]
-	private GameManager gameMan;
+	// private GameManager gameMan;
 	private static DebugTag debug = new DebugTag("CardAnimations", "F50057");
 
 	// Start is called before the first frame update
 	void Start()
 	{
-		gameMan = FindObjectOfType<GameManager>();
+		// gameMan = FindObjectOfType<GameManager>();
 	}
 
 	// Update is called once per frame

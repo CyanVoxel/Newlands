@@ -194,7 +194,7 @@ public class GridManager : NetworkBehaviour
 			{
 				// Draw a card from the Land Tile deck
 				// Card card = Card.CreateInstance<Card>();
-				CardData card;
+				Card card;
 
 				if (GameManager.DrawCard(GameManager.masterDeckMutable.landTileDeck,
 						GameManager.masterDeck.landTileDeck,
@@ -202,7 +202,7 @@ public class GridManager : NetworkBehaviour
 				{
 					// Debug.Log("[GridManager] Tile Draw successful!");
 					// Connect the drawn card to the internal grid
-					grid[x, y] = new GridUnit(card: card, x: x, y: y);
+					grid[x, y] = new GridUnit(card: new CardData(card), x: x, y: y);
 				}
 				else
 				{
@@ -222,11 +222,11 @@ public class GridManager : NetworkBehaviour
 		}
 
 		// Market Grid ####################################
-		marketGrid = new GridUnit[Mathf.CeilToInt((float)GameManager.masterDeck.marketCardDeck.Count()
+		marketGrid = new GridUnit[Mathf.CeilToInt((float)GameManager.masterDeck.marketCardDeck.Count
 			/ (float)GameManager.height), GameManager.height];
 		maxMarketStack = new int[GameManager.height];
 
-		int marketWidth = Mathf.CeilToInt((float)GameManager.masterDeck.marketCardDeck.Count()
+		int marketWidth = Mathf.CeilToInt((float)GameManager.masterDeck.marketCardDeck.Count
 			/ (float)GameManager.height);
 
 		for (int x = 0; x < marketWidth; x++)
@@ -235,14 +235,14 @@ public class GridManager : NetworkBehaviour
 			{
 				// Draw a card from the Market Card deck
 				// Card card = Card.CreateInstance<Card>();
-				CardData card;
+				Card card;
 				if (GameManager.DrawCard(GameManager.masterDeckMutable.marketCardDeck,
 						GameManager.masterDeck.marketCardDeck,
 						out card, false))
 				{
 					// Debug.Log("[GridManager] Saving card at [" + x + ", " + y + "]");
 					// Connect the drawn card to the internal grid
-					marketGrid[x, y] = new GridUnit(card: card, x: x, y: y);
+					marketGrid[x, y] = new GridUnit(card: new CardData(card), x: x, y: y);
 					// Debug.Log("[GridManager] Card saved: " + marketGrid[x, y].card);
 				}
 			} // y
@@ -286,7 +286,7 @@ public class GridManager : NetworkBehaviour
 		}
 		else if (type == "Market")
 		{
-			int marketWidth = Mathf.CeilToInt((float)GameManager.masterDeck.marketCardDeck.Count()
+			int marketWidth = Mathf.CeilToInt((float)GameManager.masterDeck.marketCardDeck.Count
 				/ (float)GameManager.height);
 
 			for (int x = 0; x < marketWidth; x++)
@@ -315,20 +315,20 @@ public class GridManager : NetworkBehaviour
 	// Converts card data from one type into a reference cardState variable.
 	public static void FillOutCardState(CardData cardInfoObj, ref CardState cardState)
 	{
-		cardState.category = cardInfoObj.category;
-		cardState.title = cardInfoObj.title;
-		cardState.subtitle = cardInfoObj.subtitle;
-		cardState.bodyText = cardInfoObj.bodyText;
-		cardState.footerText = cardInfoObj.footerText;
-		cardState.resource = cardInfoObj.resource;
-		cardState.footerValue = cardInfoObj.footerValue;
-		cardState.target = cardInfoObj.target;
-		cardState.resource = cardInfoObj.resource;
-		cardState.percFlag = cardInfoObj.percFlag;
-		cardState.moneyFlag = cardInfoObj.moneyFlag;
-		cardState.footerOpr = cardInfoObj.footerOpr;
-		cardState.footerColor = cardInfoObj.footerColor;
-		cardState.onlyColorCorners = cardInfoObj.onlyColorCorners;
+		cardState.category = cardInfoObj.Category;
+		cardState.title = cardInfoObj.Title;
+		cardState.subtitle = cardInfoObj.Subtitle;
+		cardState.bodyText = cardInfoObj.BodyText;
+		cardState.footerText = cardInfoObj.FooterText;
+		cardState.resource = cardInfoObj.Resource;
+		cardState.footerValue = cardInfoObj.FooterValue;
+		cardState.target = cardInfoObj.Target;
+		cardState.resource = cardInfoObj.Resource;
+		cardState.percFlag = cardInfoObj.PercFlag;
+		cardState.moneyFlag = cardInfoObj.MoneyFlag;
+		cardState.footerOpr = cardInfoObj.FooterOpr;
+		cardState.footerColor = cardInfoObj.FooterColor;
+		cardState.onlyColorCorners = cardInfoObj.ColorCornerFlag;
 	} // FillOutCardState()
 
 	// Converts card data from one type into a reference cardState variable.

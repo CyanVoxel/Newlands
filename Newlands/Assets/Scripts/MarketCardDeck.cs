@@ -11,7 +11,7 @@ public class MarketCardDeck : Deck
 	} // MarketCardDeck() constructor
 
 	// Constructor that takes in a string representing the name of premade deck
-	public MarketCardDeck(string deckType)
+	public MarketCardDeck(string deckType = "Vanilla")
 	{
 		// The Vanilla Standard Deck's Price Cards
 		if (deckType == "Vanilla")

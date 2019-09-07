@@ -16,8 +16,8 @@ public class GridUnit
 	public int y;
 	public GameObject tileObj;
 	public int stackSize = 0;
-	public CardData card;
-	public List<CardData> cardStack = new List<CardData>();
+	public Card card;
+	public List<Card> cardStack = new List<Card>();
 	public bool bankrupt = false;
 
 	// public string landType;
@@ -60,22 +60,22 @@ public class GridUnit
 			{
 				retrievedPrice = 0;
 
-				if (this.cardStack[i].subtitle == "Resource")
+				if (this.cardStack[i].Subtitle == "Resource")
 				{
-					ResourceInfo.pricesMut.TryGetValue(this.cardStack[i].resource, out retrievedPrice);
-					this.baseValue += (retrievedPrice * this.cardStack[i].footerValue);
+					ResourceInfo.pricesMut.TryGetValue(this.cardStack[i].Resource, out retrievedPrice);
+					this.baseValue += (retrievedPrice * this.cardStack[i].FooterValue);
 				}
-				else if (this.cardStack[i].subtitle == "Investment" && !this.cardStack[i].percFlag)
+				else if (this.cardStack[i].Subtitle == "Investment" && !this.cardStack[i].PercFlag)
 				{
-					this.baseValue += this.cardStack[i].footerValue;
+					this.baseValue += this.cardStack[i].FooterValue;
 				}
-				else if (this.cardStack[i].subtitle == "Sabotage" && !this.cardStack[i].percFlag)
+				else if (this.cardStack[i].Subtitle == "Sabotage" && !this.cardStack[i].PercFlag)
 				{
-					this.baseValue -= this.cardStack[i].footerValue;
+					this.baseValue -= this.cardStack[i].FooterValue;
 				} // if
 			} // for cardStack size
 		}
-		else if (this.card.category == "Market")
+		else if (this.card.Category == "Market")
 		{
 			// Base Value will not be used for Market Cards - Reference ResourceInfo instead.
 			// ResourceInfo.prices.TryGetValue(this.resource, out this.baseValue);
@@ -92,13 +92,13 @@ public class GridUnit
 			this.valueMod = 0;
 			for (int i = 0; i < this.cardStack.Count; i++)
 			{
-				if (this.cardStack[i].subtitle == "Investment" && this.cardStack[i].percFlag)
+				if (this.cardStack[i].Subtitle == "Investment" && this.cardStack[i].PercFlag)
 				{
-					this.valueMod += this.cardStack[i].footerValue;
+					this.valueMod += this.cardStack[i].FooterValue;
 				}
-				else if (this.cardStack[i].subtitle == "Sabotage" && this.cardStack[i].percFlag)
+				else if (this.cardStack[i].Subtitle == "Sabotage" && this.cardStack[i].PercFlag)
 				{
-					this.valueMod -= this.cardStack[i].footerValue;
+					this.valueMod -= this.cardStack[i].FooterValue;
 				} // if-else
 			} // for cardStack size
 		}
@@ -112,14 +112,14 @@ public class GridUnit
 
 			for (int i = 0; i < this.cardStack.Count; i++)
 			{
-				if (this.cardStack[i].subtitle == "Investment" && this.cardStack[i].percFlag)
+				if (this.cardStack[i].Subtitle == "Investment" && this.cardStack[i].PercFlag)
 				{
-					this.valueMod += this.cardStack[i].footerValue;
+					this.valueMod += this.cardStack[i].FooterValue;
 					// Debug.Log("Should be working! " + this.cardStack[i].footerValue);
 				}
-				else if (this.cardStack[i].subtitle == "Sabotage" && this.cardStack[i].percFlag)
+				else if (this.cardStack[i].Subtitle == "Sabotage" && this.cardStack[i].PercFlag)
 				{
-					this.valueMod -= this.cardStack[i].footerValue;
+					this.valueMod -= this.cardStack[i].FooterValue;
 					// Debug.Log("Should be working! -" + this.cardStack[i].footerValue);
 					// this.valueMod -= this.cardStack[i].footerValue; // NOTE: Only do locally!
 				} // if-else
@@ -229,21 +229,21 @@ public class GridUnit
 		this.tileObj = tileObj;
 
 		// this.landType = card.title;
-		this.resource = card.resource;
-		this.quantity = card.footerValue;
-		this.category = card.category; // The Category of this card (Tile, Game Card)
-		this.scope = card.subtitle; // The Scope of this card (Forest, Plains, Quarry)
-		this.subScope = card.title;
+		this.resource = card.Resource;
+		this.quantity = card.FooterValue;
+		this.category = card.Category; // The Category of this card (Tile, Game Card)
+		this.scope = card.Subtitle; // The Scope of this card (Forest, Plains, Quarry)
+		this.subScope = card.Title;
 		// this.tileScope = card.title;
 		// this.tileCat = card.category;
 		// this.x = x;
 		// this.y = y;
 
-		if (card.category == "Game Card")
+		if (card.Category == "Game Card")
 		{
-			// this.targetCat = card.targetCategory;
-			this.target = card.target; // The Scope that this card targets
-			this.stackable = !card.doesDiscard;
+			// this.targetCat = card.TargetCategory;
+			this.target = card.Target; // The Scope that this card targets
+			this.stackable = !card.DiscardFlag;
 		}
 
 		this.CalcBaseValue();
@@ -259,10 +259,10 @@ public class GridUnit
 	// 	cardDis = this.tileObj.AddComponent<CardDisplay>();
 
 	// 	// this.landType = card.title;
-	// 	this.resource = card.resource;
+	// 	this.resource = card.Resource;
 	// 	this.quantity = card.footerValue;
 	// 	this.category = card.category; // The Category of this card (Tile, Game Card)
-	// 	this.scope = card.subtitle; // The Scope of this card (Forest, Plains, Quarry)
+	// 	this.scope = card.Subtitle; // The Scope of this card (Forest, Plains, Quarry)
 	// 	this.subScope = card.title;
 	// 	// this.tileScope = card.title;
 	// 	// this.tileCat = card.category;
@@ -271,18 +271,18 @@ public class GridUnit
 
 	// 	if (card.category == "Game Card")
 	// 	{
-	// 		// this.targetCat = card.targetCategory;
-	// 		this.target = card.target; // The Scope that this card targets
+	// 		// this.targetCat = card.TargetCategory;
+	// 		this.target = card.Target; // The Scope that this card targets
 	// 		this.stackable = !card.doesDiscard;
 	// 	}
 
 	// 	if (card.category == "Market")
 	// 	{
-	// 		// this.targetCat = card.targetCategory;
-	// 		this.target = card.target; // The Scope that this card targets
+	// 		// this.targetCat = card.TargetCategory;
+	// 		this.target = card.Target; // The Scope that this card targets
 	// 		this.stackable = !card.doesDiscard;
 	// 		// this.category = "Market";
-	// 		ResourceInfo.prices.TryGetValue(card.subtitle, out this.baseValue);
+	// 		ResourceInfo.prices.TryGetValue(card.Subtitle, out this.baseValue);
 	// 	}
 
 	// 	this.CalcBaseValue();
@@ -295,50 +295,39 @@ public class GridUnit
 		// this.card = Card.CreateInstance<Card>();
 		this.card = cardData;
 
-		Debug.Log(debug.head + "Storing CardData for: " + cardData.title);
+		Debug.Log(debug.head + "Storing CardData for: " + cardData.Title);
 
-		this.card.category = cardData.category;
-		this.card.title = cardData.title;
-		this.card.subtitle = cardData.subtitle;
-		this.card.bodyText = cardData.bodyText;
-		this.card.footerText = cardData.footerText;
-		this.card.resource = cardData.resource;
-		this.card.footerValue = cardData.footerValue;
-		this.card.target = cardData.target;
-		this.card.resource = cardData.resource;
-		this.card.percFlag = cardData.percFlag;
-		this.card.moneyFlag = cardData.moneyFlag;
-		this.card.footerOpr = cardData.footerOpr;
+		this.card = new Card(cardData);
 
 		// this.card = card;
 		this.tileObj = tileObj;
 		cardDis = this.tileObj.AddComponent<CardDisplay>();
 
 		// this.landType = card.title;
-		this.resource = card.resource;
-		this.quantity = card.footerValue;
-		this.category = card.category; // The Category of this card (Tile, Game Card)
-		this.scope = card.subtitle; // The Scope of this card (Forest, Plains, Quarry)
-		this.subScope = card.title;
+		// this.resource = card.Resource;
+		// this.quantity = card.footerValue;
+		// this.category = card.category; // The Category of this card (Tile, Game Card)
+		this.scope = card.Subtitle; // The Scope of this card (Forest, Plains, Quarry)
+		this.subScope = card.Title;
 		// this.tileScope = card.title;
 		// this.tileCat = card.category;
 		this.x = x;
 		this.y = y;
 
-		if (card.category == "Game Card")
+		if (card.Category == "Game Card")
 		{
-			// this.targetCat = card.targetCategory;
-			this.target = card.target; // The Scope that this card targets
-			this.stackable = !card.doesDiscard;
+			// this.targetCat = card.TargetCategory;
+			this.target = card.Target; // The Scope that this card targets
+			this.stackable = !card.DiscardFlag;
 		}
 
-		if (card.category == "Market")
+		if (card.Category == "Market")
 		{
-			// this.targetCat = card.targetCategory;
-			this.target = card.target; // The Scope that this card targets
-			this.stackable = !card.doesDiscard;
+			// this.targetCat = card.TargetCategory;
+			this.target = card.Target; // The Scope that this card targets
+			this.stackable = !card.DiscardFlag;
 			// this.category = "Market";
-			ResourceInfo.prices.TryGetValue(card.subtitle, out this.baseValue);
+			ResourceInfo.prices.TryGetValue(card.Subtitle, out this.baseValue);
 		}
 
 		this.CalcBaseValue();
@@ -352,30 +341,30 @@ public class GridUnit
 		// cardDis = this.tileObj.AddComponent<CardDisplay>();
 
 		// this.landType = card.title;
-		this.resource = card.resource;
-		this.quantity = card.footerValue;
-		this.category = card.category; // The Category of this card (Tile, Game Card)
-		this.scope = card.subtitle; // The Scope of this card (Forest, Plains, Quarry)
-		this.subScope = card.title;
+		this.resource = card.Resource;
+		this.quantity = card.FooterValue;
+		this.category = card.Category; // The Category of this card (Tile, Game Card)
+		this.scope = card.Subtitle; // The Scope of this card (Forest, Plains, Quarry)
+		this.subScope = card.Title;
 		// this.tileScope = card.title;
 		// this.tileCat = card.category;
 		this.x = x;
 		this.y = y;
 
-		if (card.category == "Game Card")
+		if (card.Category == "Game Card")
 		{
-			// this.targetCat = card.targetCategory;
-			this.target = card.target; // The Scope that this card targets
-			this.stackable = !card.doesDiscard;
+			// this.targetCat = card.TargetCategory;
+			this.target = card.Target; // The Scope that this card targets
+			this.stackable = !card.DiscardFlag;
 		}
 
-		if (card.category == "Market")
+		if (card.Category == "Market")
 		{
-			// this.targetCat = card.targetCategory;
-			this.target = card.target; // The Scope that this card targets
-			this.stackable = !card.doesDiscard;
+			// this.targetCat = card.TargetCategory;
+			this.target = card.Target; // The Scope that this card targets
+			this.stackable = !card.DiscardFlag;
 			// this.category = "Market";
-			ResourceInfo.prices.TryGetValue(card.subtitle, out this.baseValue);
+			ResourceInfo.prices.TryGetValue(card.Subtitle, out this.baseValue);
 		}
 
 		this.CalcBaseValue();

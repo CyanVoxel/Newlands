@@ -3,11 +3,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Deck
+public class Deck : List<Card>
 {
 	// DATA FIELDS #################################################################################
 
-	private List<CardData> deck = new List<CardData>();
+	// private List<CardData> deck = new List<CardData>();
 
 	// Resource Directories ====================================================
 	protected string dirGcMmI = "Cards/Game Cards/Market Mods/Investment";
@@ -22,17 +22,17 @@ public class Deck
 
 	// METHODS #####################################################################################
 
-	// Add a card to the deck
-	public void Add(Card card)
-	{
-		this.deck.Add(new CardData(card));
-	} // Add()
+	// // Add a card to the deck
+	// public void Add(Card card)
+	// {
+	// 	this.deck.Add(new CardData(card));
+	// } // Add()
 
-	// Add a card to the deck
-	public void Add(CardData card)
-	{
-		this.deck.Add(card);
-	} // Add()
+	// // Add a card to the deck
+	// public void Add(CardData card)
+	// {
+	// 	this.deck.Add(card);
+	// } // Add()
 
 	// Add a card to the deck, taking in a directory and an amount
 	public void Add(string dir, int amount = 1)
@@ -42,7 +42,7 @@ public class Deck
 		{
 			try
 			{
-				this.deck.Add(new CardData(Resources.Load<Card>(dir)));
+				this.Add(new CardData(Resources.Load<CardTemplate>(dir)));
 			} // try
 			catch (UnassignedReferenceException e)
 			{
@@ -52,42 +52,42 @@ public class Deck
 		} // for
 	} // Add()
 
-	// Remove a card from the deck
-	public void Remove(Card card)
-	{
-		this.deck.Remove(new CardData(card));
-	} // Remove()
+	// // Remove a card from the deck
+	// public void Remove(Card card)
+	// {
+	// 	this.deck.Remove(new CardData(card));
+	// } // Remove()
 
-	// Remove a card from the deck
-	public void Remove(CardData card)
-	{
-		this.deck.Remove(card);
-	} // Remove()
+	// // Remove a card from the deck
+	// public void Remove(CardData card)
+	// {
+	// 	this.deck.Remove(card);
+	// } // Remove()
 
-	// Count the number of cards in the deck
-	public int Count()
-	{
-		return this.deck.Count;
-	} // Count()
+	// // Count the number of cards in the deck
+	// public int Count()
+	// {
+	// 	return this.deck.Count;
+	// } // Count()
 
-	// Determine whether the deck contains a certain card
-	public bool Contains(Card card)
-	{
-		return (this.deck.Contains(new CardData(card)));
-	} // Contains()
+	// // Determine whether the deck contains a certain card
+	// public bool Contains(Card card)
+	// {
+	// 	return (this.deck.Contains(new CardData(card)));
+	// } // Contains()
 
-	// Get the index of a card
-	public int IndexOf(Card card)
-	{
-		return this.deck.IndexOf(new CardData(card));
-	} // IndexOf()
+	// // Get the index of a card
+	// public int IndexOf(Card card)
+	// {
+	// 	return this.deck.IndexOf(new CardData(card));
+	// } // IndexOf()
 
-	//Indexer for the Deck class
-	public CardData this[int i]
-	{
-		get { return this.deck[i]; }
-		set { this.deck[i] = value; }
-	} // Indexer
+	// //Indexer for the Deck class
+	// public CardData this[int i]
+	// {
+	// 	get { return this.deck[i]; }
+	// 	set { this.deck[i] = value; }
+	// } // Indexer
 
 	// CONSTRUCTORS ################################################################################
 

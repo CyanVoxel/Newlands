@@ -11,7 +11,7 @@ public class LandTileDeck : Deck
 	} // LandTileDeck() constructor
 
 	// Constructor that takes in a string representing the name of premade deck
-	public LandTileDeck(string deckType)
+	public LandTileDeck(string deckType = "Vanilla")
 	{
 		// The Standard Deck's Land Tiles
 		if (deckType == "Vanilla")

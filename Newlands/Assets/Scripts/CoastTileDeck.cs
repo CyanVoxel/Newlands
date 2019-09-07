@@ -11,7 +11,7 @@ public class CoastTileDeck : Deck
 	} // CoastTileDeck() constructor
 
 	// Constructor that takes in a string representing the name of premade deck
-	public CoastTileDeck(string deckType)
+	public CoastTileDeck(string deckType = "Vanilla")
 	{
 		// The Standard Deck's Coast Tiles
 		if (deckType == "Vanilla")
