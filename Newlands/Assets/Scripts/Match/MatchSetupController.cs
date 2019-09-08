@@ -2,17 +2,22 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using Mirror;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using Mirror;
 
 public class MatchSetupController : NetworkBehaviour
 {
+    GameObject networkManagerObj;
+    NetworkManager networkManager;
+    TelepathyTransport telepathyTransport;
+
     private TMP_Dropdown playerCountDropdown;
     private TMP_Dropdown gridSizeDropdown;
     private TMP_Dropdown winConditionDropdown;
     private TMP_InputField ipInputField;
+    private TMP_InputField portInputField;
 
     private Button hostButton;
 
@@ -30,48 +35,85 @@ public class MatchSetupController : NetworkBehaviour
     void Start()
     {
 
-        // Grab the Player Count Dropdown
-        GameObject playerCountDropdownObj = GameObject.Find("Players Dropdown");
-        if (playerCountDropdown != null)
-        {
-            playerCountDropdown = playerCountDropdownObj.GetComponent<TMP_Dropdown>();
-        }
+        networkManagerObj = GameObject.Find("NetworkManager");
+        networkManager = networkManagerObj.GetComponent<NetworkManager>();
+        telepathyTransport = networkManagerObj.GetComponent<TelepathyTransport>();
 
-        // Grab the Grid Size Dropdown
-        GameObject gridSizeDropdownObj = GameObject.Find("Grid Size Dropdown");
-        if (playerCountDropdown != null)
-        {
-            gridSizeDropdown = gridSizeDropdownObj.GetComponent<TMP_Dropdown>();
-        }
-
-        // Grab the Win Condition Dropdown
-        GameObject winConditionDropdownObj = GameObject.Find("Win Condition Dropdown");
-        if (playerCountDropdown != null)
-        {
-            winConditionDropdown = winConditionDropdownObj.GetComponent<TMP_Dropdown>();
-        }
-
-        // Grab the IP Input Field
-        GameObject ipInputFieldObj = GameObject.Find("IP InputField");
-        if (playerCountDropdown != null)
-        {
-            ipInputField = ipInputFieldObj.GetComponent<TMP_InputField>();
-        }
+        GrabGuiComponents();
 
     }
 
     // Update is called once per frame
     void Update()
     {
+        // Debug.Log(this.networkManager.networkAddress);
+    }
 
+    private void GrabGuiComponents()
+    {
+        // Grab the Player Count Dropdown
+        GameObject playerCountDropdownObj = GameObject.Find("PlayersDropdown");
+        if (playerCountDropdown != null)
+        {
+            playerCountDropdown = playerCountDropdownObj.GetComponent<TMP_Dropdown>();
+        }
+
+        // Grab the Grid Size Dropdown
+        GameObject gridSizeDropdownObj = GameObject.Find("GridSizeDropdown");
+        if (gridSizeDropdownObj != null)
+        {
+            gridSizeDropdown = gridSizeDropdownObj.GetComponent<TMP_Dropdown>();
+        }
+
+        // Grab the Win Condition Dropdown
+        GameObject winConditionDropdownObj = GameObject.Find("WinConditionDropdown");
+        if (winConditionDropdownObj != null)
+        {
+            winConditionDropdown = winConditionDropdownObj.GetComponent<TMP_Dropdown>();
+        }
+
+        // Grab the IP Input Field
+        GameObject ipInputFieldObj = GameObject.Find("IpInputField");
+        if (ipInputFieldObj != null)
+        {
+            ipInputField = ipInputFieldObj.GetComponent<TMP_InputField>();
+        }
+
+        // Grab the IP Input Field
+        GameObject portInputFieldObj = GameObject.Find("PortInputField");
+        if (portInputField != null)
+        {
+            portInputField = portInputFieldObj.GetComponent<TMP_InputField>();
+        }
     }
 
     public void HostGameButtonClick()
     {
         CreateInitialConfig();
-        NetworkManager networkManager = GameObject.Find("NetworkManager").GetComponent<NetworkManager>();
-        networkManager.StartHost();
+        if (!NetworkClient.isConnected && !NetworkServer.active)
+        {
+            if (!NetworkClient.active)
+            {
+                networkManager.networkAddress = ipInputField.text;
+                // telepathyTransport.port = ushort.Parse(portInputField.text);
+                networkManager.StartHost();
+            }
+        }
         CreateMatchManager();
+    }
+
+    public void JoinGameButtonClick()
+    {
+
+        if (!NetworkClient.isConnected && !NetworkServer.active)
+        {
+            if (!NetworkClient.active)
+            {
+                networkManager.networkAddress = ipInputField.text;
+                // telepathyTransport.port = ushort.Parse(portInputField.text);
+                networkManager.StartClient();
+            }
+        }
     }
 
     private void CreateInitialConfig()

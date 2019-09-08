@@ -2,8 +2,8 @@
 
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using Mirror;
+using UnityEngine;
 
 public class MatchController : NetworkBehaviour
 {
@@ -25,6 +25,41 @@ public class MatchController : NetworkBehaviour
 
 		Debug.Log("[MatchController] Initializing...");
 
+		GrabMatchDataBroadCaster();
+		LoadMatchConfiguration();
+
+	}
+
+	// Update is called once per frame
+	void Update()
+	{
+		// if (this.config != null)
+		// {
+		// 	Debug.Log(this.config.GameGridHeight);
+		// }
+		// Debug.Log(matchDataBroadcaster.MatchConfigDataStr);
+	}
+
+	void OnDisable()
+	{
+		Debug.Log("The MatchController has been disbaled/destroyed!");
+	}
+
+	private void GrabMatchDataBroadCaster()
+	{
+		matchDataBroadcaster = this.gameObject.GetComponent<MatchDataBroadcaster>();
+		if (matchDataBroadcaster != null)
+		{
+			Debug.Log("[MatchController] MatchDataBroadcaster was found!");
+		}
+		else
+		{
+			Debug.Log("[MatchController] ERROR: MatchDataBroadcaster was NOT found!");
+		}
+	}
+
+	private void LoadMatchConfiguration()
+	{
 		GameObject matchSetupManager = GameObject.Find("SetupManager");
 		if (matchSetupManager != null)
 		{
@@ -39,32 +74,6 @@ public class MatchController : NetworkBehaviour
 		{
 			Debug.Log("[MatchController] ERROR: SetupManager (our dad) was NOT found!");
 		}
-
-		matchDataBroadcaster = this.gameObject.GetComponent<MatchDataBroadcaster>();
-		if (matchDataBroadcaster != null)
-		{
-			Debug.Log("[MatchController] MatchDataBroadcaster was found!");
-		}
-		else
-		{
-			Debug.Log("[MatchController] ERROR: MatchDataBroadcaster was NOT found!");
-		}
-
-	}
-
-	// Update is called once per frame
-	void Update()
-	{
-		// if (this.config != null)
-		// {
-		// 	Debug.Log(this.config.GameGridHeight);
-		// }
-		Debug.Log(matchDataBroadcaster.MatchConfigDataStr);
-	}
-
-	void OnDisable()
-	{
-		Debug.Log("The MatchController has been disbaled/destroyed!");
 	}
 
 	private IEnumerator MatchSetupCoroutine()
@@ -74,7 +83,7 @@ public class MatchController : NetworkBehaviour
 			yield return null;
 		}
 		Debug.Log("Config loaded! Broadcasting...");
-		matchDataBroadcaster.MatchConfigDataStr = "hello";
+		matchDataBroadcaster.MatchConfigDataStr = "hello " + Random.Range(1, 100);
 	}
 
 	private IEnumerator GrabMatchConfigCoroutine(MatchSetupController controller)
