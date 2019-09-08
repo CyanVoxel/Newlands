@@ -1746,36 +1746,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 603108170}
   m_CullTransparentMesh: 0
---- !u!1 &607867227
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 607867228}
-  m_Layer: 0
-  m_Name: MatchDataManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &607867228
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 607867227}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 726.49744, y: 472.6747, z: -82.5}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 5
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &608664457
 GameObject:
   m_ObjectHideFlags: 0
@@ -2491,7 +2461,7 @@ GameObject:
   - component: {fileID: 739225661}
   - component: {fileID: 739225660}
   m_Layer: 5
-  m_Name: Winning Condition Dropdown
+  m_Name: Win Condition Dropdown
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2737,6 +2707,52 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 783722872}
   m_CullTransparentMesh: 0
+--- !u!1 &787590952
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 787590954}
+  - component: {fileID: 787590953}
+  m_Layer: 0
+  m_Name: SetupManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &787590953
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 787590952}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d87f824afe566e489b0e0b218661ac8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncInterval: 0.1
+  matchManagerPrefab: {fileID: 392762909633554586, guid: 7e392f625d0a93b488287fedf1497cc0,
+    type: 3}
+--- !u!4 &787590954
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 787590952}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 726.49744, y: 472.6747, z: -82.5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &807638894
 GameObject:
   m_ObjectHideFlags: 0
@@ -4686,8 +4702,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 292633806}
-        m_MethodName: ChangeSceneMultiplayerGame
+      - m_Target: {fileID: 787590953}
+        m_MethodName: HostGameButtonClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -6529,7 +6545,7 @@ GameObject:
   - component: {fileID: 1850089207}
   - component: {fileID: 1850089208}
   m_Layer: 5
-  m_Name: Winning Condition Label
+  m_Name: Win Condition Label
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6575,7 +6591,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_text: WINNING CONDITION
+  m_text: Win Condition
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5d026042c19f5bc438c7763c2b8a1a52, type: 2}
   m_sharedMaterial: {fileID: 1979364309642615130, guid: 5d026042c19f5bc438c7763c2b8a1a52,
@@ -6645,7 +6661,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_textInfo:
     textComponent: {fileID: 1850089207}
-    characterCount: 17
+    characterCount: 13
     spriteCount: 0
     spaceCount: 1
     wordCount: 2
@@ -7089,6 +7105,7 @@ MonoBehaviour:
   - {fileID: 1862741089836950, guid: 7caee29a79adf9648a38721e965c495d, type: 3}
   - {fileID: 1850119598120500, guid: 51fb3f7ac2da8354bb24e66d233f9cdc, type: 3}
   - {fileID: 1397857731208177466, guid: abd0a7a2ceebea845a021bda2ad1fc25, type: 3}
+  - {fileID: 392762909633554586, guid: 7e392f625d0a93b488287fedf1497cc0, type: 3}
 --- !u!4 &1943549496
 Transform:
   m_ObjectHideFlags: 0

@@ -3,6 +3,39 @@ using UnityEngine;
 
 public class MatchDataBroadcaster : NetworkBehaviour
 {
-	private string matchConfigData = "";
-	public string MatchConfigData { get { return matchConfigData; } set { matchConfigData = value; } }
+	[SerializeField]
+	[SyncVar]
+	private string matchConfigDataStr = "";
+	private SyncListString updatedCards;
+
+	public string MatchConfigDataStr
+	{
+		get
+		{
+			return matchConfigDataStr;
+		}
+		set
+		{
+			if (hasAuthority)
+			{
+				matchConfigDataStr = value;
+			} else {
+				Debug.Log("[MatchDataBroadCaster] You don't have the authority to change me!");
+			}
+
+		}
+	}
+
+	public SyncListString UpdatedCards { get { return updatedCards; } set { updatedCards = value; } }
+
+	// Start is called before the first frame update
+	void Start()
+	{
+		Debug.Log("The MatchDataBroadcaster has been created!");
+	}
+
+	void OnDisable()
+	{
+		Debug.Log("The MatchDataBroadcaster has been disbaled/destroyed!");
+	}
 }

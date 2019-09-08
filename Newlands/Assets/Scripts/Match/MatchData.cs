@@ -1,25 +1,38 @@
 ﻿// Model data used by MatchController
 
-using Mirror;
-using UnityEngine;
-
 public class MatchData
 {
 	// FIELDS ##########################################################################################################
-	private string deckFlavor = "Vanilla";
-	private string winningCondition;
-	private int gameGridHeight;
-	private int gameGridWidth;
-	private int maxPlayerCount;
-	private int playerHandSize;
+	// private string deckFlavor = "Vanilla";
+	// private string winCondition;
+	// private int gameGridHeight;
+	// private int gameGridWidth;
+	// private int maxPlayerCount;
+	// private int playerHandSize;
+
+	private int turn;
+	private int round;
+	private int phase;
+
 	private bool initialized = false;
 
 	// PROPERTIES ######################################################################################################
-	public string DeckFlavor { get { return deckFlavor; } set { deckFlavor = value; } }
-	public string WinningCondition { get { return winningCondition; } set { winningCondition = value; } }
-	public int GameGridHeight { get { return gameGridHeight; } set { gameGridHeight = value; } }
-	public int GameGridWidth { get { return gameGridWidth; } set { gameGridWidth = value; } }
-	public int MaxPlayerCount { get { return maxPlayerCount; } set { maxPlayerCount = value; } }
-	public int PlayerHandSize { get { return playerHandSize; } set { playerHandSize = value; } }
-	public bool Initialized { get { return initialized; } set { initialized = value; } }
+	// public string DeckFlavor { get { return deckFlavor; } }
+	// public string WinCondition { get { return winCondition; } }
+	// public int GameGridHeight { get { return gameGridHeight; } }
+	// public int GameGridWidth { get { return gameGridWidth; } }
+	// public int MaxPlayerCount { get { return maxPlayerCount; } }
+	// public int PlayerHandSize { get { return playerHandSize; } }
+	public bool Initialized { get { return initialized; } }
+
+	public MatchData()
+	{
+		// this.deckFlavor = config.DeckFlavor;
+		// this.winCondition = config.WinCondition;
+		// this.gameGridHeight = config.GameGridHeight;
+		// this.gameGridWidth = config.GameGridWidth;
+		// this.maxPlayerCount = config.MaxPlayerCount;
+		// this.playerHandSize = config.PlayerHandSize;
+		// this.initialized = true;
+	}
 }
