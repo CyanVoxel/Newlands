@@ -1227,7 +1227,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_fontAsset: {fileID: 11400000, guid: 30e3ea8560d09be4e8822f0e34797757, type: 2}
+  m_fontAsset: {fileID: 0}
   m_spriteAsset: {fileID: 0}
   m_material: {fileID: 0}
   m_sharedMaterial: {fileID: 0}
@@ -1449,7 +1449,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_fontAsset: {fileID: 11400000, guid: bb9d6f69f6200774084172d866bd7f01, type: 2}
+  m_fontAsset: {fileID: 0}
   m_spriteAsset: {fileID: 0}
   m_material: {fileID: 0}
   m_sharedMaterial: {fileID: 0}
@@ -1626,10 +1626,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4460451447946022}
-  - component: {fileID: 114459191998210526}
   - component: {fileID: 3845178695976746641}
   - component: {fileID: -546225513333686585}
-  - component: {fileID: 8940274478204529261}
+  - component: {fileID: 4132732560855328821}
   m_Layer: 0
   m_Name: GameCard
   m_TagString: Untagged
@@ -1653,19 +1652,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &114459191998210526
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1850119598120500}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f3c753c7be1c3449a7538d4e1a71dcf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncInterval: 0.1
 --- !u!114 &3845178695976746641
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1680,8 +1666,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   serverOnly: 0
   localPlayerAuthority: 0
-  m_AssetId: 51fb3f7ac2da8354bb24e66d233f9cdc
-  m_SceneId: 0
+  m_AssetId: 
+  m_SceneId: 150394315
 --- !u!114 &-546225513333686585
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1697,7 +1683,7 @@ MonoBehaviour:
   syncInterval: 0.1
   compressRotation: 1
   instantMovement: 1
---- !u!114 &8940274478204529261
+--- !u!114 &4132732560855328821
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1706,26 +1692,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1850119598120500}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 44523a8bf444efe4eb8cd0c1e0fe3057, type: 3}
+  m_Script: {fileID: 11500000, guid: 22b050d3ea8b31743828f0f57301ce0f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncInterval: 0.1
-  cardDis: {fileID: 0}
-  gridMan: {fileID: 0}
-  objectName: 
-  title: 
-  subtitle: 
-  bodyText: 
-  footerText: 
-  footerValue: 0
-  percFlag: 0
-  moneyFlag: 0
-  footerOpr: 0
-  onlyColorCorners: 0
-  category: Tile
-  resource: 
-  target: 
-  footerColor: 
 --- !u!1 &1949806437575516
 GameObject:
   m_ObjectHideFlags: 0

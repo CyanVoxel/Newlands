@@ -5,24 +5,24 @@
 
 public class Card
 {
-	// FIELDS #####################################################################################
+	// FIELDS ##########################################################################################################
 
 	// The overall category of the Card (ex. Game Card, Price Card)
-	private string category;
+	private string category = "";
 	// The Title of the Card, specifying its type in its category
-	private string title;
+	private string title = "";
 	// The subtitle of the Card, further specifying the title subcategory
-	private string subtitle;
+	private string subtitle = "";
 	// The body text of a Card
-	private string bodyText;
+	private string bodyText = "";
 	// The footer text of the Card
-	private string footerText;
+	private string footerText = "";
 	// The resource of the card, if it had one
-	private string footerColor;
+	private string footerColor = "";
 	// Flag indicating if only the corners of the footer should be colored
-	private string resource;
+	private string resource = "";
 	// What subtypes of Card this Card can target within the category
-	private string target;
+	private string target = "";
 	// The operator of the footerValue
 	private char footerOpr;
 	// The raw number value that is presented in the Card footer

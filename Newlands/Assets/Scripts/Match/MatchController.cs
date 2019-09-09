@@ -26,7 +26,7 @@ public class MatchController : NetworkBehaviour
 	{
 		Debug.Log(debugTag + "The MatchController has been created!");
 		DontDestroyOnLoad(this.gameObject);
-		this.gameObject.AddComponent<CardController>();
+		this.gameObject.AddComponent<GridController>();
 	}
 
 	void Start()

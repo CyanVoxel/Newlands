@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using Mirror;
 using UnityEngine;
 
-public class CardController : NetworkBehaviour
+public class GridController : NetworkBehaviour
 {
 	// private GameObject matchManager;
 	private MatchDataBroadcaster matchDataBroadcaster;
@@ -81,6 +81,7 @@ public class CardController : NetworkBehaviour
 					new Vector3(xOff, yOff, 50),
 					Quaternion.identity);
 
+				cardObj.name = (CreateCardObjectName("Tile", x, y));
 				cardObj.transform.SetParent(gridParent.transform);
 
 				cardObj.transform.rotation = new Quaternion(0, 180, 0, 0); // 0, 180, 0, 0
@@ -91,13 +92,13 @@ public class CardController : NetworkBehaviour
 				// Grabs data from the internal grid and pushes it to the CardState scripts,
 				// triggering them to update their visuals.
 				// Debug.Log("[GridManager] Trying to fill out Tile info...");
-				CardState cardState = cardObj.GetComponent<CardState>();
+				// CardState cardState = cardObj.GetComponent<CardState>();
 
-				if (cardState != null)
-					// Generate and Push the string of the object's name
-					cardState.objectName = (CreateCardObjectName("Tile", x, y));
-				else
-					Debug.Log(debugTag + "This object's card state was null!");
+				// if (cardState != null)
+				// 	// Generate and Push the string of the object's name
+					// cardState.objectName = (CreateCardObjectName("Tile", x, y));
+				// else
+				// 	Debug.Log(debugTag + "This object's card state was null!");
 			}
 		}
 	}
@@ -120,6 +121,7 @@ public class CardController : NetworkBehaviour
 						new Vector3(xOff, yOff, 50),
 						Quaternion.identity);
 
+					cardObj.name = (CreateCardObjectName("MarketCard", x, y));
 					cardObj.transform.SetParent(marketGridParent.transform);
 
 					// Debug.Log("[GridManager] Spawning Card...");
@@ -127,19 +129,19 @@ public class CardController : NetworkBehaviour
 					// marketGrid[x, y].tileObj = cardObj;
 
 					// Debug.Log("[GridManager] Trying to fill out Market Card info...");
-					CardState cardState = cardObj.GetComponent<CardState>();
+					// CardState cardState = cardObj.GetComponent<CardState>();
 
-					if (cardState != null)
-					{
-						// Generate and Push the string of the object's name
-						cardState.objectName = (CreateCardObjectName("MarketCard", x, y));
-						// Push new values to the CardState to be synchronized across the network
-						// FillOutCardState(marketGrid[x, y].card, ref cardState);
-					}
-					else
-					{
-						Debug.Log(debugTag + "This object's card state was null!");
-					} // if (cardState != null)
+					// if (cardState != null)
+					// {
+					// 	// Generate and Push the string of the object's name
+					// 	cardState.objectName = (CreateCardObjectName("MarketCard", x, y));
+					// 	// Push new values to the CardState to be synchronized across the network
+					// 	// FillOutCardState(marketGrid[x, y].card, ref cardState);
+					// }
+					// else
+					// {
+					// 	Debug.Log(debugTag + "This object's card state was null!");
+					// } // if (cardState != null)
 					cardsMade++;
 				}
 			}

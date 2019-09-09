@@ -916,10 +916,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4568236915768574}
-  - component: {fileID: 114322541636693800}
   - component: {fileID: 6106022052829808868}
   - component: {fileID: 7149671756936438314}
-  - component: {fileID: 7746636970814184060}
+  - component: {fileID: 59428049043501011}
   m_Layer: 0
   m_Name: Tile
   m_TagString: Untagged
@@ -943,19 +942,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &114322541636693800
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1862741089836950}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f3c753c7be1c3449a7538d4e1a71dcf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncInterval: 0.1
 --- !u!114 &6106022052829808868
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -970,8 +956,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   serverOnly: 0
   localPlayerAuthority: 0
-  m_AssetId: 7caee29a79adf9648a38721e965c495d
-  m_SceneId: 0
+  m_AssetId: 
+  m_SceneId: 315057504
 --- !u!114 &7149671756936438314
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -987,7 +973,7 @@ MonoBehaviour:
   syncInterval: 0.1
   compressRotation: 1
   instantMovement: 1
---- !u!114 &7746636970814184060
+--- !u!114 &59428049043501011
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -996,27 +982,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1862741089836950}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 44523a8bf444efe4eb8cd0c1e0fe3057, type: 3}
+  m_Script: {fileID: 11500000, guid: 22b050d3ea8b31743828f0f57301ce0f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncInterval: 0.1
-  cardDis: {fileID: 0}
-  gridMan: {fileID: 0}
-  objectName: 
-  title: 
-  subtitle: 
-  bodyText: 
-  footerText: 
-  footerValue: 0
-  percFlag: 0
-  moneyFlag: 0
-  footerOpr: 0
-  onlyColorCorners: 0
-  category: 
-  resource: 
-  target: 
-  footerColor: 
-  parent: 
 --- !u!1 &1874617469558062
 GameObject:
   m_ObjectHideFlags: 0

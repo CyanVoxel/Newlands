@@ -5,7 +5,7 @@ using UnityEngine;
 public class DemoCardController : MonoBehaviour
 {
 	GameObject demoTile;
-	CardState cardState;
+	// CardState cardState;
 	LandTileDeck landTileDeck;
 
 	// Start is called before the first frame update
@@ -16,7 +16,7 @@ public class DemoCardController : MonoBehaviour
 		demoTile = GameObject.Find("DemoTile");
 		if (demoTile != null)
 		{
-			cardState = demoTile.GetComponent<CardState>();
+			// cardState = demoTile.GetComponent<CardState>();
 			// demoTile.gameObject.SetActive(true);
 		}
 	}
@@ -30,7 +30,7 @@ public class DemoCardController : MonoBehaviour
 			demoTile = GameObject.Find("DemoTile");
 			if (demoTile != null)
 			{
-				cardState = demoTile.GetComponent<CardState>();
+				// cardState = demoTile.GetComponent<CardState>();
 				// demoTile.gameObject.SetActive(true);
 			}
 		}

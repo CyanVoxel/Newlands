@@ -1,4 +1,5 @@
-﻿// Manages most UI Elements and game setup tasks.
+﻿// [DEPRECATED] !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// Manages most UI Elements and game setup tasks.
 
 using System.Collections.Generic;
 using Mirror;
@@ -366,14 +367,14 @@ public class GameManager : NetworkBehaviour
 							// This is also done of the client via CardState
 							// cardObj.transform.SetParent(target.tileObj.transform);
 
-							CardState cardState = cardObj.GetComponent<CardState>();
+							// CardState cardState = cardObj.GetComponent<CardState>();
 							// Push new values to the CardState to be synced across the network
-							GridManager.FillOutCardState(card, ref cardState);
+							// GridManager.FillOutCardState(card, ref cardState);
 
 							// Generate and Push the string of the object's name
-							cardState.objectName = GameManager.CreateCardObjectName("StackedCard", 0,
-								target.stackSize - 1);
-							cardState.parent = GameManager.CreateCardObjectName("Tile", locX, locY);
+							// cardState.objectName = GameManager.CreateCardObjectName("StackedCard", 0,
+							// 	target.stackSize - 1);
+							// cardState.parent = GameManager.CreateCardObjectName("Tile", locX, locY);
 
 							// Target
 							string cardToDestroy = CreateCardObjectName("GameCard", turn - 1,
@@ -448,14 +449,14 @@ public class GameManager : NetworkBehaviour
 							// This is also done of the client via CardState
 							// cardObj.transform.SetParent(target.tileObj.transform);
 
-							CardState cardState = cardObj.GetComponent<CardState>();
-							// Push new values to the CardState to be synced across the network
-							GridManager.FillOutCardState(card, ref cardState);
+							// CardState cardState = cardObj.GetComponent<CardState>();
+							// // Push new values to the CardState to be synced across the network
+							// GridManager.FillOutCardState(card, ref cardState);
 
-							// Generate and Push the string of the object's name
-							cardState.objectName = GameManager.CreateCardObjectName("StackedCard", 0,
-								target.stackSize - 1);
-							cardState.parent = GameManager.CreateCardObjectName("MarketCard", locX, locY);
+							// // Generate and Push the string of the object's name
+							// cardState.objectName = GameManager.CreateCardObjectName("StackedCard", 0,
+							// 	target.stackSize - 1);
+							// cardState.parent = GameManager.CreateCardObjectName("MarketCard", locX, locY);
 
 							// Target
 							string cardToDestroy = CreateCardObjectName("GameCard", turn - 1,
@@ -515,7 +516,7 @@ public class GameManager : NetworkBehaviour
 	{
 		Debug.Log(debug + "Bankrupting tile!");
 		tile.ownerId = 0;
-		CardDisplay.BankruptVisuals(tile.tileObj);
+		// CardDisplay.BankruptVisuals(tile.tileObj);
 	} // BankruptTile()
 
 	// Initializes each player object and draws a hand for them

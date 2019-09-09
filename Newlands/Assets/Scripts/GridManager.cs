@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿// [DEPRECATED] !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+using System.Collections;
 using System.Collections.Generic;
 using Mirror;
 using TMPro;
@@ -64,20 +66,20 @@ public class GridManager : NetworkBehaviour
 				// Grabs data from the internal grid and pushes it to the CardState scripts,
 				// triggering them to update their visuals.
 				// Debug.Log("[GridManager] Trying to fill out Tile info...");
-				CardState cardState = cardObj.GetComponent<CardState>();
+				// CardState cardState = cardObj.GetComponent<CardState>();
 
-				if (cardState != null)
-				{
-					// Generate and Push the string of the object's name
-					cardState.objectName = (GameManager.CreateCardObjectName("Tile", x, y));
+				// if (cardState != null)
+				// {
+				// 	// Generate and Push the string of the object's name
+				// 	cardState.objectName = (GameManager.CreateCardObjectName("Tile", x, y));
 
-					// Push new values to the CardState to be synchronized across the network
-					FillOutCardState(grid[x, y].card, ref cardState);
-				}
-				else
-				{
-					Debug.Log(debug + "This object's card state was null!");
-				}
+				// 	// Push new values to the CardState to be synchronized across the network
+				// 	FillOutCardState(grid[x, y].card, ref cardState);
+				// }
+				// else
+				// {
+				// 	Debug.Log(debug + "This object's card state was null!");
+				// }
 			} // y
 		} // x
 	} // CreateGameGridObjects();
@@ -112,19 +114,19 @@ public class GridManager : NetworkBehaviour
 					marketGrid[x, y].tileObj = cardObj;
 
 					// Debug.Log("[GridManager] Trying to fill out Market Card info...");
-					CardState cardState = cardObj.GetComponent<CardState>();
+					// CardState cardState = cardObj.GetComponent<CardState>();
 
-					if (cardState != null)
-					{
-						// Generate and Push the string of the object's name
-						cardState.objectName = (GameManager.CreateCardObjectName("MarketCard", x, y));
-						// Push new values to the CardState to be synchronized across the network
-						FillOutCardState(marketGrid[x, y].card, ref cardState);
-					}
-					else
-					{
-						Debug.Log(debug + "This object's card state was null!");
-					} // if (cardState != null)
+					// if (cardState != null)
+					// {
+					// 	// Generate and Push the string of the object's name
+					// 	cardState.objectName = (GameManager.CreateCardObjectName("MarketCard", x, y));
+					// 	// Push new values to the CardState to be synchronized across the network
+					// 	FillOutCardState(marketGrid[x, y].card, ref cardState);
+					// }
+					// else
+					// {
+					// 	Debug.Log(debug + "This object's card state was null!");
+					// } // if (cardState != null)
 				} // if (marketGrid[x, y] != null)
 			} // y
 		} // x
@@ -158,19 +160,19 @@ public class GridManager : NetworkBehaviour
 			// NetworkServer.Spawn(cardObj);
 
 			// Debug.Log("[GridManager] Trying to fill out Hand Card info...");
-			CardState cardState = cardObj.GetComponent<CardState>();
+			// CardState cardState = cardObj.GetComponent<CardState>();
 
-			if (cardState != null)
-			{
-				// Generate and Push the string of the object's name
-				cardState.objectName = (GameManager.CreateCardObjectName("GameCard", playerNum, i));
-				// Push new values to the CardState to be synchronized across the network
-				FillOutCardState(hand[i], ref cardState);
-			}
-			else
-			{
-				Debug.Log(debug + "This object's card state was null!");
-			} // if (cardState != null)
+			// if (cardState != null)
+			// {
+			// 	// Generate and Push the string of the object's name
+			// 	cardState.objectName = (GameManager.CreateCardObjectName("GameCard", playerNum, i));
+			// 	// Push new values to the CardState to be synchronized across the network
+			// 	FillOutCardState(hand[i], ref cardState);
+			// }
+			// else
+			// {
+			// 	Debug.Log(debug + "This object's card state was null!");
+			// } // if (cardState != null)
 		} // for
 	} // CreateHandObjects()
 
@@ -313,27 +315,27 @@ public class GridManager : NetworkBehaviour
 	} // ShiftRow()
 
 	// Converts card data from one type into a reference cardState variable.
-	public static void FillOutCardState(CardData cardInfoObj, ref CardState cardState)
-	{
-		cardState.category = cardInfoObj.Category;
-		cardState.title = cardInfoObj.Title;
-		cardState.subtitle = cardInfoObj.Subtitle;
-		cardState.bodyText = cardInfoObj.BodyText;
-		cardState.footerText = cardInfoObj.FooterText;
-		cardState.resource = cardInfoObj.Resource;
-		cardState.footerValue = cardInfoObj.FooterValue;
-		cardState.target = cardInfoObj.Target;
-		cardState.resource = cardInfoObj.Resource;
-		cardState.percFlag = cardInfoObj.PercFlag;
-		cardState.moneyFlag = cardInfoObj.MoneyFlag;
-		cardState.footerOpr = cardInfoObj.FooterOpr;
-		cardState.footerColor = cardInfoObj.FooterColor;
-		cardState.onlyColorCorners = cardInfoObj.ColorCornerFlag;
-	} // FillOutCardState()
+	// public static void FillOutCardState(CardData cardInfoObj, ref CardState cardState)
+	// {
+	// 	cardState.category = cardInfoObj.Category;
+	// 	cardState.title = cardInfoObj.Title;
+	// 	cardState.subtitle = cardInfoObj.Subtitle;
+	// 	cardState.bodyText = cardInfoObj.BodyText;
+	// 	cardState.footerText = cardInfoObj.FooterText;
+	// 	cardState.resource = cardInfoObj.Resource;
+	// 	cardState.footerValue = cardInfoObj.FooterValue;
+	// 	cardState.target = cardInfoObj.Target;
+	// 	cardState.resource = cardInfoObj.Resource;
+	// 	cardState.percFlag = cardInfoObj.PercFlag;
+	// 	cardState.moneyFlag = cardInfoObj.MoneyFlag;
+	// 	cardState.footerOpr = cardInfoObj.FooterOpr;
+	// 	cardState.footerColor = cardInfoObj.FooterColor;
+	// 	cardState.onlyColorCorners = cardInfoObj.ColorCornerFlag;
+	// } // FillOutCardState()
 
-	// Converts card data from one type into a reference cardState variable.
-	public static void FillOutCardState(Card cardInfoObj, ref CardState cardState)
-	{
-		FillOutCardState(new CardData(cardInfoObj), ref cardState);
-	} // FillOutCardState()
+	// // Converts card data from one type into a reference cardState variable.
+	// public static void FillOutCardState(Card cardInfoObj, ref CardState cardState)
+	// {
+	// 	FillOutCardState(new CardData(cardInfoObj), ref cardState);
+	// } // FillOutCardState()
 } // class GridManager

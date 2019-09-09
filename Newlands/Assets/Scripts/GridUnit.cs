@@ -8,7 +8,7 @@ using UnityEngine;
 
 public class GridUnit
 {
-	CardDisplay cardDis;
+	// CardDisplay cardDis;
 
 	// DATA FIELDS ################################################################################
 	public int ownerId = 0;
@@ -175,7 +175,7 @@ public class GridUnit
 
 			ResourceInfo.pricesMut[this.resource] = (int)this.totalValue;
 			// cardDis.UpdateFooter(this, ResourceInfo.pricesMut[this.resource]);
-			tileObj.GetComponent<CardState>().footerValue = ResourceInfo.pricesMut[this.resource];
+			// tileObj.GetComponent<CardState>().footerValue = ResourceInfo.pricesMut[this.resource];
 
 			// Debug.Log(debug + "New PriceMut: " + ResourceInfo.pricesMut[this.resource]);
 			// // ResourceInfo.prices.TryGetValue(this.resource, out this.baseValue);
@@ -301,7 +301,7 @@ public class GridUnit
 
 		// this.card = card;
 		this.tileObj = tileObj;
-		cardDis = this.tileObj.AddComponent<CardDisplay>();
+		// cardDis = this.tileObj.AddComponent<CardDisplay>();
 
 		// this.landType = card.title;
 		// this.resource = card.Resource;
