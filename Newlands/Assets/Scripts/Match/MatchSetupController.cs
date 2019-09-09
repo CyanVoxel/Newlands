@@ -100,7 +100,7 @@ public class MatchSetupController : NetworkBehaviour
                 networkManager.networkAddress = ipInputField.text; // Does this need to be here when hosting?
                 // telepathyTransport.port = ushort.Parse(portInputField.text);
                 networkManager.StartHost();
-                // SceneManager.LoadScene("GameMultiplayer", LoadSceneMode.Single);
+                SceneManager.LoadScene("GameMultiplayer", LoadSceneMode.Single);
             }
         }
         CreateMatchManager();
@@ -118,7 +118,7 @@ public class MatchSetupController : NetworkBehaviour
                     networkManager.networkAddress = ipInputField.text;
                     // telepathyTransport.port = ushort.Parse(portInputField.text);
                     networkManager.StartClient();
-                    // SceneManager.LoadScene("GameMultiplayer", LoadSceneMode.Single);
+                    SceneManager.LoadScene("GameMultiplayer", LoadSceneMode.Single);
                 }
                 else
                 {

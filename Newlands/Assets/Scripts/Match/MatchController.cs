@@ -14,6 +14,10 @@ public class MatchController : NetworkBehaviour
 	private MatchConfigData config;
 	public MatchData MatchData { get { return matchData; } }
 
+	public GameObject landTilePrefab;
+	public GameObject gameCardPrefab;
+	public GameObject marketCardPrefab;
+
 	private DebugTag debugTag = new DebugTag("MatchController", "9C27B0");
 
 	// METHODS #########################################################################################################
@@ -22,6 +26,7 @@ public class MatchController : NetworkBehaviour
 	{
 		Debug.Log(debugTag + "The MatchController has been created!");
 		DontDestroyOnLoad(this.gameObject);
+		this.gameObject.AddComponent<CardController>();
 	}
 
 	void Start()
@@ -91,8 +96,6 @@ public class MatchController : NetworkBehaviour
 			yield return null;
 
 		Debug.Log(debugTag + "Initializing Match from Config data...");
-
-		this.gameObject.AddComponent<CardController>();
 
 	}
 

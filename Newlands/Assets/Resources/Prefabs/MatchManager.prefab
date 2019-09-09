@@ -45,7 +45,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b951a464e5a05d488946be15a2ad296, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncInterval: 0.1
   matchDataBroadcaster: {fileID: 392762909633554585}
+  landTilePrefab: {fileID: 1862741089836950, guid: 7caee29a79adf9648a38721e965c495d,
+    type: 3}
+  gameCardPrefab: {fileID: 1850119598120500, guid: 51fb3f7ac2da8354bb24e66d233f9cdc,
+    type: 3}
+  marketCardPrefab: {fileID: 1850119598120500, guid: 51fb3f7ac2da8354bb24e66d233f9cdc,
+    type: 3}
 --- !u!114 &392762909633554584
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -60,8 +67,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   serverOnly: 0
   localPlayerAuthority: 0
-  m_AssetId: 
-  m_SceneId: 661419641
+  m_AssetId: 7e392f625d0a93b488287fedf1497cc0
+  m_SceneId: 0
 --- !u!114 &392762909633554585
 MonoBehaviour:
   m_ObjectHideFlags: 0
