@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class ColorPalette
 {
-	#region FIELDS
 	// FIELDS ######################################################################################
 
 	// Material Design =============================================================================
@@ -96,9 +95,9 @@ public class ColorPalette
 	public static readonly Color32 tintPink300 = new ColorHex("#e56385");
 	public static readonly Color32 tintGray300 = new ColorHex("#969592");
 
-	// 500 Card Colors ----------------------------------------------------------
-	public static readonly Color32 cardOrangeDeep500 = new ColorHex("#c1352a");
-	public static readonly Color32 cardRed500 = new ColorHex("#ca501a");
+	// 500 Card Colors ---------------------------------------------------------
+	public static readonly Color32 cardRed500 = new ColorHex("#c1352a");
+	public static readonly Color32 cardOrangeDeep500 = new ColorHex("#ca501a");
 	public static readonly Color32 cardOrange500 = new ColorHex("#ca7700");
 	public static readonly Color32 cardAmber500 = new ColorHex("#ca9705");
 	public static readonly Color32 cardYellow500 = new ColorHex("#cab82d");
@@ -114,10 +113,7 @@ public class ColorPalette
 	public static readonly Color32 cardPink500 = new ColorHex("#bb335f");
 	public static readonly Color32 cardGray500 = new ColorHex("#6d6b69");
 
-	#endregion
-
-	#region METHODS
-	// METHODS #####################################################################################
+	// METHODS #########################################################################################################
 
 	// Outputs a hex color tag from a Color32
 	public static string Color32ToTag(Color32 color)
@@ -130,149 +126,4 @@ public class ColorPalette
 		return hex;
 	} // color32ToHex()
 
-	#endregion
-
 } // class ColorPalette
-
-// ColorHex struct - Mainly used as a way to create a Color32 using a hex code
-// @Author: Travis Abendshien (https://github.com/CyanVoxel)
-public struct ColorHex
-{
-	byte r;
-	byte g;
-	byte b;
-	byte a;
-
-	public ColorHex(byte r, byte g, byte b, byte a)
-	{
-		this.r = r;
-		this.g = g;
-		this.b = b;
-		this.a = a;
-
-	} // ColorHex(byte r, byte g, byte b, byte a)
-
-	public ColorHex(string hex)
-	{
-		string h = hex;
-
-		if (h.Contains("#"))
-		{
-			h = h.Remove(hex.IndexOf("#"), 1);
-		}
-
-		switch (h.Length)
-		{
-			case 6:
-				this.r = byte.Parse(h.Substring(0, 2), System.Globalization.NumberStyles.HexNumber);
-				this.g = byte.Parse(h.Substring(2, 2), System.Globalization.NumberStyles.HexNumber);
-				this.b = byte.Parse(h.Substring(4, 2), System.Globalization.NumberStyles.HexNumber);
-				this.a = 255;
-				break;
-
-			case 8:
-				this.r = byte.Parse(h.Substring(0, 2), System.Globalization.NumberStyles.HexNumber);
-				this.g = byte.Parse(h.Substring(2, 2), System.Globalization.NumberStyles.HexNumber);
-				this.b = byte.Parse(h.Substring(4, 2), System.Globalization.NumberStyles.HexNumber);
-				this.a = byte.Parse(h.Substring(6, 2), System.Globalization.NumberStyles.HexNumber);
-				break;
-
-			default:
-				this.r = 0;
-				this.g = 0;
-				this.b = 0;
-				this.a = 0;
-				break;
-		} // switch (hex.Length)
-	} // ColorHex(byte r, byte g, byte b, byte a)
-
-	public override bool Equals(object obj)
-	{
-		bool typeCheck = false;
-
-		if (this.GetType().Equals(obj.GetType()) || obj is UnityEngine.Color32)
-		{
-			typeCheck = true;
-		}
-
-		if (obj == null || !typeCheck)
-		{
-			return false;
-		}
-		else
-		{
-			ColorHex c = (ColorHex)obj;
-			return (r == c.r && g == c.g && b == c.b && a == c.a);
-		}
-	} // override Equals()
-
-	public static bool operator ==(UnityEngine.Color32 left, ColorHex right)
-	{
-		if (left.r == right.r
-			&& left.g == right.g
-			&& left.b == right.b
-			&& left.a == right.a)
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	} // operator ==
-
-	public static bool operator ==(ColorHex left, ColorHex right)
-	{
-		if (left.r == right.r
-			&& left.g == right.g
-			&& left.b == right.b
-			&& left.a == right.a)
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	} // operator ==
-
-	public static bool operator !=(UnityEngine.Color32 left, ColorHex right)
-	{
-		if (left.r != right.r
-			|| left.g != right.g
-			|| left.b != right.b
-			|| left.a != right.a)
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	} // operator !=
-
-	public static bool operator !=(ColorHex left, ColorHex right)
-	{
-		if (left.r != right.r
-			|| left.g != right.g
-			|| left.b != right.b
-			|| left.a != right.a)
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	} // operator !=
-
-	public static implicit operator UnityEngine.Color32(ColorHex c)
-	{
-		return new UnityEngine.Color32(c.r, c.g, c.b, c.a);
-	}
-
-	public override int GetHashCode()
-	{
-		return r ^ g ^ b ^ a;
-	} // override GetHashCode()
-} // struct ColorHex

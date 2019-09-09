@@ -3,11 +3,14 @@ using UnityEngine;
 
 public class MatchDataBroadcaster : NetworkBehaviour
 {
-	[SerializeField]
+	// FIELDS ##########################################################################################################
 	[SyncVar]
 	private string matchConfigDataStr = "";
-	private SyncListString updatedCards;
+	private SyncListString updatedCardsStr;
 
+	private DebugTag debugTag = new DebugTag("MatchDataBroadcaster", "2196F3");
+
+	// PROPERTIES ######################################################################################################
 	public string MatchConfigDataStr
 	{
 		get
@@ -19,23 +22,44 @@ public class MatchDataBroadcaster : NetworkBehaviour
 			if (hasAuthority)
 			{
 				matchConfigDataStr = value;
-			} else {
-				Debug.Log("[MatchDataBroadCaster] You don't have the authority to change me!");
+			}
+			else
+			{
+				Debug.Log(debugTag + "You don't have the authority to change MatchConfigDataStr!");
 			}
 
 		}
 	}
 
-	public SyncListString UpdatedCards { get { return updatedCards; } set { updatedCards = value; } }
-
-	// Start is called before the first frame update
-	void Start()
+	public SyncListString UpdatedCardsStr
 	{
-		Debug.Log("The MatchDataBroadcaster has been created!");
+		get
+		{
+			return updatedCardsStr;
+		}
+		set
+		{
+			if (hasAuthority)
+			{
+				updatedCardsStr = value;
+			}
+			else
+			{
+				Debug.Log(debugTag + "You don't have the authority to change UpdatedCardsStr!");
+			}
+
+		}
 	}
+
+	void Awake()
+	{
+		Debug.Log(debugTag + "The MatchDataBroadcaster has been created!");
+	}
+
+	void Start() { }
 
 	void OnDisable()
 	{
-		Debug.Log("The MatchDataBroadcaster has been disbaled/destroyed!");
+		Debug.Log(debugTag + "The MatchDataBroadcaster has been disbaled/destroyed!");
 	}
 }

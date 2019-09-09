@@ -13,17 +13,25 @@ public class MatchController : NetworkBehaviour
 	private MatchConfigData config;
 	public MatchData MatchData { get { return matchData; } }
 
+	private DebugTag debugTag = new DebugTag("MatchController", "9C27B0");
+
+	void Awake()
+	{
+		Debug.Log(debugTag + "The MatchController has been created!");
+
+		DontDestroyOnLoad(this.gameObject);
+	}
+
 	// Start is called before the first frame update
 	void Start()
 	{
-		Debug.Log("[MatchController] The MatchController has been created!");
 
 		if (!hasAuthority)
 		{
 			return;
 		}
 
-		Debug.Log("[MatchController] Initializing...");
+		Debug.Log(debugTag + "Initializing...");
 
 		GrabMatchDataBroadCaster();
 		LoadMatchConfiguration();
@@ -42,7 +50,7 @@ public class MatchController : NetworkBehaviour
 
 	void OnDisable()
 	{
-		Debug.Log("The MatchController has been disbaled/destroyed!");
+		Debug.Log(debugTag + "The MatchController has been disbaled/destroyed!");
 	}
 
 	private void GrabMatchDataBroadCaster()
@@ -50,11 +58,11 @@ public class MatchController : NetworkBehaviour
 		matchDataBroadcaster = this.gameObject.GetComponent<MatchDataBroadcaster>();
 		if (matchDataBroadcaster != null)
 		{
-			Debug.Log("[MatchController] MatchDataBroadcaster was found!");
+			Debug.Log(debugTag + "MatchDataBroadcaster was found!");
 		}
 		else
 		{
-			Debug.Log("[MatchController] ERROR: MatchDataBroadcaster was NOT found!");
+			Debug.LogError(debugTag.error + "MatchDataBroadcaster was NOT found!");
 		}
 	}
 
@@ -63,7 +71,7 @@ public class MatchController : NetworkBehaviour
 		GameObject matchSetupManager = GameObject.Find("SetupManager");
 		if (matchSetupManager != null)
 		{
-			Debug.Log("[MatchController] SetupManager (our dad) was found!");
+			Debug.Log(debugTag + "SetupManager (our dad) was found!");
 
 			MatchSetupController setupController = matchSetupManager.GetComponent<MatchSetupController>();
 			StartCoroutine(GrabMatchConfigCoroutine(setupController));
@@ -72,7 +80,7 @@ public class MatchController : NetworkBehaviour
 		}
 		else
 		{
-			Debug.Log("[MatchController] ERROR: SetupManager (our dad) was NOT found!");
+			Debug.LogError(debugTag.error + "SetupManager (our dad) was NOT found!");
 		}
 	}
 
@@ -82,13 +90,13 @@ public class MatchController : NetworkBehaviour
 		{
 			yield return null;
 		}
-		Debug.Log("Config loaded! Broadcasting...");
+		Debug.Log(debugTag + "Config loaded! Sending to Broadcaster...");
 		matchDataBroadcaster.MatchConfigDataStr = "hello " + Random.Range(1, 100);
 	}
 
 	private IEnumerator GrabMatchConfigCoroutine(MatchSetupController controller)
 	{
-		Debug.Log("[MatchController] [GrabMatchConfigCoroutine] Running...");
+		Debug.Log(debugTag + "Grabbing config from MatchSetupController...");
 		while (!controller.Ready)
 		{
 			// Debug.Log("[MatchController] [GrabMatchConfigCoroutine] Controller is not ready yet!");

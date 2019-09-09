@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Mirror;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class MatchSetupController : NetworkBehaviour
@@ -18,8 +19,7 @@ public class MatchSetupController : NetworkBehaviour
     private TMP_Dropdown winConditionDropdown;
     private TMP_InputField ipInputField;
     private TMP_InputField portInputField;
-
-    private Button hostButton;
+    private Image noIpWarning;
 
     [SerializeField]
     private GameObject matchManagerPrefab;
@@ -31,9 +31,12 @@ public class MatchSetupController : NetworkBehaviour
     public MatchConfigData InitialConfig { get { return initialConfig; } }
     public bool Ready { get { return ready; } }
 
+    private DebugTag debugTag = new DebugTag("MatchSetupController", "f44336");
+
     // Start is called before the first frame update
     void Start()
     {
+        Debug.Log(debugTag + "Initializing...");
 
         networkManagerObj = GameObject.Find("NetworkManager");
         networkManager = networkManagerObj.GetComponent<NetworkManager>();
@@ -46,6 +49,13 @@ public class MatchSetupController : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (ipInputField != null)
+        {
+            if (ipInputField.text != "")
+            {
+                noIpWarning.color = ColorPalette.alpha;
+            }
+        }
         // Debug.Log(this.networkManager.networkAddress);
     }
 
@@ -85,6 +95,12 @@ public class MatchSetupController : NetworkBehaviour
         {
             portInputField = portInputFieldObj.GetComponent<TMP_InputField>();
         }
+
+        GameObject noIpWarningObj = GameObject.Find("NoIpWarning");
+        if (noIpWarningObj != null)
+        {
+            noIpWarning = noIpWarningObj.GetComponent<Image>();
+        }
     }
 
     public void HostGameButtonClick()
@@ -94,9 +110,10 @@ public class MatchSetupController : NetworkBehaviour
         {
             if (!NetworkClient.active)
             {
-                networkManager.networkAddress = ipInputField.text;
+                networkManager.networkAddress = ipInputField.text; // Does this need to be here when hosting?
                 // telepathyTransport.port = ushort.Parse(portInputField.text);
                 networkManager.StartHost();
+                SceneManager.LoadScene("GameMultiplayer", LoadSceneMode.Single);
             }
         }
         CreateMatchManager();
@@ -104,14 +121,23 @@ public class MatchSetupController : NetworkBehaviour
 
     public void JoinGameButtonClick()
     {
-
+        noIpWarning.color = ColorPalette.alpha;
         if (!NetworkClient.isConnected && !NetworkServer.active)
         {
             if (!NetworkClient.active)
             {
-                networkManager.networkAddress = ipInputField.text;
-                // telepathyTransport.port = ushort.Parse(portInputField.text);
-                networkManager.StartClient();
+                if (ipInputField.text != "")
+                {
+                    networkManager.networkAddress = ipInputField.text;
+                    // telepathyTransport.port = ushort.Parse(portInputField.text);
+                    networkManager.StartClient();
+                    SceneManager.LoadScene("GameMultiplayer", LoadSceneMode.Single);
+                }
+                else
+                {
+                    noIpWarning.color = ColorPalette.cardRed500;
+                }
+
             }
         }
     }
