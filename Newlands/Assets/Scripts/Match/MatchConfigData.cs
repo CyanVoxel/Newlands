@@ -1,14 +1,23 @@
 ﻿// Model data used by MatchSetupController
 
+using UnityEngine;
+
 public class MatchConfigData
 {
 	// FIELDS ##########################################################################################################
-	private string deckFlavor = "Vanilla";
+	[SerializeField]
+    private string deckFlavor = "Vanilla";
+    [SerializeField]
 	private string winCondition;
+    [SerializeField]
 	private int gameGridHeight;
+    [SerializeField]
 	private int gameGridWidth;
+    [SerializeField]
 	private int maxPlayerCount;
+    [SerializeField]
 	private int playerHandSize;
+    [SerializeField]
 	private bool initialized = false;
 
 	// PROPERTIES ######################################################################################################
@@ -32,4 +41,20 @@ public class MatchConfigData
 		this.playerHandSize = playerHandSize;
 		this.initialized = true;
 	}
+
+    public override string ToString()
+    {
+        return JsonUtility.ToJson(this);
+    }
+
+    // public MatchConfigData(MatchConfigData config)
+    // {
+    //     this.deckFlavor = config.DeckFlavor;
+	// 	this.winCondition = config.WinCondition;
+	// 	this.gameGridHeight = config.GameGridHeight;
+	// 	this.gameGridWidth = config.GameGridWidth;
+	// 	this.maxPlayerCount = config.MaxPlayerCount;
+	// 	this.playerHandSize = config.PlayerHandSize;
+	// 	this.initialized = true;
+    // }
 }

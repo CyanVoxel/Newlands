@@ -7,6 +7,7 @@ using UnityEngine;
 
 public class MatchController : NetworkBehaviour
 {
+	// FIELDS ##########################################################################################################
 	[SerializeField]
 	private MatchDataBroadcaster matchDataBroadcaster;
 	private MatchData matchData;
@@ -15,44 +16,35 @@ public class MatchController : NetworkBehaviour
 
 	private DebugTag debugTag = new DebugTag("MatchController", "9C27B0");
 
+	// METHODS #########################################################################################################
+
 	void Awake()
 	{
 		Debug.Log(debugTag + "The MatchController has been created!");
-
 		DontDestroyOnLoad(this.gameObject);
 	}
 
-	// Start is called before the first frame update
 	void Start()
 	{
-
 		if (!hasAuthority)
-		{
 			return;
-		}
 
 		Debug.Log(debugTag + "Initializing...");
-
-		GrabMatchDataBroadCaster();
-		LoadMatchConfiguration();
-
+		InitializeMatch();
 	}
 
-	// Update is called once per frame
-	void Update()
-	{
-		// if (this.config != null)
-		// {
-		// 	Debug.Log(this.config.GameGridHeight);
-		// }
-		// Debug.Log(matchDataBroadcaster.MatchConfigDataStr);
-	}
+	// void Update()
+	// {
+	// 	// Debug.Log(matchDataBroadcaster.MatchConfigDataStr);
+	// }
 
 	void OnDisable()
 	{
 		Debug.Log(debugTag + "The MatchController has been disbaled/destroyed!");
 	}
 
+	// [Server] Grabs the MatchDataBroadcaster from this parent GameObject
+	// On the client, they will grab the same MatchDataBroadcaster themselves in a different script.
 	private void GrabMatchDataBroadCaster()
 	{
 		matchDataBroadcaster = this.gameObject.GetComponent<MatchDataBroadcaster>();
@@ -66,17 +58,19 @@ public class MatchController : NetworkBehaviour
 		}
 	}
 
-	private void LoadMatchConfiguration()
+	// [Server] Loads the config from MatchSetupController and initializes the match.
+	private void InitializeMatch()
 	{
+		GrabMatchDataBroadCaster();
+
 		GameObject matchSetupManager = GameObject.Find("SetupManager");
 		if (matchSetupManager != null)
 		{
 			Debug.Log(debugTag + "SetupManager (our dad) was found!");
 
 			MatchSetupController setupController = matchSetupManager.GetComponent<MatchSetupController>();
-			StartCoroutine(GrabMatchConfigCoroutine(setupController));
-			StartCoroutine(MatchSetupCoroutine());
-
+			StartCoroutine(LoadMatchConfigCoroutine(setupController));
+			StartCoroutine(InitializeMatchCoroutine());
 		}
 		else
 		{
@@ -84,24 +78,35 @@ public class MatchController : NetworkBehaviour
 		}
 	}
 
-	private IEnumerator MatchSetupCoroutine()
+	// COROUTINES ######################################################################################################
+
+	// [Server] The main initialization coroutine for the match.
+	// Dependant on LoadMatchConfigCoroutine finishing.
+	private IEnumerator InitializeMatchCoroutine()
 	{
+		// Will not run if LoadMatchConfigCoroutine() has not been run.
+		// This gives the functionality of yield return LoadMatchConfigCoroutine()
+		// without needing to pass this/it the MatchSetupController.
 		while (this.config == null)
-		{
 			yield return null;
-		}
-		Debug.Log(debugTag + "Config loaded! Sending to Broadcaster...");
-		matchDataBroadcaster.MatchConfigDataStr = "hello " + Random.Range(1, 100);
+
+		Debug.Log(debugTag + "Initializing Match from Config data...");
+
+		this.gameObject.AddComponent<CardController>();
+
 	}
 
-	private IEnumerator GrabMatchConfigCoroutine(MatchSetupController controller)
+	// [Server] Loads this MatchManager's config from the MatchSetupController's final config.
+	private IEnumerator LoadMatchConfigCoroutine(MatchSetupController controller)
 	{
 		Debug.Log(debugTag + "Grabbing config from MatchSetupController...");
+
 		while (!controller.Ready)
-		{
-			// Debug.Log("[MatchController] [GrabMatchConfigCoroutine] Controller is not ready yet!");
 			yield return null;
-		}
+
 		this.config = controller.InitialConfig;
+		Debug.Log(debugTag + "Config loaded! Sending to Broadcaster...");
+		matchDataBroadcaster.MatchConfigDataStr = JsonUtility.ToJson(controller.InitialConfig);
 	}
+
 }

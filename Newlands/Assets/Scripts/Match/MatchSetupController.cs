@@ -1,4 +1,5 @@
-﻿// Sets up a match with data ready for MatchController
+﻿// Controller for the Multiplayer Game Setup scene.
+// Creates a game config that's later used by MatchController during a game.
 
 using System.Collections;
 using System.Collections.Generic;
@@ -52,9 +53,7 @@ public class MatchSetupController : NetworkBehaviour
         if (ipInputField != null)
         {
             if (ipInputField.text != "")
-            {
                 noIpWarning.color = ColorPalette.alpha;
-            }
         }
         // Debug.Log(this.networkManager.networkAddress);
     }
@@ -64,43 +63,31 @@ public class MatchSetupController : NetworkBehaviour
         // Grab the Player Count Dropdown
         GameObject playerCountDropdownObj = GameObject.Find("PlayersDropdown");
         if (playerCountDropdown != null)
-        {
             playerCountDropdown = playerCountDropdownObj.GetComponent<TMP_Dropdown>();
-        }
 
         // Grab the Grid Size Dropdown
         GameObject gridSizeDropdownObj = GameObject.Find("GridSizeDropdown");
         if (gridSizeDropdownObj != null)
-        {
             gridSizeDropdown = gridSizeDropdownObj.GetComponent<TMP_Dropdown>();
-        }
 
         // Grab the Win Condition Dropdown
         GameObject winConditionDropdownObj = GameObject.Find("WinConditionDropdown");
         if (winConditionDropdownObj != null)
-        {
             winConditionDropdown = winConditionDropdownObj.GetComponent<TMP_Dropdown>();
-        }
 
         // Grab the IP Input Field
         GameObject ipInputFieldObj = GameObject.Find("IpInputField");
         if (ipInputFieldObj != null)
-        {
             ipInputField = ipInputFieldObj.GetComponent<TMP_InputField>();
-        }
 
         // Grab the IP Input Field
         GameObject portInputFieldObj = GameObject.Find("PortInputField");
         if (portInputField != null)
-        {
             portInputField = portInputFieldObj.GetComponent<TMP_InputField>();
-        }
 
         GameObject noIpWarningObj = GameObject.Find("NoIpWarning");
         if (noIpWarningObj != null)
-        {
             noIpWarning = noIpWarningObj.GetComponent<Image>();
-        }
     }
 
     public void HostGameButtonClick()
@@ -113,7 +100,7 @@ public class MatchSetupController : NetworkBehaviour
                 networkManager.networkAddress = ipInputField.text; // Does this need to be here when hosting?
                 // telepathyTransport.port = ushort.Parse(portInputField.text);
                 networkManager.StartHost();
-                SceneManager.LoadScene("GameMultiplayer", LoadSceneMode.Single);
+                // SceneManager.LoadScene("GameMultiplayer", LoadSceneMode.Single);
             }
         }
         CreateMatchManager();
@@ -131,7 +118,7 @@ public class MatchSetupController : NetworkBehaviour
                     networkManager.networkAddress = ipInputField.text;
                     // telepathyTransport.port = ushort.Parse(portInputField.text);
                     networkManager.StartClient();
-                    SceneManager.LoadScene("GameMultiplayer", LoadSceneMode.Single);
+                    // SceneManager.LoadScene("GameMultiplayer", LoadSceneMode.Single);
                 }
                 else
                 {

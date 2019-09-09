@@ -4,8 +4,9 @@ using UnityEngine;
 public class MatchDataBroadcaster : NetworkBehaviour
 {
 	// FIELDS ##########################################################################################################
-	[SyncVar]
+	[SyncVar][SerializeField]
 	private string matchConfigDataStr = "";
+	private string turnEventBroadcastStr = "";
 	private SyncListString updatedCardsStr;
 
 	private DebugTag debugTag = new DebugTag("MatchDataBroadcaster", "2196F3");
@@ -13,41 +14,37 @@ public class MatchDataBroadcaster : NetworkBehaviour
 	// PROPERTIES ######################################################################################################
 	public string MatchConfigDataStr
 	{
-		get
-		{
-			return matchConfigDataStr;
-		}
+		get { return matchConfigDataStr; }
 		set
 		{
 			if (hasAuthority)
-			{
 				matchConfigDataStr = value;
-			}
 			else
-			{
 				Debug.Log(debugTag + "You don't have the authority to change MatchConfigDataStr!");
-			}
+		}
+	}
 
+	public string TurnEventBroadcast
+	{
+		get { return turnEventBroadcastStr; }
+		set
+		{
+			if (hasAuthority)
+				turnEventBroadcastStr = value;
+			else
+				Debug.Log(debugTag + "You don't have the authority to change TurnEventBroadcast!");
 		}
 	}
 
 	public SyncListString UpdatedCardsStr
 	{
-		get
-		{
-			return updatedCardsStr;
-		}
+		get { return updatedCardsStr; }
 		set
 		{
 			if (hasAuthority)
-			{
 				updatedCardsStr = value;
-			}
 			else
-			{
 				Debug.Log(debugTag + "You don't have the authority to change UpdatedCardsStr!");
-			}
-
 		}
 	}
 
