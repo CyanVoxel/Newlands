@@ -73,24 +73,6 @@ public class Card
 
 	public Card() { }
 
-	public Card(CardTemplate template)
-	{
-		this.category = template.category;
-		this.title = template.title;
-		this.subtitle = template.subtitle;
-		this.body = template.body;
-		this.footer = template.footer;
-		this.resource = template.resource;
-		this.footerValue = template.footerValue;
-		this.footerColor = template.footerColor;
-		this.colorCornerFlag = template.colorCornerFlag;
-		this.percFlag = template.percFlag;
-		this.moneyFlag = template.moneyFlag;
-		this.footerOpr = template.footerOpr;
-		this.target = template.target;
-		this.discardFlag = template.discardFlag;
-	}
-
 	public Card(Card card)
 	{
 		this.category = card.category;

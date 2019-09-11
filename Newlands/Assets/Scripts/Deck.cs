@@ -43,7 +43,8 @@ public class Deck : List<Card>
 					Debug.Log(debugTag + "Added: "
 						+ cardParsed.Category + " - "
 						+ cardParsed.Title + " - "
-						+ cardParsed.Subtitle);
+						+ cardParsed.Subtitle
+						+ " - Resource: " + cardParsed.Resource);
 				}
 				else
 				{

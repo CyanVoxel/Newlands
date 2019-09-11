@@ -318,14 +318,14 @@ public class RuleSet : MonoBehaviour
 				{
 					// Card newCard = Card.CreateInstance<Card>();
 					// CardData newCard;
-					CardData newCard = new CardData(Resources.Load<CardTemplate>("Cards/Tiles/Land/farmland_cashcrops_5"));
-					target.tileObj.SendMessage("DisplayCard", newCard);
+					// CardData newCard = new CardData(Resources.Load<CardTemplate>("Cards/Tiles/Land/farmland_cashcrops_5"));
+					// target.tileObj.SendMessage("DisplayCard", newCard);
 
-					GridManager.grid[target.x, target.y].LoadNewCard(newCard, target.tileObj);
-					target = GridManager.grid[target.x, target.y];
+					// GridManager.grid[target.x, target.y].LoadNewCard(newCard, target.tileObj);
+					// target = GridManager.grid[target.x, target.y];
 
-					target.CalcTotalValue();
-					gameMan.UpdatePlayersInfo();
+					// target.CalcTotalValue();
+					// gameMan.UpdatePlayersInfo();
 				} // if Plains
 				break;
 			default:

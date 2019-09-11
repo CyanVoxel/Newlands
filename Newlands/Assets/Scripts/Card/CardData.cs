@@ -22,10 +22,4 @@ public class CardData : Card
 		this.objectName = objectName;
 	}
 
-	public CardData(CardTemplate template) : base(template) { }
-
-	public CardData(CardTemplate template, string objectName) : base(template)
-	{
-		this.objectName = objectName;
-	}
 }

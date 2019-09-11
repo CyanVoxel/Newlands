@@ -30,10 +30,7 @@ public class MasterDeck
 	// CONSTRUCTORS ################################################################################
 
 	// Default no-arg constructor
-	public MasterDeck()
-	{
-
-	} // MasterDeck() constructor
+	public MasterDeck() { }
 
 	// Constructor that takes in a string representing the name of premade deck
 	public MasterDeck(string deckType)
@@ -42,5 +39,6 @@ public class MasterDeck
 		gameCardDeck = new GameCardDeck(deckType);
 		marketCardDeck = new MarketCardDeck(deckType);
 		landTileDeck = new LandTileDeck(deckType);
-	} // MasterDeck(deckType) constructor
-} // class MasterDeck
+	}
+
+}
