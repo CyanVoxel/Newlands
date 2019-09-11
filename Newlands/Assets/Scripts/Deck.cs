@@ -40,11 +40,11 @@ public class Deck : List<Card>
 				if (cardParsed != null)
 				{
 					this.Add(cardParsed);
-					Debug.Log(debugTag + "Added: "
-						+ cardParsed.Category + " - "
-						+ cardParsed.Title + " - "
-						+ cardParsed.Subtitle
-						+ " - Resource: " + cardParsed.Resource);
+					// Debug.Log(debugTag + "Added: "
+					// 	+ cardParsed.Category + " - "
+					// 	+ cardParsed.Title + " - "
+					// 	+ cardParsed.Subtitle
+					// 	+ " - Resource: " + cardParsed.Resource);
 				}
 				else
 				{
