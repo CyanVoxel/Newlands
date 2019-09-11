@@ -25,16 +25,16 @@ public class LandTileDeck : Deck
 	private void AddVanillaCards()
 	{
 		// Land Tiles ==========================================================
-		this.Add("Cards/Vanilla/GameCard/tile_forest_oil_1", 3);
-		this.Add("Cards/Vanilla/GameCard/tile_forest_lumber_1", 8);
-		this.Add("Cards/Vanilla/GameCard/tile_forest_lumber_2", 5);
-		this.Add("Cards/Vanilla/GameCard/tile_forest_lumber_3", 2);
-		this.Add("Cards/Vanilla/GameCard/tile_plains_oil_1", 6);
-		this.Add("Cards/Vanilla/GameCard/tile_plains_empty", 12);
-		this.Add("Cards/Vanilla/GameCard/tile_mountain_iron_1", 6);
-		this.Add("Cards/Vanilla/GameCard/tile_mountain_iron_2", 6);
-		this.Add("Cards/Vanilla/GameCard/tile_mountain_silver_1", 4);
-		this.Add("Cards/Vanilla/GameCard/tile_mountain_gold_1", 2);
+		this.Add("Cards/Vanilla/Tile/land_forest_oil_1", 3);
+		this.Add("Cards/Vanilla/Tile/land_forest_lumber_1", 8);
+		this.Add("Cards/Vanilla/Tile/land_forest_lumber_2", 5);
+		this.Add("Cards/Vanilla/Tile/land_forest_lumber_3", 2);
+		this.Add("Cards/Vanilla/Tile/land_plains_oil_1", 6);
+		this.Add("Cards/Vanilla/Tile/land_plains_empty", 12);
+		this.Add("Cards/Vanilla/Tile/land_mountain_iron_1", 6);
+		this.Add("Cards/Vanilla/Tile/land_mountain_iron_2", 6);
+		this.Add("Cards/Vanilla/Tile/land_mountain_silver_1", 4);
+		this.Add("Cards/Vanilla/Tile/land_mountain_gold_1", 2);
 	}
 
 }

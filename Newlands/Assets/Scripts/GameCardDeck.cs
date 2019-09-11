@@ -39,23 +39,23 @@ public class GameCardDeck : Deck
 		this.Add("Cards/Vanilla/GameCard/tilemod_oil_2", 4);
 		this.Add("Cards/Vanilla/GameCard/tilemod_oil_3", 4);
 		this.Add("Cards/Vanilla/GameCard/tilemod_oil_4", 3);
-		this.Add("Cards/Vanilla/GameCard/cashcrops_1", 7);
-		this.Add("Cards/Vanilla/GameCard/cashcrops_2", 6);
-		this.Add("Cards/Vanilla/GameCard/cashcrops_3", 3);
-		this.Add("Cards/Vanilla/GameCard/cashcrops_4", 2);
+		this.Add("Cards/Vanilla/GameCard/tilemod_cashcrops_1", 7);
+		this.Add("Cards/Vanilla/GameCard/tilemod_cashcrops_2", 6);
+		this.Add("Cards/Vanilla/GameCard/tilemod_cashcrops_3", 3);
+		this.Add("Cards/Vanilla/GameCard/tilemod_cashcrops_4", 2);
 		// this.Add("Cards/Vanilla/GameCard/fish_1", 5);
-		this.Add("Cards/Vanilla/GameCard/iron_1", 7);
-		this.Add("Cards/Vanilla/GameCard/iron_2", 4);
-		this.Add("Cards/Vanilla/GameCard/iron_3", 2);
-		this.Add("Cards/Vanilla/GameCard/lumber_1", 3);
-		this.Add("Cards/Vanilla/GameCard/lumber_2", 3);
-		this.Add("Cards/Vanilla/GameCard/lumber_3", 3);
-		this.Add("Cards/Vanilla/GameCard/gems_1", 3);
-		this.Add("Cards/Vanilla/GameCard/gems_2", 3);
-		this.Add("Cards/Vanilla/GameCard/silver_1", 4);
-		this.Add("Cards/Vanilla/GameCard/silver_2", 3);
-		this.Add("Cards/Vanilla/GameCard/gold_1", 3);
-		this.Add("Cards/Vanilla/GameCard/platinum_1", 2);
+		this.Add("Cards/Vanilla/GameCard/tilemod_iron_1", 7);
+		this.Add("Cards/Vanilla/GameCard/tilemod_iron_2", 4);
+		this.Add("Cards/Vanilla/GameCard/tilemod_iron_3", 2);
+		this.Add("Cards/Vanilla/GameCard/tilemod_lumber_1", 3);
+		this.Add("Cards/Vanilla/GameCard/tilemod_lumber_2", 3);
+		this.Add("Cards/Vanilla/GameCard/tilemod_lumber_3", 3);
+		this.Add("Cards/Vanilla/GameCard/tilemod_gems_1", 3);
+		this.Add("Cards/Vanilla/GameCard/tilemod_gems_2", 3);
+		this.Add("Cards/Vanilla/GameCard/tilemod_silver_1", 4);
+		this.Add("Cards/Vanilla/GameCard/tilemod_silver_2", 3);
+		this.Add("Cards/Vanilla/GameCard/tilemod_gold_1", 3);
+		this.Add("Cards/Vanilla/GameCard/tilemod_platinum_1", 2);
 
 		this.Add("Cards/Vanilla/GameCard/tilemod_investment_25_perc", 4);
 		this.Add("Cards/Vanilla/GameCard/tilemod_investment_50_perc", 2);
@@ -67,8 +67,8 @@ public class GameCardDeck : Deck
 		this.Add("Cards/Vanilla/GameCard/tilemod_sabotage_100_money", 8);
 		this.Add("Cards/Vanilla/GameCard/tilemod_sabotage_200_money", 4);
 
-		this.Add("Cards/Vanilla/GameCard/tilemod_upgrade", 10);
-		this.Add("Cards/Vanilla/GameCard/tilemod_foreclosure", 2);
+		// this.Add("Cards/Vanilla/GameCard/tilemod_upgrade", 10);
+		// this.Add("Cards/Vanilla/GameCard/tilemod_foreclosure", 2);
 	}
 
 }

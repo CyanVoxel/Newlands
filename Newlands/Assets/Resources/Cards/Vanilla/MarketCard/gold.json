@@ -1,0 +1,16 @@
+{
+  "category": "Market",
+  "title": "Market Card",
+  "subtitle": "<r>",
+  "body": "A rare resource that can be found on **Quarry** Tiles, but can be placed under **Any** Tile.",
+  "footer": "**<x>**",
+  "footerColor": "Black",
+  "resource": "Gold",
+  "target": "",
+  "footerOpr": "",
+  "footerValue": 0,
+  "colorCornerFlag": false,
+  "percFlag": false,
+  "moneyFlag": true,
+  "discardFlag": false
+}

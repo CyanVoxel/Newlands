@@ -1,0 +1,16 @@
+{
+  "category": "Market",
+  "title": "Market Card",
+  "subtitle": "<r>",
+  "body": "The most common resource found on various **Coast** type Tiles.",
+  "footer": "**<x>**",
+  "footerColor": "Black",
+  "resource": "Fish",
+  "target": "",
+  "footerOpr": "",
+  "footerValue": 0,
+  "colorCornerFlag": false,
+  "percFlag": false,
+  "moneyFlag": true,
+  "discardFlag": false
+}

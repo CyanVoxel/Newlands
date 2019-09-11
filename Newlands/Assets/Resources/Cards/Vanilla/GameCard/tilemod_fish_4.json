@@ -1,0 +1,16 @@
+{
+  "category": "Game Card",
+  "title": "Tile Mod",
+  "subtitle": "Resource",
+  "body": "Place this under any **Mountain** tile.",
+  "footer": "**<x>** <r>",
+  "footerColor": "Light Blue",
+  "resource": "Gems",
+  "target": "Tile",
+  "footerOpr": "+",
+  "footerValue": 4,
+  "colorCornerFlag": false,
+  "percFlag": false,
+  "moneyFlag": false,
+  "discardFlag": false
+}

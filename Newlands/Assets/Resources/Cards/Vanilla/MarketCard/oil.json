@@ -1,0 +1,16 @@
+{
+  "category": "Market",
+  "title": "Market Card",
+  "subtitle": "<r>",
+  "body": "Common on **Plains** Tiles and can be placed under **Any** Tile.",
+  "footer": "**<x>**",
+  "footerColor": "Black",
+  "resource": "Oil",
+  "target": "",
+  "footerOpr": "",
+  "footerValue": 0,
+  "colorCornerFlag": false,
+  "percFlag": false,
+  "moneyFlag": true,
+  "discardFlag": false
+}

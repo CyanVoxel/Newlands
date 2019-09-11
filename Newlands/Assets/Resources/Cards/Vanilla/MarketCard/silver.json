@@ -1,0 +1,16 @@
+{
+  "category": "Market",
+  "title": "Market Card",
+  "subtitle": "<r>",
+  "body": "An uncommon resource that can be found on **Mountain** Tiles.",
+  "footer": "**<x>**",
+  "footerColor": "Black",
+  "resource": "Silver",
+  "target": "",
+  "footerOpr": "",
+  "footerValue": 0,
+  "colorCornerFlag": false,
+  "percFlag": false,
+  "moneyFlag": true,
+  "discardFlag": false
+}

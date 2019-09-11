@@ -1,0 +1,16 @@
+{
+  "category": "Game Card",
+  "title": "Tile Mod",
+  "subtitle": "Resource",
+  "body": "Place this under any **Coast** type Tile.",
+  "footer": "**<x>** <r>",
+  "footerColor": "Light Blue",
+  "resource": "Fish",
+  "target": "Tile",
+  "footerOpr": "+",
+  "footerValue": 2,
+  "colorCornerFlag": false,
+  "percFlag": false,
+  "moneyFlag": false,
+  "discardFlag": false
+}
