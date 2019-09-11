@@ -5,13 +5,10 @@ using UnityEngine;
 public class DemoCardController : MonoBehaviour
 {
 	GameObject demoTile;
-	// CardState cardState;
-	LandTileDeck landTileDeck;
 
 	// Start is called before the first frame update
 	void Start()
 	{
-		landTileDeck = new LandTileDeck("Vanilla");
 
 		demoTile = GameObject.Find("DemoTile");
 		if (demoTile != null)

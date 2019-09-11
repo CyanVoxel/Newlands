@@ -7,12 +7,18 @@ using UnityEngine;
 
 public class MatchController : NetworkBehaviour
 {
-	// FIELDS ##########################################################################################################
+	// FIELDS ######################################################################################
 	[SerializeField]
 	private MatchDataBroadcaster matchDataBroadcaster;
 	private MatchData matchData;
 	private MatchConfigData config;
 	public MatchData MatchData { get { return matchData; } }
+
+	private MasterDeck masterDeck;
+	private MasterDeck masterDeckMutable;
+
+	public MasterDeck MasterDeck { get { return masterDeck; } }
+	public MasterDeck MasterDeckMutable { get { return masterDeckMutable; } }
 
 	public GameObject landTilePrefab;
 	public GameObject gameCardPrefab;
@@ -20,7 +26,7 @@ public class MatchController : NetworkBehaviour
 
 	private DebugTag debugTag = new DebugTag("MatchController", "9C27B0");
 
-	// METHODS #########################################################################################################
+	// METHODS #####################################################################################
 
 	void Awake()
 	{
@@ -83,7 +89,7 @@ public class MatchController : NetworkBehaviour
 		}
 	}
 
-	// COROUTINES ######################################################################################################
+	// COROUTINES ##################################################################################
 
 	// [Server] The main initialization coroutine for the match.
 	// Dependant on LoadMatchConfigCoroutine finishing.
@@ -97,6 +103,8 @@ public class MatchController : NetworkBehaviour
 
 		Debug.Log(debugTag + "Initializing Match from Config data...");
 
+		this.masterDeck = new MasterDeck(config.DeckFlavor);
+		this.masterDeckMutable = new MasterDeck(config.DeckFlavor);
 	}
 
 	// [Server] Loads this MatchManager's config from the MatchSetupController's final config.

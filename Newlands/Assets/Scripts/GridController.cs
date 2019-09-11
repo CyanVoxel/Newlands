@@ -19,11 +19,11 @@ public class GridController : NetworkBehaviour
 	private readonly float cardOffX = 11f;
 	private readonly float cardOffY = 8f;
 
-	private DebugTag debugTag = new DebugTag("CardController", "00BCD4");
+	private DebugTag debugTag = new DebugTag("GridController", "00BCD4");
 
 	void Awake()
 	{
-		Debug.Log(debugTag + "The CardController has been created!");
+		Debug.Log(debugTag + "The GridController has been created!");
 		// StartCoroutine(CheckForBroadcastUpdates());
 
 		StartCoroutine(CreateMainGridObjectsCoroutine());
@@ -49,7 +49,7 @@ public class GridController : NetworkBehaviour
 
 	void OnDisable()
 	{
-		Debug.Log(debugTag + "The CardController has been disbaled/destroyed!");
+		Debug.Log(debugTag + "The GridController has been disbaled/destroyed!");
 	}
 
 	// [Client/Server] Parses the Match Data from MatchDataBroadcaster

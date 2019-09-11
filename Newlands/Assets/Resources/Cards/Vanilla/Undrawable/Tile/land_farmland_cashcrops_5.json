@@ -1,0 +1,16 @@
+{
+  "category": "Tile",
+  "title": "Farmland",
+  "subtitle": "Land",
+  "body": "Holds compatible **Tile Mod** Cards. Acts as a **Plains** Tile.",
+  "footer": "**<x>** Cash Crops",
+  "footerColor": "Black",
+  "resource": "Cash Crops",
+  "target": "",
+  "footerOpr": "",
+  "footerValue": 5,
+  "colorCornerFlag": false,
+  "percFlag": false,
+  "moneyFlag": false,
+  "discardFlag": false
+}

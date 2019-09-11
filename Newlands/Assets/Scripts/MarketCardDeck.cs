@@ -8,24 +8,34 @@ public class MarketCardDeck : Deck
 	public MarketCardDeck()
 	{
 
-	} // MarketCardDeck() constructor
+	}
 
 	// Constructor that takes in a string representing the name of premade deck
-	public MarketCardDeck(string deckType = "Vanilla")
+	public MarketCardDeck(string flavor = "Vanilla")
 	{
-		// The Vanilla Standard Deck's Price Cards
-		if (deckType == "Vanilla")
+		switch (flavor)
 		{
-			// NOTE: These are organized adding the most expensive first
-			this.Add(dirMc + "/platinum");
-			this.Add(dirMc + "/gold");
-			this.Add(dirMc + "/gems");
-			this.Add(dirMc + "/silver");
-			this.Add(dirMc + "/iron");
-			this.Add(dirMc + "/oil");
-			// this.Add(dirMc + "/fish");
-			this.Add(dirMc + "/cashcrops");
-			this.Add(dirMc + "/lumber");
-		} // if Vanilla Standard deck
-	} // MarketCardDeck(deckType) constructor
-} // class MarketCardDeck
+			case "Vanilla":
+				AddVanillaCards();
+				break;
+			default:
+				break;
+		}
+	}
+
+	// NOTE: In the future, this will be controlled by the manifest file and
+	// there won't be a need for methods specailzed for each deck flavor.
+	private void AddVanillaCards()
+	{
+		// Market Cards ========================================================
+		this.Add("Cards/Vanilla/MarketCard/platinum");
+		this.Add("Cards/Vanilla/MarketCard/gold");
+		this.Add("Cards/Vanilla/MarketCard/gems");
+		this.Add("Cards/Vanilla/MarketCard/silver");
+		this.Add("Cards/Vanilla/MarketCard/iron");
+		// this.Add("Cards/Vanilla/MarketCard/fish");
+		this.Add("Cards/Vanilla/MarketCard/cashcrops");
+		this.Add("Cards/Vanilla/MarketCard/lumber");
+	}
+
+}

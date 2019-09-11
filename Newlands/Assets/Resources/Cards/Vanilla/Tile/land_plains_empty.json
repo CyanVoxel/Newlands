@@ -1,0 +1,16 @@
+{
+  "category": "Tile",
+  "title": "Plains",
+  "subtitle": "Land",
+  "body": "Holds compatible **Tile Mod** Cards",
+  "footer": "*Empty*",
+  "footerColor": "Black",
+  "resource": "None",
+  "target": "",
+  "footerOpr": "",
+  "footerValue": 0,
+  "colorCornerFlag": false,
+  "percFlag": false,
+  "moneyFlag": false,
+  "discardFlag": false
+}

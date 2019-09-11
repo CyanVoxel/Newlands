@@ -18,9 +18,9 @@ public class CardTemplate : ScriptableObject
 	// The subtitle of the Card, further specifying the title subcategory
 	public string subtitle;
 	// The body text of a Card
-	public string bodyText;
+	public string body;
 	// The footer text of the Card
-	public string footerText;
+	public string footer;
 	// The resource of the card, if it had one
 	public string resource;
 	// The raw number value that is presented in the Card footer

@@ -78,10 +78,10 @@ public class CardViewController : MonoBehaviour
 
 	public string BodyText
 	{
-		get { return card.BodyText; }
+		get { return card.Body; }
 		set
 		{
-			card.BodyText = value;
+			card.Body = value;
 			if (initialized)
 				DisplayBody();
 		}
@@ -89,10 +89,10 @@ public class CardViewController : MonoBehaviour
 
 	public string FooterText
 	{
-		get { return card.FooterText; }
+		get { return card.Footer; }
 		set
 		{
-			card.FooterText = value;
+			card.Footer = value;
 			if (initialized)
 				DisplayFooter();
 		}
@@ -559,13 +559,13 @@ public class CardViewController : MonoBehaviour
 
 	public void DisplayBody()
 	{
-		bodyUiText.text = TagToCardData(MdToTag(card.BodyText));
+		bodyUiText.text = TagToCardData(MdToTag(card.Body));
 	}
 
 	public void DisplayFooter()
 	{
-		string tempFooter = card.FooterText;
-		tempFooter = InsertFooterValue(card.FooterText);
+		string tempFooter = card.Footer;
+		tempFooter = InsertFooterValue(card.Footer);
 		footerUiText.text = TagToCardData(MdToTag(tempFooter));
 	}
 
@@ -587,8 +587,8 @@ public class CardViewController : MonoBehaviour
 
 	public void UpdateFooter()
 	{
-		string tempFooter = card.FooterText;
-		tempFooter = InsertFooterValue(card.FooterText);
+		string tempFooter = card.Footer;
+		tempFooter = InsertFooterValue(card.Footer);
 		footerUiText.text = TagToCardData(MdToTag(tempFooter));
 	}
 }

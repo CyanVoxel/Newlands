@@ -1,15 +1,19 @@
-﻿// A class designed to hold and manage "decks" of Card objects
+﻿// A class designed to hold and manage "decks" of Card objects.
+
+// Cards/Vanilla/Tile
+// Cards/Vanilla/GameCard
+// Cards/Vanilla/MarketCard
+// Cards/Vanilla/Undrawable/Tile
+// Cards/Vanilla/Undrawable/GameCard
 
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Deck : List<Card>
 {
-	// DATA FIELDS #################################################################################
-
-	// private List<CardData> deck = new List<CardData>();
-
-	// Resource Directories ====================================================
+	// FIELDS ##################################################################################
+	// NOTE: These will no longer be needed after the transition to JSON
+	// Resource Directories ================================================
 	protected string dirGcMmI = "Cards/Game Cards/Market Mods/Investment";
 	protected string dirGcMmS = "Cards/Game Cards/Market Mods/Sabotage";
 	protected string dirGcTmI = "Cards/Game Cards/Tile Mods/Investment";
@@ -20,77 +24,42 @@ public class Deck : List<Card>
 	protected string dirTL = "Cards/Tiles/Land";
 	protected string dirTC = "Cards/Tiles/Coast";
 
-	// METHODS #####################################################################################
+	private DebugTag debugTag = new DebugTag("Deck", "FFEB3B");
 
-	// // Add a card to the deck
-	// public void Add(Card card)
-	// {
-	// 	this.deck.Add(new CardData(card));
-	// } // Add()
-
-	// // Add a card to the deck
-	// public void Add(CardData card)
-	// {
-	// 	this.deck.Add(card);
-	// } // Add()
+	// METHODS #################################################################################
 
 	// Add a card to the deck, taking in a directory and an amount
-	public void Add(string dir, int amount = 1)
+	public void Add(string directory, int amount = 1)
 	{
-		//Card cardToAdd = Resources.Load<Card>(dir);
-		for (int i = 0; i < amount; i++)
+		TextAsset cardFile = Resources.Load<TextAsset>(directory);
+		if (cardFile != null)
 		{
-			try
+			Card cardParsed = JsonUtility.FromJson<Card>(cardFile.text);
+			for (int i = 0; i < amount; i++)
 			{
-				this.Add(new CardData(Resources.Load<CardTemplate>(dir)));
-			} // try
-			catch (UnassignedReferenceException e)
-			{
-				Debug.LogError("<b>[Deck]</b> Error: "
-					+ "Could not add card to deck: " + e);
-			} // catch
-		} // for
-	} // Add()
+				if (cardParsed != null)
+				{
+					this.Add(cardParsed);
+					Debug.Log(debugTag + "Added: "
+						+ cardParsed.Category + " - "
+						+ cardParsed.Title + " - "
+						+ cardParsed.Subtitle);
+				}
+				else
+				{
+					Debug.LogError(debugTag.error + "Malformed JSON file at: "
+						+ directory);
+				}
+			}
+		}
+		else
+		{
+			Debug.LogError(debugTag.error + "No card file to load from at: " + directory);
+		}
+	}
 
-	// // Remove a card from the deck
-	// public void Remove(Card card)
-	// {
-	// 	this.deck.Remove(new CardData(card));
-	// } // Remove()
-
-	// // Remove a card from the deck
-	// public void Remove(CardData card)
-	// {
-	// 	this.deck.Remove(card);
-	// } // Remove()
-
-	// // Count the number of cards in the deck
-	// public int Count()
-	// {
-	// 	return this.deck.Count;
-	// } // Count()
-
-	// // Determine whether the deck contains a certain card
-	// public bool Contains(Card card)
-	// {
-	// 	return (this.deck.Contains(new CardData(card)));
-	// } // Contains()
-
-	// // Get the index of a card
-	// public int IndexOf(Card card)
-	// {
-	// 	return this.deck.IndexOf(new CardData(card));
-	// } // IndexOf()
-
-	// //Indexer for the Deck class
-	// public CardData this[int i]
-	// {
-	// 	get { return this.deck[i]; }
-	// 	set { this.deck[i] = value; }
-	// } // Indexer
-
-	// CONSTRUCTORS ################################################################################
+	// CONSTRUCTORS ############################################################################
 
 	// No-arg constructor
-	public Deck() { } // Deck() constructor
-} // class Deck
+	public Deck() { }
+}

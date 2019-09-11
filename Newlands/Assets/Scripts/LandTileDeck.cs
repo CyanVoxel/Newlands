@@ -5,27 +5,36 @@ public class LandTileDeck : Deck
 	// CONSTRUCTORS ################################################################################
 
 	// Default no-arg constructor
-	public LandTileDeck()
-	{
-
-	} // LandTileDeck() constructor
+	public LandTileDeck() { }
 
 	// Constructor that takes in a string representing the name of premade deck
-	public LandTileDeck(string deckType = "Vanilla")
+	public LandTileDeck(string flavor = "Vanilla")
 	{
-		// The Standard Deck's Land Tiles
-		if (deckType == "Vanilla")
+		switch (flavor)
 		{
-			this.Add(dirTL + "/forest_oil_1", 3);
-			this.Add(dirTL + "/forest_lumber_1", 8);
-			this.Add(dirTL + "/forest_lumber_2", 5);
-			this.Add(dirTL + "/forest_lumber_3", 2);
-			this.Add(dirTL + "/plains_oil_1", 6);
-			this.Add(dirTL + "/plains_empty", 12);
-			this.Add(dirTL + "/quarry_iron_1", 6);
-			this.Add(dirTL + "/quarry_iron_2", 6);
-			this.Add(dirTL + "/quarry_silver_1", 4);
-			this.Add(dirTL + "/quarry_gold_1", 2);
-		} // if Vanila
-	} // LandTileDeck(deckType) constructor
-} // class LandTileDeck
+			case "Vanilla":
+				AddVanillaCards();
+				break;
+			default:
+				break;
+		}
+	}
+
+	// NOTE: In the future, this will be controlled by the manifest file and
+	// there won't be a need for methods specailzed for each deck flavor.
+	private void AddVanillaCards()
+	{
+		// Land Tiles ==========================================================
+		this.Add("Cards/Vanilla/GameCard/tile_forest_oil_1", 3);
+		this.Add("Cards/Vanilla/GameCard/tile_forest_lumber_1", 8);
+		this.Add("Cards/Vanilla/GameCard/tile_forest_lumber_2", 5);
+		this.Add("Cards/Vanilla/GameCard/tile_forest_lumber_3", 2);
+		this.Add("Cards/Vanilla/GameCard/tile_plains_oil_1", 6);
+		this.Add("Cards/Vanilla/GameCard/tile_plains_empty", 12);
+		this.Add("Cards/Vanilla/GameCard/tile_mountain_iron_1", 6);
+		this.Add("Cards/Vanilla/GameCard/tile_mountain_iron_2", 6);
+		this.Add("Cards/Vanilla/GameCard/tile_mountain_silver_1", 4);
+		this.Add("Cards/Vanilla/GameCard/tile_mountain_gold_1", 2);
+	}
+
+}

@@ -1,0 +1,16 @@
+{
+  "category": "Tile",
+  "title": "Mountain",
+  "subtitle": "Land",
+  "body": "Holds compatible **Tile Mod** Cards",
+  "footer": "**<X>** Iron",
+  "footerColor": "Black",
+  "resource": "Iron",
+  "target": "",
+  "footerOpr": "",
+  "footerValue": 2,
+  "colorCornerFlag": false,
+  "percFlag": false,
+  "moneyFlag": false,
+  "discardFlag": false
+}
