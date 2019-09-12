@@ -17,6 +17,8 @@ public class MatchController : NetworkBehaviour
 	private MasterDeck masterDeck;
 	private MasterDeck masterDeckMutable;
 
+	private List<Player> players = new List<Player>();
+
 	public MasterDeck MasterDeck { get { return masterDeck; } }
 	public MasterDeck MasterDeckMutable { get { return masterDeckMutable; } }
 
@@ -37,10 +39,17 @@ public class MatchController : NetworkBehaviour
 
 	void Start()
 	{
-		if (!hasAuthority)
-			return;
-
 		Debug.Log(debugTag + "Initializing...");
+
+		if (!hasAuthority)
+		{
+			this.config = JsonUtility.FromJson<MatchConfigData>(matchDataBroadcaster.MatchConfigDataStr);
+			Debug.Log(debugTag + "Grabbed config for client: " + matchDataBroadcaster.MatchConfigDataStr);
+			this.masterDeck = new MasterDeck(config.DeckFlavor);
+			this.masterDeckMutable = new MasterDeck(config.DeckFlavor);
+			return;
+		}
+
 		InitializeMatch();
 	}
 
@@ -89,6 +98,99 @@ public class MatchController : NetworkBehaviour
 		}
 	}
 
+	// Initializes each player object and draws a hand for them
+	private void InitPlayers()
+	{
+		for (int i = 0; i < config.MaxPlayerCount; i++)
+		{
+			players.Add(new Player());
+			players[i].Id = (i + 1);
+			players[i].hand = DrawHand(config.PlayerHandSize);
+		} // for playerCount
+		UpdatePlayerMoneyStr();
+	}
+
+	private void UpdatePlayerMoneyStr()
+	{
+		matchDataBroadcaster.PlayerMoneyStr = "";
+
+		for (int i = 0; i < config.MaxPlayerCount; i++)
+		{
+			matchDataBroadcaster.PlayerMoneyStr += players[i].totalMoney;
+
+			if (config.MaxPlayerCount - i > 1)
+			{
+				matchDataBroadcaster.PlayerMoneyStr += "_";
+			}
+		} // for playerCount
+		Debug.Log(debugTag + "Player Money String: " + matchDataBroadcaster.PlayerMoneyStr);
+	} // UpdatePlayerMoneyStr()()
+
+	// Draws random GameCards from the masterDeck and returns a deck of a specified size
+	private Deck DrawHand(int handSize)
+	{
+		Deck deck = new Deck(); // The deck of drawn cards to return
+
+		for (int i = 0; i < handSize; i++)
+		{
+			// Draw a card from the deck provided and add it to the deck to return.
+			// NOTE: In the future, masterDeckMutable might need to be checked for cards
+			// 	before preceding.
+			// Card card = Card.CreateInstance<Card>();
+			Card card;
+			if (DrawCard(masterDeckMutable.gameCardDeck, masterDeck.gameCardDeck, out card))
+			{
+				deck.Add(card);
+			}
+			else
+			{
+				// Destroy(card);
+			}
+		} // for
+
+		return deck;
+	}
+
+	// Draws a card from a deck. Random by default.
+	public bool DrawCard(Deck deckMut, Deck deckPerm, out Card card, bool random = true)
+	{
+		// Card card;	// Card to return
+		int cardsLeft = deckMut.Count; // Number of cards left from mutable deck
+		int cardsTotal = deckPerm.Count; // Number of cards total from permanent deck
+
+		// Draws a card from the mutable deck, then removes that card from the deck.
+		// If all cards are drawn, draw randomly from the immutable deck.
+		if (cardsLeft > 0)
+		{
+			if (random)
+			{
+				card = deckMut[Random.Range(0, cardsLeft)];
+			}
+			else
+			{
+				card = deckMut[deckMut.Count - 1];
+			}
+
+			deckMut.Remove(card);
+			// Debug.Log("<b>[GameManager]</b> " +
+			// 	cardsLeft +
+			// 	" of " +
+			// 	cardsTotal +
+			// 	" cards left");
+		}
+		else
+		{
+			// This one HAS to be random anyways
+			card = deckPerm[Random.Range(0, cardsTotal)];
+			return false;
+			// Debug.LogWarning("<b>[GameManager]</b> Warning: " +
+			//  "All cards (" + cardsTotal + ") were drawn from a deck! " +
+			//  " Now drawing from immutable deck...");
+		}
+
+		return true;
+	}
+
 	// COROUTINES ##################################################################################
 
 	// [Server] The main initialization coroutine for the match.
@@ -105,6 +207,10 @@ public class MatchController : NetworkBehaviour
 
 		this.masterDeck = new MasterDeck(config.DeckFlavor);
 		this.masterDeckMutable = new MasterDeck(config.DeckFlavor);
+
+		if (hasAuthority)
+			InitPlayers();
+
 	}
 
 	// [Server] Loads this MatchManager's config from the MatchSetupController's final config.

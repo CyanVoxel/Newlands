@@ -10,6 +10,11 @@ public class GridController : NetworkBehaviour
 	// private GameObject matchManager;
 	private MatchDataBroadcaster matchDataBroadcaster;
 	private MatchController matchController;
+
+	private CardData[, ] masterGrid;
+	private CardData[, ] knownOwnersGrid;
+	private CardData[, ] masterMarketGrid;
+
 	// private MatchData matchData;
 	private TurnEvent lastKnownTurnEvent;
 	private MatchConfigData config;
@@ -18,6 +23,9 @@ public class GridController : NetworkBehaviour
 	private readonly float shiftUnit = 1.2f;
 	private readonly float cardOffX = 11f;
 	private readonly float cardOffY = 8f;
+	private static float[] rowPosition;
+	private static int[] maxGridStack;
+	private static int[] maxMarketStack;
 
 	private DebugTag debugTag = new DebugTag("GridController", "00BCD4");
 
@@ -29,8 +37,6 @@ public class GridController : NetworkBehaviour
 		StartCoroutine(CreateMainGridObjectsCoroutine());
 		StartCoroutine(CreateMarketGridObjectsCoroutine());
 
-		if (!hasAuthority)
-			return;
 	}
 
 	void Start()
@@ -56,7 +62,7 @@ public class GridController : NetworkBehaviour
 	public void ParseTurnEvent()
 	{
 		Debug.Log(debugTag + "Parsing Turn Event...");
-		TurnEvent newTurnEvent = JsonUtility.FromJson<TurnEvent>(matchDataBroadcaster.TurnEventBroadcast);
+		TurnEvent newTurnEvent = JsonUtility.FromJson<TurnEvent>(matchDataBroadcaster.TurnEventBroadcastStr);
 		if (this.lastKnownTurnEvent != newTurnEvent)
 		{
 			this.lastKnownTurnEvent = newTurnEvent;
@@ -66,6 +72,7 @@ public class GridController : NetworkBehaviour
 
 	public void ParseUpdatedCards() { }
 
+	// [Server]
 	public void CreateGameGridObjects()
 	{
 		GameObject gridParent = new GameObject("MainGrid");
@@ -81,38 +88,31 @@ public class GridController : NetworkBehaviour
 					new Vector3(xOff, yOff, 50),
 					Quaternion.identity);
 
+				// cardObj.GetComponent<Animator>().Play("Flip");
 				cardObj.name = (CreateCardObjectName("Tile", x, y));
 				cardObj.transform.SetParent(gridParent.transform);
 
 				cardObj.transform.rotation = new Quaternion(0, 180, 0, 0); // 0, 180, 0, 0
 
-				// NetworkServer.Spawn(cardObj);
-				// grid[x, y].tileObj = cardObj;
-
-				// Grabs data from the internal grid and pushes it to the CardState scripts,
-				// triggering them to update their visuals.
-				// Debug.Log("[GridManager] Trying to fill out Tile info...");
-				// CardState cardState = cardObj.GetComponent<CardState>();
-
-				// if (cardState != null)
-				// 	// Generate and Push the string of the object's name
-					// cardState.objectName = (CreateCardObjectName("Tile", x, y));
-				// else
-				// 	Debug.Log(debugTag + "This object's card state was null!");
+				// // FOR TESTING ONLY!
+				// if (masterGrid != null)
+				// 	masterGrid[x, y].CardObject = cardObj;
 			}
 		}
 	}
 
+	// [Client/Server]
 	public void CreateMarketGridObjects()
 	{
-		GameObject marketGridParent = new GameObject("MarketGrid");
-		int cardsMade = 0;
+		InitMarketGrid();
 
-		for (int x = 0; x < Mathf.Ceil((float)ResourceInfo.resources.Count / (float)config.GameGridHeight); x++)
+		GameObject marketGridParent = new GameObject("MarketGrid");
+
+		for (int x = 0; x < Mathf.CeilToInt(((float)ResourceInfo.resources.Count - 1) / (float)config.GameGridHeight); x++)
 		{
 			for (int y = 0; y < config.GameGridHeight; y++)
 			{
-				if (cardsMade < ResourceInfo.resources.Count)
+				if (masterMarketGrid[x, y] != null)
 				{
 					float xOff = ((config.GameGridWidth + 1) * cardOffX) + x * cardOffX;
 					float yOff = y * cardOffY;
@@ -124,25 +124,38 @@ public class GridController : NetworkBehaviour
 					cardObj.name = (CreateCardObjectName("MarketCard", x, y));
 					cardObj.transform.SetParent(marketGridParent.transform);
 
-					// Debug.Log("[GridManager] Spawning Card...");
-					// NetworkServer.Spawn(cardObj);
-					// marketGrid[x, y].tileObj = cardObj;
+					masterMarketGrid[x, y].CardObject = cardObj;
+				}
+			}
+		}
+	}
 
-					// Debug.Log("[GridManager] Trying to fill out Market Card info...");
-					// CardState cardState = cardObj.GetComponent<CardState>();
+	// [Client/Server] Called by CreateMarketGridObjects(). There is no need to hide Market Grid
+	// data, so it's done on both the server and the client.
+	public void InitMarketGrid()
+	{
+		masterMarketGrid = new CardData[(int)Mathf.Ceil((float)ResourceInfo.resources.Count - 1
+			/ (float)config.GameGridHeight), config.GameGridHeight];
+		maxMarketStack = new int[config.GameGridHeight];
 
-					// if (cardState != null)
-					// {
-					// 	// Generate and Push the string of the object's name
-					// 	cardState.objectName = (CreateCardObjectName("MarketCard", x, y));
-					// 	// Push new values to the CardState to be synchronized across the network
-					// 	// FillOutCardState(marketGrid[x, y].card, ref cardState);
-					// }
-					// else
-					// {
-					// 	Debug.Log(debugTag + "This object's card state was null!");
-					// } // if (cardState != null)
-					cardsMade++;
+		int marketWidth = Mathf.CeilToInt(((float)ResourceInfo.resources.Count - 1) / (float)config.GameGridHeight);
+		Debug.Log(debugTag + "x: " + marketWidth
+			+ ", y: " + config.GameGridHeight
+			+ ", res: " + ResourceInfo.resources.Count);
+
+		for (int x = 0; x < marketWidth; x++)
+		{
+			for (int y = 0; y < config.GameGridHeight; y++)
+			{
+				// Draw a card from the Market Card deck
+				Card card;
+				if (matchController.DrawCard(matchController.MasterDeckMutable.marketCardDeck,
+						matchController.MasterDeck.marketCardDeck,
+						out card, false))
+				{
+					// Connect the drawn card to the internal grid
+					masterMarketGrid[x, y] = new CardData(card);
+					Debug.Log(debugTag + "Created Market Card: " + card.Resource);
 				}
 			}
 		}
@@ -246,9 +259,12 @@ public class GridController : NetworkBehaviour
 	{
 		yield return StartCoroutine(ParseMatchConfigCoroutine());
 		yield return StartCoroutine(GrabMatchControllerCoroutine());
+		if (hasAuthority)
+		{
+			yield return StartCoroutine(CreateInternalMainGridCoroutine());
+		}
 
 		Debug.Log(debugTag + "Creating Main Grid objects...");
-
 		CreateGameGridObjects();
 	}
 
@@ -259,7 +275,40 @@ public class GridController : NetworkBehaviour
 		yield return StartCoroutine(GrabMatchControllerCoroutine());
 
 		Debug.Log(debugTag + "Creating Market Grid objects...");
-
 		CreateMarketGridObjects();
+	}
+
+	private IEnumerator CreateInternalMainGridCoroutine()
+	{
+		yield return StartCoroutine(ParseMatchConfigCoroutine());
+
+		masterGrid = new CardData[config.GameGridWidth, config.GameGridHeight];
+		knownOwnersGrid = new CardData[config.GameGridWidth, config.GameGridHeight];
+		rowPosition = new float[config.GameGridHeight];
+		maxGridStack = new int[config.GameGridHeight];
+
+		for (int x = 0; x < config.GameGridWidth; x++)
+		{
+			for (int y = 0; y < config.GameGridHeight; y++)
+			{
+				// Draw a card from the Land Tile deck
+				// Card card = Card.CreateInstance<Card>();
+				Card card;
+
+				if (matchController.DrawCard(matchController.MasterDeckMutable.landTileDeck,
+						matchController.MasterDeck.landTileDeck,
+						out card))
+				{
+					// Debug.Log("[GridManager] Tile Draw successful!");
+					// Connect the drawn card to the internal grid
+					masterGrid[x, y] = new CardData(card);
+					knownOwnersGrid[x, y] = new CardData();
+				}
+				else
+				{
+					Debug.LogError(debugTag.error + "Tile Draw failure!");
+				}
+			} // y
+		} // x
 	}
 }

@@ -11,14 +11,16 @@ public class CardViewController : MonoBehaviour
 {
 	// FIELDS ##########################################################################################################
 
-	Image iconImage;
-	TMP_Text titleUiText;
-	TMP_Text subtitleUiText;
-	TMP_Text bodyUiText;
-	TMP_Text footerUiText;
-	Image footerBorder;
-	Image footerBorderL;
-	Image footerBorderR;
+	// private Animator animator;
+
+	private Image iconImage;
+	private TMP_Text titleUiText;
+	private TMP_Text subtitleUiText;
+	private TMP_Text bodyUiText;
+	private TMP_Text footerUiText;
+	private Image footerBorder;
+	private Image footerBorderL;
+	private Image footerBorderR;
 
 	// Long directories stored as strings
 	private string dirFtrBdr = "Front Canvas/Footer Mask/Footer Border Mask/Footer Border";
@@ -32,6 +34,19 @@ public class CardViewController : MonoBehaviour
 	private static DebugTag debugTag = new DebugTag("CardView", "00BCD4");
 
 	// PROPERTIES ######################################################################################################
+
+	public Card Card
+	{
+		get
+		{
+			return card;
+		}
+		set
+		{
+			card = value;
+			UpdateAll();
+		}
+	}
 
 	public bool Initialized
 	{
@@ -213,6 +228,8 @@ public class CardViewController : MonoBehaviour
 		if (this.transform.Find(dirFtrBdrR) != null)
 			this.footerBorderR = this.transform.Find(dirFtrBdrR).GetComponent<Image>();
 
+		// this.animator = this.GetComponent<Animator>();
+
 		// NOTE: Let MatchController do this after setting values for this card
 		this.initialized = true;
 		UpdateAll();
@@ -384,6 +401,9 @@ public class CardViewController : MonoBehaviour
 						break;
 					case "Farmland":
 						titleUiText.text = "       Farmland";
+						break;
+					case "Mountain":
+						titleUiText.text = "      Mountain";
 						break;
 					default:
 						titleUiText.text = card.Title;

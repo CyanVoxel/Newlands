@@ -140,7 +140,6 @@ public class MatchSetupController : NetworkBehaviour
 
 	private void CreateInitialConfig()
 	{
-		Debug.Log(debugTag.head + playerCountDropdown);
 		int playerCount = int.Parse(playerCountDropdown.options[playerCountDropdown.value].text);
 		int height;
 		int width;

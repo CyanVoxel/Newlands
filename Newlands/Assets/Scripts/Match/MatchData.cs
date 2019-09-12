@@ -2,7 +2,7 @@
 
 public class MatchData
 {
-	// FIELDS ##########################################################################################################
+	// FIELDS ######################################################################################
 	// private string deckFlavor = "Vanilla";
 	// private string winCondition;
 	// private int gameGridHeight;
@@ -16,7 +16,10 @@ public class MatchData
 
 	private bool initialized = false;
 
-	// PROPERTIES ######################################################################################################
+	// PROPERTIES ##################################################################################
+	public int Turn { get { return turn; } set { turn = value; } }
+	public int Round { get { return round; } set { round = value; } }
+	public int Phase { get { return phase; } set { phase = value; } }
 	// public string DeckFlavor { get { return deckFlavor; } }
 	// public string WinCondition { get { return winCondition; } }
 	// public int GameGridHeight { get { return gameGridHeight; } }
@@ -27,6 +30,9 @@ public class MatchData
 
 	public MatchData()
 	{
+		this.turn = 1;
+		this.round = 1;
+		this.phase = 1;
 		// this.deckFlavor = config.DeckFlavor;
 		// this.winCondition = config.WinCondition;
 		// this.gameGridHeight = config.GameGridHeight;

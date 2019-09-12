@@ -4,10 +4,14 @@ using UnityEngine;
 public class MatchDataBroadcaster : NetworkBehaviour
 {
 	// FIELDS ##########################################################################################################
-	[SyncVar][SerializeField]
+	[SyncVar]
 	private string matchConfigDataStr = "";
+	[SyncVar]
 	private string turnEventBroadcastStr = "";
+	[SyncVar]
+	private string playerMoneyStr = "";
 	private SyncListString updatedCardsStr;
+	private SyncListString playerStartingHands;
 
 	private DebugTag debugTag = new DebugTag("MatchDataBroadcaster", "2196F3");
 
@@ -24,7 +28,7 @@ public class MatchDataBroadcaster : NetworkBehaviour
 		}
 	}
 
-	public string TurnEventBroadcast
+	public string TurnEventBroadcastStr
 	{
 		get { return turnEventBroadcastStr; }
 		set
@@ -32,7 +36,19 @@ public class MatchDataBroadcaster : NetworkBehaviour
 			if (hasAuthority)
 				turnEventBroadcastStr = value;
 			else
-				Debug.Log(debugTag + "You don't have the authority to change TurnEventBroadcast!");
+				Debug.Log(debugTag + "You don't have the authority to change TurnEventBroadcastStr!");
+		}
+	}
+
+	public string PlayerMoneyStr
+	{
+		get { return playerMoneyStr; }
+		set
+		{
+			if (hasAuthority)
+				playerMoneyStr = value;
+			else
+				Debug.Log(debugTag + "You don't have the authority to change PlayerMoneyStr!");
 		}
 	}
 
@@ -45,6 +61,18 @@ public class MatchDataBroadcaster : NetworkBehaviour
 				updatedCardsStr = value;
 			else
 				Debug.Log(debugTag + "You don't have the authority to change UpdatedCardsStr!");
+		}
+	}
+
+	public SyncListString PlayerStartingHands
+	{
+		get { return playerStartingHands; }
+		set
+		{
+			if (hasAuthority)
+				playerStartingHands = value;
+			else
+				Debug.Log(debugTag + "You don't have the authority to change PlayerStartingHands!");
 		}
 	}
 

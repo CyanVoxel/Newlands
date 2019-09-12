@@ -35,6 +35,7 @@ public class MarketCardDeck : Deck
 		this.Add("Cards/Vanilla/MarketCard/iron");
 		// this.Add("Cards/Vanilla/MarketCard/fish");
 		this.Add("Cards/Vanilla/MarketCard/cashcrops");
+		this.Add("Cards/Vanilla/MarketCard/oil");
 		this.Add("Cards/Vanilla/MarketCard/lumber");
 	}
 
