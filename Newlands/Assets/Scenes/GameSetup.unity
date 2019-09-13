@@ -7992,9 +7992,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1943549496}
-  - component: {fileID: 1943549495}
   - component: {fileID: 1943549494}
   - component: {fileID: 1943549493}
+  - component: {fileID: 1943549495}
   m_Layer: 0
   m_Name: NetworkManager
   m_TagString: Untagged

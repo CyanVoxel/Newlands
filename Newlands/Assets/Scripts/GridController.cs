@@ -34,8 +34,9 @@ public class GridController : NetworkBehaviour
 		Debug.Log(debugTag + "The GridController has been created!");
 		// StartCoroutine(CheckForBroadcastUpdates());
 
-		StartCoroutine(CreateMainGridObjectsCoroutine());
-		StartCoroutine(CreateMarketGridObjectsCoroutine());
+		StartCoroutine(CreateMainGridCoroutine());
+		StartCoroutine(CreateMarketGridCoroutine());
+		StartCoroutine(CreatePlayerHandCoroutine());
 
 	}
 
@@ -127,6 +128,25 @@ public class GridController : NetworkBehaviour
 					masterMarketGrid[x, y].CardObject = cardObj;
 				}
 			}
+		}
+	}
+
+	// [Client/Server]
+	public void CreatePlayerHandObjects(int playerNum)
+	{
+		GameObject playerHandParent = new GameObject("PlayerHand");
+
+		for (int i = 0; i < config.PlayerHandSize; i++)
+		{
+			float xOff = i * 11 + (((config.GameGridWidth - config.PlayerHandSize) / 2f) * 11);
+			float yOff = -10;
+
+			GameObject cardObj = (GameObject)Instantiate(matchController.gameCardPrefab,
+				new Vector3(xOff, yOff, 40),
+				Quaternion.identity);
+
+			cardObj.name = (CreateCardObjectName("GameCard", playerNum, i));
+			cardObj.transform.SetParent(playerHandParent.transform);
 		}
 	}
 
@@ -255,10 +275,12 @@ public class GridController : NetworkBehaviour
 	}
 
 	// [Client/Server] Create the Tile GameObjects for the Main Game Grid.
-	private IEnumerator CreateMainGridObjectsCoroutine()
+	private IEnumerator CreateMainGridCoroutine()
 	{
 		yield return StartCoroutine(ParseMatchConfigCoroutine());
 		yield return StartCoroutine(GrabMatchControllerCoroutine());
+
+		// [Server]
 		if (hasAuthority)
 		{
 			yield return StartCoroutine(CreateInternalMainGridCoroutine());
@@ -269,13 +291,23 @@ public class GridController : NetworkBehaviour
 	}
 
 	// [Client/Server] Create the Tile GameObjects for the Market Game Grid.
-	private IEnumerator CreateMarketGridObjectsCoroutine()
+	private IEnumerator CreateMarketGridCoroutine()
 	{
 		yield return StartCoroutine(ParseMatchConfigCoroutine());
 		yield return StartCoroutine(GrabMatchControllerCoroutine());
 
 		Debug.Log(debugTag + "Creating Market Grid objects...");
 		CreateMarketGridObjects();
+	}
+
+	// [Client/Server] Create the Tile GameObjects for the Market Game Grid.
+	private IEnumerator CreatePlayerHandCoroutine()
+	{
+		yield return StartCoroutine(ParseMatchConfigCoroutine());
+		yield return StartCoroutine(GrabMatchControllerCoroutine());
+
+		Debug.Log(debugTag + "Creating Player Hand objects...");
+		CreatePlayerHandObjects(1);
 	}
 
 	private IEnumerator CreateInternalMainGridCoroutine()

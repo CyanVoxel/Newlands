@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &3270482152339648468
+--- !u!1 &3487896807176380725
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,37 +8,37 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 3270482152339420148}
-  - component: {fileID: 4324053712955826095}
-  - component: {fileID: 5761470722364289254}
+  - component: {fileID: 4402875952640164103}
+  - component: {fileID: 8082742957657314012}
+  - component: {fileID: 4413774318792211661}
   m_Layer: 0
-  m_Name: PlayerConnection
+  m_Name: LobbyPlayer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &3270482152339420148
+--- !u!4 &4402875952640164103
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3270482152339648468}
+  m_GameObject: {fileID: 3487896807176380725}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 23.325289, y: 15.988239, z: 48.048225}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4324053712955826095
+--- !u!114 &8082742957657314012
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3270482152339648468}
+  m_GameObject: {fileID: 3487896807176380725}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
@@ -46,20 +46,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   serverOnly: 0
   localPlayerAuthority: 0
-  m_AssetId: 92fd0c8f46c57f44f8ac6d3191bff59d
-  m_SceneId: 0
---- !u!114 &5761470722364289254
+  m_AssetId: 
+  m_SceneId: 3826114760
+--- !u!114 &4413774318792211661
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3270482152339648468}
+  m_GameObject: {fileID: 3487896807176380725}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b843e6a2e02e3cb4db96620e1bc7e84a, type: 3}
+  m_Script: {fileID: 11500000, guid: 79874ac94d5b1314788ecf0e86bd23fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   syncInterval: 0.1
-  mouseManPrefab: {fileID: 1397857731208177466, guid: abd0a7a2ceebea845a021bda2ad1fc25,
-    type: 3}
+  ShowLobbyGUI: 1
+  ReadyToBegin: 0
+  Index: 0

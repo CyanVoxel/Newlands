@@ -17,7 +17,11 @@ public class MatchController : NetworkBehaviour
 	private MasterDeck masterDeck;
 	private MasterDeck masterDeckMutable;
 
-	private List<Player> players = new List<Player>();
+	private List<PlayerData> players = new List<PlayerData>();
+
+	[SyncVar]
+	private int playerIndex = 1; // This value increments when a new player joins
+	public int PlayerIndex { get { return playerIndex; } set { playerIndex = value; } }
 
 	public MasterDeck MasterDeck { get { return masterDeck; } }
 	public MasterDeck MasterDeckMutable { get { return masterDeckMutable; } }
@@ -103,7 +107,7 @@ public class MatchController : NetworkBehaviour
 	{
 		for (int i = 0; i < config.MaxPlayerCount; i++)
 		{
-			players.Add(new Player());
+			players.Add(new PlayerData());
 			players[i].Id = (i + 1);
 			players[i].hand = DrawHand(config.PlayerHandSize);
 		} // for playerCount
