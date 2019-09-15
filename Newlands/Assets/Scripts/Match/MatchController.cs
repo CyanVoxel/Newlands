@@ -13,6 +13,7 @@ public class MatchController : NetworkBehaviour
 	private MatchData matchData;
 	private MatchConfigData config;
 	public MatchData MatchData { get { return matchData; } }
+	private MatchConnections matchConnections;
 
 	private MasterDeck masterDeck;
 	private MasterDeck masterDeckMutable;
@@ -38,22 +39,27 @@ public class MatchController : NetworkBehaviour
 	{
 		Debug.Log(debugTag + "The MatchController has been created!");
 		DontDestroyOnLoad(this.gameObject);
-		this.gameObject.AddComponent<GridController>();
+		// this.gameObject.AddComponent<GridController>();
 	}
 
 	void Start()
 	{
 		Debug.Log(debugTag + "Initializing...");
 
+		// [Client/Server]
 		if (!hasAuthority)
 		{
 			this.config = JsonUtility.FromJson<MatchConfigData>(matchDataBroadcaster.MatchConfigDataStr);
 			Debug.Log(debugTag + "Grabbed config for client: " + matchDataBroadcaster.MatchConfigDataStr);
+
+			Debug.Log(debugTag + "Creating Decks...");
 			this.masterDeck = new MasterDeck(config.DeckFlavor);
 			this.masterDeckMutable = new MasterDeck(config.DeckFlavor);
+
 			return;
 		}
 
+		// [Server]
 		InitializeMatch();
 	}
 
@@ -65,6 +71,24 @@ public class MatchController : NetworkBehaviour
 	void OnDisable()
 	{
 		Debug.Log(debugTag + "The MatchController has been disbaled/destroyed!");
+	}
+
+	// Returns an ID to a player based on their address
+	public int GetPlayerId(int address)
+	{
+		if (matchConnections == null)
+			matchConnections = GameObject.Find("NetworkManager").GetComponent<MatchConnections>();
+
+		int index = -1;
+
+		matchConnections.PlayerAddresses.TryGetValue(address, out index);
+
+		if (index >= 0)
+			Debug.Log(debugTag + "Giving address " + address + " an ID of " + index);
+		else
+			Debug.Log(debugTag + "Address " + address + " wanted an ID but has not been logged!");
+
+		return index;
 	}
 
 	// [Server] Grabs the MatchDataBroadcaster from this parent GameObject
@@ -86,6 +110,9 @@ public class MatchController : NetworkBehaviour
 	private void InitializeMatch()
 	{
 		GrabMatchDataBroadCaster();
+
+		// TODO: Wrap this in a method like data broadcaster
+		this.matchConnections = GameObject.Find("NetworkManager").GetComponent<MatchConnections>();
 
 		GameObject matchSetupManager = GameObject.Find("SetupManager");
 		if (matchSetupManager != null)

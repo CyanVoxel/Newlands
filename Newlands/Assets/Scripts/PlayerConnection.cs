@@ -24,10 +24,13 @@ public class PlayerConnection : NetworkBehaviour
 	private MatchController matchController;
 	private MatchData matchData;
 
+	private List<string> updatedCards = new List<string>();
+
 	// 	// Private =================================================================
 	private static DebugTag debugTag = new DebugTag("PlayerConnection", "2196F3");
 	// 	[SyncVar(hook = "OnIdChange")]
 	// 	[SerializeField]
+	[SyncVar]
 	private int id = -1;
 	// 	[SyncVar]
 	private bool initIdFlag = false;
@@ -52,6 +55,11 @@ public class PlayerConnection : NetworkBehaviour
 
 	// 	// METHODS #####################################################################################
 
+	void Awake()
+	{
+		DontDestroyOnLoad(this.gameObject);
+	}
+
 	// Start is called before the first frame update.
 	void Start()
 	{
@@ -67,7 +75,8 @@ public class PlayerConnection : NetworkBehaviour
 		{
 			if (!initIdFlag)
 			{
-				InitId();
+				Debug.Log(debugTag.head + connectionToServer.connectionId);
+				CmdInitId(connectionToServer.connectionId);
 			}
 
 			// CmdSpawnMouseManager();
@@ -101,53 +110,53 @@ public class PlayerConnection : NetworkBehaviour
 
 	} //Start()
 
-	// void Update()
-	// {
-	// 	if (!isLocalPlayer)
-	// 	{
-	// 		return;
-	// 	}
+	void Update()
+	{
+		if (!isLocalPlayer)
+		{
+			return;
+		}
 
-	// 	if (this.turnEventStr != gameMan.turnEventBroadcast)
-	// 	{
-	// 		HandleEvent();
-	// 		// this.turnEventStr = gameMan.turnEventBroadcast; // Unnecessary, this gets done later.
-	// 	}
+		// if (this.turnEventStr != gameMan.turnEventBroadcast)
+		// {
+		// 	HandleEvent();
+		// 	// this.turnEventStr = gameMan.turnEventBroadcast; // Unnecessary, this gets done later.
+		// }
 
-	// 	if (this.lastKnownPriceList != gameMan.priceListStr)
-	// 	{
-	// 		Debug.Log(debugTag + "Updating prices...");
-	// 		UpdateLocalPrices();
-	// 		UpdateMarketFooters();
-	// 		// this.lastKnownPriceList = gameMan.priceListStr; // Unnecessary, this gets done later.
-	// 	}
+		// if (this.lastKnownPriceList != gameMan.priceListStr)
+		// {
+		// 	Debug.Log(debugTag + "Updating prices...");
+		// 	UpdateLocalPrices();
+		// 	UpdateMarketFooters();
+		// 	// this.lastKnownPriceList = gameMan.priceListStr; // Unnecessary, this gets done later.
+		// }
 
-	// 	// Highlight cards during Buying Phase
-	// 	if (PhaseCheck(1))
-	// 	{
-	// 		if (gameMan.turn == this.id)
-	// 		{
-	// 			if (gameMan.round > GameManager.graceRounds)
-	// 			{
-	// 				Debug.Log(debugTag + "Highlighting " + GetNeighbors().Count
-	// 					+ " when there's " + GetUnownedCards().Count
-	// 					+ " card(s) left");
-	// 				CardAnimations.HighlightCards(GetNeighbors(), this.id);
-	// 			}
-	// 			else
-	// 			{
-	// 				CardAnimations.HighlightCards(GetUnownedCards(), this.id);
-	// 			}
-	// 		}
-	// 		else
-	// 		{
-	// 			CardAnimations.HighlightCards(GetUnownedCards(), 0);
-	// 		}
-	// 	}
+		// // Highlight cards during Buying Phase
+		// if (PhaseCheck(1))
+		// {
+		// 	if (gameMan.turn == this.id)
+		// 	{
+		// 		if (gameMan.round > GameManager.graceRounds)
+		// 		{
+		// 			Debug.Log(debugTag + "Highlighting " + GetNeighbors().Count
+		// 				+ " when there's " + GetUnownedCards().Count
+		// 				+ " card(s) left");
+		// 			CardAnimations.HighlightCards(GetNeighbors(), this.id);
+		// 		}
+		// 		else
+		// 		{
+		// 			CardAnimations.HighlightCards(GetUnownedCards(), this.id);
+		// 		}
+		// 	}
+		// 	else
+		// 	{
+		// 		CardAnimations.HighlightCards(GetUnownedCards(), 0);
+		// 	}
+		// }
 
-	// 	// This is at the bottom so handlers can compare old data with new data
-	// 	UpdateKnownInfo();
-	// } // Update()
+		// // This is at the bottom so handlers can compare old data with new data
+		// UpdateKnownInfo();
+	} // Update()
 
 	// Tries to grab necessary components if they haven't been already.
 	// Returns true if all components were verified to be grabbed.
@@ -235,25 +244,35 @@ public class PlayerConnection : NetworkBehaviour
 	} // GetUnownedCards()
 
 	// Initializes this PlayerConnection's ID by asking the Server to assign one.
-	private void InitId()
+	[Command]
+	private void CmdInitId(int address)
 	{
-		TryToGrabComponents();
+		// TryToGrabComponents();
 
 		// Debug.Log(debug + "Chainging default id of "
 		// 	+ this.id
 		// 	+ " to " + gameMan.GetPlayerIndex());
 
-		this.id = matchController.PlayerIndex;
-		matchController.PlayerIndex++;
+		if (GameObject.Find("MatchManager") != null)
+		{
+			this.id = GameObject.Find("MatchManager").GetComponent<MatchController>().GetPlayerId(address);
+		}
+		else
+		{
+			this.id = GameObject.Find("MatchManager(Clone)").GetComponent<MatchController>().GetPlayerId(address);
+		}
+
+		// this.id = GameObject.Find("MatchManager").GetComponent<MatchController>().GetPlayerId(address);
+		// matchController.PlayerIndex++;
 		// mouseManObj.transform.name = "MouseManager (" + this.id + ")";
 
 		Debug.Log(debugTag + "Assigned ID of " + this.id);
 
 		// Check for authority or else it'll try to spawn an extra one
-		if (hasAuthority)
-		{
-			CmdSpawnMouseManager();
-		}
+		// if (hasAuthority)
+		// {
+		// 	CmdSpawnMouseManager();
+		// }
 
 		// Debug.Log(debug + "Verifying new PlayerIndex: "
 		// 	+ gameMan.GetPlayerIndex());
@@ -552,20 +571,20 @@ public class PlayerConnection : NetworkBehaviour
 
 	// Spawns in a copy of MouseManager with Client Authority and feeds it a reference
 	// to this PlayerConnection's connection.
-	[Command]
-	private void CmdSpawnMouseManager()
-	{
-		GameObject mouseManObj = (GameObject)Instantiate(mouseManPrefab,
-			new Vector3(0, 0, 0),
-			Quaternion.identity);
+	// [Command]
+	// private void CmdSpawnMouseManager()
+	// {
+	// 	GameObject mouseManObj = (GameObject)Instantiate(mouseManPrefab,
+	// 		new Vector3(0, 0, 0),
+	// 		Quaternion.identity);
 
-		// NetworkServer.SpawnWithClientAuthority(mouseManObj, connectionToClient);
-		// localMouseMan = mouseManObj.GetComponent<MouseManager>();
-		// localMouseMan.myClient = this.connectionToClient;
-		// localMouseMan.myPlayerObj = this.gameObject;
-		// Debug.Log(debug + "Giving MouseManager my ID of " + this.id);
-		// localMouseMan.ownerId = this.id;
-	} // CmdSpawnMouseManager()
+	// 	// NetworkServer.SpawnWithClientAuthority(mouseManObj, connectionToClient);
+	// 	// localMouseMan = mouseManObj.GetComponent<MouseManager>();
+	// 	// localMouseMan.myClient = this.connectionToClient;
+	// 	// localMouseMan.myPlayerObj = this.gameObject;
+	// 	// Debug.Log(debug + "Giving MouseManager my ID of " + this.id);
+	// 	// localMouseMan.ownerId = this.id;
+	// } // CmdSpawnMouseManager()
 
 	// 	#endregion
 } // class PlayerConnection

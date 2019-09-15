@@ -158,10 +158,11 @@ public class GridController : NetworkBehaviour
 			/ (float)config.GameGridHeight), config.GameGridHeight];
 		maxMarketStack = new int[config.GameGridHeight];
 
-		int marketWidth = Mathf.CeilToInt(((float)ResourceInfo.resources.Count - 1) / (float)config.GameGridHeight);
-		Debug.Log(debugTag + "x: " + marketWidth
-			+ ", y: " + config.GameGridHeight
-			+ ", res: " + ResourceInfo.resources.Count);
+		int marketWidth = Mathf.CeilToInt(((float)ResourceInfo.resources.Count - 1)
+			/ (float)config.GameGridHeight);
+		// Debug.Log(debugTag + "x: " + marketWidth
+		// 	+ ", y: " + config.GameGridHeight
+		// 	+ ", res: " + ResourceInfo.resources.Count);
 
 		for (int x = 0; x < marketWidth; x++)
 		{
@@ -175,7 +176,7 @@ public class GridController : NetworkBehaviour
 				{
 					// Connect the drawn card to the internal grid
 					masterMarketGrid[x, y] = new CardData(card);
-					Debug.Log(debugTag + "Created Market Card: " + card.Resource);
+					// Debug.Log(debugTag + "Created Market Card: " + card.Resource);
 				}
 			}
 		}
