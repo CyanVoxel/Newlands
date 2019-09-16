@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿// TODO: Change the argument passed to a username
+
+using System.Collections;
 using System.Collections.Generic;
 using Mirror;
 using UnityEngine;
@@ -8,8 +10,8 @@ public class MatchConnections : NetworkManager
 	private static DebugTag debugTag = new DebugTag("MatchConnections", "8BC34A");
 	private int index = 0;
 
-	private Dictionary<int, int> playerAddresses = new Dictionary<int, int>();
-	public Dictionary<int, int> PlayerAddresses
+	private Dictionary<string, int> playerAddresses = new Dictionary<string, int>();
+	public Dictionary<string, int> PlayerAddresses
 	{
 		get { return playerAddresses; }
 		set { playerAddresses = value; }
@@ -17,24 +19,24 @@ public class MatchConnections : NetworkManager
 
 	public override void OnServerConnect(NetworkConnection conn)
 	{
-		Debug.Log(debugTag + "Player trying to connect from: " + conn.connectionId);
+		Debug.Log(debugTag + "Player trying to connect from: " + conn.address);
 
-		if (!playerAddresses.ContainsKey(conn.connectionId))
+		if (!playerAddresses.ContainsKey(conn.address))
 		{
-			playerAddresses.Add(conn.connectionId, index);
+			playerAddresses.Add(conn.address, index);
 			Debug.Log(debugTag
-				+ "Registered Player from address: " + conn.connectionId
+				+ "Registered Player from address: " + conn.address
 				+ ", Index: " + index);
 			this.index++;
 		}
 		else
 		{
 			Debug.Log(debugTag
-				+ "Player from address: " + conn.connectionId
+				+ "Player from address: " + conn.address
 				+ " is already logged at index: " + index);
 		}
 
-		foreach (KeyValuePair<int, int> kvp in playerAddresses)
+		foreach (KeyValuePair<string, int> kvp in playerAddresses)
 		{
 			Debug.Log(debugTag.head + kvp.Key + ", " + kvp.Value);
 		}

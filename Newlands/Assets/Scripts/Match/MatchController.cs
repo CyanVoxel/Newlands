@@ -10,15 +10,18 @@ public class MatchController : NetworkBehaviour
 	// FIELDS ######################################################################################
 	[SerializeField]
 	private MatchDataBroadcaster matchDataBroadcaster;
+	private GridController gridController;
 	private MatchData matchData;
-	private MatchConfigData config;
 	public MatchData MatchData { get { return matchData; } }
+	private MatchConfigData config;
+	public MatchConfigData Config { get { return config; } }
 	private MatchConnections matchConnections;
 
 	private MasterDeck masterDeck;
 	private MasterDeck masterDeckMutable;
 
 	private List<PlayerData> players = new List<PlayerData>();
+	public List<PlayerData> Players { get { return players; } }
 
 	[SyncVar]
 	private int playerIndex = 1; // This value increments when a new player joins
@@ -74,19 +77,24 @@ public class MatchController : NetworkBehaviour
 	}
 
 	// Returns an ID to a player based on their address
-	public int GetPlayerId(int address)
+	// TODO: Change the argument passed to a username
+	public int GetPlayerId(string address)
 	{
-		if (matchConnections == null)
-			matchConnections = GameObject.Find("NetworkManager").GetComponent<MatchConnections>();
+		// if (matchConnections == null)
+		// 	matchConnections = GameObject.Find("NetworkManager").GetComponent<MatchConnections>();
 
-		int index = -1;
+		int index = playerIndex;
+		playerIndex++;
 
-		matchConnections.PlayerAddresses.TryGetValue(address, out index);
+		// matchConnections.PlayerAddresses.TryGetValue(address, out index);
 
-		if (index >= 0)
-			Debug.Log(debugTag + "Giving address " + address + " an ID of " + index);
-		else
-			Debug.Log(debugTag + "Address " + address + " wanted an ID but has not been logged!");
+		// if (index >= 0)
+		// 	Debug.Log(debugTag + "Giving address " + address + " an ID of " + index);
+		// else
+		// 	Debug.Log(debugTag + "Address " + address + " wanted an ID but has not been logged!");
+
+		Debug.Log(debugTag + "Ignoring passed arguments until usernames are implemented");
+		Debug.Log(debugTag + "Give player an ID of " + index);
 
 		return index;
 	}

@@ -36,7 +36,7 @@ public class GridController : NetworkBehaviour
 
 		StartCoroutine(CreateMainGridCoroutine());
 		StartCoroutine(CreateMarketGridCoroutine());
-		StartCoroutine(CreatePlayerHandCoroutine());
+		// StartCoroutine(CreatePlayerHandCoroutine());
 
 	}
 
@@ -301,15 +301,15 @@ public class GridController : NetworkBehaviour
 		CreateMarketGridObjects();
 	}
 
-	// [Client/Server] Create the Tile GameObjects for the Market Game Grid.
-	private IEnumerator CreatePlayerHandCoroutine()
-	{
-		yield return StartCoroutine(ParseMatchConfigCoroutine());
-		yield return StartCoroutine(GrabMatchControllerCoroutine());
+	// // [Client/Server] Create the Tile GameObjects for the Market Game Grid.
+	// public IEnumerator CreatePlayerHandCoroutine(int playerId)
+	// {
+	// 	yield return StartCoroutine(ParseMatchConfigCoroutine());
+	// 	yield return StartCoroutine(GrabMatchControllerCoroutine());
 
-		Debug.Log(debugTag + "Creating Player Hand objects...");
-		CreatePlayerHandObjects(1);
-	}
+	// 	Debug.Log(debugTag + "Creating Player Hand objects...");
+	// 	CreatePlayerHandObjects(playerId);
+	// }
 
 	private IEnumerator CreateInternalMainGridCoroutine()
 	{
