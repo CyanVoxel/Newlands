@@ -17,6 +17,8 @@ public class MatchConfigData
 	private int maxPlayerCount;
     [SerializeField]
 	private int playerHandSize;
+	[SerializeField]
+	private int graceRounds;
     [SerializeField]
 	private bool initialized = false;
 
@@ -27,11 +29,13 @@ public class MatchConfigData
 	public int GameGridWidth { get { return gameGridWidth; } }
 	public int MaxPlayerCount { get { return maxPlayerCount; } }
 	public int PlayerHandSize { get { return playerHandSize; } }
+	public int GraceRounds { get { return graceRounds; } }
 	public bool Initialized { get { return initialized; } }
 
 	public MatchConfigData(string deckFlavor, string winCondition,
 		int gameGridHeight, int gameGridWidth,
-		int maxPlayerCount, int playerHandSize)
+		int maxPlayerCount, int playerHandSize,
+		int graceRounds)
 	{
 		this.deckFlavor = deckFlavor;
 		this.winCondition = winCondition;
@@ -39,6 +43,7 @@ public class MatchConfigData
 		this.gameGridWidth = gameGridWidth;
 		this.maxPlayerCount = maxPlayerCount;
 		this.playerHandSize = playerHandSize;
+		this.graceRounds = graceRounds;
 		this.initialized = true;
 	}
 

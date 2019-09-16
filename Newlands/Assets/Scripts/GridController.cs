@@ -63,7 +63,7 @@ public class GridController : NetworkBehaviour
 	public void ParseTurnEvent()
 	{
 		Debug.Log(debugTag + "Parsing Turn Event...");
-		TurnEvent newTurnEvent = JsonUtility.FromJson<TurnEvent>(matchDataBroadcaster.TurnEventBroadcastStr);
+		TurnEvent newTurnEvent = JsonUtility.FromJson<TurnEvent>(matchDataBroadcaster.TurnEventStr);
 		if (this.lastKnownTurnEvent != newTurnEvent)
 		{
 			this.lastKnownTurnEvent = newTurnEvent;
@@ -217,7 +217,7 @@ public class GridController : NetworkBehaviour
 		while (this.config == null)
 		{
 			Debug.Log(debugTag + "Parsing Config...");
-			this.config = JsonUtility.FromJson<MatchConfigData>(matchDataBroadcaster.MatchConfigDataStr);
+			this.config = JsonUtility.FromJson<MatchConfigData>(matchDataBroadcaster.MatchConfigStr);
 			Debug.Log(debugTag + "Config parsed as: " + this.config);
 
 			if (this.config == null)

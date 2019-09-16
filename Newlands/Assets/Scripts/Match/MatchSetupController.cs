@@ -154,7 +154,8 @@ public class MatchSetupController : NetworkBehaviour
 			gameGridHeight : height,
 			gameGridWidth : width,
 			maxPlayerCount : playerCount,
-			playerHandSize : 5);
+			playerHandSize : 5,
+			graceRounds: 1);
 
 		this.ready = true;
 	}

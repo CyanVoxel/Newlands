@@ -12,7 +12,7 @@ public class MatchController : NetworkBehaviour
 	private MatchDataBroadcaster matchDataBroadcaster;
 	private GridController gridController;
 	private MatchData matchData;
-	public MatchData MatchData { get { return matchData; } }
+	// public MatchData MatchData { get { return matchData; } }
 	private MatchConfigData config;
 	public MatchConfigData Config { get { return config; } }
 	private MatchConnections matchConnections;
@@ -52,8 +52,8 @@ public class MatchController : NetworkBehaviour
 		// [Client/Server]
 		if (!hasAuthority)
 		{
-			this.config = JsonUtility.FromJson<MatchConfigData>(matchDataBroadcaster.MatchConfigDataStr);
-			Debug.Log(debugTag + "Grabbed config for client: " + matchDataBroadcaster.MatchConfigDataStr);
+			this.config = JsonUtility.FromJson<MatchConfigData>(matchDataBroadcaster.MatchConfigStr);
+			Debug.Log(debugTag + "Grabbed config for client: " + matchDataBroadcaster.MatchConfigStr);
 
 			Debug.Log(debugTag + "Creating Decks...");
 			this.masterDeck = new MasterDeck(config.DeckFlavor);
@@ -232,7 +232,7 @@ public class MatchController : NetworkBehaviour
 
 	// COROUTINES ##################################################################################
 
-	// [Server] The main initialization coroutine for the match.
+	// [Client/Server] The main initialization coroutine for the match.
 	// Dependant on LoadMatchConfigCoroutine finishing.
 	private IEnumerator InitializeMatchCoroutine()
 	{
@@ -247,8 +247,16 @@ public class MatchController : NetworkBehaviour
 		this.masterDeck = new MasterDeck(config.DeckFlavor);
 		this.masterDeckMutable = new MasterDeck(config.DeckFlavor);
 
+		// [Server]
 		if (hasAuthority)
+		{
 			InitPlayers();
+
+			this.matchData = new MatchData();
+
+			Debug.Log(debugTag + "Sending current Match Data to Broadcaster... " + this.matchData);
+			matchDataBroadcaster.MatchDataStr = JsonUtility.ToJson(this.matchData);
+		}
 
 	}
 
@@ -262,7 +270,7 @@ public class MatchController : NetworkBehaviour
 
 		this.config = controller.InitialConfig;
 		Debug.Log(debugTag + "Config loaded! Sending to Broadcaster...");
-		matchDataBroadcaster.MatchConfigDataStr = JsonUtility.ToJson(controller.InitialConfig);
+		matchDataBroadcaster.MatchConfigStr = JsonUtility.ToJson(controller.InitialConfig);
 	}
 
 }

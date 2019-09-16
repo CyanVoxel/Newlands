@@ -22,9 +22,12 @@ public class PlayerConnection : NetworkBehaviour
 	public GameObject mouseManPrefab;
 	public SyncListCardData hand;
 	private MatchDataBroadcaster matchDataBroadcaster;
+	private GridController gridController;
 	private MatchController matchController;
+
 	private MatchConfigData config;
 	private MatchData matchData;
+	// private TurnEvent turnEvent;
 
 	private List<string> updatedCards = new List<string>();
 
@@ -36,11 +39,15 @@ public class PlayerConnection : NetworkBehaviour
 	private int id = -1;
 	// 	[SyncVar]
 	// private bool initIdFlag = false;
-	private int lastKnownTurn = -1;
-	private int lastKnownRound = -1;
-	private int lastKnownPhase = -1;
+	// private int lastKnownTurn = -1;
+	// private int lastKnownRound = -1;
+	// private int lastKnownPhase = -1;
 	private string lastKnownTopCard = "";
 	private string lastKnownPriceList = "";
+
+	// A JSON version of the match data, used to save parsing time unless needed.
+	private string lastKnownMatchDataStr = "";
+
 	// An array of Lists containing coordinates of all known Tiles owned by all players.
 	// This is used for quicker access of THESE CARDS.
 	private List<Coordinate2>[] knownOwnersList;
@@ -54,6 +61,8 @@ public class PlayerConnection : NetworkBehaviour
 	private List<int> localPrices = new List<int>();
 	private List<string> localResources = new List<string>();
 	private string turnEventStr;
+
+	private bool initialzed = false;
 
 	// 	// METHODS #####################################################################################
 
@@ -83,50 +92,51 @@ public class PlayerConnection : NetworkBehaviour
 
 	void Update()
 	{
-		if (!isLocalPlayer)
+		if (!isLocalPlayer || !initialzed)
 		{
 			return;
 		}
 
-		// if (this.turnEventStr != gameMan.turnEventBroadcast)
-		// {
-		// 	HandleEvent();
-		// 	// this.turnEventStr = gameMan.turnEventBroadcast; // Unnecessary, this gets done later.
-		// }
+		if (this.turnEventStr != matchDataBroadcaster.TurnEventStr
+			&& this.turnEventStr != null)
+		{
+			HandleEvent();
+			// this.turnEventStr = gameMan.turnEventBroadcast; // Unnecessary, this gets done later.
+		}
 
-		// if (this.lastKnownPriceList != gameMan.priceListStr)
-		// {
-		// 	Debug.Log(debugTag + "Updating prices...");
-		// 	UpdateLocalPrices();
-		// 	UpdateMarketFooters();
-		// 	// this.lastKnownPriceList = gameMan.priceListStr; // Unnecessary, this gets done later.
-		// }
+		if (this.lastKnownPriceList != matchDataBroadcaster.PriceListStr)
+		{
+			Debug.Log(debugTag + "Updating prices...");
+			UpdateLocalPrices();
+			UpdateMarketFooters();
+			// this.lastKnownPriceList = gameMan.priceListStr; // Unnecessary, this gets done later.
+		}
 
-		// // Highlight cards during Buying Phase
-		// if (PhaseCheck(1))
-		// {
-		// 	if (gameMan.turn == this.id)
-		// 	{
-		// 		if (gameMan.round > GameManager.graceRounds)
-		// 		{
-		// 			Debug.Log(debugTag + "Highlighting " + GetNeighbors().Count
-		// 				+ " when there's " + GetUnownedCards().Count
-		// 				+ " card(s) left");
-		// 			CardAnimations.HighlightCards(GetNeighbors(), this.id);
-		// 		}
-		// 		else
-		// 		{
-		// 			CardAnimations.HighlightCards(GetUnownedCards(), this.id);
-		// 		}
-		// 	}
-		// 	else
-		// 	{
-		// 		CardAnimations.HighlightCards(GetUnownedCards(), 0);
-		// 	}
-		// }
+		// Highlight cards during Buying Phase
+		if (PhaseCheck(1))
+		{
+			if (this.matchData.Turn == this.id)
+			{
+				if (this.matchData.Round > matchController.Config.GraceRounds)
+				{
+					Debug.Log(debugTag + "Highlighting " + GetNeighbors().Count
+						+ " when there's " + GetUnownedCards().Count
+						+ " card(s) left");
+					CardAnimations.HighlightCards(GetNeighbors(), this.id);
+				}
+				else
+				{
+					CardAnimations.HighlightCards(GetUnownedCards(), this.id);
+				}
+			}
+			else
+			{
+				CardAnimations.HighlightCards(GetUnownedCards(), 0);
+			}
+		}
 
-		// // This is at the bottom so handlers can compare old data with new data
-		// UpdateKnownInfo();
+		// This is at the bottom so handlers can compare old data with new data
+		UpdateKnownInfo();
 	} // Update()
 
 	private IEnumerator InitPlayer(string address)
@@ -134,23 +144,27 @@ public class PlayerConnection : NetworkBehaviour
 		// Grab Components
 		yield return StartCoroutine(GrabComponentsCoroutine());
 
+		// Determine of the main grid has been created yet
+		GameObject testCard = GameObject.Find(GridController.CreateCardObjectName("Tile", 0, 0));
+		while (testCard == null)
+		{
+			testCard = GameObject.Find(GridController.CreateCardObjectName("Tile", 0, 0));
+			yield return null;
+		}
+
 		// Get ID from MatchManager
 		CmdInitId(address);
 		if (this.id == -1)
 			yield return null;
 
 		// Grab the config from the broadcaster
-		this.config = JsonUtility.FromJson<MatchConfigData>(matchDataBroadcaster.MatchConfigDataStr);
+		this.config = JsonUtility.FromJson<MatchConfigData>(matchDataBroadcaster.MatchConfigStr);
 		if (this.config == null)
 			yield return null;
 
 		// Create hand card objects
 		Debug.Log(debugTag + "Creating hand card objects for Player " + this.id);
-
-		if (GameObject.Find("MatchManager") != null)
-			GameObject.Find("MatchManager").GetComponent<GridController>().CreatePlayerHandObjects(this.id);
-		else
-			GameObject.Find("MatchManager(Clone)").GetComponent<GridController>().CreatePlayerHandObjects(this.id);
+		gridController.CreatePlayerHandObjects(this.id);
 
 		CmdGetHand(this.id);
 		// Debug.Log(debug + "Hand size: " + this.hand.Count);
@@ -163,16 +177,21 @@ public class PlayerConnection : NetworkBehaviour
 			this.knownOwnersList[i] = new List<Coordinate2>();
 		}
 
+		this.matchData = JsonUtility.FromJson<MatchData>(matchDataBroadcaster.MatchDataStr);
+		this.turnEventStr = matchDataBroadcaster.TurnEventStr;
+
 		// InitLocalMarketGrid();
-		// UpdateKnownInfo();
+		UpdateKnownInfo();
 
 		// If this is Player 1 and it's the first Turn of the first Round
-		if (this.id == 1 && this.lastKnownTurn == 1
-			&& this.lastKnownRound == 1
-			&& this.lastKnownPhase == 1)
+		if (this.id == 1 && this.matchData.Turn == 1
+			&& this.matchData.Round == 1
+			&& this.matchData.Phase == 1)
 		{
 			CardAnimations.HighlightCards(GetUnownedCards(), this.id);
 		}
+
+		this.initialzed = true;
 	}
 
 	// Tries to grab necessary components if they haven't been already.
@@ -200,6 +219,9 @@ public class PlayerConnection : NetworkBehaviour
 
 		if (this.matchController == null)
 			this.matchController = FindObjectOfType<MatchController>();
+
+		if (this.gridController == null)
+			this.gridController = FindObjectOfType<GridController>();
 
 		// if (this.guiMan == null)
 		// {
@@ -334,145 +356,160 @@ public class PlayerConnection : NetworkBehaviour
 	// 	}
 	// } // OnHandUpdated()
 
-	// // Checks of operations should be performed, given a phase to watch for
-	// private bool PhaseCheck(int phase)
-	// {
-	// 	if ((gameMan.turn != this.lastKnownTurn
-	// 			|| gameMan.round != this.lastKnownRound)
-	// 		&& gameMan.phase == phase)
-	// 	{
-	// 		return true;
-	// 	}
-	// 	else
-	// 	{
-	// 		return false;
-	// 	}
-	// } // PhaseCheck()
+	// Checks of operations should be performed, given a phase to watch for
+	private bool PhaseCheck(int phase)
+	{
+		MatchData newMatchData = this.matchData;
 
-	// private void UpdateKnownInfo()
-	// {
-	// 	this.lastKnownTurn = gameMan.turn;
-	// 	this.lastKnownRound = gameMan.round;
-	// 	this.lastKnownPhase = gameMan.phase;
-	// 	this.turnEventStr = gameMan.turnEventBroadcast;
-	// 	this.lastKnownTopCard = gameMan.topCardStr;
-	// 	this.lastKnownPriceList = gameMan.priceListStr;
-	// } // UpdateKnownRounds()
+		if (lastKnownMatchDataStr != matchDataBroadcaster.MatchDataStr)
+		{
+			newMatchData = JsonUtility.FromJson<MatchData>(matchDataBroadcaster.MatchDataStr);
+		}
 
-	// // TODO: Rename to something more descriptive, or expand functionality.
-	// private void HandleEvent()
-	// {
-	// 	GameObject cardObj;
-	// 	//Handle an event during Phase 2 on your turn
-	// 	this.turnEventStr = gameMan.turnEventBroadcast;
-	// 	TurnEvent turnEvent = JsonUtility.FromJson<TurnEvent>(this.turnEventStr);
-	// 	Debug.Log(debugTag + "TurnEvent: " + turnEvent);
+		if ((newMatchData.Turn != this.matchData.Turn
+				|| newMatchData.Round != this.matchData.Round)
+			&& newMatchData.Phase == phase)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	} // PhaseCheck()
 
-	// 	// Check if the message should be addressed by this player
-	// 	// if (turnEvent.phase != phase || turnEvent.playerId != this.id)
-	// 	// {
-	// 	// 	return;
-	// 	// }
+	private void UpdateKnownInfo()
+	{
+		this.lastKnownMatchDataStr = matchDataBroadcaster.MatchDataStr;
+		this.matchData = JsonUtility.FromJson<MatchData>(matchDataBroadcaster.MatchDataStr);
+		this.turnEventStr = matchDataBroadcaster.TurnEventStr;
 
-	// 	// Operations ==========================================================
+		// this.lastKnownTurn = gameMan.turn;
+		// this.lastKnownRound = gameMan.round;
+		// this.lastKnownPhase = gameMan.phase;
+		// this.turnEventStr = gameMan.turnEventBroadcast;
+		// this.lastKnownTopCard = gameMan.topCardStr;
+		// this.lastKnownPriceList = gameMan.priceListStr;
+	} // UpdateKnownRounds()
 
-	// 	switch (turnEvent.operation)
-	// 	{
-	// 		case "Play":
-	// 			cardObj = GameObject.Find(GameManager.CreateCardObjectName(turnEvent.cardType,
-	// 				turnEvent.x, turnEvent.y));
-	// 			if (cardObj != null)
-	// 			{
-	// 				Debug.Log(debugTag + "Trying to destroy " + cardObj.name);
-	// 				Destroy(cardObj);
-	// 				if (turnEvent.topCard != "empty")
-	// 				{
-	// 					// this.hand[turnEvent.y] = JsonUtility.FromJson<CardData>(turnEvent.topCard);
-	// 					CreateNewCardObject(turnEvent.y, turnEvent.topCard);
-	// 				}
-	// 				else
-	// 				{
-	// 					Debug.Log(debugTag + "GameCard deck must be empty!");
-	// 				}
+	// TODO: Rename to something more descriptive, or expand functionality.
+	private void HandleEvent()
+	{
+		GameObject cardObj;
+		//Handle an event during Phase 2 on your turn
+		this.turnEventStr = matchDataBroadcaster.TurnEventStr;
+		TurnEvent turnEvent = JsonUtility.FromJson<TurnEvent>(this.turnEventStr);
+		Debug.Log(debugTag + "TurnEvent: " + turnEvent);
 
-	// 			}
-	// 			else
-	// 			{
-	// 				Debug.Log(debugTag + "Could not find " + GameManager.CreateCardObjectName(turnEvent.cardType,
-	// 					turnEvent.x, turnEvent.y));
-	// 			}
+		// Check if the message should be addressed by this player
+		// if (turnEvent.phase != phase || turnEvent.playerId != this.id)
+		// {
+		// 	return;
+		// }
 
-	// 			// TODO: Add code to refresh a market card's footer value if a card was played on it.
+		// Operations ==========================================================
 
-	// 			break;
-	// 		case "Buy":
-	// 			// Add bought Tile to local knowledge base
-	// 			this.knownOwnersGrid[turnEvent.x, turnEvent.y] = turnEvent.playerId;
-	// 			this.knownOwnersList[turnEvent.playerId - 1].Add(new Coordinate2(turnEvent.x, turnEvent.y));
+		switch (turnEvent.operation)
+		{
+			case "Play":
+				cardObj = GameObject.Find(GridController.CreateCardObjectName(turnEvent.cardType,
+					turnEvent.x, turnEvent.y));
+				if (cardObj != null)
+				{
+					Debug.Log(debugTag + "Trying to destroy " + cardObj.name);
+					Destroy(cardObj);
+					if (turnEvent.topCard != "empty")
+					{
+						// this.hand[turnEvent.y] = JsonUtility.FromJson<CardData>(turnEvent.topCard);
+						CreateNewCardObject(turnEvent.y, turnEvent.topCard);
+					}
+					else
+					{
+						Debug.Log(debugTag + "GameCard deck must be empty!");
+					}
 
-	// 			// Grab the Tile GameObject that was bought
-	// 			Debug.Log(debugTag + GameManager.CreateCardObjectName("Tile",
-	// 				turnEvent.x,
-	// 				turnEvent.y));
-	// 			cardObj = GameObject.Find(GameManager.CreateCardObjectName("Tile",
-	// 				turnEvent.x,
-	// 				turnEvent.y));
+				}
+				else
+				{
+					Debug.Log(debugTag + "Could not find " + GameManager.CreateCardObjectName(turnEvent.cardType,
+						turnEvent.x, turnEvent.y));
+				}
 
-	// 			// Depending on the player who bought the tile, change the Tile's color.
-	// 			// NOTE: Move to CardAnimations or something.
-	// 			switch (turnEvent.playerId)
-	// 			{
-	// 				case 1:
-	// 					cardObj.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.tintRed500;
-	// 					cardObj.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.tintRed500;
-	// 					break;
-	// 				case 2:
-	// 					cardObj.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.tintBlueLight500;
-	// 					cardObj.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.tintBlueLight500;
-	// 					break;
-	// 				default:
-	// 					break;
-	// 			}
+				// TODO: Add code to refresh a market card's footer value if a card was played on it.
 
-	// 			break;
-	// 		default:
-	// 			break;
-	// 	}
-	// }
+				break;
+			case "Buy":
+				// Add bought Tile to local knowledge base
+				this.knownOwnersGrid[turnEvent.x, turnEvent.y] = turnEvent.playerId;
+				this.knownOwnersList[turnEvent.playerId - 1].Add(new Coordinate2(turnEvent.x, turnEvent.y));
 
-	// private void CreateNewCardObject(int index, string cardStr)
-	// {
-	// 	float xOff = index * 11 + (((GameManager.width - GameManager.handSize) / 2f) * 11);
-	// 	float yOff = -10;
+				// Grab the Tile GameObject that was bought
+				Debug.Log(debugTag + GameManager.CreateCardObjectName("Tile",
+					turnEvent.x,
+					turnEvent.y));
+				cardObj = GameObject.Find(GameManager.CreateCardObjectName("Tile",
+					turnEvent.x,
+					turnEvent.y));
 
-	// 	// If old card exists, destroy it
-	// 	GameObject oldCardObj = GameObject.Find(GameManager.CreateCardObjectName("GameCard", this.id, index));
-	// 	if (oldCardObj != null)
-	// 	{
-	// 		Debug.Log(debugTag + "Trying to destroy " + oldCardObj.name);
-	// 		Destroy(oldCardObj);
-	// 	}
+				// Depending on the player who bought the tile, change the Tile's color.
+				// NOTE: Move to CardAnimations or something.
+				switch (turnEvent.playerId)
+				{
+					case 1:
+						cardObj.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.tintRed500;
+						cardObj.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.tintRed500;
+						break;
+					case 2:
+						cardObj.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.tintBlueLight500;
+						cardObj.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.tintBlueLight500;
+						break;
+					default:
+						break;
+				}
 
-	// 	// Create new card
-	// 	GameObject cardObj = (GameObject)Instantiate(gridMan.gameCardPrefab,
-	// 		new Vector3(xOff, yOff, 40),
-	// 		Quaternion.identity);
+				break;
+			default:
+				break;
+		}
+	}
 
-	// 	// Debug.Log("[GridManager] Trying to fill out Hand Card info...");
-	// 	CardState cardState = cardObj.GetComponent<CardState>();
+	private void CreateNewCardObject(int index, string cardStr)
+	{
+		float xOff = index * 11 + (((config.GameGridWidth - config.PlayerHandSize) / 2f) * 11);
+		float yOff = -10;
 
-	// 	if (cardState != null)
-	// 	{
-	// 		// Generate and Push the string of the object's name
-	// 		cardState.objectName = (GameManager.CreateCardObjectName("GameCard", this.id, index));
-	// 		// Push new values to the CardState to be synchronized across the network
-	// 		GridManager.FillOutCardState(JsonUtility.FromJson<CardData>(cardStr), ref cardState);
-	// 	}
-	// 	else
-	// 	{
-	// 		Debug.Log(debugTag + "This object's card state was null!");
-	// 	} // if (cardState != null)
-	// } // CreateNewCardObject()
+		// If old card exists, destroy it
+		GameObject oldCardObj = GameObject.Find(GameManager.CreateCardObjectName("GameCard",
+			this.id, index));
+
+		if (oldCardObj != null)
+		{
+			Debug.Log(debugTag + "Trying to destroy " + oldCardObj.name);
+			Destroy(oldCardObj);
+		}
+
+		// Create new card
+		GameObject cardObj = (GameObject)Instantiate(matchController.gameCardPrefab,
+			new Vector3(xOff, yOff, 40),
+			Quaternion.identity);
+
+		// // Debug.Log("[GridManager] Trying to fill out Hand Card info...");
+		// CardState cardState = cardObj.GetComponent<CardState>();
+
+		cardObj.name = (GridController.CreateCardObjectName("GameCard", this.id, index));
+
+		// if (cardState != null)
+		// {
+		// 	// Generate and Push the string of the object's name
+		// 	cardState.objectName = (GameManager.CreateCardObjectName("GameCard", this.id, index));
+		// 	// Push new values to the CardState to be synchronized across the network
+		// 	GridManager.FillOutCardState(JsonUtility.FromJson<CardData>(cardStr), ref cardState);
+		// }
+		// else
+		// {
+		// 	Debug.Log(debugTag + "This object's card state was null!");
+		// } // if (cardState != null)
+	} // CreateNewCardObject()
 
 	// private void InitLocalMarketGrid()
 	// {
@@ -519,43 +556,43 @@ public class PlayerConnection : NetworkBehaviour
 
 	// } // InitLocalMarketGrid()
 
-	// private void UpdateLocalPrices()
-	// {
-	// 	// Debug.Log(debug + this.lastKnownPriceList);
-	// 	Debug.Log(debugTag + gameMan.priceListStr);
-	// 	this.lastKnownPriceList = gameMan.priceListStr;
+	private void UpdateLocalPrices()
+	{
+		// Debug.Log(debug + this.lastKnownPriceList);
+		Debug.Log(debugTag + matchDataBroadcaster.PriceListStr);
+		this.lastKnownPriceList = matchDataBroadcaster.PriceListStr;
 
-	// 	string[] resourcesWithPrices = this.lastKnownPriceList.Split('_');
+		string[] resourcesWithPrices = this.lastKnownPriceList.Split('_');
 
-	// 	// List<CardState> tempCardStateList = new List<CardState>();
+		// List<CardState> tempCardStateList = new List<CardState>();
 
-	// 	// for (int i = 0; i < this.localPrices.Count; i++)
-	// 	// {
-	// 	// 	tempCardStateList.Add(this.localPrices[i]);
-	// 	// }
+		// for (int i = 0; i < this.localPrices.Count; i++)
+		// {
+		// 	tempCardStateList.Add(this.localPrices[i]);
+		// }
 
-	// 	for (int i = 0; i < resourcesWithPrices.Length; i++)
-	// 	{
-	// 		string[] tempResPriceHolder = resourcesWithPrices[i].Split('=');
-	// 		// Debug.Log(debug + tempResPriceHolder[0] + "-" + tempResPriceHolder[1]);
-	// 		string resource = tempResPriceHolder[0];
-	// 		int price = int.Parse(tempResPriceHolder[1]);
+		for (int i = 0; i < resourcesWithPrices.Length; i++)
+		{
+			string[] tempResPriceHolder = resourcesWithPrices[i].Split('=');
+			// Debug.Log(debug + tempResPriceHolder[0] + "-" + tempResPriceHolder[1]);
+			string resource = tempResPriceHolder[0];
+			int price = int.Parse(tempResPriceHolder[1]);
 
-	// 		int resourceIndex = localResources.IndexOf(resource);
-	// 		localPrices[resourceIndex] = price;
-	// 	}
-	// } // UpdateLocalPrices()
+			int resourceIndex = localResources.IndexOf(resource);
+			localPrices[resourceIndex] = price;
+		}
+	} // UpdateLocalPrices()
 
-	// private void UpdateMarketFooters()
-	// {
-	// 	Debug.Log(debugTag + this.lastKnownPriceList);
-	// 	Debug.Log(debugTag + gameMan.priceListStr);
+	private void UpdateMarketFooters()
+	{
+		Debug.Log(debugTag + this.lastKnownPriceList);
+		Debug.Log(debugTag + matchDataBroadcaster.PriceListStr);
 
-	// 	for (int i = 0; i < this.localMarketList.Count; i++)
-	// 	{
-	// 		this.localMarketList[i].footerValue = this.localPrices[this.localResources.IndexOf(this.localMarketList[i].resource)];
-	// 	}
-	// } // UpdateMarketFooters()
+		for (int i = 0; i < this.localMarketList.Count; i++)
+		{
+			this.localMarketList[i].FooterValue = this.localPrices[this.localResources.IndexOf(this.localMarketList[i].Resource)];
+		}
+	} // UpdateMarketFooters()
 
 	// COMMANDS ####################################################################################
 

@@ -5,38 +5,66 @@ public class MatchDataBroadcaster : NetworkBehaviour
 {
 	// FIELDS ##########################################################################################################
 	[SyncVar]
-	private string matchConfigDataStr = "";
+	private string matchConfigStr = "";
 	[SyncVar]
-	private string turnEventBroadcastStr = "";
+	private string matchDataStr = "";
+	[SyncVar]
+	private string turnEventStr = "";
 	[SyncVar]
 	private string playerMoneyStr = "";
+	[SyncVar]
+	private string priceListStr = "";
 	private SyncListString updatedCardsStr;
 	private SyncListString playerStartingHands;
 
 	private DebugTag debugTag = new DebugTag("MatchDataBroadcaster", "2196F3");
 
 	// PROPERTIES ######################################################################################################
-	public string MatchConfigDataStr
+	public string MatchConfigStr
 	{
-		get { return matchConfigDataStr; }
+		get { return matchConfigStr; }
 		set
 		{
 			if (hasAuthority)
-				matchConfigDataStr = value;
+				matchConfigStr = value;
 			else
-				Debug.Log(debugTag + "You don't have the authority to change MatchConfigDataStr!");
+				Debug.Log(debugTag + "You don't have the authority to change MatchConfigStr!");
 		}
 	}
 
-	public string TurnEventBroadcastStr
+	public string MatchDataStr
 	{
-		get { return turnEventBroadcastStr; }
+		get { return matchDataStr; }
 		set
 		{
 			if (hasAuthority)
-				turnEventBroadcastStr = value;
+				matchDataStr = value;
+			else
+				Debug.Log(debugTag + "You don't have the authority to change MatchDataStr!");
+		}
+	}
+
+	public string TurnEventStr
+	{
+		get { return turnEventStr; }
+		set
+		{
+			if (hasAuthority)
+				turnEventStr = value;
 			else
 				Debug.Log(debugTag + "You don't have the authority to change TurnEventBroadcastStr!");
+		}
+	}
+
+	public string PriceListStr
+	{
+		get { return priceListStr; }
+		set
+		{
+			if (hasAuthority)
+				priceListStr = value;
+			else
+				Debug.Log(debugTag + "You don't have the authority to change PriceListStr!");
 		}
 	}
 
