@@ -5,22 +5,21 @@ using UnityEngine;
 
 public class RuleSet : MonoBehaviour
 {
+	private MatchController matchController;
 	private static string debugH = "<color=#0091EAFF><b>[RuleSet] </b></color>";
-
-	private GridManager gridMan;
-	private GameManager gameMan;
 
 	// METHODS ####################################################################################
 
-	void Start()
+	void Awake()
 	{
-		gridMan = FindObjectOfType<GridManager>();
-		gameMan = FindObjectOfType<GameManager>();
+		if (this.matchController == null)
+			this.matchController = FindObjectOfType<MatchController>();
 	}
+	// void Start() { }
 
 	// Compares a Game Card against a target Card/Tle to determine if it is allowed to be played
 	// given the scope of the Game Card.
-	public static bool IsLegal(GridUnit target, Card card)
+	public static bool IsLegal(CardData target, Card card)
 	{
 		string[] scopeLevel;
 		string[] targetLevel = new string[3];
@@ -37,9 +36,9 @@ public class RuleSet : MonoBehaviour
 			return false;
 		}
 
-		targetLevel[0] = target.category;
-		targetLevel[1] = target.scope;
-		targetLevel[2] = target.subScope;
+		targetLevel[0] = target.Category;
+		targetLevel[1] = target.Subtitle;
+		targetLevel[2] = target.Title;
 
 		Debug.Log("<b>[RuleSet]</b> " + "\n"
 			+ "Scope:" + card.Target + "\n"
@@ -115,7 +114,7 @@ public class RuleSet : MonoBehaviour
 						Debug.Log("<b>[RuleSet]</b> "
 							+ "The target " + card.Target
 							+ " is out of scope for the card "
-							+ target.category + " at scope level 0");
+							+ target.Category + " at scope level 0");
 						break;
 				} // switch
 			}
@@ -147,7 +146,7 @@ public class RuleSet : MonoBehaviour
 						Debug.Log("<b>[RuleSet]</b> "
 							+ "The target " + card.Target
 							+ " is out of scope for the card "
-							+ target.category + " at scope level 1");
+							+ target.Category + " at scope level 1");
 						break;
 				} // switch
 			}
@@ -209,7 +208,7 @@ public class RuleSet : MonoBehaviour
 						Debug.Log("<b>[RuleSet]</b> "
 							+ "The target " + card.Target
 							+ " is out of scope for the card "
-							+ target.category + " at scope level 2");
+							+ target.Category + " at scope level 2");
 						break;
 				} // switch
 			}
@@ -282,7 +281,7 @@ public class RuleSet : MonoBehaviour
 	} // IsLegal
 
 	// Carries out the action that a legal Game Card intends
-	public void PlayCard(GridUnit target, Card cardToPlay)
+	public void PlayCard(CardData target, CardData cardToPlay)
 	{
 		string action = cardToPlay.Subtitle;
 		// NOTE: Cards promting tile value calculation have their calculations offset to
@@ -295,26 +294,26 @@ public class RuleSet : MonoBehaviour
 		{
 			case "Investment":
 				target.CalcTotalValue();
-				gameMan.UpdatePlayersInfo();
+				matchController.UpdatePlayersInfo();
 				break;
 
 			case "Sabotage":
 				target.CalcTotalValue();
-				gameMan.UpdatePlayersInfo();
+				matchController.UpdatePlayersInfo();
 				break;
 
 			case "Resource":
 				target.CalcTotalValue();
-				gameMan.UpdatePlayersInfo();
+				matchController.UpdatePlayersInfo();
 				break;
 
 			case "Foreclosure":
-				target.bankrupt = true;
-				GameManager.BankruptTile(target);
-				gameMan.UpdatePlayersInfo();
+				target.IsBankrupt = true;
+				// GameManager.BankruptTile(target);
+				matchController.UpdatePlayersInfo();
 				break;
 			case "Upgrade":
-				if (GetScope(cardToPlay, 2) == "Plains" && target.subScope != "Farmland")
+				if (GetScope(cardToPlay, 2) == "Plains" && target.Title != "Farmland")
 				{
 					// Card newCard = Card.CreateInstance<Card>();
 					// CardData newCard;
@@ -335,12 +334,6 @@ public class RuleSet : MonoBehaviour
 		} // switch
 
 	} // PlayCard(Card, GridUnit)
-
-	// Carries out the action that a legal Game Card intends (Override)
-	public void PlayCard(GridUnit target, GridUnit cardToPlay)
-	{
-		PlayCard(target, cardToPlay.card);
-	} // PlayCard(GridUnit, GridUnit)
 
 	private static string GetScope(Card card, int level = -1)
 	{

@@ -14,6 +14,8 @@ public class MatchDataBroadcaster : NetworkBehaviour
 	private string playerMoneyStr = "";
 	[SyncVar]
 	private string priceListStr = "";
+	[SyncVar]
+	private string topCardStr = "";	// NOTE: In the future, it would be best to not use this.
 	private SyncListString updatedCardsStr;
 	private SyncListString playerStartingHands;
 
@@ -77,6 +79,18 @@ public class MatchDataBroadcaster : NetworkBehaviour
 				playerMoneyStr = value;
 			else
 				Debug.Log(debugTag + "You don't have the authority to change PlayerMoneyStr!");
+		}
+	}
+
+	public string TopCardStr
+	{
+		get { return topCardStr; }
+		set
+		{
+			if (hasAuthority)
+				topCardStr = value;
+			else
+				Debug.Log(debugTag + "You don't have the authority to change TopCardStr!");
 		}
 	}
 

@@ -7,11 +7,20 @@ using UnityEngine;
 
 public class HudController : MonoBehaviour
 {
-	public GameManager gameMan;
+	// public GameManager gameMan;
+	// private MatchController matchController;
+	private MatchDataBroadcaster matchDataBroadcaster;
 
 	private TMP_Text phaseNumberText;
 	private TMP_Text roundNumberText;
 	private TMP_Text turnNumberText;
+
+	private MatchConfigData config;
+
+	private MatchData matchData;
+	private string matchDataStr = "";
+	private string lastKnownMatchDataStr = "";
+
 	private int lastKnownTurn = -1;
 	private int lastKnownRound = -1;
 	private int lastKnownPhase = -1;
@@ -27,10 +36,22 @@ public class HudController : MonoBehaviour
 		InitPlayerText();
 		InitMoneyText();
 
-		this.lastKnownTurn = gameMan.turn;
-		this.lastKnownRound = gameMan.round;
-		this.lastKnownPhase = gameMan.phase;
-		this.lastKnownPlayerMoneyStr = gameMan.playersMoneyStr;
+		if (this.matchDataBroadcaster == null)
+			this.matchDataBroadcaster = FindObjectOfType<MatchDataBroadcaster>();
+
+		lastKnownMatchDataStr = matchDataBroadcaster.MatchDataStr;
+		this.matchData = JsonUtility.FromJson<MatchData>(lastKnownMatchDataStr);
+		this.lastKnownPlayerMoneyStr = matchDataBroadcaster.PlayerMoneyStr;
+
+		// if (this.matchController == null)
+		// 	this.matchController = FindObjectOfType<MatchController>();
+
+		this.config = JsonUtility.FromJson<MatchConfigData>(matchDataBroadcaster.MatchConfigStr);
+
+		// this.lastKnownTurn = gameMan.turn;
+		// this.lastKnownRound = gameMan.round;
+		// this.lastKnownPhase = gameMan.phase;
+		// this.lastKnownPlayerMoneyStr = gameMan.playersMoneyStr;
 
 		UpdateUI();
 	} // Start()
@@ -38,14 +59,30 @@ public class HudController : MonoBehaviour
 	// Update is called once per frame
 	void Update()
 	{
-		// On New Turn
-		if (gameMan.turn != this.lastKnownTurn
-			|| gameMan.round != this.lastKnownRound
-			|| gameMan.phase != this.lastKnownPhase
-			|| gameMan.playersMoneyStr != this.lastKnownPlayerMoneyStr)
+		MatchData newMatchData = this.matchData;
+
+		if (lastKnownMatchDataStr != matchDataBroadcaster.MatchDataStr)
+		{
+			newMatchData = JsonUtility.FromJson<MatchData>(matchDataBroadcaster.MatchDataStr);
+		}
+
+		if (newMatchData.Turn != this.matchData.Turn
+			|| newMatchData.Round != this.matchData.Round
+			|| newMatchData.Phase != this.matchData.Phase
+			|| this.lastKnownPlayerMoneyStr != matchDataBroadcaster.PlayerMoneyStr)
 		{
 			UpdateUI();
+			this.lastKnownPlayerMoneyStr = matchDataBroadcaster.PlayerMoneyStr;
 		}
+
+		// On New Turn
+		// if (gameMan.turn != this.lastKnownTurn
+		// 	|| gameMan.round != this.lastKnownRound
+		// 	|| gameMan.phase != this.lastKnownPhase
+		// 	|| gameMan.playersMoneyStr != this.lastKnownPlayerMoneyStr)
+		// {
+		// 	UpdateUI();
+		// }
 
 	} // Update()
 
@@ -72,7 +109,7 @@ public class HudController : MonoBehaviour
 
 	private void InitMoneyText()
 	{
-		for (int i = 0; i < GameManager.playerCount; i++)
+		for (int i = 0; i < config.MaxPlayerCount; i++)
 		{
 			if (transform.Find("Hud/Money/Player (" + (i + 1) + ")") != null
 				&& (transform.Find("Hud/Money/Player (" + (i + 1) + ")").GetComponent<TMP_Text>() != null))
@@ -96,18 +133,21 @@ public class HudController : MonoBehaviour
 
 	private void UpdatePhaseRoundTurnUI()
 	{
-		this.lastKnownTurn = gameMan.turn;
-		this.lastKnownRound = gameMan.round;
-		this.lastKnownPhase = gameMan.phase;
+		// this.lastKnownTurn = gameMan.turn;
+		// this.lastKnownRound = gameMan.round;
+		// this.lastKnownPhase = gameMan.phase;
 
-		this.phaseNumberText.text = ("Phase " + this.lastKnownPhase);
-		this.roundNumberText.text = ("Round " + this.lastKnownRound);
-		this.turnNumberText.text = ("Player " + this.lastKnownTurn + "'s Turn");
+		this.lastKnownMatchDataStr = matchDataBroadcaster.MatchDataStr;
+		this.matchData = JsonUtility.FromJson<MatchData>(this.lastKnownMatchDataStr);
+
+		this.phaseNumberText.text = ("Phase " + this.matchData.Phase);
+		this.roundNumberText.text = ("Round " + this.matchData.Round);
+		this.turnNumberText.text = ("Player " + this.matchData.Turn + "'s Turn");
 	}
 
 	private void UpdateMoneyUI()
 	{
-		this.lastKnownPlayerMoneyStr = gameMan.playersMoneyStr;
+		this.lastKnownPlayerMoneyStr = matchDataBroadcaster.PlayerMoneyStr;
 
 		if (this.lastKnownPlayerMoneyStr != "")
 		{

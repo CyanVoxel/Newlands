@@ -11,21 +11,25 @@ public class GridController : NetworkBehaviour
 	private MatchDataBroadcaster matchDataBroadcaster;
 	private MatchController matchController;
 
-	private CardData[, ] masterGrid;
+	public CardData[, ] masterGrid;
 	private CardData[, ] knownOwnersGrid;
-	private CardData[, ] masterMarketGrid;
+	public CardData[, ] masterMarketGrid;
 
 	// private MatchData matchData;
 	private TurnEvent lastKnownTurnEvent;
 	private MatchConfigData config;
 
-	private readonly float cardThickness = 0.2f;
-	private readonly float shiftUnit = 1.2f;
-	private readonly float cardOffX = 11f;
-	private readonly float cardOffY = 8f;
-	private static float[] rowPosition;
-	private static int[] maxGridStack;
-	private static int[] maxMarketStack;
+	public readonly float cardThickness = 0.2f;
+	public readonly float shiftUnit = 1.2f;
+	public readonly float cardOffX = 11f;
+	public readonly float cardOffY = 8f;
+	private float[] rowPosition;
+	private int[] maxGridStack;
+	private int[] maxMarketStack;
+
+	public int[] MaxGridStack { get { return maxGridStack; } set { maxGridStack = value; } }
+	public int[] MaxMarketStack { get { return maxMarketStack; } set { maxMarketStack = value; } }
+
 
 	private DebugTag debugTag = new DebugTag("GridController", "00BCD4");
 
@@ -183,7 +187,7 @@ public class GridController : NetworkBehaviour
 	}
 
 	// Returns a formatted object name based on type and coordinate info
-	public static string CreateCardObjectName(string type, int x, int y)
+	public string CreateCardObjectName(string type, int x, int y)
 	{
 		string xZeroes = "0";
 		string yZeroes = "0";
@@ -207,6 +211,68 @@ public class GridController : NetworkBehaviour
 			yZeroes = "0";
 
 		return (xChar + xZeroes + x + "_" + yChar + yZeroes + y + "_" + type);
+	}
+
+	// Shifts rows of cards up or down. Used to give room for cards under tiles.
+	public void ShiftRow(string type, int row, int units)
+	{
+		if (type == "Tile")
+		{
+			for (int x = 0; x < config.GameGridWidth; x++)
+			{
+				for (int y = row; y < config.GameGridHeight; y++)
+				{
+					// Debug.Log(debug + "Shifting [" + x + ", " + y + "]");
+					// float oldX = masterGrid[x, y].CardObject.transform.position.x;
+					float oldY = masterGrid[x, y].CardObject.transform.position.y;
+					// float oldZ = masterGrid[x, y].CardObject.transform.position.z;
+					masterGrid[x, y].CardObject.transform.position = new Vector3(masterGrid[x, y].CardObject.transform.position.x,
+						(oldY += (shiftUnit * units)),
+						masterGrid[x, y].CardObject.transform.position.z);
+				} // for y
+			} // for x
+		}
+		else if (type == "Market")
+		{
+			int marketWidth = Mathf.CeilToInt((float)matchController.MasterDeck.marketCardDeck.Count
+				/ (float)config.GameGridHeight);
+
+			for (int x = 0; x < marketWidth; x++)
+			{
+				for (int y = row; y < config.GameGridHeight; y++)
+				{
+
+					if (masterMarketGrid[x, y] != null)
+					{
+						// float oldX = masterMarketGrid[x, y].CardObject.transform.position.x;
+						float oldY = masterMarketGrid[x, y].CardObject.transform.position.y;
+						// float oldZ = masterMarketGrid[x, y].CardObject.transform.position.z;
+						masterMarketGrid[x, y].CardObject.transform.position = new Vector3(masterMarketGrid[x, y].CardObject.transform.position.x,
+							(oldY += (shiftUnit * units)),
+							masterMarketGrid[x, y].CardObject.transform.position.z);
+					} // if tile at the location isn't null
+				} // for y
+			} // for x
+		}
+		else
+		{
+			Debug.Log(debugTag + "Not doing anything");
+		} // type
+	}
+
+	// Recalculates resource values based on the Market Grid
+	public void UpdateResourceValues()
+	{
+		for (int x = 0; x < masterMarketGrid.GetLength(0); x++)
+		{
+			for (int y = 0; y < masterMarketGrid.GetLength(1); y++)
+			{
+				if (masterMarketGrid[x, y] != null)
+				{
+					masterMarketGrid[x, y].CalcTotalValue();
+				}
+			}
+		}
 	}
 
 	// [Client/Server] Parses the Match Config from MatchDataBroadcaster

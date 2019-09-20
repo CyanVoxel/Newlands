@@ -145,10 +145,10 @@ public class PlayerConnection : NetworkBehaviour
 		yield return StartCoroutine(GrabComponentsCoroutine());
 
 		// Determine of the main grid has been created yet
-		GameObject testCard = GameObject.Find(GridController.CreateCardObjectName("Tile", 0, 0));
+		GameObject testCard = GameObject.Find(gridController.CreateCardObjectName("Tile", 0, 0));
 		while (testCard == null)
 		{
-			testCard = GameObject.Find(GridController.CreateCardObjectName("Tile", 0, 0));
+			testCard = GameObject.Find(gridController.CreateCardObjectName("Tile", 0, 0));
 			yield return null;
 		}
 
@@ -194,23 +194,23 @@ public class PlayerConnection : NetworkBehaviour
 		this.initialzed = true;
 	}
 
-	// Tries to grab necessary components if they haven't been already.
-	// Returns true if all components were verified to be grabbed.
-	private bool TryToGrabComponents()
-	{
-		if (this.matchDataBroadcaster == null)
-			this.matchDataBroadcaster = FindObjectOfType<MatchDataBroadcaster>();
+	// // Tries to grab necessary components if they haven't been already.
+	// // Returns true if all components were verified to be grabbed.
+	// private bool TryToGrabComponents()
+	// {
+	// 	if (this.matchDataBroadcaster == null)
+	// 		this.matchDataBroadcaster = FindObjectOfType<MatchDataBroadcaster>();
 
-		if (this.matchController == null)
-			this.matchController = FindObjectOfType<MatchController>();
+	// 	if (this.matchController == null)
+	// 		this.matchController = FindObjectOfType<MatchController>();
 
-		if (this.matchDataBroadcaster == null)
-			return false;
-		if (this.matchController == null)
-			return false;
+	// 	if (this.matchDataBroadcaster == null)
+	// 		return false;
+	// 	if (this.matchController == null)
+	// 		return false;
 
-		return true;
-	}
+	// 	return true;
+	// }
 
 	private IEnumerator GrabComponentsCoroutine()
 	{
@@ -241,7 +241,7 @@ public class PlayerConnection : NetworkBehaviour
 		this.id = newId;
 		this.transform.name = "Player (" + this.id + ")";
 		// mouseManObj.transform.name = "MouseManager (" + this.id + ")";
-		GameManager.localPlayerId = this.id;
+		// GameManager.localPlayerId = this.id;
 	} // OnIdChange()
 
 	private List<Coordinate2> GetNeighbors()
@@ -412,7 +412,7 @@ public class PlayerConnection : NetworkBehaviour
 		switch (turnEvent.operation)
 		{
 			case "Play":
-				cardObj = GameObject.Find(GridController.CreateCardObjectName(turnEvent.cardType,
+				cardObj = GameObject.Find(gridController.CreateCardObjectName(turnEvent.cardType,
 					turnEvent.x, turnEvent.y));
 				if (cardObj != null)
 				{
@@ -431,7 +431,7 @@ public class PlayerConnection : NetworkBehaviour
 				}
 				else
 				{
-					Debug.Log(debugTag + "Could not find " + GameManager.CreateCardObjectName(turnEvent.cardType,
+					Debug.Log(debugTag + "Could not find " + gridController.CreateCardObjectName(turnEvent.cardType,
 						turnEvent.x, turnEvent.y));
 				}
 
@@ -444,10 +444,10 @@ public class PlayerConnection : NetworkBehaviour
 				this.knownOwnersList[turnEvent.playerId - 1].Add(new Coordinate2(turnEvent.x, turnEvent.y));
 
 				// Grab the Tile GameObject that was bought
-				Debug.Log(debugTag + GameManager.CreateCardObjectName("Tile",
+				Debug.Log(debugTag + gridController.CreateCardObjectName("Tile",
 					turnEvent.x,
 					turnEvent.y));
-				cardObj = GameObject.Find(GameManager.CreateCardObjectName("Tile",
+				cardObj = GameObject.Find(gridController.CreateCardObjectName("Tile",
 					turnEvent.x,
 					turnEvent.y));
 
@@ -479,7 +479,7 @@ public class PlayerConnection : NetworkBehaviour
 		float yOff = -10;
 
 		// If old card exists, destroy it
-		GameObject oldCardObj = GameObject.Find(GameManager.CreateCardObjectName("GameCard",
+		GameObject oldCardObj = GameObject.Find(gridController.CreateCardObjectName("GameCard",
 			this.id, index));
 
 		if (oldCardObj != null)
@@ -496,7 +496,7 @@ public class PlayerConnection : NetworkBehaviour
 		// // Debug.Log("[GridManager] Trying to fill out Hand Card info...");
 		// CardState cardState = cardObj.GetComponent<CardState>();
 
-		cardObj.name = (GridController.CreateCardObjectName("GameCard", this.id, index));
+		cardObj.name = (gridController.CreateCardObjectName("GameCard", this.id, index));
 
 		// if (cardState != null)
 		// {
