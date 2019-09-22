@@ -1,5 +1,7 @@
 ﻿// Model data used by MatchController
 
+using UnityEngine;
+
 public class MatchData
 {
 	// FIELDS ######################################################################################
@@ -40,5 +42,58 @@ public class MatchData
 		// this.maxPlayerCount = config.MaxPlayerCount;
 		// this.playerHandSize = config.PlayerHandSize;
 		// this.initialized = true;
+	}
+
+	// public static bool operator ==(MatchData left, MatchData right)
+	// {
+	// 	if (left.turn == right.turn
+	// 		&& left.round == right.round
+	// 		&& left.phase == right.phase)
+	// 	{
+	// 		return true;
+	// 	}
+	// 	else
+	// 	{
+	// 		return false;
+	// 	}
+	// }
+
+	// public static bool operator !=(MatchData left, MatchData right)
+	// {
+	// 	if (left.turn != right.Turn
+	// 		|| left.round != right.Round
+	// 		|| left.phase != right.Phase)
+	// 	{
+	// 		return true;
+	// 	}
+	// 	else
+	// 	{
+	// 		return false;
+	// 	}
+	// }
+
+	// public override bool Equals(object obj)
+	// {
+	// 	if (obj == null || !this.GetType().Equals(obj.GetType()))
+	// 	{
+	// 		return false;
+	// 	}
+	// 	else
+	// 	{
+	// 		MatchData md = (MatchData)obj;
+	// 		return (turn == md.Turn
+	// 			&& round == md.Round
+	// 			&& phase == md.Phase);
+	// 	}
+	// }
+
+	// public override int GetHashCode()
+	// {
+	// 	return round ^ turn;
+	// }
+
+	public override string ToString()
+	{
+		return JsonUtility.ToJson(this);
 	}
 }

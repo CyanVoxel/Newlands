@@ -1,4 +1,4 @@
-﻿// Controls and updates the HUD based on changing values in GameManager.
+﻿// Controls and updates the HUD based on changing values in MatchDataBroadcaster.
 
 using System.Collections;
 using System.Collections.Generic;
@@ -7,72 +7,117 @@ using UnityEngine;
 
 public class HudController : MonoBehaviour
 {
-	public GameManager gameMan;
+	private MatchDataBroadcaster matchDataBroadcaster;
 
+	[SerializeField]
 	private TMP_Text phaseNumberText;
+	[SerializeField]
 	private TMP_Text roundNumberText;
+	[SerializeField]
 	private TMP_Text turnNumberText;
-	private int lastKnownTurn = -1;
-	private int lastKnownRound = -1;
-	private int lastKnownPhase = -1;
+
+	private MatchData matchData;
+	private MatchConfigData config;
+	private string matchDataStr;
 	private string lastKnownPlayerMoneyStr = "";
+
+	[SerializeField]
 	private List<TMP_Text> playerMoneyText = new List<TMP_Text>();
 	private List<int> playerMoneyAmounts = new List<int>();
 
-	private static DebugTag debug = new DebugTag("HudController", "4CAF50");
+	private bool initialized = false;
+	private static DebugTag debugTag = new DebugTag("HudController", "4CAF50");
 
-	// Start is called before the first frame update
-	void Start()
+	void Awake()
 	{
-		InitPlayerText();
-		InitMoneyText();
+		StartCoroutine(Initialize());
+	}
 
-		this.lastKnownTurn = gameMan.turn;
-		this.lastKnownRound = gameMan.round;
-		this.lastKnownPhase = gameMan.phase;
-		this.lastKnownPlayerMoneyStr = gameMan.playersMoneyStr;
+	// void Start()
+	// {
+	// 	UpdateUI();
+	// }
 
-		UpdateUI();
-	} // Start()
-
-	// Update is called once per frame
 	void Update()
 	{
 		// On New Turn
-		if (gameMan.turn != this.lastKnownTurn
-			|| gameMan.round != this.lastKnownRound
-			|| gameMan.phase != this.lastKnownPhase
-			|| gameMan.playersMoneyStr != this.lastKnownPlayerMoneyStr)
+		if (matchDataBroadcaster != null
+			&& this.matchDataStr != matchDataBroadcaster.MatchDataStr)
 		{
+			this.matchData = JsonUtility.FromJson<MatchData>(matchDataBroadcaster.MatchDataStr);
+			this.matchDataStr = matchDataBroadcaster.MatchDataStr;
 			UpdateUI();
 		}
+	}
 
-	} // Update()
+	private IEnumerator Initialize()
+	{
+		// Grab the MatchDataBroadcaster
+		if (matchDataBroadcaster == null)
+			matchDataBroadcaster = FindObjectOfType<MatchDataBroadcaster>();
 
-	private void InitPlayerText()
+		if (matchDataBroadcaster == null)
+			yield return null;
+
+		// Grab the Match Text
+		yield return StartCoroutine(InitMatchText());
+
+		// Get the match config
+		while (matchDataBroadcaster.MatchConfigStr == null)
+			yield return null;
+
+		config = JsonUtility.FromJson<MatchConfigData>(matchDataBroadcaster.MatchConfigStr);
+
+		// Get the current match data
+		while (matchDataBroadcaster.MatchDataStr == null)
+			yield return null;
+
+		this.matchData = JsonUtility.FromJson<MatchData>(matchDataBroadcaster.MatchDataStr);
+		this.matchDataStr = matchDataBroadcaster.MatchDataStr;
+
+		// Grab the Money Text
+		yield return StartCoroutine(InitMoneyText());
+
+		// Set the initialized flag to true
+		initialized = true;
+
+		// Finally, send the first UI update
+		UpdateUI();
+	}
+
+	private IEnumerator InitMatchText()
 	{
 		if (transform.Find("Hud/PhaseNumber") != null
 			&& (transform.Find("Hud/PhaseNumber").GetComponent<TMP_Text>() != null))
 		{
 			phaseNumberText = transform.Find("Hud/PhaseNumber").gameObject.GetComponent<TMP_Text>();
+
+			if (phaseNumberText == null)
+				yield return null;
 		}
 
 		if (transform.Find("Hud/RoundNumber") != null
 			&& (transform.Find("Hud/RoundNumber").GetComponent<TMP_Text>() != null))
 		{
 			roundNumberText = transform.Find("Hud/RoundNumber").gameObject.GetComponent<TMP_Text>();
+
+			if (roundNumberText == null)
+				yield return null;
 		}
 
 		if (transform.Find("Hud/TurnNumber") != null
 			&& (transform.Find("Hud/TurnNumber").GetComponent<TMP_Text>() != null))
 		{
 			turnNumberText = transform.Find("Hud/TurnNumber").gameObject.GetComponent<TMP_Text>();
-		}
-	} //InitPlayerText()
 
-	private void InitMoneyText()
+			if (turnNumberText == null)
+				yield return null;
+		}
+	}
+
+	private IEnumerator InitMoneyText()
 	{
-		for (int i = 0; i < GameManager.playerCount; i++)
+		for (int i = 0; i < config.MaxPlayerCount; i++)
 		{
 			if (transform.Find("Hud/Money/Player (" + (i + 1) + ")") != null
 				&& (transform.Find("Hud/Money/Player (" + (i + 1) + ")").GetComponent<TMP_Text>() != null))
@@ -80,39 +125,42 @@ public class HudController : MonoBehaviour
 				TMP_Text newPlayerMoneyText = transform.Find("Hud/Money/Player (" + (i + 1) + ")").gameObject.GetComponent<TMP_Text>();
 				playerMoneyText.Insert(i, newPlayerMoneyText);
 				playerMoneyText[i].text = "Player " + (i + 1) + "'s Cash: $0";
-			}
-			else
-			{
-				Debug.Log(debug + "Hud/Money/Player (" + (i + 1) + ")" + " was null?");
+
+				if (newPlayerMoneyText == null)
+					yield return null;
 			}
 		}
-	} // InitMoneyText()
+	}
 
 	private void UpdateUI()
 	{
-		UpdatePhaseRoundTurnUI();
-		UpdateMoneyUI();
+		if (initialized)
+		{
+			UpdatePhaseRoundTurnUI();
+			UpdateMoneyUI();
+		}
 	}
 
 	private void UpdatePhaseRoundTurnUI()
 	{
-		this.lastKnownTurn = gameMan.turn;
-		this.lastKnownRound = gameMan.round;
-		this.lastKnownPhase = gameMan.phase;
+		this.matchData = JsonUtility.FromJson<MatchData>(matchDataBroadcaster.MatchDataStr);
 
-		this.phaseNumberText.text = ("Phase " + this.lastKnownPhase);
-		this.roundNumberText.text = ("Round " + this.lastKnownRound);
-		this.turnNumberText.text = ("Player " + this.lastKnownTurn + "'s Turn");
+		if (this.matchData != null)
+		{
+			this.phaseNumberText.text = ("Phase " + this.matchData.Phase);
+			this.roundNumberText.text = ("Round " + this.matchData.Round);
+			this.turnNumberText.text = ("Player " + this.matchData.Turn + "'s Turn");
+		}
 	}
 
 	private void UpdateMoneyUI()
 	{
-		this.lastKnownPlayerMoneyStr = gameMan.playersMoneyStr;
+		this.lastKnownPlayerMoneyStr = matchDataBroadcaster.PlayerMoneyStr;
 
 		if (this.lastKnownPlayerMoneyStr != "")
 		{
 			string[] playersMoneyStr = this.lastKnownPlayerMoneyStr.Split('_');
-			Debug.Log(debug + "Player Money String: " + this.lastKnownPlayerMoneyStr);
+			Debug.Log(debugTag + "Player Money String: " + this.lastKnownPlayerMoneyStr);
 
 			for (int i = 0; i < playersMoneyStr.Length; i++)
 			{
