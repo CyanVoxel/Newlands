@@ -150,7 +150,7 @@ public class GridUnit
 			if (this.totalValue < 0)
 			{
 				this.bankrupt = true;
-				GameManager.BankruptTile(this);
+				// GameManager.BankruptTile(this);
 			} // bankrupt check
 		}
 		else if (this.category == "Market")

@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class PlayerData
 {
-	public GridManager gridMan;
+	// public GridManager gridMan;
 
 	// DATA FIELDS ################################################################################
 
@@ -36,7 +36,7 @@ public class PlayerData
 	// 	gridMan = FindObjectOfType<GridManager>();
 	// }
 
-	public void CalcTotalMoney()
+	public void CalcTotalMoney(List<CardData> cards)
 	{
 		this.totalMoney = 0;
 		this.tileMoney = 0; // Reset tile money before recalculating
@@ -46,17 +46,17 @@ public class PlayerData
 		{
 			// Search the grid for owned tiles
 			// TODO: Implement a list of known owned tile coordinates to replace these for loops
-			for (int x = 0; x < GameManager.width; x++)
-			{
-				for (int y = 0; y < GameManager.height; y++)
-				{
-					if (GridManager.grid[x, y].ownerId == this.Id)
-					{
-						GridManager.grid[x, y].CalcTotalValue();
-						this.tileMoney += (GridManager.grid[x, y].totalValue);
-					} // if player owns tile
-				} // for y
-			} // for x
+			// for (int x = 0; x < gridWidth; x++)
+			// {
+			// 	for (int y = 0; y < gridHeight; y++)
+			// 	{
+			// 		if (GridManager.grid[x, y].ownerId == this.Id)
+			// 		{
+			// 			GridManager.grid[x, y].CalcTotalValue();
+			// 			this.tileMoney += (GridManager.grid[x, y].totalValue);
+			// 		} // if player owns tile
+			// 	} // for y
+			// } // for x
 		}
 		else
 		{
@@ -71,7 +71,7 @@ public class PlayerData
 
 	public PlayerData()
 	{
-		this.CalcTotalMoney();
-		this.handUnits = new GridUnit[GameManager.handSize];
+		// this.CalcTotalMoney();
+		// this.handUnits = new GridUnit[GameManager.handSize];
 	} // Player() constructor
 } // class Player

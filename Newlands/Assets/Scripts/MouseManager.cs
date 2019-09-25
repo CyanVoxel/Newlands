@@ -13,10 +13,15 @@ public class MouseManager : NetworkBehaviour
 	private static DebugTag debugTag = new DebugTag("MouseManager", "AA00FF");
 
 	private MatchController matchController;
+	private MatchDataBroadcaster matchDataBroadcaster;
 
-	private GameManager gameMan;
+	private MatchConfig config;
+	private MatchData matchData;
+	private string matchDataStr;
+
+	// private GameManager gameMan;
 	// public GuiManager guiMan;
-	private GridManager gridMan;
+	// private GridManager gridMan;
 	public int selection = -1;
 	// TODO: Create a dictionary of flags
 	private int purchaseSuccessFlag = -1; // -1: Reset | 0: False | 1: True
@@ -44,19 +49,11 @@ public class MouseManager : NetworkBehaviour
 	void Awake()
 	{
 		if (this.matchController == null)
-		{
 			this.matchController = FindObjectOfType<MatchController>();
-		}
+		if (this.matchDataBroadcaster == null)
+			this.matchDataBroadcaster = FindObjectOfType<MatchDataBroadcaster>();
 	}
 
-	void Start()
-	{
-		gridMan = FindObjectOfType<GridManager>();
-		gameMan = FindObjectOfType<GameManager>();
-	} // Start()
-
-	// TODO: Clean this bad boy up and break it up into smaller methods
-	// Update is called once per frame
 	void Update()
 	{
 		// Authority Check -------------------------------------------------------------------------
@@ -66,32 +63,28 @@ public class MouseManager : NetworkBehaviour
 			return;
 		}
 
+		if (config == null)
+			config = JsonUtility.FromJson<MatchConfig>(matchDataBroadcaster.MatchConfigStr);
+
+		if (matchDataBroadcaster.MatchDataStr != matchDataStr)
+		{
+			matchDataStr = matchDataBroadcaster.MatchDataStr;
+			matchData = JsonUtility.FromJson<MatchData>(matchDataStr);
+		}
+
 		// Debug.Log(debug.head + this.selection);
-
-		// Component Grabbers if null --------------------------------------------------------------
-		// if (gameMan == null)
-		// {
-		// 	gameMan = FindObjectOfType<GameManager>();
-		// 	Debug.Log(debugTag.head + "GameManager was set during update");
-		// }
-
-		// if (gridMan == null)
-		// {
-		// 	gridMan = FindObjectOfType<GridManager>();
-		// 	Debug.Log(debugTag.head + "GridManager was set during update");
-		// }
 
 		// Flag Checkers ---------------------------------------------------------------------------
 		CheckPurchaseSuccess();
 		CheckPlaySuccess();
 
 		// Raycast Handler -------------------------------------------------------------------------
-		// If 'P' is pressed, end the phase - Debugging only
-		if (Input.GetKeyDown(KeyCode.P))
-		{
-			gameMan.EndPhase();
-			// guiMan.CmdUpdateUI();
-		}
+		// // If 'P' is pressed, end the phase - Debugging only
+		// if (Input.GetKeyDown(KeyCode.P))
+		// {
+		// 	gameMan.EndPhase();
+		// 	// guiMan.CmdUpdateUI();
+		// }
 
 		// If the cursor is over a UI element, return from Update()
 		// NOTE: In order for Canvases on objects such as Cards to be ignored,
@@ -198,7 +191,7 @@ public class MouseManager : NetworkBehaviour
 		if (Input.GetMouseButtonDown(0) && nameArr != null)
 		{
 			Debug.Log(debugTag + "Clicked on " + type + ", x: " + x + ", y: " + y);
-			switch (gameMan.phase)
+			switch (matchData.Phase)
 			{
 				case 1:
 					BuyingPhasePrimaryClick(type, x, y);
@@ -217,7 +210,7 @@ public class MouseManager : NetworkBehaviour
 	{
 		this.selection = -1;
 		// If the tile can be bought
-		if (gameMan.turn == this.ownerId)
+		if (matchData.Turn == this.ownerId)
 		{
 			Debug.Log(debugTag.head + "Trying to buy tile!");
 			CmdBuyTile(x, y);
@@ -231,7 +224,7 @@ public class MouseManager : NetworkBehaviour
 		else
 		{
 			Debug.Log(debugTag.head + "Player " + this.ownerId
-				+ " can't buy a tile on Player " + gameMan.turn + "'s Turn!");
+				+ " can't buy a tile on Player " + matchData.Turn + "'s Turn!");
 		}
 	} // BuyingPhasePrimaryClick()
 
@@ -242,15 +235,15 @@ public class MouseManager : NetworkBehaviour
 		{
 			case "Tile":
 			case "MarketCard":
-				if (selection >= 0 && gameMan.turn == this.ownerId)
+				if (selection >= 0 && matchData.Turn == this.ownerId)
 				{
 					Debug.Log(debugTag.head + "Trying to play card " + selection
 						+ " on " + objectHit.transform.parent.name);
 					playIndex = selection;
 					CmdPlayCard(selection, objectHit.transform.parent.name);
 				}
-				Debug.Log(debugTag + "Trying to find " + GameManager.CreateCardObjectName("GameCard", this.ownerId, selection));
-				oldSelection = GameObject.Find(GameManager.CreateCardObjectName("GameCard", this.ownerId, selection));
+				Debug.Log(debugTag + "Trying to find " + CardUtility.CreateCardObjectName("GameCard", this.ownerId, selection));
+				oldSelection = GameObject.Find(CardUtility.CreateCardObjectName("GameCard", this.ownerId, selection));
 				// oldSelection.transform.parent.position = new Vector3(oldSelection.transform.parent.position.x, oldSelection.transform.parent.position.y, objectHit.transform.parent.position.z);
 				oldSelection.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.tintCard;
 				oldSelection.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.tintCard;
@@ -267,8 +260,8 @@ public class MouseManager : NetworkBehaviour
 				}
 				else if (selection >= 0)
 				{
-					Debug.Log(debugTag + "Trying to find " + GameManager.CreateCardObjectName("GameCard", this.ownerId, selection));
-					oldSelection = GameObject.Find(GameManager.CreateCardObjectName("GameCard", this.ownerId, selection));
+					Debug.Log(debugTag + "Trying to find " + CardUtility.CreateCardObjectName("GameCard", this.ownerId, selection));
+					oldSelection = GameObject.Find(CardUtility.CreateCardObjectName("GameCard", this.ownerId, selection));
 					// oldSelection.transform.parent.position = new Vector3(oldSelection.transform.parent.position.x, oldSelection.transform.parent.position.y, objectHit.transform.parent.position.z);
 					oldSelection.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.tintCard;
 					oldSelection.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.tintCard;
@@ -306,7 +299,7 @@ public class MouseManager : NetworkBehaviour
 		// Debug.Log(debug.head + "Is Server? " + isServer);
 
 		bool success = false;
-		if (gameMan.BuyTile(locX, locY))
+		if (matchController.BuyTile(locX, locY))
 		{
 			success = true;
 		}
@@ -318,7 +311,7 @@ public class MouseManager : NetworkBehaviour
 	private void CmdPlayCard(int selection, string targetTile)
 	{
 		bool success = false;
-		if (gameMan.PlayCard(selection, targetTile))
+		if (matchController.PlayCard(selection, targetTile))
 		{
 			success = true;
 		}

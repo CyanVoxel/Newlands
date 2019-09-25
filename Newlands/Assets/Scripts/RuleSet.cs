@@ -295,23 +295,23 @@ public class RuleSet : MonoBehaviour
 		{
 			case "Investment":
 				target.CalcTotalValue();
-				gameMan.UpdatePlayersInfo();
+				// gameMan.UpdatePlayersInfo();
 				break;
 
 			case "Sabotage":
 				target.CalcTotalValue();
-				gameMan.UpdatePlayersInfo();
+				// gameMan.UpdatePlayersInfo();
 				break;
 
 			case "Resource":
 				target.CalcTotalValue();
-				gameMan.UpdatePlayersInfo();
+				// gameMan.UpdatePlayersInfo();
 				break;
 
 			case "Foreclosure":
 				target.bankrupt = true;
-				GameManager.BankruptTile(target);
-				gameMan.UpdatePlayersInfo();
+				// GameManager.BankruptTile(target);
+				// gameMan.UpdatePlayersInfo();
 				break;
 			case "Upgrade":
 				if (GetScope(cardToPlay, 2) == "Plains" && target.subScope != "Farmland")

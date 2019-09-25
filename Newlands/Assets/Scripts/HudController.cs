@@ -17,7 +17,7 @@ public class HudController : MonoBehaviour
 	private TMP_Text turnNumberText;
 
 	private MatchData matchData;
-	private MatchConfigData config;
+	private MatchConfig config;
 	private string matchDataStr;
 	private string lastKnownPlayerMoneyStr = "";
 
@@ -66,7 +66,7 @@ public class HudController : MonoBehaviour
 		while (matchDataBroadcaster.MatchConfigStr == null)
 			yield return null;
 
-		config = JsonUtility.FromJson<MatchConfigData>(matchDataBroadcaster.MatchConfigStr);
+		config = JsonUtility.FromJson<MatchConfig>(matchDataBroadcaster.MatchConfigStr);
 
 		// Get the current match data
 		while (matchDataBroadcaster.MatchDataStr == null)

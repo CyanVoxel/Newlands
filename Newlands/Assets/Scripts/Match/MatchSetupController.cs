@@ -28,8 +28,8 @@ public class MatchSetupController : NetworkBehaviour
 	private MatchController matchController;
 	private bool ready = false;
 
-	private MatchConfigData initialConfig;
-	public MatchConfigData InitialConfig { get { return initialConfig; } }
+	private MatchConfig initialConfig;
+	public MatchConfig InitialConfig { get { return initialConfig; } }
 	public bool Ready { get { return ready; } }
 
 	private DebugTag debugTag = new DebugTag("MatchSetupController", "f44336");
@@ -148,7 +148,7 @@ public class MatchSetupController : NetworkBehaviour
 		width = int.Parse(tempGridDim[1]);
 
 		// NOTE: If a value is hard-coded here, then there is no option for it during Game Setup.
-		this.initialConfig = new MatchConfigData(
+		this.initialConfig = new MatchConfig(
 			deckFlavor: "Vanilla",
 			winCondition: "WCplaceholder",
 			gameGridHeight : height,

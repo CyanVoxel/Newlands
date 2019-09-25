@@ -17,7 +17,7 @@ public class GridController : NetworkBehaviour
 
 	// private MatchData matchData;
 	private TurnEvent lastKnownTurnEvent;
-	private MatchConfigData config;
+	private MatchConfig config;
 
 	private readonly float cardThickness = 0.2f;
 	private readonly float shiftUnit = 1.2f;
@@ -90,7 +90,7 @@ public class GridController : NetworkBehaviour
 					Quaternion.identity);
 
 				// cardObj.GetComponent<Animator>().Play("Flip");
-				cardObj.name = (CreateCardObjectName("Tile", x, y));
+				cardObj.name = (CardUtility.CreateCardObjectName("Tile", x, y));
 				cardObj.transform.SetParent(gridParent.transform);
 
 				cardObj.transform.rotation = new Quaternion(0, 180, 0, 0); // 0, 180, 0, 0
@@ -122,7 +122,7 @@ public class GridController : NetworkBehaviour
 						new Vector3(xOff, yOff, 50),
 						Quaternion.identity);
 
-					cardObj.name = (CreateCardObjectName("MarketCard", x, y));
+					cardObj.name = (CardUtility.CreateCardObjectName("MarketCard", x, y));
 					cardObj.transform.SetParent(marketGridParent.transform);
 
 					masterMarketGrid[x, y].CardObject = cardObj;
@@ -145,7 +145,7 @@ public class GridController : NetworkBehaviour
 				new Vector3(xOff, yOff, 40),
 				Quaternion.identity);
 
-			cardObj.name = (CreateCardObjectName("GameCard", playerNum, i));
+			cardObj.name = (CardUtility.CreateCardObjectName("GameCard", playerNum, i));
 			cardObj.transform.SetParent(playerHandParent.transform);
 		}
 	}
@@ -182,31 +182,33 @@ public class GridController : NetworkBehaviour
 		}
 	}
 
-	// Returns a formatted object name based on type and coordinate info
-	public static string CreateCardObjectName(string type, int x, int y)
+	public void SetTileOwner(int x, int y, int ownerId)
 	{
-		string xZeroes = "0";
-		string yZeroes = "0";
-		char xChar = 'x';
-		char yChar = 'y';
+		masterGrid[x, y].OwnerId = ownerId;
+	}
 
-		if (type == "GameCard")
-		{
-			xChar = 'p';
-			yChar = 'i';
-		}
-
-		if (x >= 10)
-			xZeroes = "";
+	public bool IsTileOwned(int x, int y)
+	{
+		if (masterGrid[x, y].OwnerId == 0)
+			return false;
 		else
-			xZeroes = "0";
+			return true;
+	}
 
-		if (y >= 10)
-			yZeroes = "";
+	public bool IsTileBankrupt(int x, int y)
+	{
+		if (!masterGrid[x, y].IsBankrupt)
+			return false;
 		else
-			yZeroes = "0";
+			return true;
+	}
 
-		return (xChar + xZeroes + x + "_" + yChar + yZeroes + y + "_" + type);
+	public CardData GetTile(int x, int y)
+	{
+		if (masterGrid[x, y] != null)
+			return masterGrid[x, y];
+		else
+			return null;
 	}
 
 	// [Client/Server] Parses the Match Config from MatchDataBroadcaster
@@ -217,7 +219,7 @@ public class GridController : NetworkBehaviour
 		while (this.config == null)
 		{
 			Debug.Log(debugTag + "Parsing Config...");
-			this.config = JsonUtility.FromJson<MatchConfigData>(matchDataBroadcaster.MatchConfigStr);
+			this.config = JsonUtility.FromJson<MatchConfig>(matchDataBroadcaster.MatchConfigStr);
 			Debug.Log(debugTag + "Config parsed as: " + this.config);
 
 			if (this.config == null)

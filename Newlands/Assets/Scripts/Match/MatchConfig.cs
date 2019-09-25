@@ -2,7 +2,7 @@
 
 using UnityEngine;
 
-public class MatchConfigData
+public class MatchConfig
 {
 	// FIELDS ##########################################################################################################
 	[SerializeField]
@@ -32,7 +32,7 @@ public class MatchConfigData
 	public int GraceRounds { get { return graceRounds; } }
 	public bool Initialized { get { return initialized; } }
 
-	public MatchConfigData(string deckFlavor, string winCondition,
+	public MatchConfig(string deckFlavor, string winCondition,
 		int gameGridHeight, int gameGridWidth,
 		int maxPlayerCount, int playerHandSize,
 		int graceRounds)

@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class MatchDataBroadcaster : NetworkBehaviour
 {
-	// FIELDS ##########################################################################################################
+	// FIELDS ######################################################################################
 	[SyncVar]
 	private string matchConfigStr = "";
 	[SyncVar]
@@ -14,12 +14,15 @@ public class MatchDataBroadcaster : NetworkBehaviour
 	private string playerMoneyStr = "";
 	[SyncVar]
 	private string priceListStr = "";
+	// NOTE: In the future, it would be best to use a different implementation.
+	[SyncVar]
+	private string topCardStr = "";
 	private SyncListString updatedCardsStr;
 	private SyncListString playerStartingHands;
 
 	private DebugTag debugTag = new DebugTag("MatchDataBroadcaster", "2196F3");
 
-	// PROPERTIES ######################################################################################################
+	// PROPERTIES ##################################################################################
 	public string MatchConfigStr
 	{
 		get { return matchConfigStr; }
@@ -28,7 +31,7 @@ public class MatchDataBroadcaster : NetworkBehaviour
 			if (hasAuthority)
 				matchConfigStr = value;
 			else
-				Debug.Log(debugTag + "You don't have the authority to change MatchConfigStr!");
+				Debug.Log(debugTag + "You don't have authority to change MatchConfigStr!");
 		}
 	}
 
@@ -40,7 +43,7 @@ public class MatchDataBroadcaster : NetworkBehaviour
 			if (hasAuthority)
 				matchDataStr = value;
 			else
-				Debug.Log(debugTag + "You don't have the authority to change MatchDataStr!");
+				Debug.Log(debugTag + "You don't have authority to change MatchDataStr!");
 		}
 	}
 
@@ -52,7 +55,7 @@ public class MatchDataBroadcaster : NetworkBehaviour
 			if (hasAuthority)
 				turnEventStr = value;
 			else
-				Debug.Log(debugTag + "You don't have the authority to change TurnEventBroadcastStr!");
+				Debug.Log(debugTag + "You don't have authority to change TurnEventBroadcastStr!");
 		}
 	}
 
@@ -64,7 +67,7 @@ public class MatchDataBroadcaster : NetworkBehaviour
 			if (hasAuthority)
 				priceListStr = value;
 			else
-				Debug.Log(debugTag + "You don't have the authority to change PriceListStr!");
+				Debug.Log(debugTag + "You don't have authority to change PriceListStr!");
 		}
 	}
 
@@ -76,7 +79,19 @@ public class MatchDataBroadcaster : NetworkBehaviour
 			if (hasAuthority)
 				playerMoneyStr = value;
 			else
-				Debug.Log(debugTag + "You don't have the authority to change PlayerMoneyStr!");
+				Debug.Log(debugTag + "You don't have authority to change PlayerMoneyStr!");
+		}
+	}
+
+	public string TopCardStr
+	{
+		get { return topCardStr; }
+		set
+		{
+			if (hasAuthority)
+				topCardStr = value;
+			else
+				Debug.Log(debugTag + "You don't have authority to change TopCardStr!");
 		}
 	}
 
@@ -88,7 +103,7 @@ public class MatchDataBroadcaster : NetworkBehaviour
 			if (hasAuthority)
 				updatedCardsStr = value;
 			else
-				Debug.Log(debugTag + "You don't have the authority to change UpdatedCardsStr!");
+				Debug.Log(debugTag + "You don't have authority to change UpdatedCardsStr!");
 		}
 	}
 
@@ -100,7 +115,7 @@ public class MatchDataBroadcaster : NetworkBehaviour
 			if (hasAuthority)
 				playerStartingHands = value;
 			else
-				Debug.Log(debugTag + "You don't have the authority to change PlayerStartingHands!");
+				Debug.Log(debugTag + "You don't have authority to change PlayerStartingHands!");
 		}
 	}
 
