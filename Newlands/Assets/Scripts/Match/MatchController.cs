@@ -446,195 +446,69 @@ public class MatchController : NetworkBehaviour
 	public bool PlayCard(int cardIndex, string targetTile)
 	{
 		bool wasPlayed = false;
-		// int locX = int.Parse(targetTile.Substring(1, 2));
-		// int locY = int.Parse(targetTile.Substring(5, 2));
-		// int round = matchData.Round;
-		// int turn = matchData.Turn;
-		// string tileType = targetTile.Substring(8);
-		// // GridUnit target = GridManager.grid[locX, locY];
-		// CardData target;
-		// Card card = players[turn - 1].hand[cardIndex];
+		int locX = int.Parse(targetTile.Substring(1, 2));
+		int locY = int.Parse(targetTile.Substring(5, 2));
+		int round = matchData.Round;
+		int turn = matchData.Turn;
+		string tileType = targetTile.Substring(8);
+		// GridUnit target = GridManager.grid[locX, locY];
+		CardData target;
+		Card card = players[turn - 1].hand[cardIndex];
 
-		// Debug.Log(debugTag + "Trying to play Card " + cardIndex + " on " + tileType
-		// 	+ " at " + locX + ", " + locY);
+		Debug.Log(debugTag + "Trying to play Card " + cardIndex + " on " + tileType
+			+ " at " + locX + ", " + locY);
 
-		// switch (tileType)
-		// {
-		// 	case "Tile":
-		// 		target = gridController.GetTile(locX, locY);
+		target = gridController.GetTile(locX, locY);
 
+		if (!target.IsBankrupt && RuleSet.IsLegal(target, card))
+		{
+			UpdatePlayersInfo();
 
-		// 		if (!target.bankrupt
-		// 			&& RuleSet.IsLegal(target, card))
-		// 		{
-		// 			// Carry out the actions of a Successful play
-		// 			UpdatePlayersInfo(); // Test to see if there only needs to be one of these at the end
-		// 			if (target.bankrupt) // Bankrupt check
-		// 			{
-		// 				BankruptTile(GridManager.grid[locX, locY]);
-		// 				UpdatePlayersInfo();
-		// 				// guiMan.UpdateUI();
-		// 				Debug.Log(debug + "Tile bankrupt! has value of "
-		// 					+ GridManager.grid[locX, locY].totalValue);
-		// 			}
+			// If the card is meant to be stacked
+			if (!card.DiscardFlag)
+			{
+				gridController.IncrementStackSize(locY, target.Target);
+				gridController.AddCardToStack(locX, locY, target.Target, card);
+				// target.CalcTotalValue(); // This fixes Market Cards not calcing first time
+				UpdatePlayersInfo();
 
-		// 			if (!card.doesDiscard)
-		// 			{
-		// 				GridManager.grid[locX, locY].stackSize++;
-		// 				GridManager.grid[locX, locY].cardStack.Add(card);
-		// 				// target.CalcTotalValue(); // This fixes Market Cards not calcing first time
-		// 				UpdatePlayersInfo();
-		// 				// guiMan.UpdateUI();
-		// 				if (card.title == "Tile Mod")
-		// 				{
-		// 					if (target.stackSize > GridManager.maxStack[target.y])
-		// 					{
-		// 						GridManager.maxStack[target.y]++;
-		// 						gridMan.ShiftRow(target.category, target.y, 1);
-		// 					} // if stack size exceeds max stack recorded for row
+				if (gridController.ShiftRowCheck(target, locX, locY))
+				{
+					GameObject cardObj = (GameObject)Instantiate(gameCardPrefab,
+						new Vector3(target.CardObject.transform.position.x,
+							target.CardObject.transform.position.y
+							- (gridController.shiftUnit * target.CardStack.Count),
+							(target.CardObject.transform.position.z)
+							+ (gridController.cardThickness * target.CardStack.Count)),
+						Quaternion.identity);
+				}
+			}
 
-		// 					GameObject cardObj = (GameObject)Instantiate(gridMan.gameCardPrefab,
-		// 						new Vector3(target.tileObj.transform.position.x,
-		// 							target.tileObj.transform.position.y
-		// 							- (GridManager.shiftUnit * target.stackSize),
-		// 							(target.tileObj.transform.position.z)
-		// 							+ (GridManager.cardThickness * target.stackSize)),
-		// 						Quaternion.identity);
+			Card topCard;
+			if (DrawCard(masterDeckMutable.gameCardDeck, masterDeck.gameCardDeck, out topCard))
+			{
+				matchDataBroadcaster.TopCardStr = JsonUtility.ToJson(topCard);
+				players[turn - 1].hand[cardIndex] = topCard;
+			}
+			else
+			{
+				matchDataBroadcaster.TopCardStr = "empty";
+			}
 
-		// 					NetworkServer.Spawn(cardObj);
+			TurnEvent turnEvent = new TurnEvent(matchData.Phase, turn, "Play",
+				"GameCard", turn, cardIndex, matchDataBroadcaster.TopCardStr);
+			matchDataBroadcaster.TurnEventStr = JsonUtility.ToJson(turnEvent);
 
-		// 					// This is also done of the client via CardState
-		// 					// cardObj.transform.SetParent(target.tileObj.transform);
+			this.IncrementTurn();
+			wasPlayed = true;
 
-		// 					CardState cardState = cardObj.GetComponent<CardState>();
-		// 					// Push new values to the CardState to be synced across the network
-		// 					GridManager.FillOutCardState(card, ref cardState);
+			if (target.IsBankrupt)
+				gridController.BankruptTile(locX, locY);
 
-		// 					// Generate and Push the string of the object's name
-		// 					cardState.objectName = GameManager.CreateCardObjectName("StackedCard", 0,
-		// 						target.stackSize - 1);
-		// 					cardState.parent = GameManager.CreateCardObjectName("Tile", locX, locY);
+			UpdatePlayersInfo();
+		}
 
-		// 					// Target
-		// 					string cardToDestroy = CreateCardObjectName("GameCard", turn - 1,
-		// 						cardIndex);
-		// 					// TargetDestroyGameObject(connectionToClient, cardToDestroy);
-
-		// 				}
-
-		// 				CardData topCard;
-
-		// 				if (DrawCard(masterDeckMutable.gameCardDeck, masterDeck.gameCardDeck, out topCard))
-		// 				{
-		// 					this.topCardStr = JsonUtility.ToJson(topCard);
-		// 					players[turn - 1].hand[cardIndex] = topCard;
-		// 				}
-		// 				else
-		// 				{
-		// 					this.topCardStr = "empty";
-		// 				}
-		// 				TurnEvent turnEvent = new TurnEvent(2, turn, "Play",
-		// 					"GameCard", turn, cardIndex, this.topCardStr);
-		// 				this.turnEventBroadcast = JsonUtility.ToJson(turnEvent);
-
-		// 				UpdatePlayersInfo();
-		// 				this.IncrementTurn();
-		// 				wasPlayed = true;
-		// 			}
-		// 		}
-		// 		break;
-
-		// 	case "MarketCard":
-		// 		target = GridManager.marketGrid[locX, locY];
-		// 		if (!target.bankrupt
-		// 			&& RuleSet.IsLegal(target, card))
-		// 		{
-		// 			// Carry out the actions of a Successful play
-		// 			UpdatePlayersInfo(); // Test to see if there only needs to be one of these at the end
-		// 			if (target.bankrupt) // Bankrupt check
-		// 			{
-		// 				BankruptTile(GridManager.marketGrid[locX, locY]);
-		// 				UpdatePlayersInfo();
-		// 				// guiMan.UpdateUI();
-		// 				Debug.Log(debug + "Market Card bankrupt! has value of "
-		// 					+ GridManager.marketGrid[locX, locY].totalValue);
-		// 			}
-
-		// 			if (!card.doesDiscard)
-		// 			{
-		// 				GridManager.marketGrid[locX, locY].stackSize++;
-		// 				GridManager.marketGrid[locX, locY].cardStack.Add(card);
-		// 				// target.CalcTotalValue(); // This fixes Market Cards not calcing first time
-		// 				UpdatePlayersInfo();
-		// 				// guiMan.UpdateUI();
-		// 				if (card.title == "Market Mod")
-		// 				{
-		// 					if (target.stackSize > GridManager.maxMarketStack[target.y])
-		// 					{
-		// 						GridManager.maxMarketStack[target.y]++;
-		// 						gridMan.ShiftRow(target.category, target.y, 1);
-		// 					} // if stack size exceeds max stack recorded for row
-
-		// 					GameObject cardObj = (GameObject)Instantiate(gridMan.gameCardPrefab,
-		// 						new Vector3(target.tileObj.transform.position.x,
-		// 							target.tileObj.transform.position.y
-		// 							- (GridManager.shiftUnit * target.stackSize),
-		// 							(target.tileObj.transform.position.z)
-		// 							+ (GridManager.cardThickness * target.stackSize)),
-		// 						Quaternion.identity);
-
-		// 					NetworkServer.Spawn(cardObj);
-
-		// 					// This is also done of the client via CardState
-		// 					// cardObj.transform.SetParent(target.tileObj.transform);
-
-		// 					CardState cardState = cardObj.GetComponent<CardState>();
-		// 					// Push new values to the CardState to be synced across the network
-		// 					GridManager.FillOutCardState(card, ref cardState);
-
-		// 					// Generate and Push the string of the object's name
-		// 					cardState.objectName = GameManager.CreateCardObjectName("StackedCard", 0,
-		// 						target.stackSize - 1);
-		// 					cardState.parent = GameManager.CreateCardObjectName("MarketCard", locX, locY);
-
-		// 					// Target
-		// 					string cardToDestroy = CreateCardObjectName("GameCard", turn - 1,
-		// 						cardIndex);
-		// 					// TargetDestroyGameObject(connectionToClient, cardToDestroy);
-
-		// 				}
-
-		// 				CardData topCard;
-
-		// 				if (DrawCard(masterDeckMutable.gameCardDeck, masterDeck.gameCardDeck, out topCard))
-		// 				{
-		// 					this.topCardStr = JsonUtility.ToJson(topCard);
-		// 					players[turn - 1].hand[cardIndex] = topCard;
-		// 				}
-		// 				else
-		// 				{
-		// 					this.topCardStr = "empty";
-		// 				}
-
-		// 				UpdatePriceListStr();
-
-		// 				TurnEvent turnEvent = new TurnEvent(2, turn, "Play",
-		// 					"GameCard", turn, cardIndex, this.topCardStr);
-		// 				this.turnEventBroadcast = JsonUtility.ToJson(turnEvent);
-
-		// 				UpdatePlayersInfo();
-		// 				this.IncrementTurn();
-		// 				wasPlayed = true;
-		// 			}
-		// 		}
-		// 		break;
-
-		// 	default:
-		// 		Debug.LogError(debugTag.error + "Couldn't find Tile of type \"" + tileType + "\"");
-		// 		break;
-		// } // switch (tileType)
-
-		// Debug.Log(debugTag + "GameCards left: " + masterDeckMutable.gameCardDeck.Count);
+		Debug.Log(debugTag + "GameCards left: " + masterDeckMutable.gameCardDeck.Count);
 
 		return wasPlayed;
 	}

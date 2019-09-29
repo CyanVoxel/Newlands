@@ -1,6 +1,6 @@
+// DEPRECATED! Move necessary functionality to CardData. ///////////////////////////////////////////
 // A GridUnit object, used to represent the state and properties
 // of an internal game grid.
-// TODO: Manage the scope of the data fields after testing.
 
 using System.Collections.Generic;
 using UnityEngine;

@@ -19,8 +19,8 @@ public class GridController : NetworkBehaviour
 	private TurnEvent lastKnownTurnEvent;
 	private MatchConfig config;
 
-	private readonly float cardThickness = 0.2f;
-	private readonly float shiftUnit = 1.2f;
+	public readonly float cardThickness = 0.2f;
+	public readonly float shiftUnit = 1.2f;
 	private readonly float cardOffX = 11f;
 	private readonly float cardOffY = 8f;
 	private static float[] rowPosition;
@@ -210,6 +210,114 @@ public class GridController : NetworkBehaviour
 		else
 			return null;
 	}
+
+	public void BankruptTile(int x, int y)
+	{
+		Debug.Log(debugTag + "Bankrupting tile!");
+		masterGrid[x, y].IsBankrupt = true;
+		// CardDisplay.BankruptVisuals(tile.tileObj);
+	}
+
+	public void IncrementStackSize(int y, string gridType)
+	{
+		switch (gridType)
+		{
+			case "Market":
+				maxMarketStack[y]++;
+				break;
+			default:
+				maxGridStack[y]++;
+				break;
+		}
+	}
+
+	public void AddCardToStack(int x, int y, string gridType, Card card)
+	{
+		switch (gridType)
+		{
+			case "Market":
+				masterMarketGrid[x, y].CardStack.Add(card);
+				break;
+			default:
+				masterGrid[x, y].CardStack.Add(card);
+				break;
+		}
+	}
+
+	// Shifts a grid if needed based on the target. Returns true if a row was shifted.
+	public bool ShiftRowCheck(CardData target, int x, int y)
+	{
+		bool didShift = false;
+
+		if (target.CardStack.Count > maxGridStack[y])
+		{
+			IncrementStackSize(y, target.Category);
+			ShiftRow(target.Category, y, 1);
+			didShift = true;
+		}
+
+		return didShift;
+	}
+
+	// Shifts rows of cards up or down. Used to give room for cards under tiles.
+	private void ShiftRow(string type, int row, int units)
+	{
+		switch (type)
+		{
+			case "Tile":
+				ShiftMasterGrid(row, units);
+				break;
+			case "Market":
+				ShiftMasterMarketGrid(row, units);
+				break;
+			default:
+				break;
+		}
+	}
+
+	// Used by ShiftRow to shift the Master Grid rows
+	private void ShiftMasterGrid(int row, int units)
+	{
+		for (int x = 0; x < config.GameGridWidth; x++)
+		{
+			for (int y = row; y < config.GameGridHeight; y++)
+			{
+				// Debug.Log(debug + "Shifting [" + x + ", " + y + "]");
+				float oldX = masterGrid[x, y].CardObject.transform.position.x;
+				float oldY = masterGrid[x, y].CardObject.transform.position.y;
+				// float oldZ = masterGrid[x, y].CardObject.transform.position.z;
+				masterGrid[x, y].CardObject.transform.position = new Vector3(oldX,
+					(oldY += (shiftUnit * units)),
+					masterGrid[x, y].CardObject.transform.position.z);
+			}
+		}
+	}
+
+	// Used by ShiftRow to shift the Master Market Grid rows
+	private void ShiftMasterMarketGrid(int row, int units)
+	{
+		int marketWidth = Mathf.CeilToInt((float)matchController.MasterDeck.marketCardDeck.Count
+			/ (float)config.GameGridHeight);
+
+		for (int x = 0; x < marketWidth; x++)
+		{
+			for (int y = row; y < config.GameGridHeight; y++)
+			{
+
+				if (masterMarketGrid[x, y] != null)
+				{
+					float oldX = masterMarketGrid[x, y].CardObject.transform.position.x;
+					float oldY = masterMarketGrid[x, y].CardObject.transform.position.y;
+					// float oldZ = masterMarketGrid[x, y].tileObj.transform.position.z;
+					masterMarketGrid[x, y].CardObject.transform.position = new Vector3(oldX,
+						(oldY += (shiftUnit * units)),
+						masterMarketGrid[x, y].CardObject.transform.position.z);
+				}
+			}
+		}
+	}
+
+	// COROUTINES ##################################################################################
 
 	// [Client/Server] Parses the Match Config from MatchDataBroadcaster
 	public IEnumerator ParseMatchConfigCoroutine()
