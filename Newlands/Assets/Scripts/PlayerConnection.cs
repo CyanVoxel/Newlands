@@ -114,7 +114,7 @@ public class PlayerConnection : NetworkBehaviour
 		}
 
 		// Highlight cards during Buying Phase
-		if (PhaseCheck(1))
+		if (CheckForNewMatchData(1))
 		{
 			if (this.matchData.Turn == this.id)
 			{
@@ -341,27 +341,28 @@ public class PlayerConnection : NetworkBehaviour
 	// 	}
 	// } // OnHandUpdated()
 
-	// Checks of operations should be performed, given a phase to watch for
-	private bool PhaseCheck(int phase)
+	// Checks for new match data in the MatchDataBroadcaster, given a Phase to watch for.
+	// Updates known match data if newer data was found.
+	private bool CheckForNewMatchData(int phase)
 	{
-		MatchData newMatchData = this.matchData;
+		bool newData = false;
 
 		if (lastKnownMatchDataStr != matchDataBroadcaster.MatchDataStr)
 		{
+			MatchData newMatchData = this.matchData;
 			newMatchData = JsonUtility.FromJson<MatchData>(matchDataBroadcaster.MatchDataStr);
+
+			if (newMatchData.Turn != this.matchData.Turn
+				|| newMatchData.Round != this.matchData.Round
+				&& newMatchData.Phase == phase)
+			{
+				this.matchData = newMatchData;
+				newData = true;
+			}
 		}
 
-		if ((newMatchData.Turn != this.matchData.Turn
-				|| newMatchData.Round != this.matchData.Round)
-			&& newMatchData.Phase == phase)
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	} // PhaseCheck()
+		return newData;
+	}
 
 	private void UpdateKnownInfo()
 	{

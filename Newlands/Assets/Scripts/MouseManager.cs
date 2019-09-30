@@ -57,11 +57,8 @@ public class MouseManager : NetworkBehaviour
 	void Update()
 	{
 		// Authority Check -------------------------------------------------------------------------
-		if (!hasAuthority)
-		{
-			// Debug.LogWarning(debug.warning + "No Authority!");
+		if (!isLocalPlayer)
 			return;
-		}
 
 		if (config == null)
 			config = JsonUtility.FromJson<MatchConfig>(matchDataBroadcaster.MatchConfigStr);
@@ -79,6 +76,7 @@ public class MouseManager : NetworkBehaviour
 		CheckPlaySuccess();
 
 		// Raycast Handler -------------------------------------------------------------------------
+
 		// // If 'P' is pressed, end the phase - Debugging only
 		// if (Input.GetKeyDown(KeyCode.P))
 		// {
@@ -90,9 +88,7 @@ public class MouseManager : NetworkBehaviour
 		// NOTE: In order for Canvases on objects such as Cards to be ignored,
 		//	they must contain a "Canvas Group" and have "Block Raycasts" turned off
 		if (EventSystem.current.IsPointerOverGameObject())
-		{
 			return;
-		}
 
 		// Initialize ray
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -103,17 +99,12 @@ public class MouseManager : NetworkBehaviour
 		{
 			// Checks if the object hit has a parent before assinging it to a local var.
 			if (hitInfo.collider.transform.parent != null)
-			{
 				objectHit = hitInfo.collider.transform.parent.gameObject;
-			}
 			else
-			{
 				objectHit = hitInfo.collider.transform.gameObject;
-			}
 
 			HandleObjectHit(objectHit);
 			// Debug.Log(debugTag + objectHit.transform.parent.name);
-
 		}
 	}
 
