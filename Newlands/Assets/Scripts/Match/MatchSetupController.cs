@@ -147,6 +147,17 @@ public class MatchSetupController : NetworkBehaviour
 		height = int.Parse(tempGridDim[0]);
 		width = int.Parse(tempGridDim[1]);
 
+		// Determine the number of grace round to set based on the player count
+		int finalGraceRounds;
+
+		if (playerCount == 1)
+			finalGraceRounds = 1;
+		else
+			finalGraceRounds = Mathf.CeilToInt(((float)playerCount / 2f));
+
+		Debug.Log(debugTag + "Setting Grace Rounds to " + finalGraceRounds
+			+ " for " + playerCount + " Players.");
+
 		// NOTE: If a value is hard-coded here, then there is no option for it during Game Setup.
 		this.initialConfig = new MatchConfig(
 			deckFlavor: "Vanilla",
@@ -155,7 +166,7 @@ public class MatchSetupController : NetworkBehaviour
 			gameGridWidth : width,
 			maxPlayerCount : playerCount,
 			playerHandSize : 5,
-			graceRounds: 1);
+			graceRounds : finalGraceRounds);
 
 		this.ready = true;
 	}

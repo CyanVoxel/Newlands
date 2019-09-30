@@ -91,4 +91,22 @@ public class Card
 		this.discardFlag = card.discardFlag;
 	}
 
+	public Card(CardData card)
+	{
+		this.category = card.category;
+		this.title = card.title;
+		this.subtitle = card.subtitle;
+		this.body = card.body;
+		this.footer = card.footer;
+		this.resource = card.resource;
+		this.footerValue = card.footerValue;
+		this.footerColor = card.footerColor;
+		this.colorCornerFlag = card.colorCornerFlag;
+		this.percFlag = card.percFlag;
+		this.moneyFlag = card.moneyFlag;
+		this.footerOpr = card.footerOpr;
+		this.target = card.target;
+		this.discardFlag = card.discardFlag;
+	}
+
 } // Card class

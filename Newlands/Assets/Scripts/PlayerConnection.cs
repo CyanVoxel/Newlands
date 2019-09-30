@@ -436,6 +436,8 @@ public class PlayerConnection : NetworkBehaviour
 
 				CardAnimations.FlipCard(turnEvent.cardType, turnEvent.x, turnEvent.y);
 
+				GameObject.Find(CardUtility.CreateCardObjectName(turnEvent.cardType, turnEvent.x, turnEvent.y)).GetComponent<CardViewController>().Card = JsonUtility.FromJson<Card>(turnEvent.card);
+
 				// Depending on the player who bought the tile, change the Tile's color.
 				// NOTE: Move to CardAnimations or something.
 				switch (turnEvent.playerId)

@@ -165,9 +165,6 @@ public class MatchController : NetworkBehaviour
 
 	public string GetHandCard(int id, int index)
 	{
-		Debug.Log(debugTag + "ID: " + id);
-		Debug.Log(debugTag + "Players size: " + players.Count);
-
 		return JsonUtility.ToJson(players[id - 1].hand[index]);
 	}
 
@@ -265,7 +262,8 @@ public class MatchController : NetworkBehaviour
 			gridController.SetTileOwner(target.x, target.y, turn);
 
 			TurnEvent turnEvent = new TurnEvent(phase, turn, "Buy", "Tile", target.x, target.y,
-				matchDataBroadcaster.TopCardStr);
+				matchDataBroadcaster.TopCardStr,
+				JsonUtility.ToJson(new Card(gridController.GetTile(target.x, target.y))));
 			matchDataBroadcaster.TurnEventStr = JsonUtility.ToJson(turnEvent);
 			// Debug.Log(debug + "JSON: " + turnEvent);
 
