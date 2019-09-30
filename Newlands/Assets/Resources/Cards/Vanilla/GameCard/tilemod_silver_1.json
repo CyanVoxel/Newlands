@@ -6,7 +6,7 @@
   "footer": "**<x>** <r>",
   "footerColor": "Light Blue",
   "resource": "Silver",
-  "target": "Tile",
+  "target": "Tile_Land_Mountain",
   "footerOpr": "+",
   "footerValue": 1,
   "colorCornerFlag": false,

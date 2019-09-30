@@ -9,7 +9,7 @@
   "target": "Market",
   "footerOpr": "-",
   "footerValue": 10,
-  "colorCornerFlag": false,
+  "colorCornerFlag": true,
   "percFlag": true,
   "moneyFlag": false,
   "discardFlag": false

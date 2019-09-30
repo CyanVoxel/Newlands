@@ -6,7 +6,7 @@
   "footer": "**<x>** <r>",
   "footerColor": "Light Blue",
   "resource": "Cash Crops",
-  "target": "Tile",
+  "target": "Tile_Land_Plains",
   "footerOpr": "+",
   "footerValue": 4,
   "colorCornerFlag": false,

@@ -6,7 +6,7 @@
   "footer": "**<x>** <r>",
   "footerColor": "Light Blue",
   "resource": "Fish",
-  "target": "Tile",
+  "target": "Tile_Coast",
   "footerOpr": "+",
   "footerValue": 2,
   "colorCornerFlag": false,

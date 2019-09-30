@@ -6,7 +6,7 @@
   "footer": "**<x>** <r>",
   "footerColor": "Light Blue",
   "resource": "Lumber",
-  "target": "Tile",
+  "target": "Tile_Land_Forest|Plains",
   "footerOpr": "+",
   "footerValue": 3,
   "colorCornerFlag": false,
