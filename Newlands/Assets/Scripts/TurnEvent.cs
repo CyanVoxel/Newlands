@@ -1,13 +1,22 @@
 ﻿// An object that's used to represent what the GameManger did on a turn.
 
+using UnityEngine;
+
 public class TurnEvent
 {
+    [SerializeField]
     public int phase;
+    [SerializeField]
     public int playerId;
+    [SerializeField]
     public string operation;
+    [SerializeField]
     public string cardType;
+    [SerializeField]
     public int x;
+    [SerializeField]
     public int y;
+    [SerializeField]
     public string topCard;
 
     public TurnEvent(int phase, int playerId, string operation, string cardType, int x, int y, string topCard)

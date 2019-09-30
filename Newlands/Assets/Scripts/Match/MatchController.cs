@@ -94,7 +94,7 @@ public class MatchController : NetworkBehaviour
 		// 	Debug.Log(debugTag + "Address " + address + " wanted an ID but has not been logged!");
 
 		Debug.Log(debugTag + "Ignoring passed arguments until usernames are implemented");
-		Debug.Log(debugTag + "Give player an ID of " + index);
+		Debug.Log(debugTag + "Giving player an ID of " + index);
 
 		return index;
 	}
@@ -114,10 +114,24 @@ public class MatchController : NetworkBehaviour
 		}
 	}
 
+	private void GrabGridController()
+	{
+		gridController = this.gameObject.GetComponent<GridController>();
+		if (gridController != null)
+		{
+			Debug.Log(debugTag + "GridController was found!");
+		}
+		else
+		{
+			Debug.LogError(debugTag.error + "GridController was NOT found!");
+		}
+	}
+
 	// [Server] Loads the config from MatchSetupController and initializes the match.
 	private void InitializeMatch()
 	{
 		GrabMatchDataBroadCaster();
+		GrabGridController();
 
 		// TODO: Wrap this in a method like data broadcaster
 		this.matchConnections = GameObject.Find("NetworkManager").GetComponent<MatchConnections>();
@@ -147,6 +161,14 @@ public class MatchController : NetworkBehaviour
 			players[i].hand = DrawHand(config.PlayerHandSize);
 		} // for playerCount
 		UpdatePlayerMoneyStr();
+	}
+
+	public string GetHandCard(int id, int index)
+	{
+		Debug.Log(debugTag + "ID: " + id);
+		Debug.Log(debugTag + "Players size: " + players.Count);
+
+		return JsonUtility.ToJson(players[id - 1].hand[index]);
 	}
 
 	private void UpdatePlayerMoneyStr()
@@ -283,6 +305,7 @@ public class MatchController : NetworkBehaviour
 		}
 		else
 		{
+			Debug.Log(debugTag + "Tile being purchased: " + tileBeingPurchased);
 			// This is where the tile is checked against purchasing rules
 			if (!gridController.IsTileOwned(tileBeingPurchased.x, tileBeingPurchased.y)
 				&& !gridController.IsTileBankrupt(tileBeingPurchased.x, tileBeingPurchased.y))
@@ -537,7 +560,7 @@ public class MatchController : NetworkBehaviour
 
 			this.matchData = new MatchData();
 
-			Debug.Log(debugTag + "Sending current Match Data to Broadcaster... " + this.matchData);
+			Debug.Log(debugTag + "Sending current Match Data to Broadcaster... " + this.matchData.ToString());
 			matchDataBroadcaster.MatchDataStr = JsonUtility.ToJson(this.matchData);
 		}
 

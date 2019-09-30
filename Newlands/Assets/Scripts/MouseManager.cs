@@ -112,8 +112,14 @@ public class MouseManager : NetworkBehaviour
 			}
 
 			HandleObjectHit(objectHit);
+			// Debug.Log(debugTag + objectHit.transform.parent.name);
 
-		} // If an object was hit
+		}
+	}
+
+	public void SetId(int id)
+	{
+		this.ownerId = id;
 	}
 
 	private void CheckPurchaseSuccess()
@@ -210,7 +216,7 @@ public class MouseManager : NetworkBehaviour
 	{
 		this.selection = -1;
 		// If the tile can be bought
-		if (matchData.Turn == this.ownerId)
+		if (matchData.Turn == this.ownerId && type == "Tile")
 		{
 			Debug.Log(debugTag.head + "Trying to buy tile!");
 			CmdBuyTile(x, y);
@@ -291,7 +297,7 @@ public class MouseManager : NetworkBehaviour
 	private void CmdFlipCard(string cardType, int locX, int locY)
 	{
 		CardAnimations.FlipCard(cardType, locX, locY);
-	} // CmdFlipCard()
+	}
 
 	[Command]
 	private void CmdBuyTile(int locX, int locY)
@@ -300,38 +306,32 @@ public class MouseManager : NetworkBehaviour
 
 		bool success = false;
 		if (matchController.BuyTile(locX, locY))
-		{
 			success = true;
-		}
+
 		Debug.Log(debugTag.head + "About to call TargetBuyTile with connection: " + myClient);
 		TargetBuyTile(myClient, success);
-	} // CmdBuyTile()
+	}
 
 	[Command]
 	private void CmdPlayCard(int selection, string targetTile)
 	{
 		bool success = false;
 		if (matchController.PlayCard(selection, targetTile))
-		{
 			success = true;
-		}
+
 		Debug.Log(debugTag.head + "About to call TargetPlay with connection: " + myClient);
 		TargetPlayCard(myClient, success);
-	} // CmdPlayCard()
+	}
 
 	[TargetRpc]
 	private void TargetBuyTile(NetworkConnection target, bool success)
 	{
 		Debug.Log(debugTag.head + "Called TargetBuyTile!");
 		if (success)
-		{
 			purchaseSuccessFlag = 1;
-		}
 		else
-		{
 			purchaseSuccessFlag = 0;
-		}
-	} // TargetBuyTile()
+	}
 
 	[TargetRpc]
 	private void TargetPlayCard(NetworkConnection target, bool success)
@@ -346,5 +346,5 @@ public class MouseManager : NetworkBehaviour
 		{
 			playSuccessFlag = 0;
 		}
-	} // TargetPlayCard()
-} // class MouseManager
+	}
+}

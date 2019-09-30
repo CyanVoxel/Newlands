@@ -12,8 +12,11 @@ public class MatchData
 	// private int maxPlayerCount;
 	// private int playerHandSize;
 
+	[SerializeField]
 	private int turn;
+	[SerializeField]
 	private int round;
+	[SerializeField]
 	private int phase;
 
 	private bool initialized = false;
@@ -28,7 +31,7 @@ public class MatchData
 	// public int GameGridWidth { get { return gameGridWidth; } }
 	// public int MaxPlayerCount { get { return maxPlayerCount; } }
 	// public int PlayerHandSize { get { return playerHandSize; } }
-	public bool Initialized { get { return initialized; } }
+	// public bool Initialized { get { return initialized; } }
 
 	public MatchData()
 	{

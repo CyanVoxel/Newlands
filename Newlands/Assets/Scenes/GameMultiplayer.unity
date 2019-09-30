@@ -680,7 +680,7 @@ GameObject:
   - component: {fileID: 577305915}
   - component: {fileID: 577305914}
   m_Layer: 0
-  m_Name: HudControler
+  m_Name: HudController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

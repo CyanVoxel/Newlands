@@ -30,6 +30,7 @@ public class HudController : MonoBehaviour
 
 	void Awake()
 	{
+		Debug.Log(debugTag + "Initializing...");
 		StartCoroutine(Initialize());
 	}
 
@@ -46,18 +47,18 @@ public class HudController : MonoBehaviour
 		{
 			this.matchData = JsonUtility.FromJson<MatchData>(matchDataBroadcaster.MatchDataStr);
 			this.matchDataStr = matchDataBroadcaster.MatchDataStr;
-			UpdateUI();
+			UpdateHud();
 		}
 	}
 
 	private IEnumerator Initialize()
 	{
 		// Grab the MatchDataBroadcaster
-		if (matchDataBroadcaster == null)
+		while (matchDataBroadcaster == null)
+		{
 			matchDataBroadcaster = FindObjectOfType<MatchDataBroadcaster>();
-
-		if (matchDataBroadcaster == null)
 			yield return null;
+		}
 
 		// Grab the Match Text
 		yield return StartCoroutine(InitMatchText());
@@ -82,7 +83,7 @@ public class HudController : MonoBehaviour
 		initialized = true;
 
 		// Finally, send the first UI update
-		UpdateUI();
+		UpdateHud();
 	}
 
 	private IEnumerator InitMatchText()
@@ -132,16 +133,18 @@ public class HudController : MonoBehaviour
 		}
 	}
 
-	private void UpdateUI()
+	// Updates all HUD elements
+	private void UpdateHud()
 	{
 		if (initialized)
 		{
-			UpdatePhaseRoundTurnUI();
-			UpdateMoneyUI();
+			Debug.Log(debugTag + "Updating UI... (" + matchData + ")");
+			UpdatePhaseRoundTurnHud();
+			UpdateMoneyHud();
 		}
 	}
 
-	private void UpdatePhaseRoundTurnUI()
+	private void UpdatePhaseRoundTurnHud()
 	{
 		this.matchData = JsonUtility.FromJson<MatchData>(matchDataBroadcaster.MatchDataStr);
 
@@ -153,7 +156,7 @@ public class HudController : MonoBehaviour
 		}
 	}
 
-	private void UpdateMoneyUI()
+	private void UpdateMoneyHud()
 	{
 		this.lastKnownPlayerMoneyStr = matchDataBroadcaster.PlayerMoneyStr;
 

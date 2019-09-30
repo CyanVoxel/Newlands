@@ -6,24 +6,26 @@ using System.Collections.Generic;
 using Mirror;
 using UnityEngine;
 
-public class SyncListCardData : SyncList<CardData> { }
+// public class SyncListCard : SyncList<Card> { }
 
 // public class SyncListCoordinate2 : SyncList<Coordinate2> { }
 
 public class PlayerConnection : NetworkBehaviour
 {
-	// 	// DATA FIELDS #################################################################################
+	// FIELDS ######################################################################################
 
-	// 	// Public ==================================================================
+	private MatchDataBroadcaster matchDataBroadcaster;
+	private GridController gridController;
+	private MatchController matchController;
+	// private HudController hudController;
+
 	// 	public GameManager gameMan;
 	// 	public GridManager gridMan;
 	// 	// public MouseManager localMouseMan;
 	// 	// public GuiManager guiMan;
 	public GameObject mouseManPrefab;
-	public SyncListCardData hand;
-	private MatchDataBroadcaster matchDataBroadcaster;
-	private GridController gridController;
-	private MatchController matchController;
+	// public SyncListCard hand;
+	private List<Card> hand = new List<Card>();
 
 	private MatchConfig config;
 	private MatchData matchData;
@@ -31,7 +33,6 @@ public class PlayerConnection : NetworkBehaviour
 
 	private List<string> updatedCards = new List<string>();
 
-	// 	// Private =================================================================
 	private static DebugTag debugTag = new DebugTag("PlayerConnection", "2196F3");
 	// 	[SyncVar(hook = "OnIdChange")]
 	// 	[SerializeField]
@@ -54,7 +55,7 @@ public class PlayerConnection : NetworkBehaviour
 	// A 2-Dimensional array containing the location of all known Tiles owned by all players.
 	// This is used for quicker access to NEIGHBOR CARDS.
 	private int[, ] knownOwnersGrid;
-	// A 2-Dimensional array of GridUnits used for keeping references of the Market Cards.
+	// A List of CardData used for keeping references of the Market Cards.
 	// Used for acessing the cards' CardStates to update their footer text.
 	List<CardData> localMarketList = new List<CardData>();
 	// private Dictionary<CardState, int> localPrices = new Dictionary<CardState, int>();
@@ -64,7 +65,7 @@ public class PlayerConnection : NetworkBehaviour
 
 	private bool initialzed = false;
 
-	// 	// METHODS #####################################################################################
+	// METHODS #####################################################################################
 
 	void Awake()
 	{
@@ -154,34 +155,38 @@ public class PlayerConnection : NetworkBehaviour
 
 		// Get ID from MatchManager
 		CmdInitId(address);
-		if (this.id == -1)
+		while (this.id == -1)
 			yield return null;
 
 		// Grab the config from the broadcaster
 		this.config = JsonUtility.FromJson<MatchConfig>(matchDataBroadcaster.MatchConfigStr);
-		if (this.config == null)
+		while (this.config == null)
 			yield return null;
 
 		// Create hand card objects
 		Debug.Log(debugTag + "Creating hand card objects for Player " + this.id);
 		gridController.CreatePlayerHandObjects(this.id);
 
-		CmdGetHand(this.id);
+		// CmdGetHand(this.id);
 		// Debug.Log(debug + "Hand size: " + this.hand.Count);
 		// gridMan.CreateHandObjects(this.id, this.hand);
 		this.knownOwnersList = new List<Coordinate2>[config.MaxPlayerCount];
 		this.knownOwnersGrid = new int[config.GameGridWidth, config.GameGridHeight];
 
 		for (int i = 0; i < config.MaxPlayerCount; i++)
-		{
 			this.knownOwnersList[i] = new List<Coordinate2>();
-		}
 
 		this.matchData = JsonUtility.FromJson<MatchData>(matchDataBroadcaster.MatchDataStr);
 		this.turnEventStr = matchDataBroadcaster.TurnEventStr;
 
 		// InitLocalMarketGrid();
 		UpdateKnownInfo();
+
+		while (this.id == -1)
+			yield return null;
+
+		for (int i = 0; i < config.PlayerHandSize; i++)
+			CmdGetHandCard(this.id, i);
 
 		// If this is Player 1 and it's the first Turn of the first Round
 		if (this.id == 1 && this.matchData.Turn == 1
@@ -194,55 +199,60 @@ public class PlayerConnection : NetworkBehaviour
 		this.initialzed = true;
 	}
 
-	// Tries to grab necessary components if they haven't been already.
-	// Returns true if all components were verified to be grabbed.
-	private bool TryToGrabComponents()
-	{
-		if (this.matchDataBroadcaster == null)
-			this.matchDataBroadcaster = FindObjectOfType<MatchDataBroadcaster>();
+	// // Tries to grab necessary components if they haven't been already.
+	// // Returns true if all components were verified to be grabbed.
+	// private bool TryToGrabComponents()
+	// {
+	// 	if (this.matchDataBroadcaster == null)
+	// 		this.matchDataBroadcaster = FindObjectOfType<MatchDataBroadcaster>();
 
-		if (this.matchController == null)
-			this.matchController = FindObjectOfType<MatchController>();
+	// 	if (this.matchController == null)
+	// 		this.matchController = FindObjectOfType<MatchController>();
 
-		if (this.matchDataBroadcaster == null)
-			return false;
-		if (this.matchController == null)
-			return false;
+	// 	if (this.matchDataBroadcaster == null)
+	// 		return false;
+	// 	if (this.matchController == null)
+	// 		return false;
 
-		return true;
-	}
+	// 	return true;
+	// }
 
 	private IEnumerator GrabComponentsCoroutine()
 	{
-		if (this.matchDataBroadcaster == null)
+		while (this.matchDataBroadcaster == null)
+		{
 			this.matchDataBroadcaster = FindObjectOfType<MatchDataBroadcaster>();
+			yield return null;
+		}
 
-		if (this.matchController == null)
+		while (this.matchController == null)
+		{
 			this.matchController = FindObjectOfType<MatchController>();
+			yield return null;
+		}
 
-		if (this.gridController == null)
+		while (this.gridController == null)
+		{
 			this.gridController = FindObjectOfType<GridController>();
+			yield return null;
+		}
 
-		// if (this.guiMan == null)
+		// while (this.hudController == null)
 		// {
-		// 	this.guiMan = FindObjectOfType<GuiManager>();
+		// 	this.hudController = FindObjectOfType<HudController>();
+		// 	yield return null;
 		// }
+	}
 
-		if (this.matchDataBroadcaster == null)
-			yield return null;
-		if (this.matchController == null)
-			yield return null;
-		// if (this.guiMan == null) return false;
-	} // GrabComponents()
-
-	// Fires when this PlayerConnection's ID changes.
-	private void OnIdChange(int newId)
-	{
-		this.id = newId;
-		this.transform.name = "Player (" + this.id + ")";
-		// mouseManObj.transform.name = "MouseManager (" + this.id + ")";
-		// GameManager.localPlayerId = this.id;
-	} // OnIdChange()
+	// // Fires when this PlayerConnection's ID changes.
+	// private void OnIdChange(int newId)
+	// {
+	// 	this.id = newId;
+	// 	this.transform.name = "Player (" + this.id + ")";
+	// 	transform.GetComponent<MouseManager>().SetId(newId);
+	// 	// mouseManObj.transform.name = "MouseManager (" + this.id + ")";
+	// 	// GameManager.localPlayerId = this.id;
+	// } // OnIdChange()
 
 	private List<Coordinate2> GetNeighbors()
 	{
@@ -299,40 +309,15 @@ public class PlayerConnection : NetworkBehaviour
 	[Command]
 	private void CmdInitId(string address)
 	{
-		// TryToGrabComponents();
-
-		// Debug.Log(debug + "Chainging default id of "
-		// 	+ this.id
-		// 	+ " to " + gameMan.GetPlayerIndex());
-
 		if (GameObject.Find("MatchManager") != null)
 			this.id = GameObject.Find("MatchManager").GetComponent<MatchController>().GetPlayerId(address);
 		else
 			this.id = GameObject.Find("MatchManager(Clone)").GetComponent<MatchController>().GetPlayerId(address);
 
-		// this.id = GameObject.Find("MatchManager").GetComponent<MatchController>().GetPlayerId(address);
-		// matchController.PlayerIndex++;
-		// mouseManObj.transform.name = "MouseManager (" + this.id + ")";
-
+		transform.GetComponent<MouseManager>().SetId(this.id);
 		Debug.Log(debugTag + "Assigned ID of " + this.id);
-
-		// Check for authority or else it'll try to spawn an extra one
-		// if (hasAuthority)
-		// {
-		// 	CmdSpawnMouseManager();
-		// }
-
-		// Debug.Log(debug + "Verifying new PlayerIndex: "
-		// 	+ gameMan.GetPlayerIndex());
-
 		this.transform.name = "Player (" + this.id + ")";
-
-		// Debug.Log(debug + "GameManager.handSize =  "
-		// 	+ GameManager.handSize
-		// 	+ " for player " + this.id);
-
-		// this.initIdFlag = true;
-	} // InitId()
+	}
 
 	// public void DestroyCard(string objectName)
 	// {
@@ -596,41 +581,56 @@ public class PlayerConnection : NetworkBehaviour
 
 	// COMMANDS ####################################################################################
 
-	// Asks the Server to give this Player a hand of cards
 	[Command]
-	public void CmdGetHand(int playerId)
+	private void CmdGetHandCard(int id, int index)
 	{
-		// if (!initIdFlag)
-		// {
-		// 	InitId();
-		// }
+		TargetLoadHandCard(FindObjectOfType<MatchController>().GetHandCard(id, index), index);
+	}
 
-		Debug.Log(debugTag + "[CmdGetHand] handSize =  "
-			+ config.PlayerHandSize
-			+ " for player " + this.id);
+	[TargetRpc]
+	private void TargetLoadHandCard(string hand, int index)
+	{
+		this.hand.Add(JsonUtility.FromJson<Card>(hand));
+		string cardString = CardUtility.CreateCardObjectName("GameCard", this.id, index);
+		Debug.Log("Looking for " + cardString);
+		GameObject.Find(cardString).GetComponent<CardViewController>().Card = this.hand[index];
+	}
 
-		for (int i = 0; i < config.PlayerHandSize; i++)
-		{
-			// if (GameManager.players[this.id - 1].hand[i] != null)
-			// {
-			Card card = matchController.Players[this.id - 1].hand[i];
-			// Debug.Log(debug + "[CmdGetHand] Adding Card " + i
-			// 	+ " to SyncList for player " + this.id);
-			this.hand.Add(new CardData(card));
-			// }
-			// else
-			// {
-			// 	Debug.LogWarning(debug + "[CmdGetHand] Warning: "
-			// 		+ "The player did not have a card in slot " + i);
-			// }
-		} // for
+	// // Asks the Server to give this Player a hand of cards
+	// [Command]
+	// public void CmdGetHand(int playerId)
+	// {
+	// 	// if (!initIdFlag)
+	// 	// {
+	// 	// 	InitId();
+	// 	// }
 
-		// Debug.Log(debug + "[CmdGetHand] Finished grabbing "
-		// 	+ this.hand.Count
-		// 	+ " cards for player " + this.id);
+	// 	Debug.Log(debugTag + "[CmdGetHand] handSize =  "
+	// 		+ config.PlayerHandSize
+	// 		+ " for player " + this.id);
 
-		// TargetCreateHandObjects(connectionToClient, this.hand);
-	} // CmdGetHand()
+	// 	for (int i = 0; i < config.PlayerHandSize; i++)
+	// 	{
+	// 		// if (GameManager.players[this.id - 1].hand[i] != null)
+	// 		// {
+	// 		Card card = matchController.Players[this.id - 1].hand[i];
+	// 		// Debug.Log(debug + "[CmdGetHand] Adding Card " + i
+	// 		// 	+ " to SyncList for player " + this.id);
+	// 		this.hand.Add(new CardData(card));
+	// 		// }
+	// 		// else
+	// 		// {
+	// 		// 	Debug.LogWarning(debug + "[CmdGetHand] Warning: "
+	// 		// 		+ "The player did not have a card in slot " + i);
+	// 		// }
+	// 	} // for
+
+	// 	// Debug.Log(debug + "[CmdGetHand] Finished grabbing "
+	// 	// 	+ this.hand.Count
+	// 	// 	+ " cards for player " + this.id);
+
+	// 	// TargetCreateHandObjects(connectionToClient, this.hand);
+	// } // CmdGetHand()
 
 	// Spawns in a copy of MouseManager with Client Authority and feeds it a reference
 	// to this PlayerConnection's connection.
