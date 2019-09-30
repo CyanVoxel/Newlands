@@ -94,14 +94,12 @@ public class PlayerConnection : NetworkBehaviour
 	void Update()
 	{
 		if (!isLocalPlayer || !initialzed)
-		{
 			return;
-		}
 
 		if (this.turnEventStr != matchDataBroadcaster.TurnEventStr
 			&& this.turnEventStr != null)
 		{
-			HandleEvent();
+			HandleTurnEvent();
 			// this.turnEventStr = gameMan.turnEventBroadcast; // Unnecessary, this gets done later.
 		}
 
@@ -378,8 +376,7 @@ public class PlayerConnection : NetworkBehaviour
 		// this.lastKnownPriceList = gameMan.priceListStr;
 	} // UpdateKnownRounds()
 
-	// TODO: Rename to something more descriptive, or expand functionality.
-	private void HandleEvent()
+	private void HandleTurnEvent()
 	{
 		GameObject cardObj;
 		//Handle an event during Phase 2 on your turn
@@ -436,6 +433,8 @@ public class PlayerConnection : NetworkBehaviour
 				cardObj = GameObject.Find(CardUtility.CreateCardObjectName("Tile",
 					turnEvent.x,
 					turnEvent.y));
+
+				CardAnimations.FlipCard(turnEvent.cardType, turnEvent.x, turnEvent.y);
 
 				// Depending on the player who bought the tile, change the Tile's color.
 				// NOTE: Move to CardAnimations or something.

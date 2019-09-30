@@ -129,7 +129,7 @@ public class MouseManager : NetworkBehaviour
 			case 1:
 				// True
 				Debug.Log(debugTag.head + "Purchase Successful!");
-				CmdFlipCard("Tile", this.purchaseBufferX, this.purchaseBufferY);
+				// CmdFlipCard("Tile", this.purchaseBufferX, this.purchaseBufferY);
 				this.purchaseSuccessFlag = -1;
 				break;
 
@@ -284,11 +284,11 @@ public class MouseManager : NetworkBehaviour
 
 	// COMMANDS ####################################################################################
 
-	[Command]
-	private void CmdFlipCard(string cardType, int locX, int locY)
-	{
-		CardAnimations.FlipCard(cardType, locX, locY);
-	}
+	// [Command]
+	// private void CmdFlipCard(string cardType, int locX, int locY)
+	// {
+	// 	CardAnimations.FlipCard(cardType, locX, locY);
+	// }
 
 	[Command]
 	private void CmdBuyTile(int locX, int locY)
