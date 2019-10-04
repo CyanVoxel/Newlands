@@ -520,7 +520,8 @@ public class MatchController : NetworkBehaviour
 			TurnEvent turnEvent = new TurnEvent(matchData.Phase, turn, "Play",
 				"GameCard", turn, cardIndex, matchDataBroadcaster.TopCardStr,
 				JsonUtility.ToJson(new Card(gridController.GetServerTile(tileType, locX, locY))),
-				locX, locY);
+				locX, locY,
+				JsonUtility.ToJson(card));
 
 			matchDataBroadcaster.TurnEventStr = JsonUtility.ToJson(turnEvent);
 

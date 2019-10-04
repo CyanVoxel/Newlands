@@ -26,6 +26,8 @@ public class TurnEvent
     public int targetX;
     [SerializeField]
     public int targetY;
+    [SerializeField]
+    public string playedCard;
 
     // public TurnEvent(int phase, int playerId, string operation,
     //     string cardType, int x, int y,
@@ -53,12 +55,13 @@ public class TurnEvent
         this.y = y;
         this.topCard = topCard;
         this.card = card;
+
     }
 
     // Constructor including Card field
     public TurnEvent(int phase, int playerId, string operation,
         string cardType, int x, int y,
-        string topCard, string card, int targetX, int targetY)
+        string topCard, string card, int targetX, int targetY, string playedCard)
     {
         this.phase = phase;
         this.playerId = playerId;
@@ -70,6 +73,7 @@ public class TurnEvent
         this.card = card;
         this.targetX = targetX;
         this.targetY = targetY;
+        this.playedCard = playedCard;
     }
 
     public override string ToString()

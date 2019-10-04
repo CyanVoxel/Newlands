@@ -34,11 +34,18 @@ public static class CardUtility
     public static IEnumerator MoveObjectCoroutine(GameObject obj, Vector3 end, float speed)
     {
         Vector3 start = obj.transform.position;
+        Vector3 underEnd = new Vector3(end.x, end.y, end.z + 1f);
+
+        while (Vector3.Distance(obj.transform.position, underEnd) >.1f)
+        {
+            obj.transform.position = Vector3.Lerp(obj.transform.position, underEnd, speed * 1);
+            yield return new WaitForSeconds(0.01f);
+        }
 
         while (Vector3.Distance(obj.transform.position, end) >.01f)
         {
             obj.transform.position = Vector3.Lerp(obj.transform.position, end, speed * 1);
-            yield return new WaitForSeconds(0.01f);
+            yield return new WaitForSeconds(0.001f);
         }
 
         obj.transform.position = end;

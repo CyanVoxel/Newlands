@@ -27,6 +27,8 @@ public class GridController : NetworkBehaviour
 	private static int[] maxGridStack;
 	private static int[] maxMarketStack;
 
+	public CardData[, ] KnownOwnersGrid { get { return knownOwnersGrid; } set { knownOwnersGrid = value; } }
+
 	private DebugTag debugTag = new DebugTag("GridController", "00BCD4");
 
 	void Awake()
@@ -40,19 +42,19 @@ public class GridController : NetworkBehaviour
 
 	}
 
-	void Start()
-	{
-		if (!hasAuthority)
-			return;
-	}
+	// void Start()
+	// {
+	// 	if (!hasAuthority)
+	// 		return;
+	// }
 
-	void Update()
-	{
-		if (!hasAuthority)
-			return;
+	// void Update()
+	// {
+	// 	if (!hasAuthority)
+	// 		return;
 
-		// StartCoroutine(CheckForBroadcastUpdates());
-	}
+	// 	// StartCoroutine(CheckForBroadcastUpdates());
+	// }
 
 	void OnDisable()
 	{
@@ -94,6 +96,8 @@ public class GridController : NetworkBehaviour
 				cardObj.transform.SetParent(gridParent.transform);
 
 				cardObj.transform.rotation = new Quaternion(0, 180, 0, 0); // 0, 180, 0, 0
+
+				knownOwnersGrid[x, y] = new CardData();
 
 				if (hasAuthority)
 					masterGrid[x, y].CardObject = cardObj;
@@ -184,11 +188,12 @@ public class GridController : NetworkBehaviour
 	public void SetTileOwner(int x, int y, int ownerId)
 	{
 		masterGrid[x, y].OwnerId = ownerId;
+		knownOwnersGrid[x, y].OwnerId = ownerId;
 	}
 
 	public bool IsTileOwned(int x, int y)
 	{
-		if (masterGrid[x, y].OwnerId == 0)
+		if (knownOwnersGrid[x, y].OwnerId == 0)
 			return false;
 		else
 			return true;
@@ -196,7 +201,7 @@ public class GridController : NetworkBehaviour
 
 	public bool IsTileBankrupt(int x, int y)
 	{
-		if (!masterGrid[x, y].IsBankrupt)
+		if (!knownOwnersGrid[x, y].IsBankrupt)
 			return false;
 		else
 			return true;
@@ -210,9 +215,18 @@ public class GridController : NetworkBehaviour
 			return null;
 	}
 
+	public CardData GetClientTile(string type, int x, int y)
+	{
+		if (knownOwnersGrid[x, y] != null)
+			return knownOwnersGrid[x, y];
+		else
+			return null;
+	}
+
 	public void BankruptTile(int x, int y)
 	{
 		Debug.Log(debugTag + "Bankrupting tile!");
+		knownOwnersGrid[x, y].IsBankrupt = true;
 		masterGrid[x, y].IsBankrupt = true;
 		// CardDisplay.BankruptVisuals(tile.tileObj);
 	}
@@ -235,11 +249,11 @@ public class GridController : NetworkBehaviour
 		switch (gridType)
 		{
 			case "Market":
-				// knownOwnersGrid[x, y].CardStack.Add(card);
 				if (hasAuthority)
 					masterMarketGrid[x, y].CardStack.Add(card);
 				break;
 			default:
+				knownOwnersGrid[x, y].CardStack.Add(card);
 				if (hasAuthority)
 					masterGrid[x, y].CardStack.Add(card);
 				break;
@@ -251,7 +265,7 @@ public class GridController : NetworkBehaviour
 	{
 		bool didShift = false;
 		int maxStack = 0;
-		CardData target = GetServerTile(type, x, y);
+		CardData target = GetClientTile(type, x, y);
 
 		switch (type)
 		{
@@ -272,7 +286,10 @@ public class GridController : NetworkBehaviour
 			didShift = true;
 			Debug.Log(debugTag + "Shifting row " + y);
 		}
-		Debug.Log(debugTag + "Card stack of  " + target.CardStack.Count + " was not greater than " + maxStack);
+		else
+		{
+			Debug.Log(debugTag + "Card stack of  " + target.CardStack.Count + " was not greater than " + maxStack);
+		}
 
 		return didShift;
 	}
@@ -301,20 +318,17 @@ public class GridController : NetworkBehaviour
 			for (int y = row; y < config.GameGridHeight; y++)
 			{
 				Debug.Log(debugTag + "Looking for x" + x + ", y" + y);
-				Debug.Log(debugTag.head + masterGrid[x, y]);
-				Debug.Log(debugTag.head + masterGrid[x, y].CardObject);
-				Debug.Log(debugTag.head + masterGrid[x, y].CardObject.transform);
 				// Debug.Log(debug + "Shifting [" + x + ", " + y + "]");
-				float oldX = masterGrid[x, y].CardObject.transform.position.x;
-				float oldY = masterGrid[x, y].CardObject.transform.position.y;
-				float oldZ = masterGrid[x, y].CardObject.transform.position.z;
+				float oldX = knownOwnersGrid[x, y].CardObject.transform.position.x;
+				float oldY = knownOwnersGrid[x, y].CardObject.transform.position.y;
+				float oldZ = knownOwnersGrid[x, y].CardObject.transform.position.z;
 
 				// StartCoroutine(CardUtility.MoveObjectCoroutine(masterGrid[x, y].CardObject,
 				// 	new Vector3(oldX, (oldY += (shiftUnit * units)), oldZ), .1f));
 
-				masterGrid[x, y].CardObject.transform.position = new Vector3(oldX,
+				knownOwnersGrid[x, y].CardObject.transform.position = new Vector3(oldX,
 					(oldY += (shiftUnit * units)),
-					masterGrid[x, y].CardObject.transform.position.z);
+					knownOwnersGrid[x, y].CardObject.transform.position.z);
 			}
 		}
 	}
@@ -417,9 +431,7 @@ public class GridController : NetworkBehaviour
 		yield return StartCoroutine(ParseMatchConfigCoroutine());
 		yield return StartCoroutine(GrabMatchControllerCoroutine());
 
-		// [Server]
-		if (hasAuthority)
-			yield return StartCoroutine(CreateInternalMainGridCoroutine());
+		yield return StartCoroutine(CreateInternalMainGridCoroutine());
 
 		// [Client with Server-Only section]
 		Debug.Log(debugTag + "Creating Main Grid objects...");
@@ -461,21 +473,25 @@ public class GridController : NetworkBehaviour
 			{
 				// Draw a card from the Land Tile deck
 				// Card card = Card.CreateInstance<Card>();
-				Card card;
+				// [Server]
+				if (hasAuthority)
+				{
+					Card card;
 
-				if (matchController.DrawCard(matchController.MasterDeckMutable.landTileDeck,
-						matchController.MasterDeck.landTileDeck,
-						out card))
-				{
-					// Debug.Log("[GridManager] Tile Draw successful!");
-					// Connect the drawn card to the internal grid
-					masterGrid[x, y] = new CardData(card);
-					knownOwnersGrid[x, y] = new CardData();
+					if (matchController.DrawCard(matchController.MasterDeckMutable.landTileDeck,
+							matchController.MasterDeck.landTileDeck,
+							out card))
+					{
+						// Debug.Log("[GridManager] Tile Draw successful!");
+						// Connect the drawn card to the internal grid
+						masterGrid[x, y] = new CardData(card);
+					}
+					else
+					{
+						Debug.LogError(debugTag.error + "Tile Draw failure!");
+					}
 				}
-				else
-				{
-					Debug.LogError(debugTag.error + "Tile Draw failure!");
-				}
+
 			} // y
 		} // x
 	}

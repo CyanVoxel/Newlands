@@ -411,18 +411,22 @@ public class CardViewController : MonoBehaviour
 				}
 				// Icon --------------------------------------------------------
 
-				if (iconImage.sprite = Resources.Load<Sprite>("Sprites/icon_" + card.Title.ToLower()))
+				if (iconImage != null)
 				{
-					// Debug.Log("[CardDisplay] Successfully loaded image sprite \""
-					// 	+ "Sprites/icon_"
-					// 	+ cardState.title.ToLower() + "\"");
+					if (iconImage.sprite = Resources.Load<Sprite>("Sprites/icon_" + card.Title.ToLower()))
+					{
+						// Debug.Log("[CardDisplay] Successfully loaded image sprite \""
+						// 	+ "Sprites/icon_"
+						// 	+ cardState.title.ToLower() + "\"");
+					}
+					else
+					{
+						Debug.LogError("[CardDisplay] ERROR: Could not load image sprite \""
+							+ "Sprites/icon_"
+							+ card.Title.ToLower() + "\"");
+					}
 				}
-				else
-				{
-					Debug.LogError("[CardDisplay] ERROR: Could not load image sprite \""
-						+ "Sprites/icon_"
-						+ card.Title.ToLower() + "\"");
-				}
+
 				break;
 
 			case "Game Card":

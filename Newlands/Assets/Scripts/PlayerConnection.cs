@@ -54,7 +54,7 @@ public class PlayerConnection : NetworkBehaviour
 	private List<Coordinate2>[] knownOwnersList;
 	// A 2-Dimensional array containing the location of all known Tiles owned by all players.
 	// This is used for quicker access to NEIGHBOR CARDS.
-	private int[, ] knownOwnersGrid;
+	// private int[, ] knownOwnersGrid;
 	// A List of CardData used for keeping references of the Market Cards.
 	// Used for acessing the cards' CardStates to update their footer text.
 	List<CardData> localMarketList = new List<CardData>();
@@ -169,7 +169,7 @@ public class PlayerConnection : NetworkBehaviour
 		// Debug.Log(debug + "Hand size: " + this.hand.Count);
 		// gridMan.CreateHandObjects(this.id, this.hand);
 		this.knownOwnersList = new List<Coordinate2>[config.MaxPlayerCount];
-		this.knownOwnersGrid = new int[config.GameGridWidth, config.GameGridHeight];
+		// this.knownOwnersGrid = new int[config.GameGridWidth, config.GameGridHeight];
 
 		for (int i = 0; i < config.MaxPlayerCount; i++)
 			this.knownOwnersList[i] = new List<Coordinate2>();
@@ -267,11 +267,11 @@ public class PlayerConnection : NetworkBehaviour
 					int y = this.knownOwnersList[this.id - 1][k].y;
 
 					if (x + i >= 0
-						&& x + i < this.knownOwnersGrid.GetLength(0)
+						&& x + i < config.GameGridWidth
 						&& y + j >= 0
-						&& y + j < this.knownOwnersGrid.GetLength(1))
+						&& y + j < config.GameGridHeight)
 					{
-						if (this.knownOwnersGrid[x + i, y + j] == 0
+						if (gridController.KnownOwnersGrid[x + i, y + j].OwnerId == 0
 							&& !cardsToSend.Contains(new Coordinate2((x + i), (y + j))))
 						{
 							cardsToSend.Add(new Coordinate2((x + i), (y + j)));
@@ -289,14 +289,12 @@ public class PlayerConnection : NetworkBehaviour
 	{
 		List<Coordinate2> cardsToSend = new List<Coordinate2>();
 
-		for (int x = 0; x < this.knownOwnersGrid.GetLength(0); x++)
+		for (int x = 0; x < config.GameGridWidth; x++)
 		{
-			for (int y = 0; y < this.knownOwnersGrid.GetLength(1); y++)
+			for (int y = 0; y < config.GameGridWidth; y++)
 			{
-				if (this.knownOwnersGrid[x, y] == 0)
-				{
+				if (gridController.KnownOwnersGrid[x, y].OwnerId == 0)
 					cardsToSend.Add(new Coordinate2(x, y));
-				}
 			}
 		}
 
@@ -399,71 +397,74 @@ public class PlayerConnection : NetworkBehaviour
 		switch (turnEvent.operation)
 		{
 			case "Play":
-				cardObj = GameObject.Find(CardUtility.CreateCardObjectName(turnEvent.cardType,
-					turnEvent.x, turnEvent.y));
-				if (cardObj != null)
+
+				// Debug.Log(debugTag + "Trying to destroy " + cardObj.name);
+				// Destroy(cardObj);
+
+				// Debug.Log(debugTag + "Moving " + cardObj.name);
+
+				// If the card is meant to be stacked
+				if (!turnCard.DiscardFlag)
 				{
-					// Debug.Log(debugTag + "Trying to destroy " + cardObj.name);
-					// Destroy(cardObj);
+					gridController.AddCardToStack(turnEvent.targetX, turnEvent.targetY, turnCard.Target, turnCard);
 
-					// Debug.Log(debugTag + "Moving " + cardObj.name);
+					if (gridController.ShiftRowCheck(targetCard.Category, turnEvent.targetX, turnEvent.targetY))
 
-					// If the card is meant to be stacked
-					if (!turnCard.DiscardFlag)
+						gridController.IncrementStackSize(turnEvent.targetY, turnCard.Target);
+
+					Debug.Log(debugTag + "Trying to find " + CardUtility.CreateCardObjectName(targetCard.Category, turnEvent.targetX, turnEvent.targetY));
+					GameObject targetObject = GameObject.Find(CardUtility.CreateCardObjectName(targetCard.Category, turnEvent.targetX, turnEvent.targetY));
+
+					CardData tile = gridController.GetClientTile(targetCard.Category, turnEvent.targetX, turnEvent.targetY);
+
+					Debug.Log(debugTag.head + targetObject.name + " Stack Size: " + tile.CardStack.Count);
+
+					Vector3 endPosition = new Vector3(targetObject.transform.position.x,
+						targetObject.transform.position.y
+						- (gridController.shiftUnit * (tile.CardStack.Count)),
+						(targetObject.transform.position.z)
+						+ (gridController.cardThickness * (tile.CardStack.Count)));
+
+					if (turnEvent.playerId == this.id)
 					{
-
-						gridController.AddCardToStack(turnEvent.targetX, turnEvent.targetY, turnCard.Target, turnCard);
-
-						if (gridController.ShiftRowCheck(targetCard.Category, turnEvent.targetX, turnEvent.targetY))
-						{
-							gridController.IncrementStackSize(turnEvent.targetY, turnCard.Target);
-						}
-
-						Debug.Log(debugTag + "Trying to find " + CardUtility.CreateCardObjectName(targetCard.Category, turnEvent.targetX, turnEvent.targetY));
-						GameObject targetObject = GameObject.Find(CardUtility.CreateCardObjectName(targetCard.Category, turnEvent.targetX, turnEvent.targetY));
-
-						CardData tile = gridController.GetServerTile(targetCard.Category, turnEvent.targetX, turnEvent.targetY);
-
-						Debug.Log(debugTag.head + targetObject.name + " Stack Size: " + tile.CardStack.Count);
+						cardObj = GameObject.Find(CardUtility.CreateCardObjectName(turnEvent.cardType,
+							turnEvent.x, turnEvent.y));
 
 						Debug.Log(debugTag + "Trying to move " + cardObj.name + " under " + targetObject.name);
 						// gridController.GetTile(targetCard.x, targetCard.y)
-
-						Vector3 endPosition = new Vector3(targetObject.transform.position.x,
-							targetObject.transform.position.y
-							- (gridController.shiftUnit * (tile.CardStack.Count)),
-							(targetObject.transform.position.z)
-							+ (gridController.cardThickness * (tile.CardStack.Count)));
 
 						cardObj.transform.name = CardUtility.CreateCardObjectName("Stacked", turnEvent.x, tile.CardStack.Count - 1);
 						cardObj.transform.SetParent(targetObject.transform);
 
 						StartCoroutine(CardUtility.MoveObjectCoroutine(cardObj, endPosition, .1f));
-
-						// cardObj.transform.(targetObject.transform.position.x, targetObject.transform.position.y, targetObject.transform.position.z);
-					}
-
-					// cardObj.transform.Translate(new Vector3(targetObject.transform.position.x,
-					// 		targetObject.transform.position.y
-					// 		- (gridController.shiftUnit * targetCard.CardStack.Count),
-					// 		(targetObject.transform.position.z)
-					// 		+ (gridController.cardThickness * targetCard.CardStack.Count)));
-
-					if (turnEvent.topCard != "empty")
-					{
-						// this.hand[turnEvent.y] = JsonUtility.FromJson<CardData>(turnEvent.topCard);
-						// CreateNewCardObject(turnEvent.y, turnEvent.topCard);
 					}
 					else
 					{
-						Debug.Log(debugTag + "GameCard deck must be empty!");
-					}
+						GameObject otherPlayersCard = (GameObject)Instantiate(matchController.gameCardPrefab,
+							new Vector3(-40, 0, 40),
+							Quaternion.identity);
+						otherPlayersCard.GetComponent<CardViewController>().Card = JsonUtility.FromJson<CardData>(turnEvent.playedCard);
 
+						otherPlayersCard.transform.name = CardUtility.CreateCardObjectName("Stacked", turnEvent.x, tile.CardStack.Count - 1);
+						otherPlayersCard.transform.SetParent(targetObject.transform);
+						StartCoroutine(CardUtility.MoveObjectCoroutine(otherPlayersCard, endPosition, .1f));
+					}
+				}
+
+				// cardObj.transform.Translate(new Vector3(targetObject.transform.position.x,
+				// 		targetObject.transform.position.y
+				// 		- (gridController.shiftUnit * targetCard.CardStack.Count),
+				// 		(targetObject.transform.position.z)
+				// 		+ (gridController.cardThickness * targetCard.CardStack.Count)));
+
+				if (turnEvent.topCard != "empty")
+				{
+					// this.hand[turnEvent.y] = JsonUtility.FromJson<CardData>(turnEvent.topCard);
+					// CreateNewCardObject(turnEvent.y, turnEvent.topCard);
 				}
 				else
 				{
-					Debug.Log(debugTag + "Could not find " + CardUtility.CreateCardObjectName(turnEvent.cardType,
-						turnEvent.x, turnEvent.y));
+					Debug.Log(debugTag + "GameCard deck must be empty!");
 				}
 
 				// TODO: Add code to refresh a market card's footer value if a card was played on it.
@@ -471,20 +472,26 @@ public class PlayerConnection : NetworkBehaviour
 				break;
 			case "Buy":
 				// Add bought Tile to local knowledge base
-				this.knownOwnersGrid[turnEvent.x, turnEvent.y] = turnEvent.playerId;
+				gridController.KnownOwnersGrid[turnEvent.x, turnEvent.y].OwnerId = turnEvent.playerId;
 				this.knownOwnersList[turnEvent.playerId - 1].Add(new Coordinate2(turnEvent.x, turnEvent.y));
 
 				// Grab the Tile GameObject that was bought
-				Debug.Log(debugTag + CardUtility.CreateCardObjectName("Tile",
+				Debug.Log(debugTag + CardUtility.CreateCardObjectName(turnEvent.cardType,
 					turnEvent.x,
 					turnEvent.y));
-				cardObj = GameObject.Find(CardUtility.CreateCardObjectName("Tile",
+				cardObj = GameObject.Find(CardUtility.CreateCardObjectName(turnEvent.cardType,
 					turnEvent.x,
 					turnEvent.y));
+
+				CardData boughtCard = JsonUtility.FromJson<CardData>(turnEvent.card);
+
+				boughtCard.CardObject = cardObj;
+				gridController.KnownOwnersGrid[turnEvent.x, turnEvent.y] = boughtCard;
+				gridController.KnownOwnersGrid[turnEvent.x, turnEvent.y].OwnerId = turnEvent.playerId;
 
 				CardAnimations.FlipCard(turnEvent.cardType, turnEvent.x, turnEvent.y);
 
-				GameObject.Find(CardUtility.CreateCardObjectName(turnEvent.cardType, turnEvent.x, turnEvent.y)).GetComponent<CardViewController>().Card = JsonUtility.FromJson<Card>(turnEvent.card);
+				cardObj.GetComponent<CardViewController>().Card = JsonUtility.FromJson<Card>(turnEvent.card);
 
 				// Depending on the player who bought the tile, change the Tile's color.
 				// NOTE: Move to CardAnimations or something.
