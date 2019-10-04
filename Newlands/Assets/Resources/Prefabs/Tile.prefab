@@ -916,8 +916,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4568236915768574}
-  - component: {fileID: 6106022052829808868}
-  - component: {fileID: 7149671756936438314}
   - component: {fileID: 59428049043501011}
   m_Layer: 0
   m_Name: Tile
@@ -942,37 +940,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6106022052829808868
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1862741089836950}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  serverOnly: 0
-  localPlayerAuthority: 0
-  m_AssetId: 
-  m_SceneId: 3044587411
---- !u!114 &7149671756936438314
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1862741089836950}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2f74aedd71d9a4f55b3ce499326d45fb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncInterval: 0.1
-  compressRotation: 1
-  instantMovement: 1
 --- !u!114 &59428049043501011
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1662,12 +1629,12 @@ PrefabInstance:
       propertyPath: m_LODs.Array.data[0].screenRelativeHeight
       value: 0.5970444
       objectReference: {fileID: 0}
-    - target: {fileID: 2270762579272362649, guid: 88365df0a790180419196adbd5e0b81d,
+    - target: {fileID: 4470419615545552984, guid: 88365df0a790180419196adbd5e0b81d,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 855040d74e4004643ad8d7c4bee599cb, type: 2}
-    - target: {fileID: 4470419615545552984, guid: 88365df0a790180419196adbd5e0b81d,
+    - target: {fileID: 2270762579272362649, guid: 88365df0a790180419196adbd5e0b81d,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
