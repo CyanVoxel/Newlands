@@ -189,8 +189,8 @@ public class RuleSet : MonoBehaviour
 						if (targetLevel[2] == "Farmland") { return true; }
 						break;
 
-					case "Quarry":
-						if (targetLevel[2] == "Quarry") { return true; }
+					case "Mountain":
+						if (targetLevel[2] == "Mountain") { return true; }
 						break;
 
 					case "Beach":

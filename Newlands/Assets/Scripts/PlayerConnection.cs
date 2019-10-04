@@ -382,6 +382,10 @@ public class PlayerConnection : NetworkBehaviour
 		//Handle an event during Phase 2 on your turn
 		this.turnEventStr = matchDataBroadcaster.TurnEventStr;
 		TurnEvent turnEvent = JsonUtility.FromJson<TurnEvent>(this.turnEventStr);
+
+		Card turnCard = JsonUtility.FromJson<Card>(turnEvent.card);
+		CardData targetCard = JsonUtility.FromJson<CardData>(turnEvent.card);
+
 		Debug.Log(debugTag + "TurnEvent: " + turnEvent);
 
 		// Check if the message should be addressed by this player
@@ -399,12 +403,56 @@ public class PlayerConnection : NetworkBehaviour
 					turnEvent.x, turnEvent.y));
 				if (cardObj != null)
 				{
-					Debug.Log(debugTag + "Trying to destroy " + cardObj.name);
-					Destroy(cardObj);
+					// Debug.Log(debugTag + "Trying to destroy " + cardObj.name);
+					// Destroy(cardObj);
+
+					// Debug.Log(debugTag + "Moving " + cardObj.name);
+
+					// If the card is meant to be stacked
+					if (!turnCard.DiscardFlag)
+					{
+
+						gridController.AddCardToStack(turnEvent.targetX, turnEvent.targetY, turnCard.Target, turnCard);
+
+						if (gridController.ShiftRowCheck(targetCard.Category, turnEvent.targetX, turnEvent.targetY))
+						{
+							gridController.IncrementStackSize(turnEvent.targetY, turnCard.Target);
+						}
+
+						Debug.Log(debugTag + "Trying to find " + CardUtility.CreateCardObjectName(targetCard.Category, turnEvent.targetX, turnEvent.targetY));
+						GameObject targetObject = GameObject.Find(CardUtility.CreateCardObjectName(targetCard.Category, turnEvent.targetX, turnEvent.targetY));
+
+						CardData tile = gridController.GetServerTile(targetCard.Category, turnEvent.targetX, turnEvent.targetY);
+
+						Debug.Log(debugTag.head + targetObject.name + " Stack Size: " + tile.CardStack.Count);
+
+						Debug.Log(debugTag + "Trying to move " + cardObj.name + " under " + targetObject.name);
+						// gridController.GetTile(targetCard.x, targetCard.y)
+
+						Vector3 endPosition = new Vector3(targetObject.transform.position.x,
+							targetObject.transform.position.y
+							- (gridController.shiftUnit * (tile.CardStack.Count)),
+							(targetObject.transform.position.z)
+							+ (gridController.cardThickness * (tile.CardStack.Count)));
+
+						cardObj.transform.name = CardUtility.CreateCardObjectName("Stacked", turnEvent.x, tile.CardStack.Count - 1);
+						cardObj.transform.SetParent(targetObject.transform);
+
+						StartCoroutine(CardUtility.MoveObjectCoroutine(cardObj, endPosition, .1f));
+
+						// cardObj.transform.(targetObject.transform.position.x, targetObject.transform.position.y, targetObject.transform.position.z);
+					}
+
+					// cardObj.transform.Translate(new Vector3(targetObject.transform.position.x,
+					// 		targetObject.transform.position.y
+					// 		- (gridController.shiftUnit * targetCard.CardStack.Count),
+					// 		(targetObject.transform.position.z)
+					// 		+ (gridController.cardThickness * targetCard.CardStack.Count)));
+
 					if (turnEvent.topCard != "empty")
 					{
 						// this.hand[turnEvent.y] = JsonUtility.FromJson<CardData>(turnEvent.topCard);
-						CreateNewCardObject(turnEvent.y, turnEvent.topCard);
+						// CreateNewCardObject(turnEvent.y, turnEvent.topCard);
 					}
 					else
 					{

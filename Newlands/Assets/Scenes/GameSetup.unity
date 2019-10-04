@@ -4518,7 +4518,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_text: 6x6
+  m_text: 3x3
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5d026042c19f5bc438c7763c2b8a1a52, type: 2}
   m_sharedMaterial: {fileID: 1979364309642615130, guid: 5d026042c19f5bc438c7763c2b8a1a52,
@@ -5404,7 +5404,7 @@ MonoBehaviour:
     m_Options:
     - m_Text: 5x5
       m_Image: {fileID: 0}
-    - m_Text: 6x6
+    - m_Text: 3x3
       m_Image: {fileID: 0}
     - m_Text: 7x7
       m_Image: {fileID: 0}
@@ -5745,7 +5745,7 @@ MonoBehaviour:
   m_Value: 0
   m_Options:
     m_Options:
-    - m_Text: 2
+    - m_Text: 1
       m_Image: {fileID: 0}
     - m_Text: 3
       m_Image: {fileID: 0}
@@ -6368,7 +6368,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_text: 2
+  m_text: 1
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5d026042c19f5bc438c7763c2b8a1a52, type: 2}
   m_sharedMaterial: {fileID: 1979364309642615130, guid: 5d026042c19f5bc438c7763c2b8a1a52,

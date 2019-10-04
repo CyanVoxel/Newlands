@@ -263,7 +263,7 @@ public class MatchController : NetworkBehaviour
 
 			TurnEvent turnEvent = new TurnEvent(phase, turn, "Buy", "Tile", target.x, target.y,
 				matchDataBroadcaster.TopCardStr,
-				JsonUtility.ToJson(new Card(gridController.GetTile(target.x, target.y))));
+				JsonUtility.ToJson(new Card(gridController.GetServerTile("Tile", target.x, target.y))));
 			matchDataBroadcaster.TurnEventStr = JsonUtility.ToJson(turnEvent);
 			// Debug.Log(debug + "JSON: " + turnEvent);
 
@@ -461,9 +461,8 @@ public class MatchController : NetworkBehaviour
 		UpdatePlayerMoneyStr();
 	}
 
-	// Tries to play a Card on a TIle. Returns true is successful.
+	// Tries to play a Card on a Tile. Returns true is successful.
 	// Assumes that the player whose turn it is can be the only one who calls this (for now).
-	// TODO: Break this monster up and make it work with new systems.
 	public bool PlayCard(int cardIndex, string targetTile)
 	{
 		bool wasPlayed = false;
@@ -479,31 +478,31 @@ public class MatchController : NetworkBehaviour
 		Debug.Log(debugTag + "Trying to play Card " + cardIndex + " on " + tileType
 			+ " at " + locX + ", " + locY);
 
-		target = gridController.GetTile(locX, locY);
+		target = gridController.GetServerTile(tileType, locX, locY);
 
 		if (!target.IsBankrupt && RuleSet.IsLegal(target, card))
 		{
 			UpdatePlayersInfo();
 
-			// If the card is meant to be stacked
-			if (!card.DiscardFlag)
-			{
-				gridController.IncrementStackSize(locY, target.Target);
-				gridController.AddCardToStack(locX, locY, target.Target, card);
-				// target.CalcTotalValue(); // This fixes Market Cards not calcing first time
-				UpdatePlayersInfo();
+			// // If the card is meant to be stacked
+			// if (!card.DiscardFlag)
+			// {
+			// 	gridController.IncrementStackSize(locY, target.Target);
+			// 	gridController.AddCardToStack(locX, locY, target.Target, card);
+			// 	// target.CalcTotalValue(); // This fixes Market Cards not calcing first time
+			// 	UpdatePlayersInfo();
 
-				if (gridController.ShiftRowCheck(target, locX, locY))
-				{
-					GameObject cardObj = (GameObject)Instantiate(gameCardPrefab,
-						new Vector3(target.CardObject.transform.position.x,
-							target.CardObject.transform.position.y
-							- (gridController.shiftUnit * target.CardStack.Count),
-							(target.CardObject.transform.position.z)
-							+ (gridController.cardThickness * target.CardStack.Count)),
-						Quaternion.identity);
-				}
-			}
+			// 	// if (gridController.ShiftRowCheck(locX, locY))
+			// 	// {
+			// 	// 	GameObject cardObj = (GameObject)Instantiate(gameCardPrefab,
+			// 	// 		new Vector3(target.CardObject.transform.position.x,
+			// 	// 			target.CardObject.transform.position.y
+			// 	// 			- (gridController.shiftUnit * target.CardStack.Count),
+			// 	// 			(target.CardObject.transform.position.z)
+			// 	// 			+ (gridController.cardThickness * target.CardStack.Count)),
+			// 	// 		Quaternion.identity);
+			// 	// }
+			// }
 
 			Card topCard;
 			if (DrawCard(masterDeckMutable.gameCardDeck, masterDeck.gameCardDeck, out topCard))
@@ -516,8 +515,13 @@ public class MatchController : NetworkBehaviour
 				matchDataBroadcaster.TopCardStr = "empty";
 			}
 
+			Debug.Log(debugTag.head + locX + ", " + locY);
+
 			TurnEvent turnEvent = new TurnEvent(matchData.Phase, turn, "Play",
-				"GameCard", turn, cardIndex, matchDataBroadcaster.TopCardStr);
+				"GameCard", turn, cardIndex, matchDataBroadcaster.TopCardStr,
+				JsonUtility.ToJson(new Card(gridController.GetServerTile(tileType, locX, locY))),
+				locX, locY);
+
 			matchDataBroadcaster.TurnEventStr = JsonUtility.ToJson(turnEvent);
 
 			this.IncrementTurn();

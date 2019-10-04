@@ -73,7 +73,7 @@ public class GridController : NetworkBehaviour
 
 	public void ParseUpdatedCards() { }
 
-	// [Server]
+	// [Client with Server-Only section]
 	public void CreateGameGridObjects()
 	{
 		GameObject gridParent = new GameObject("MainGrid");
@@ -95,9 +95,8 @@ public class GridController : NetworkBehaviour
 
 				cardObj.transform.rotation = new Quaternion(0, 180, 0, 0); // 0, 180, 0, 0
 
-				// // FOR TESTING ONLY!
-				// if (masterGrid != null)
-				// 	masterGrid[x, y].CardObject = cardObj;
+				if (hasAuthority)
+					masterGrid[x, y].CardObject = cardObj;
 			}
 		}
 	}
@@ -203,7 +202,7 @@ public class GridController : NetworkBehaviour
 			return true;
 	}
 
-	public CardData GetTile(int x, int y)
+	public CardData GetServerTile(string type, int x, int y)
 	{
 		if (masterGrid[x, y] != null)
 			return masterGrid[x, y];
@@ -236,25 +235,44 @@ public class GridController : NetworkBehaviour
 		switch (gridType)
 		{
 			case "Market":
-				masterMarketGrid[x, y].CardStack.Add(card);
+				// knownOwnersGrid[x, y].CardStack.Add(card);
+				if (hasAuthority)
+					masterMarketGrid[x, y].CardStack.Add(card);
 				break;
 			default:
-				masterGrid[x, y].CardStack.Add(card);
+				if (hasAuthority)
+					masterGrid[x, y].CardStack.Add(card);
 				break;
 		}
 	}
 
 	// Shifts a grid if needed based on the target. Returns true if a row was shifted.
-	public bool ShiftRowCheck(CardData target, int x, int y)
+	public bool ShiftRowCheck(string type, int x, int y)
 	{
 		bool didShift = false;
+		int maxStack = 0;
+		CardData target = GetServerTile(type, x, y);
 
-		if (target.CardStack.Count > maxGridStack[y])
+		switch (type)
+		{
+			case "Tile":
+				maxStack = maxGridStack[y];
+				break;
+			case "Market":
+				maxStack = maxMarketStack[y];
+				break;
+			default:
+				break;
+		}
+
+		if (target.CardStack.Count >= maxStack)
 		{
 			IncrementStackSize(y, target.Category);
 			ShiftRow(target.Category, y, 1);
 			didShift = true;
+			Debug.Log(debugTag + "Shifting row " + y);
 		}
+		Debug.Log(debugTag + "Card stack of  " + target.CardStack.Count + " was not greater than " + maxStack);
 
 		return didShift;
 	}
@@ -282,10 +300,18 @@ public class GridController : NetworkBehaviour
 		{
 			for (int y = row; y < config.GameGridHeight; y++)
 			{
+				Debug.Log(debugTag + "Looking for x" + x + ", y" + y);
+				Debug.Log(debugTag.head + masterGrid[x, y]);
+				Debug.Log(debugTag.head + masterGrid[x, y].CardObject);
+				Debug.Log(debugTag.head + masterGrid[x, y].CardObject.transform);
 				// Debug.Log(debug + "Shifting [" + x + ", " + y + "]");
 				float oldX = masterGrid[x, y].CardObject.transform.position.x;
 				float oldY = masterGrid[x, y].CardObject.transform.position.y;
-				// float oldZ = masterGrid[x, y].CardObject.transform.position.z;
+				float oldZ = masterGrid[x, y].CardObject.transform.position.z;
+
+				// StartCoroutine(CardUtility.MoveObjectCoroutine(masterGrid[x, y].CardObject,
+				// 	new Vector3(oldX, (oldY += (shiftUnit * units)), oldZ), .1f));
+
 				masterGrid[x, y].CardObject.transform.position = new Vector3(oldX,
 					(oldY += (shiftUnit * units)),
 					masterGrid[x, y].CardObject.transform.position.z);
@@ -393,10 +419,9 @@ public class GridController : NetworkBehaviour
 
 		// [Server]
 		if (hasAuthority)
-		{
 			yield return StartCoroutine(CreateInternalMainGridCoroutine());
-		}
 
+		// [Client with Server-Only section]
 		Debug.Log(debugTag + "Creating Main Grid objects...");
 		CreateGameGridObjects();
 	}

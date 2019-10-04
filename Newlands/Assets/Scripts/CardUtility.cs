@@ -30,4 +30,17 @@ public static class CardUtility
 
         return (xChar + xZeroes + x + "_" + yChar + yZeroes + y + "_" + type);
     }
+
+    public static IEnumerator MoveObjectCoroutine(GameObject obj, Vector3 end, float speed)
+    {
+        Vector3 start = obj.transform.position;
+
+        while (Vector3.Distance(obj.transform.position, end) >.01f)
+        {
+            obj.transform.position = Vector3.Lerp(obj.transform.position, end, speed * 1);
+            yield return new WaitForSeconds(0.01f);
+        }
+
+        obj.transform.position = end;
+    }
 }
