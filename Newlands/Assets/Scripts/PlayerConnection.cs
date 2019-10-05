@@ -437,6 +437,8 @@ public class PlayerConnection : NetworkBehaviour
 						cardObj.transform.SetParent(targetObject.transform);
 
 						StartCoroutine(CardUtility.MoveObjectCoroutine(cardObj, endPosition, .1f));
+
+						CreateNewCardObject(turnEvent.y, turnEvent.topCard);
 					}
 					else
 					{
@@ -520,6 +522,8 @@ public class PlayerConnection : NetworkBehaviour
 		float xOff = index * 11 + (((config.GameGridWidth - config.PlayerHandSize) / 2f) * 11);
 		float yOff = -10;
 
+		Vector3 finalPosition = new Vector3(xOff, yOff, 40);
+
 		// If old card exists, destroy it
 		GameObject oldCardObj = GameObject.Find(CardUtility.CreateCardObjectName("GameCard",
 			this.id, index));
@@ -531,9 +535,14 @@ public class PlayerConnection : NetworkBehaviour
 		}
 
 		// Create new card
+		// NOTE: In the future when there is an actual deck model, have it originate from that.
 		GameObject cardObj = (GameObject)Instantiate(matchController.gameCardPrefab,
-			new Vector3(xOff, yOff, 40),
+			new Vector3(0, -40, 40),
 			Quaternion.identity);
+
+		cardObj.GetComponent<CardViewController>().Card = JsonUtility.FromJson<Card>(cardStr);
+
+		StartCoroutine(CardUtility.MoveObjectCoroutine(cardObj, finalPosition, 0.1f));
 
 		// // Debug.Log("[GridManager] Trying to fill out Hand Card info...");
 		// CardState cardState = cardObj.GetComponent<CardState>();

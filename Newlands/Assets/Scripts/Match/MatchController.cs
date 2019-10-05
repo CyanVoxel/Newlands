@@ -182,7 +182,7 @@ public class MatchController : NetworkBehaviour
 			}
 		} // for playerCount
 		Debug.Log(debugTag + "Player Money String: " + matchDataBroadcaster.PlayerMoneyStr);
-	} // UpdatePlayerMoneyStr()()
+	}
 
 	// Draws random GameCards from the masterDeck and returns a deck of a specified size
 	private Deck DrawHand(int handSize)
