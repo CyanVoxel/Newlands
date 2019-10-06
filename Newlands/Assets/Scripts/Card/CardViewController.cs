@@ -451,111 +451,16 @@ public class CardViewController : MonoBehaviour
 				footerBorderL.color = ColorPalette.alpha;
 				footerBorderR.color = ColorPalette.alpha;
 
-				switch (card.FooterColor)
+				if (card.ColorCornerFlag)
 				{
-					case "Black":
-						if (card.ColorCornerFlag)
-						{
-							footerBorderL.color = ColorPalette.cardDark;
-							footerBorderR.color = ColorPalette.cardDark;
-						}
-						else
-						{
-							footerBorder.color = ColorPalette.cardDark;
-						}
-						break;
-					case "Red":
-						if (card.ColorCornerFlag)
-						{
-							footerBorderL.color = ColorPalette.red500;
-							footerBorderR.color = ColorPalette.red500;
-						}
-						else
-						{
-							footerBorder.color = ColorPalette.red500;
-						}
-						break;
-					case "Green":
-						if (card.ColorCornerFlag)
-						{
-							footerBorderL.color = ColorPalette.green500;
-							footerBorderR.color = ColorPalette.green500;
-						}
-						else
-						{
-							footerBorder.color = ColorPalette.green500;
-						}
-						break;
-					case "Light Blue":
-						if (card.ColorCornerFlag)
-						{
-							footerBorderL.color = ColorPalette.lightBlue500;
-							footerBorderR.color = ColorPalette.lightBlue500;
-						}
-						else
-						{
-							footerBorder.color = ColorPalette.lightBlue500;
-						}
-						break;
-					case "Yellow":
-						if (card.ColorCornerFlag)
-						{
-							footerBorderL.color = ColorPalette.yellow500;
-							footerBorderR.color = ColorPalette.yellow500;
-						}
-						else
-						{
-							footerBorder.color = ColorPalette.yellow500;
-						}
-						break;
-					case "Pink":
-						if (card.ColorCornerFlag)
-						{
-							footerBorderL.color = ColorPalette.pink500;
-							footerBorderR.color = ColorPalette.pink500;
-						}
-						else
-						{
-							footerBorder.color = ColorPalette.pink500;
-						}
-						break;
-					case "Blue":
-						if (card.ColorCornerFlag)
-						{
-							footerBorderL.color = ColorPalette.lightBlue500;
-							footerBorderR.color = ColorPalette.lightBlue500;
-						}
-						else
-						{
-							footerBorder.color = ColorPalette.lightBlue500;
-						}
-						break;
-					case "Dark Blue":
-						if (card.ColorCornerFlag)
-						{
-							footerBorderL.color = ColorPalette.indigo500;
-							footerBorderR.color = ColorPalette.indigo500;
-						}
-						else
-						{
-							footerBorder.color = ColorPalette.indigo500;
-						}
-						break;
-					case "":
-						if (card.ColorCornerFlag)
-						{
-							footerBorderL.color = Color.magenta;
-							footerBorderR.color = Color.magenta;
-						}
-						else
-						{
-							footerBorder.color = Color.magenta;
-						}
-						break;
-					default:
-						footerBorder.color = ColorPalette.cardDark;
-						break;
+					footerBorderL.color = ColorPalette.GetNewlandsColor(card.FooterColor, 500, false);
+					footerBorderR.color = ColorPalette.GetNewlandsColor(card.FooterColor, 500, false);
 				}
+				else
+				{
+					footerBorder.color = ColorPalette.GetNewlandsColor(card.FooterColor, 500, false);
+				}
+
 				break;
 
 			case "Market":
@@ -599,8 +504,8 @@ public class CardViewController : MonoBehaviour
 		this.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.cardDark;
 		this.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.cardDark;
 
-		titleUiText.color = ColorPalette.red500;
-		iconImage.color = ColorPalette.red500;
+		titleUiText.color = ColorPalette.GetNewlandsColor("Red", 500, false);
+		iconImage.color = ColorPalette.GetNewlandsColor("Red", 500, false);
 
 		// This picks up the title text for some reason?
 		// GameObject footerObj = tile.transform.Find("Front Canvas/Footer").gameObject;

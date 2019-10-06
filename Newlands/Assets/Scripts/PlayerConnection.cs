@@ -436,20 +436,20 @@ public class PlayerConnection : NetworkBehaviour
 						cardObj.transform.name = CardUtility.CreateCardObjectName("Stacked", turnEvent.x, tile.CardStack.Count - 1);
 						cardObj.transform.SetParent(targetObject.transform);
 
-						StartCoroutine(CardUtility.MoveObjectCoroutine(cardObj, endPosition, .1f));
+						StartCoroutine(CardAnimations.MoveObjectCoroutine(cardObj, endPosition, .1f));
 
 						CreateNewCardObject(turnEvent.y, turnEvent.topCard);
 					}
 					else
 					{
 						GameObject otherPlayersCard = (GameObject)Instantiate(matchController.gameCardPrefab,
-							new Vector3(-40, 0, 40),
+							new Vector3(0, 60, 40),
 							Quaternion.identity);
 						otherPlayersCard.GetComponent<CardViewController>().Card = JsonUtility.FromJson<CardData>(turnEvent.playedCard);
 
 						otherPlayersCard.transform.name = CardUtility.CreateCardObjectName("Stacked", turnEvent.x, tile.CardStack.Count - 1);
 						otherPlayersCard.transform.SetParent(targetObject.transform);
-						StartCoroutine(CardUtility.MoveObjectCoroutine(otherPlayersCard, endPosition, .1f));
+						StartCoroutine(CardAnimations.MoveObjectCoroutine(otherPlayersCard, endPosition, .1f));
 					}
 				}
 
@@ -496,23 +496,8 @@ public class PlayerConnection : NetworkBehaviour
 				cardObj.GetComponent<CardViewController>().Card = JsonUtility.FromJson<Card>(turnEvent.card);
 
 				// Depending on the player who bought the tile, change the Tile's color.
-				// NOTE: Move to CardAnimations or something.
-				switch (turnEvent.playerId)
-				{
-					case 1:
-						cardObj.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.tintRed500;
-						cardObj.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.tintRed500;
-						break;
-					case 2:
-						cardObj.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.tintBlueLight500;
-						cardObj.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.tintBlueLight500;
-						break;
-					default:
-						break;
-				}
-
-				break;
-			default:
+				cardObj.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.GetDefaultPlayerColor(turnEvent.playerId, 500);
+				cardObj.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.GetDefaultPlayerColor(turnEvent.playerId, 500);
 				break;
 		}
 	}
@@ -542,7 +527,7 @@ public class PlayerConnection : NetworkBehaviour
 
 		cardObj.GetComponent<CardViewController>().Card = JsonUtility.FromJson<Card>(cardStr);
 
-		StartCoroutine(CardUtility.MoveObjectCoroutine(cardObj, finalPosition, 0.1f));
+		StartCoroutine(CardAnimations.MoveObjectCoroutine(cardObj, finalPosition, 0.1f));
 
 		// // Debug.Log("[GridManager] Trying to fill out Hand Card info...");
 		// CardState cardState = cardObj.GetComponent<CardState>();

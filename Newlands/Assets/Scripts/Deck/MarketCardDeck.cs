@@ -25,15 +25,15 @@ public class MarketCardDeck : Deck
 	private void AddVanillaCards()
 	{
 		// Market Cards ========================================================
-		// this.Add("Cards/Vanilla/MarketCard/platinum");
-		// this.Add("Cards/Vanilla/MarketCard/gold");
-		// this.Add("Cards/Vanilla/MarketCard/gems");
-		// this.Add("Cards/Vanilla/MarketCard/silver");
-		// this.Add("Cards/Vanilla/MarketCard/iron");
-		// // this.Add("Cards/Vanilla/MarketCard/fish");
-		// this.Add("Cards/Vanilla/MarketCard/cashcrops");
-		// this.Add("Cards/Vanilla/MarketCard/oil");
-		// this.Add("Cards/Vanilla/MarketCard/lumber");
+		this.Add("Cards/Vanilla/MarketCard/platinum");
+		this.Add("Cards/Vanilla/MarketCard/gold");
+		this.Add("Cards/Vanilla/MarketCard/gems");
+		this.Add("Cards/Vanilla/MarketCard/silver");
+		this.Add("Cards/Vanilla/MarketCard/iron");
+		// this.Add("Cards/Vanilla/MarketCard/fish");
+		this.Add("Cards/Vanilla/MarketCard/cashcrops");
+		this.Add("Cards/Vanilla/MarketCard/oil");
+		this.Add("Cards/Vanilla/MarketCard/lumber");
 	}
 
 }

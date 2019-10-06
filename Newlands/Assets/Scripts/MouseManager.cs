@@ -252,28 +252,28 @@ public class MouseManager : NetworkBehaviour
 				{
 					selection = -1;
 					// objectHit.transform.parent.position = new Vector3(objectHit.transform.parent.position.x, objectHit.transform.parent.position.y, objectHit.transform.parent.position.z);
-					objectHit.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.tintCard;
-					objectHit.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.tintCard;
+					objectHit.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.GetNewlandsColor("Card", 500, true);
+					objectHit.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.GetNewlandsColor("Card", 500, true);
 				}
 				else if (selection >= 0)
 				{
 					Debug.Log(debugTag + "Trying to find " + CardUtility.CreateCardObjectName("GameCard", this.ownerId, selection));
 					oldSelection = GameObject.Find(CardUtility.CreateCardObjectName("GameCard", this.ownerId, selection));
 					// oldSelection.transform.parent.position = new Vector3(oldSelection.transform.parent.position.x, oldSelection.transform.parent.position.y, objectHit.transform.parent.position.z);
-					oldSelection.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.tintCard;
-					oldSelection.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.tintCard;
+					oldSelection.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.GetNewlandsColor("Card", 500, true);
+					oldSelection.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.GetNewlandsColor("Card", 500, true);
 
 					selection = y;
 					// objectHit.transform.parent.position = new Vector3(objectHit.transform.parent.position.x, objectHit.transform.parent.position.y, (objectHit.transform.parent.position.z -2f));
-					objectHit.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.tintCyan500;
-					objectHit.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.tintCyan500;
+					objectHit.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.GetNewlandsColor("Cyan", 500, true);
+					objectHit.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.GetNewlandsColor("Cyan", 500, true);
 				}
 				else
 				{
 					selection = y;
 					// objectHit.transform.parent.position = new Vector3(objectHit.transform.parent.position.x, objectHit.transform.parent.position.y, (objectHit.transform.parent.position.z -2f));
-					objectHit.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.tintCyan500;
-					objectHit.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.tintCyan500;
+					objectHit.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.GetNewlandsColor("Cyan", 500, true);
+					objectHit.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.GetNewlandsColor("Cyan", 500, true);
 				}
 				break;
 			default:

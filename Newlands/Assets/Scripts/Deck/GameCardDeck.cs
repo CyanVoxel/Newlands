@@ -29,10 +29,10 @@ public class GameCardDeck : Deck
 		// Dictionary<string, int> manifest = new Dictionary<string, int>();
 
 		// Market Mods =========================================================
-		this.Add("Cards/Vanilla/GameCard/marketmod_investment_20_perc", 8);
-		this.Add("Cards/Vanilla/GameCard/marketmod_investment_10_perc", 12);
-		this.Add("Cards/Vanilla/GameCard/marketmod_sabotage_20_perc", 8);
-		this.Add("Cards/Vanilla/GameCard/marketmod_sabotage_10_perc", 12);
+		// this.Add("Cards/Vanilla/GameCard/marketmod_investment_20_perc", 8);
+		// this.Add("Cards/Vanilla/GameCard/marketmod_investment_10_perc", 12);
+		// this.Add("Cards/Vanilla/GameCard/marketmod_sabotage_20_perc", 8);
+		// this.Add("Cards/Vanilla/GameCard/marketmod_sabotage_10_perc", 12);
 
 		// Tile Mods ===========================================================
 		this.Add("Cards/Vanilla/GameCard/tilemod_oil_1", 5);

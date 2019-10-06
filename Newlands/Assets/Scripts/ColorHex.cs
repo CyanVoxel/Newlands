@@ -1,145 +1,148 @@
 ﻿// ColorHex struct - Mainly used as a way to create a Color32 using a hex code
 // @Author: Travis Abendshien (https://github.com/CyanVoxel)
-// @Version: 1.0
+// @Version: 1.1
 
-public struct ColorHex
+namespace ColorHexUtility
 {
-    byte r;
-    byte g;
-    byte b;
-    byte a;
-
-    // Normal Color32-style byte constructor.
-    public ColorHex(byte r, byte g, byte b, byte a)
+    public struct ColorHex
     {
-        this.r = r;
-        this.g = g;
-        this.b = b;
-        this.a = a;
-    }
+        byte r;
+        byte g;
+        byte b;
+        byte a;
 
-    // String hex constructor, handles optional '#' character as well as optional alpha values.
-    public ColorHex(string hex)
-    {
-        string h = hex;
-
-        if (h.Contains("#"))
+        // Normal Color32-style byte constructor.
+        public ColorHex(byte r, byte g, byte b, byte a)
         {
-            h = h.Remove(hex.IndexOf("#"), 1);
+            this.r = r;
+            this.g = g;
+            this.b = b;
+            this.a = a;
         }
 
-        switch (h.Length)
+        // String hex constructor, handles optional '#' character as well as optional alpha values.
+        public ColorHex(string hex)
         {
-            case 6:
-                this.r = byte.Parse(h.Substring(0, 2), System.Globalization.NumberStyles.HexNumber);
-                this.g = byte.Parse(h.Substring(2, 2), System.Globalization.NumberStyles.HexNumber);
-                this.b = byte.Parse(h.Substring(4, 2), System.Globalization.NumberStyles.HexNumber);
-                this.a = 255;
-                break;
+            string h = hex;
 
-            case 8:
-                this.r = byte.Parse(h.Substring(0, 2), System.Globalization.NumberStyles.HexNumber);
-                this.g = byte.Parse(h.Substring(2, 2), System.Globalization.NumberStyles.HexNumber);
-                this.b = byte.Parse(h.Substring(4, 2), System.Globalization.NumberStyles.HexNumber);
-                this.a = byte.Parse(h.Substring(6, 2), System.Globalization.NumberStyles.HexNumber);
-                break;
+            if (h.Contains("#"))
+            {
+                h = h.Remove(hex.IndexOf("#"), 1);
+            }
 
-            default:
-                this.r = 0;
-                this.g = 0;
-                this.b = 0;
-                this.a = 0;
-                break;
-        }
-    }
+            switch (h.Length)
+            {
+                case 6:
+                    this.r = byte.Parse(h.Substring(0, 2), System.Globalization.NumberStyles.HexNumber);
+                    this.g = byte.Parse(h.Substring(2, 2), System.Globalization.NumberStyles.HexNumber);
+                    this.b = byte.Parse(h.Substring(4, 2), System.Globalization.NumberStyles.HexNumber);
+                    this.a = 255;
+                    break;
 
-    public override bool Equals(object obj)
-    {
-        bool typeCheck = false;
+                case 8:
+                    this.r = byte.Parse(h.Substring(0, 2), System.Globalization.NumberStyles.HexNumber);
+                    this.g = byte.Parse(h.Substring(2, 2), System.Globalization.NumberStyles.HexNumber);
+                    this.b = byte.Parse(h.Substring(4, 2), System.Globalization.NumberStyles.HexNumber);
+                    this.a = byte.Parse(h.Substring(6, 2), System.Globalization.NumberStyles.HexNumber);
+                    break;
 
-        if (this.GetType().Equals(obj.GetType()) || obj is UnityEngine.Color32)
-        {
-            typeCheck = true;
+                default:
+                    this.r = 0;
+                    this.g = 0;
+                    this.b = 0;
+                    this.a = 0;
+                    break;
+            }
         }
 
-        if (obj == null || !typeCheck)
+        public override bool Equals(object obj)
         {
-            return false;
-        }
-        else
-        {
-            ColorHex c = (ColorHex)obj;
-            return (r == c.r && g == c.g && b == c.b && a == c.a);
-        }
-    }
+            bool typeCheck = false;
 
-    public static bool operator ==(UnityEngine.Color32 left, ColorHex right)
-    {
-        if (left.r == right.r
-            && left.g == right.g
-            && left.b == right.b
-            && left.a == right.a)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
+            if (this.GetType().Equals(obj.GetType()) || obj is UnityEngine.Color32)
+            {
+                typeCheck = true;
+            }
 
-    public static bool operator ==(ColorHex left, ColorHex right)
-    {
-        if (left.r == right.r
-            && left.g == right.g
-            && left.b == right.b
-            && left.a == right.a)
-        {
-            return true;
+            if (obj == null || !typeCheck)
+            {
+                return false;
+            }
+            else
+            {
+                ColorHex c = (ColorHex)obj;
+                return (r == c.r && g == c.g && b == c.b && a == c.a);
+            }
         }
-        else
-        {
-            return false;
-        }
-    }
 
-    public static bool operator !=(UnityEngine.Color32 left, ColorHex right)
-    {
-        if (left.r != right.r
-            || left.g != right.g
-            || left.b != right.b
-            || left.a != right.a)
+        public static bool operator ==(UnityEngine.Color32 left, ColorHex right)
         {
-            return true;
+            if (left.r == right.r
+                && left.g == right.g
+                && left.b == right.b
+                && left.a == right.a)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
-        else
-        {
-            return false;
-        }
-    }
 
-    public static bool operator !=(ColorHex left, ColorHex right)
-    {
-        if (left.r != right.r
-            || left.g != right.g
-            || left.b != right.b
-            || left.a != right.a)
+        public static bool operator ==(ColorHex left, ColorHex right)
         {
-            return true;
+            if (left.r == right.r
+                && left.g == right.g
+                && left.b == right.b
+                && left.a == right.a)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
-        else
+
+        public static bool operator !=(UnityEngine.Color32 left, ColorHex right)
         {
-            return false;
+            if (left.r != right.r
+                || left.g != right.g
+                || left.b != right.b
+                || left.a != right.a)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
-    }
 
-    public static implicit operator UnityEngine.Color32(ColorHex c)
-    {
-        return new UnityEngine.Color32(c.r, c.g, c.b, c.a);
-    }
+        public static bool operator !=(ColorHex left, ColorHex right)
+        {
+            if (left.r != right.r
+                || left.g != right.g
+                || left.b != right.b
+                || left.a != right.a)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
 
-    public override int GetHashCode()
-    {
-        return r ^ g ^ b ^ a;
+        public static implicit operator UnityEngine.Color32(ColorHex c)
+        {
+            return new UnityEngine.Color32(c.r, c.g, c.b, c.a);
+        }
+
+        public override int GetHashCode()
+        {
+            return r ^ g ^ b ^ a;
+        }
     }
 }

@@ -131,7 +131,7 @@ public class MatchSetupController : NetworkBehaviour
 				}
 				else
 				{
-					noIpWarning.color = ColorPalette.cardRed500;
+					noIpWarning.color = ColorPalette.GetNewlandsColor("Red", 500, false);
 				}
 
 			}

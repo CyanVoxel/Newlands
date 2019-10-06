@@ -94,24 +94,8 @@ public class CardAnimations : MonoBehaviour
 				+ "Tile");
 			if (cardObj != null)
 			{
-				// TODO: Make this into it's own publically-accessable method
-				switch (colorId)
-				{
-					case 0: // Default Player ID, used for wiping selection
-						cardObj.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.tintCard;
-						cardObj.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.tintCard;
-						break;
-					case 1:
-						cardObj.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.tintRed300;
-						cardObj.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.tintRed300;
-						break;
-					case 2:
-						cardObj.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.tintBlueLight300;
-						cardObj.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.tintBlueLight300;
-						break;
-					default:
-						break;
-				}
+				cardObj.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.GetDefaultPlayerColor(colorId, 300);
+				cardObj.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.GetDefaultPlayerColor(colorId, 300);
 			}
 			else
 			{
@@ -121,5 +105,25 @@ public class CardAnimations : MonoBehaviour
 					+ "Tile");
 			}
 		}
+	}
+
+	public static IEnumerator MoveObjectCoroutine(GameObject obj, Vector3 end, float speed)
+	{
+		Vector3 start = obj.transform.position;
+		Vector3 underEnd = new Vector3(end.x, end.y, end.z + 1f);
+
+		while (Vector3.Distance(obj.transform.position, underEnd) >.1f)
+		{
+			obj.transform.position = Vector3.Lerp(obj.transform.position, underEnd, speed * 1);
+			yield return new WaitForSeconds(0.01f);
+		}
+
+		while (Vector3.Distance(obj.transform.position, end) >.01f)
+		{
+			obj.transform.position = Vector3.Lerp(obj.transform.position, end, speed * 1);
+			yield return new WaitForSeconds(0.001f);
+		}
+
+		obj.transform.position = end;
 	}
 }
