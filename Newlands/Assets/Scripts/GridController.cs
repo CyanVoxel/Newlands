@@ -488,7 +488,10 @@ public class GridController : NetworkBehaviour
 					}
 					else
 					{
-						Debug.LogError(debugTag.error + "Tile Draw failure!");
+						Debug.LogWarning(debugTag + "The LandTile Deck is out of cards! Refreshing the mutable deck...");
+
+						matchController.RefreshDeck("LandTile");
+						y--;
 					}
 				}
 

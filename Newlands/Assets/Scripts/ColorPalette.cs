@@ -92,9 +92,9 @@ public class ColorPalette
 	};
 	public static readonly Color32[] tintBlueLight = new Color32[5]
 	{
-		new ColorHex("#00b8cc"),	// 500
-		new ColorHex("#48bacb"),	// 400
-		new ColorHex("#63bcca"),	// 300
+		new ColorHex("#03a6ea"),	// 500
+		new ColorHex("#4cabe6"),	// 400
+		new ColorHex("#61ade3"),	// 300
 		new ColorHex("#FF00FF"),	// 200
 		new ColorHex("#FF00FF")		// 100
 	};

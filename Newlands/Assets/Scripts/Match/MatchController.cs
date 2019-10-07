@@ -391,6 +391,7 @@ public class MatchController : NetworkBehaviour
 				turn = 1;
 				// this.round = 1;
 				phase++;
+				round++;
 				foreach (PlayerData player in players)
 				{
 					player.shouldSkip = false;
@@ -580,6 +581,27 @@ public class MatchController : NetworkBehaviour
 		this.config = controller.InitialConfig;
 		Debug.Log(debugTag + "Config loaded! Sending to Broadcaster...");
 		matchDataBroadcaster.MatchConfigStr = JsonUtility.ToJson(controller.InitialConfig);
+	}
+
+	public void RefreshDeck(string type)
+	{
+		switch (type)
+		{
+			case "LandTile":
+				MasterDeck tempDeck = new MasterDeck(config.DeckFlavor);
+				masterDeckMutable.landTileDeck = tempDeck.landTileDeck;
+				break;
+			case "CoastTile":
+				// MasterDeck tempDeck = new MasterDeck(config.DeckFlavor);
+				// masterDeckMutable.coastTileDeck = masterDeck.coastTileDeck;
+				break;
+			case "GameCard":
+				// MasterDeck tempDeck = new MasterDeck(config.DeckFlavor);
+				masterDeckMutable.gameCardDeck = masterDeck.gameCardDeck;
+				break;
+			default:
+				break;
+		}
 	}
 
 }

@@ -453,12 +453,12 @@ public class CardViewController : MonoBehaviour
 
 				if (card.ColorCornerFlag)
 				{
-					footerBorderL.color = ColorPalette.GetNewlandsColor(card.FooterColor, 500, false);
-					footerBorderR.color = ColorPalette.GetNewlandsColor(card.FooterColor, 500, false);
+					footerBorderL.color = ColorPalette.GetNewlandsColor(card.FooterColor, 500, true);
+					footerBorderR.color = ColorPalette.GetNewlandsColor(card.FooterColor, 500, true);
 				}
 				else
 				{
-					footerBorder.color = ColorPalette.GetNewlandsColor(card.FooterColor, 500, false);
+					footerBorder.color = ColorPalette.GetNewlandsColor(card.FooterColor, 500, true);
 				}
 
 				break;
