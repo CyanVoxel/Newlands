@@ -107,23 +107,51 @@ public class CardAnimations : MonoBehaviour
 		}
 	}
 
-	public static IEnumerator MoveObjectCoroutine(GameObject obj, Vector3 end, float speed)
+	public static IEnumerator MoveCardCoroutine(GameObject obj, GameObject end, Vector3 gap, float speed, bool moveUnder = true)
 	{
-		Vector3 start = obj.transform.position;
-		Vector3 underEnd = new Vector3(end.x, end.y, end.z + 1f);
-
-		while (Vector3.Distance(obj.transform.position, underEnd) >.1f)
+		if (moveUnder)
 		{
-			obj.transform.position = Vector3.Lerp(obj.transform.position, underEnd, speed * 1);
-			yield return new WaitForSeconds(0.01f);
+			Vector3 underEnd = new Vector3(end.transform.position.x,
+				end.transform.position.y,
+				end.transform.position.z + 1f) - gap;
+
+			while (Vector3.Distance(obj.transform.position, underEnd) >.1f)
+			{
+				obj.transform.position = Vector3.Lerp(obj.transform.position, underEnd, speed * 1);
+				yield return new WaitForSeconds(0.01f);
+			}
 		}
 
+		while (Vector3.Distance(obj.transform.position, end.transform.position - gap) >.01f)
+		{
+			obj.transform.position = Vector3.Lerp(obj.transform.position, end.transform.position - gap, speed * 1);
+			yield return new WaitForSeconds(0.001f);
+		}
+
+		obj.transform.position = end.transform.position - gap;
+	}
+
+	public static IEnumerator MoveCardCoroutine(GameObject obj, Vector3 end, float speed)
+	{
 		while (Vector3.Distance(obj.transform.position, end) >.01f)
 		{
-			obj.transform.position = Vector3.Lerp(obj.transform.position, end, speed * 1);
+			obj.transform.position = Vector3.Lerp(obj.transform.position, end, speed * 2);
 			yield return new WaitForSeconds(0.001f);
 		}
 
 		obj.transform.position = end;
+	}
+
+	public static IEnumerator MoveTileCoroutine(GameObject obj, Vector3 end, float speed)
+	{
+		Vector3 start = obj.transform.position;
+
+		while (Vector3.Distance(obj.transform.position, (start + end)) >.01f)
+		{
+			obj.transform.position = Vector3.Lerp(obj.transform.position, (obj.transform.position + end), speed * .5f);
+			yield return new WaitForSeconds(0.001f);
+		}
+
+		obj.transform.position = (start + end);
 	}
 }

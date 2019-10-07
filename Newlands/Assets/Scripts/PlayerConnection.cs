@@ -414,7 +414,6 @@ public class PlayerConnection : NetworkBehaviour
 					gridController.AddCardToStack(turnEvent.targetX, turnEvent.targetY, turnCard.Target, turnCard);
 
 					if (gridController.ShiftRowCheck(targetCard.Category, turnEvent.targetX, turnEvent.targetY))
-
 						gridController.IncrementStackSize(turnEvent.targetY, turnCard.Target);
 
 					Debug.Log(debugTag + "Trying to find " + CardUtility.CreateCardObjectName(targetCard.Category, turnEvent.targetX, turnEvent.targetY));
@@ -424,7 +423,7 @@ public class PlayerConnection : NetworkBehaviour
 
 					Debug.Log(debugTag.head + targetObject.name + " Stack Size: " + tile.CardStack.Count);
 
-					Vector3 endPosition = new Vector3(targetObject.transform.position.x,
+					Vector3 gap = targetObject.transform.position - new Vector3(targetObject.transform.position.x,
 						targetObject.transform.position.y
 						- (gridController.shiftUnit * (tile.CardStack.Count)),
 						(targetObject.transform.position.z)
@@ -441,7 +440,7 @@ public class PlayerConnection : NetworkBehaviour
 						cardObj.transform.name = CardUtility.CreateCardObjectName("Stacked", turnEvent.x, tile.CardStack.Count - 1);
 						cardObj.transform.SetParent(targetObject.transform);
 
-						StartCoroutine(CardAnimations.MoveObjectCoroutine(cardObj, endPosition, .1f));
+						StartCoroutine(CardAnimations.MoveCardCoroutine(cardObj, targetObject, gap, .1f));
 
 						CreateNewCardObject(turnEvent.y, turnEvent.topCard);
 					}
@@ -454,7 +453,7 @@ public class PlayerConnection : NetworkBehaviour
 
 						otherPlayersCard.transform.name = CardUtility.CreateCardObjectName("Stacked", turnEvent.x, tile.CardStack.Count - 1);
 						otherPlayersCard.transform.SetParent(targetObject.transform);
-						StartCoroutine(CardAnimations.MoveObjectCoroutine(otherPlayersCard, endPosition, .1f));
+						StartCoroutine(CardAnimations.MoveCardCoroutine(otherPlayersCard, targetObject, gap, .1f));
 					}
 				}
 
@@ -532,7 +531,7 @@ public class PlayerConnection : NetworkBehaviour
 
 		cardObj.GetComponent<CardViewController>().Card = JsonUtility.FromJson<Card>(cardStr);
 
-		StartCoroutine(CardAnimations.MoveObjectCoroutine(cardObj, finalPosition, 0.1f));
+		StartCoroutine(CardAnimations.MoveCardCoroutine(cardObj, finalPosition, 0.1f));
 
 		// // Debug.Log("[GridManager] Trying to fill out Hand Card info...");
 		// CardState cardState = cardObj.GetComponent<CardState>();

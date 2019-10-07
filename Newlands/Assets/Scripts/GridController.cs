@@ -279,9 +279,9 @@ public class GridController : NetworkBehaviour
 				break;
 		}
 
-		if (target.CardStack.Count >= maxStack)
+		if (target.CardStack.Count > maxStack)
 		{
-			IncrementStackSize(y, target.Category);
+			// IncrementStackSize(y, target.Category);
 			ShiftRow(target.Category, y, 1);
 			didShift = true;
 			Debug.Log(debugTag + "Shifting row " + y);
@@ -323,12 +323,12 @@ public class GridController : NetworkBehaviour
 				float oldY = knownOwnersGrid[x, y].CardObject.transform.position.y;
 				float oldZ = knownOwnersGrid[x, y].CardObject.transform.position.z;
 
-				// StartCoroutine(CardUtility.MoveObjectCoroutine(masterGrid[x, y].CardObject,
-				// 	new Vector3(oldX, (oldY += (shiftUnit * units)), oldZ), .1f));
+				StartCoroutine(CardAnimations.MoveTileCoroutine(masterGrid[x, y].CardObject,
+					new Vector3(0, shiftUnit, 0), .1f));
 
-				knownOwnersGrid[x, y].CardObject.transform.position = new Vector3(oldX,
-					(oldY += (shiftUnit * units)),
-					knownOwnersGrid[x, y].CardObject.transform.position.z);
+				// knownOwnersGrid[x, y].CardObject.transform.position = new Vector3(oldX,
+				// 	(oldY += (shiftUnit * units)),
+				// 	knownOwnersGrid[x, y].CardObject.transform.position.z);
 			}
 		}
 	}

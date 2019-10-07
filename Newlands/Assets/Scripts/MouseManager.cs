@@ -265,15 +265,15 @@ public class MouseManager : NetworkBehaviour
 
 					selection = y;
 					// objectHit.transform.parent.position = new Vector3(objectHit.transform.parent.position.x, objectHit.transform.parent.position.y, (objectHit.transform.parent.position.z -2f));
-					objectHit.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.GetNewlandsColor("Cyan", 500, true);
-					objectHit.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.GetNewlandsColor("Cyan", 500, true);
+					objectHit.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.GetNewlandsColor("Cyan", 300, true);
+					objectHit.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.GetNewlandsColor("Cyan", 300, true);
 				}
 				else
 				{
 					selection = y;
 					// objectHit.transform.parent.position = new Vector3(objectHit.transform.parent.position.x, objectHit.transform.parent.position.y, (objectHit.transform.parent.position.z -2f));
-					objectHit.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.GetNewlandsColor("Cyan", 500, true);
-					objectHit.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.GetNewlandsColor("Cyan", 500, true);
+					objectHit.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.GetNewlandsColor("Cyan", 300, true);
+					objectHit.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.GetNewlandsColor("Cyan", 300, true);
 				}
 				break;
 			default:
