@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class HudController : MonoBehaviour
 {
@@ -16,10 +17,27 @@ public class HudController : MonoBehaviour
 	[SerializeField]
 	private TMP_Text turnNumberText;
 
+	[SerializeField]
+	private TMP_Text roundLabel;
+	[SerializeField]
+	private TMP_Text roundNumber;
+	[SerializeField]
+	private Image roundCircle;
+	[SerializeField]
+	private Image roundCirclePinstripe;
+
+	[SerializeField]
+	private TMP_Text phaseLabel;
+	[SerializeField]
+	private Image phasePlate;
+
 	private MatchData matchData;
 	private MatchConfig config;
 	private string matchDataStr;
 	private string lastKnownPlayerMoneyStr = "";
+
+	private int thisPlayerId = 0;
+	public int ThisPlayerId { get { return thisPlayerId; } set { thisPlayerId = value; } }
 
 	[SerializeField]
 	private List<TMP_Text> playerMoneyText = new List<TMP_Text>();
@@ -134,7 +152,7 @@ public class HudController : MonoBehaviour
 	}
 
 	// Updates all HUD elements
-	private void UpdateHud()
+	public void UpdateHud()
 	{
 		if (initialized)
 		{
@@ -150,9 +168,35 @@ public class HudController : MonoBehaviour
 
 		if (this.matchData != null)
 		{
-			this.phaseNumberText.text = ("Phase " + this.matchData.Phase);
-			this.roundNumberText.text = ("Round " + this.matchData.Round);
-			this.turnNumberText.text = ("Player " + this.matchData.Turn + "'s Turn");
+			roundNumber.text = this.matchData.Round.ToString();
+
+			if (thisPlayerId == this.matchData.Turn)
+			{
+				roundLabel.color = ColorPalette.GetNewlandsColor("Card", 500, false);
+				roundNumber.color = ColorPalette.GetNewlandsColor("Card", 500, false);
+				roundCircle.color = ColorPalette.GetDefaultPlayerColor(thisPlayerId, 500, true);
+				roundCirclePinstripe.color = ColorPalette.GetNewlandsColor("Card", 500, false);
+				phaseLabel.color = ColorPalette.GetNewlandsColor("Black", 500, false);
+			}
+			else
+			{
+				roundLabel.color = ColorPalette.GetDefaultPlayerColor(this.matchData.Turn, 500, false);
+				roundNumber.color = ColorPalette.GetDefaultPlayerColor(this.matchData.Turn, 500, false);
+				roundCirclePinstripe.color = ColorPalette.GetDefaultPlayerColor(this.matchData.Turn, 500, false);
+				roundCircle.color = Color.white;
+				phaseLabel.color = ColorPalette.GetNewlandsColor("Black", 500, false);
+			}
+
+			switch (this.matchData.Phase)
+			{
+				case 1: phaseLabel.text = "<b>Buying</b> Phase"; break;
+				case 2: phaseLabel.text = "<b>Playing</b> Phase"; break;
+				default: break;
+			}
+
+			// this.phaseNumberText.text = ("Phase " + this.matchData.Phase);
+			// this.roundNumberText.text = ("Round " + this.matchData.Round);
+			// this.turnNumberText.text = ("Player " + this.matchData.Turn + "'s Turn");
 		}
 	}
 

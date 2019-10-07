@@ -17,7 +17,7 @@ public class PlayerConnection : NetworkBehaviour
 	private MatchDataBroadcaster matchDataBroadcaster;
 	private GridController gridController;
 	private MatchController matchController;
-	// private HudController hudController;
+	private HudController hudController;
 
 	// 	public GameManager gameMan;
 	// 	public GridManager gridMan;
@@ -156,6 +156,10 @@ public class PlayerConnection : NetworkBehaviour
 		while (this.id == -1)
 			yield return null;
 
+		// Send our ID to the HudController, then force an update from it.
+		this.hudController.GetComponent<HudController>().ThisPlayerId = this.id;
+		this.hudController.UpdateHud();
+
 		// Grab the config from the broadcaster
 		this.config = JsonUtility.FromJson<MatchConfig>(matchDataBroadcaster.MatchConfigStr);
 		while (this.config == null)
@@ -235,11 +239,11 @@ public class PlayerConnection : NetworkBehaviour
 			yield return null;
 		}
 
-		// while (this.hudController == null)
-		// {
-		// 	this.hudController = FindObjectOfType<HudController>();
-		// 	yield return null;
-		// }
+		while (this.hudController == null)
+		{
+			this.hudController = FindObjectOfType<HudController>();
+			yield return null;
+		}
 	}
 
 	// // Fires when this PlayerConnection's ID changes.
@@ -311,6 +315,7 @@ public class PlayerConnection : NetworkBehaviour
 			this.id = GameObject.Find("MatchManager(Clone)").GetComponent<MatchController>().GetPlayerId(address);
 
 		transform.GetComponent<MouseManager>().SetId(this.id);
+
 		Debug.Log(debugTag + "Assigned ID of " + this.id);
 		this.transform.name = "Player (" + this.id + ")";
 	}
@@ -496,8 +501,8 @@ public class PlayerConnection : NetworkBehaviour
 				cardObj.GetComponent<CardViewController>().Card = JsonUtility.FromJson<Card>(turnEvent.card);
 
 				// Depending on the player who bought the tile, change the Tile's color.
-				cardObj.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.GetDefaultPlayerColor(turnEvent.playerId, 500);
-				cardObj.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.GetDefaultPlayerColor(turnEvent.playerId, 500);
+				cardObj.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.GetDefaultPlayerColor(turnEvent.playerId, 500, true);
+				cardObj.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.GetDefaultPlayerColor(turnEvent.playerId, 500, true);
 				break;
 		}
 	}

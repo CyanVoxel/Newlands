@@ -94,8 +94,8 @@ public class CardAnimations : MonoBehaviour
 				+ "Tile");
 			if (cardObj != null)
 			{
-				cardObj.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.GetDefaultPlayerColor(colorId, 300);
-				cardObj.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.GetDefaultPlayerColor(colorId, 300);
+				cardObj.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.GetDefaultPlayerColor(colorId, 300, true);
+				cardObj.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.GetDefaultPlayerColor(colorId, 300, true);
 			}
 			else
 			{

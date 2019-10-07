@@ -388,6 +388,11 @@ public class ColorPalette
 			case "Black":
 				color = cardDark; break;
 			case "Card":
+			case "White":
+				if (isTint)
+					color = tintCard;
+				else
+					color = cardLight; break;
 			default: break;
 		}
 
@@ -396,20 +401,20 @@ public class ColorPalette
 
 	// Returns a color based on the Player's ID.
 	// Used if players aren't allowed to choose their own colors.
-	public static Color32 GetDefaultPlayerColor(int id, int strength)
+	public static Color32 GetDefaultPlayerColor(int id, int strength, bool isTint)
 	{
 		Color32 color = tintCard;
 
 		switch (id)
 		{
-			case 1: color = GetNewlandsColor("Red", strength, true); break;
-			case 2: color = GetNewlandsColor("Blue", strength, true); break;
-			case 3: color = GetNewlandsColor("Yellow", strength, true); break;
-			case 4: color = GetNewlandsColor("Green", strength, true); break;
-			case 5: color = GetNewlandsColor("Purple", strength, true); break;
-			case 6: color = GetNewlandsColor("Orange", strength, true); break;
-			case 7: color = GetNewlandsColor("Pink", strength, true); break;
-			case 8: color = GetNewlandsColor("Cyan", strength, true); break;
+			case 1: color = GetNewlandsColor("Red", strength, isTint); break;
+			case 2: color = GetNewlandsColor("Blue", strength, isTint); break;
+			case 3: color = GetNewlandsColor("Yellow", strength, isTint); break;
+			case 4: color = GetNewlandsColor("Green", strength, isTint); break;
+			case 5: color = GetNewlandsColor("Purple", strength, isTint); break;
+			case 6: color = GetNewlandsColor("Orange", strength, isTint); break;
+			case 7: color = GetNewlandsColor("Pink", strength, isTint); break;
+			case 8: color = GetNewlandsColor("Cyan", strength, isTint); break;
 			default: break;
 		}
 
