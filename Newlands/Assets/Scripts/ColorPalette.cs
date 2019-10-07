@@ -409,12 +409,12 @@ public class ColorPalette
 		{
 			case 1: color = GetNewlandsColor("Red", strength, isTint); break;
 			case 2: color = GetNewlandsColor("Blue", strength, isTint); break;
-			case 3: color = GetNewlandsColor("Yellow", strength, isTint); break;
+			case 3: color = GetNewlandsColor("Amber", strength, isTint); break;
 			case 4: color = GetNewlandsColor("Green", strength, isTint); break;
-			case 5: color = GetNewlandsColor("Purple", strength, isTint); break;
-			case 6: color = GetNewlandsColor("Orange", strength, isTint); break;
+			case 5: color = GetNewlandsColor("Orange", strength, isTint); break;
+			case 6: color = GetNewlandsColor("Cyan", strength, isTint); break;
 			case 7: color = GetNewlandsColor("Pink", strength, isTint); break;
-			case 8: color = GetNewlandsColor("Cyan", strength, isTint); break;
+			case 8: color = GetNewlandsColor("Deep Purple", strength, isTint); break;
 			default: break;
 		}
 

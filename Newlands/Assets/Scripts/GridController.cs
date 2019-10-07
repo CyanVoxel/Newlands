@@ -323,7 +323,7 @@ public class GridController : NetworkBehaviour
 				float oldY = knownOwnersGrid[x, y].CardObject.transform.position.y;
 				float oldZ = knownOwnersGrid[x, y].CardObject.transform.position.z;
 
-				StartCoroutine(CardAnimations.MoveTileCoroutine(masterGrid[x, y].CardObject,
+				StartCoroutine(CardAnimations.MoveTileCoroutine(knownOwnersGrid[x, y].CardObject,
 					new Vector3(0, shiftUnit, 0), .1f));
 
 				// knownOwnersGrid[x, y].CardObject.transform.position = new Vector3(oldX,
