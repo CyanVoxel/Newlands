@@ -530,26 +530,12 @@ public class PlayerConnection : NetworkBehaviour
 			Quaternion.identity);
 
 		cardObj.GetComponent<CardViewController>().Card = JsonUtility.FromJson<Card>(cardStr);
+		cardObj.transform.SetParent(GameObject.Find("PlayerHand").transform);
 
 		StartCoroutine(CardAnimations.MoveCardCoroutine(cardObj, finalPosition, 0.1f));
 
-		// // Debug.Log("[GridManager] Trying to fill out Hand Card info...");
-		// CardState cardState = cardObj.GetComponent<CardState>();
-
 		cardObj.name = (CardUtility.CreateCardObjectName("GameCard", this.id, index));
-
-		// if (cardState != null)
-		// {
-		// 	// Generate and Push the string of the object's name
-		// 	cardState.objectName = (GameManager.CreateCardObjectName("GameCard", this.id, index));
-		// 	// Push new values to the CardState to be synchronized across the network
-		// 	GridManager.FillOutCardState(JsonUtility.FromJson<CardData>(cardStr), ref cardState);
-		// }
-		// else
-		// {
-		// 	Debug.Log(debugTag + "This object's card state was null!");
-		// } // if (cardState != null)
-	} // CreateNewCardObject()
+	}
 
 	// private void InitLocalMarketGrid()
 	// {
@@ -650,59 +636,4 @@ public class PlayerConnection : NetworkBehaviour
 		Debug.Log("Looking for " + cardString);
 		GameObject.Find(cardString).GetComponent<CardViewController>().Card = this.hand[index];
 	}
-
-	// // Asks the Server to give this Player a hand of cards
-	// [Command]
-	// public void CmdGetHand(int playerId)
-	// {
-	// 	// if (!initIdFlag)
-	// 	// {
-	// 	// 	InitId();
-	// 	// }
-
-	// 	Debug.Log(debugTag + "[CmdGetHand] handSize =  "
-	// 		+ config.PlayerHandSize
-	// 		+ " for player " + this.id);
-
-	// 	for (int i = 0; i < config.PlayerHandSize; i++)
-	// 	{
-	// 		// if (GameManager.players[this.id - 1].hand[i] != null)
-	// 		// {
-	// 		Card card = matchController.Players[this.id - 1].hand[i];
-	// 		// Debug.Log(debug + "[CmdGetHand] Adding Card " + i
-	// 		// 	+ " to SyncList for player " + this.id);
-	// 		this.hand.Add(new CardData(card));
-	// 		// }
-	// 		// else
-	// 		// {
-	// 		// 	Debug.LogWarning(debug + "[CmdGetHand] Warning: "
-	// 		// 		+ "The player did not have a card in slot " + i);
-	// 		// }
-	// 	} // for
-
-	// 	// Debug.Log(debug + "[CmdGetHand] Finished grabbing "
-	// 	// 	+ this.hand.Count
-	// 	// 	+ " cards for player " + this.id);
-
-	// 	// TargetCreateHandObjects(connectionToClient, this.hand);
-	// } // CmdGetHand()
-
-	// Spawns in a copy of MouseManager with Client Authority and feeds it a reference
-	// to this PlayerConnection's connection.
-	// [Command]
-	// private void CmdSpawnMouseManager()
-	// {
-	// 	GameObject mouseManObj = (GameObject)Instantiate(mouseManPrefab,
-	// 		new Vector3(0, 0, 0),
-	// 		Quaternion.identity);
-
-	// 	// NetworkServer.SpawnWithClientAuthority(mouseManObj, connectionToClient);
-	// 	// localMouseMan = mouseManObj.GetComponent<MouseManager>();
-	// 	// localMouseMan.myClient = this.connectionToClient;
-	// 	// localMouseMan.myPlayerObj = this.gameObject;
-	// 	// Debug.Log(debug + "Giving MouseManager my ID of " + this.id);
-	// 	// localMouseMan.ownerId = this.id;
-	// } // CmdSpawnMouseManager()
-
-	// 	#endregion
-} // class PlayerConnection
+}
