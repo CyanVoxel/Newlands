@@ -1,0 +1,16 @@
+{
+  "category": "Game Card",
+  "title": "Market Mod",
+  "subtitle": "Investment",
+  "body": "Place this under any **Market Card.** This increases the **Base Price** of the **Resource.**",
+  "footer": "**<x>** in Price",
+  "footerColor": "Green",
+  "resource": "None",
+  "target": "Market",
+  "footerOpr": "+",
+  "footerValue": 20,
+  "colorCornerFlag": true,
+  "percFlag": true,
+  "moneyFlag": false,
+  "discardFlag": false
+}

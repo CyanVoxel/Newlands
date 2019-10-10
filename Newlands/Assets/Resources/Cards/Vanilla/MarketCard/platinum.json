@@ -1,0 +1,16 @@
+{
+  "category": "Market",
+  "title": "Market Card",
+  "subtitle": "<r>",
+  "body": " An extremely rare resource that can be placed under **Mountain** Tiles.",
+  "footer": "**<x>**",
+  "footerColor": "Black",
+  "resource": "Platinum",
+  "target": "",
+  "footerOpr": "",
+  "footerValue": 0,
+  "colorCornerFlag": false,
+  "percFlag": false,
+  "moneyFlag": true,
+  "discardFlag": false
+}

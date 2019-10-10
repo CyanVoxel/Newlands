@@ -1,123 +1,425 @@
 // A class containing various colors stored as Color32 variables
 
 using UnityEngine;
+using ColorHexUtility;
 
 public class ColorPalette
 {
-	#region FIELDS
 	// FIELDS ######################################################################################
 
-	// Material Design =============================================================================
-	// 500 ---------------------------------------------------------------------
-	public static readonly Color32 red500 = new Color32(r: 244, g: 67, b: 54, a: 255);
-	public static readonly Color32 deepOrange500 = new Color32(r: 255, g: 87, b: 34, a: 255);
-	public static readonly Color32 orange500 = new Color32(r: 255, g: 152, b: 0, a: 255);
-	public static readonly Color32 amber500 = new Color32(r: 255, g: 152, b: 0, a: 255);
-	public static readonly Color32 yellow500 = new Color32(r: 255, g: 235, b: 59, a: 255);
-	public static readonly Color32 lime500 = new Color32(r: 205, g: 220, b: 57, a: 255);
-	public static readonly Color32 lightGreen500 = new Color32(r: 139, g: 195, b: 74, a: 255);
-	public static readonly Color32 green500 = new Color32(r: 76, g: 175, b: 80, a: 255);
-	public static readonly Color32 teal500 = new Color32(r: 0, g: 150, b: 136, a: 255);
-	public static readonly Color32 cyan500 = new Color32(r: 0, g: 188, b: 212, a: 255);
-	public static readonly Color32 lightBlue500 = new Color32(r: 3, g: 169, b: 244, a: 255);
-	public static readonly Color32 blue500 = new Color32(r: 33, g: 150, b: 243, a: 255);
-	public static readonly Color32 indigo500 = new Color32(r: 63, g: 81, b: 181, a: 255);
-	public static readonly Color32 deepPurple500 = new Color32(r: 103, g: 58, b: 183, a: 255);
-	public static readonly Color32 purple500 = new Color32(r: 156, g: 39, b: 176, a: 255);
-	public static readonly Color32 pink500 = new Color32(r: 233, g: 30, b: 99, a: 255);
-
-	// 400 ---------------------------------------------------------------------
-	public static readonly Color32 red400 = new Color32(r: 239, g: 83, b: 80, a: 255);
-	public static readonly Color32 amber400 = new Color32(r: 255, g: 202, b: 40, a: 255);
-	public static readonly Color32 lightBlue400 = new Color32(r: 41, g: 182, b: 246, a: 255);
-	public static readonly Color32 purple400 = new Color32(r: 171, g: 71, b: 188, a: 255);
-
-	// 300 ---------------------------------------------------------------------
-	public static readonly Color32 red300 = new Color32(r: 229, g: 115, b: 115, a: 255);
-	public static readonly Color32 orange300 = new Color32(r: 255, g: 183, b: 77, a: 255);
-	public static readonly Color32 amber300 = new Color32(r: 255, g: 213, b: 79, a: 255);
-	public static readonly Color32 cyan300 = new Color32(r: 77, g: 205, b: 225, a: 255);
-	public static readonly Color32 lightBlue300 = new Color32(r: 79, g: 195, b: 247, a: 255);
-	public static readonly Color32 purple300 = new Color32(r: 186, g: 104, b: 200, a: 255);
-
-	// 200 ---------------------------------------------------------------------
-	public static readonly Color32 red200 = new Color32(r: 239, g: 154, b: 154, a: 255);
-	public static readonly Color32 orange200 = new Color32(r: 255, g: 204, b: 128, a: 255);
-	public static readonly Color32 amber200 = new Color32(r: 255, g: 224, b: 130, a: 255);
-	public static readonly Color32 lightBlue200 = new Color32(r: 129, g: 212, b: 250, a: 255);
-	public static readonly Color32 purple200 = new Color32(r: 206, g: 147, b: 216, a: 255);
-
-	// 100 ---------------------------------------------------------------------
-	public static readonly Color32 lightBlue100 = new Color32(r: 179, g: 229, b: 252, a: 255);
-
-	// Misc ========================================================================================
+	// General Colors ==============================================================================
 	public static readonly Color32 alpha = new Color32(r: 0, g: 0, b: 0, a: 0);
 
-	// Newlands ====================================================================================
+	// Newlands Colors =============================================================================
 
-	// Main Colors -------------------------------------------------------------
+	// Main  ---------------------------------------------------------------------------------------
 	public static readonly Color32 tintCard = new ColorHex("#FCFAF5");
 	public static readonly Color32 cardLight = new ColorHex("#CAC8C4");
 	public static readonly Color32 cardDark = new ColorHex("#111111");
 
-	// 500 Tint Colors ---------------------------------------------------------
-	public static readonly Color32 tintRed500 = new ColorHex("#f14234");
-	public static readonly Color32 tintOrangeDeep500 = new ColorHex("#fc6421");
-	public static readonly Color32 tintOrange500 = new ColorHex("#fc9500");
-	public static readonly Color32 tintAmber500 = new ColorHex("#fcbd07");
-	public static readonly Color32 tintYellow500 = new ColorHex("#fce639");
-	public static readonly Color32 tintGreenLight500 = new ColorHex("#aed837");
-	public static readonly Color32 tintGreen500 = new ColorHex("#4bac4d");
-	public static readonly Color32 tintTeal500 = new ColorHex("#1aa292");
-	public static readonly Color32 tintCyan500 = new ColorHex("#00b8cc");
-	public static readonly Color32 tintBlueLight500 = new ColorHex("#03a6ea");
-	public static readonly Color32 tintBlue500 = new ColorHex("#217de9");
-	public static readonly Color32 tintBlueDeep500 = new ColorHex("#4e54cd");
-	public static readonly Color32 tintPurpleDeep500 = new ColorHex("#7b40dc");
-	public static readonly Color32 tintPurple500 = new ColorHex("#b039bf");
-	public static readonly Color32 tintPink500 = new ColorHex("#e94076");
-	public static readonly Color32 tintGray500 = new ColorHex("#878684");
+	// Tint  ---------------------------------------------------------------------------------------
+	public static readonly Color32[] tintRed = new Color32[5]
+	{
+		new ColorHex("#f14234"),	// 500
+		new ColorHex("#ee5a50"),	// 400
+		new ColorHex("#ea6f68"),	// 300
+		new ColorHex("#FF00FF"),	// 200
+		new ColorHex("#FF00FF")		// 100
+	};
+	public static readonly Color32[] tintOrangeDeep = new Color32[5]
+	{
+		new ColorHex("#fc6421"),	// 500
+		new ColorHex("#f8744b"),	// 400
+		new ColorHex("#f28366"),	// 300
+		new ColorHex("#FF00FF"),	// 200
+		new ColorHex("#FF00FF")		// 100
+	};
+	public static readonly Color32[] tintOrange = new Color32[5]
+	{
+		new ColorHex("#fc9500"),	// 500
+		new ColorHex("#f79c49"),	// 400
+		new ColorHex("#f1a366"),	// 300
+		new ColorHex("#FF00FF"),	// 200
+		new ColorHex("#FF00FF")		// 100
+	};
+	public static readonly Color32[] tintAmber = new Color32[5]
+	{
+		new ColorHex("#fcbd07"),	// 500
+		new ColorHex("#f6bf50"),	// 400
+		new ColorHex("#f0c06c"),	// 300
+		new ColorHex("#FF00FF"),	// 200
+		new ColorHex("#FF00FF")		// 100
+	};
+	public static readonly Color32[] tintYellow = new Color32[5]
+	{
+		new ColorHex("#fce639"),	// 500
+		new ColorHex("#f4e168"),	// 400
+		new ColorHex("#eddc80"),	// 300
+		new ColorHex("#FF00FF"),	// 200
+		new ColorHex("#FF00FF")		// 100
+	};
+	public static readonly Color32[] tintGreenLight = new Color32[5]
+	{
+		new ColorHex("#aed837"),	// 500
+		new ColorHex("#b3d65f"),	// 400
+		new ColorHex("#b8d37d"),	// 300
+		new ColorHex("#FF00FF"),	// 200
+		new ColorHex("#FF00FF")		// 100
+	};
+	public static readonly Color32[] tintGreen = new Color32[5]
+	{
+		new ColorHex("#4bac4d"),	// 500
+		new ColorHex("#62af62"),	// 400
+		new ColorHex("#79b377"),	// 300
+		new ColorHex("#FF00FF"),	// 200
+		new ColorHex("#FF00FF")		// 100
+	};
+	public static readonly Color32[] tintTeal = new Color32[5]
+	{
+		new ColorHex("#1aa292"),	// 500
+		new ColorHex("#43a597"),	// 400
+		new ColorHex("#5ca99c"),	// 300
+		new ColorHex("#FF00FF"),	// 200
+		new ColorHex("#FF00FF")		// 100
+	};
+	public static readonly Color32[] tintCyan = new Color32[5]
+	{
+		new ColorHex("#00b8cc"),	// 500
+		new ColorHex("#48bacb"),	// 400
+		new ColorHex("#63bcca"),	// 300
+		new ColorHex("#FF00FF"),	// 200
+		new ColorHex("#FF00FF")		// 100
+	};
+	public static readonly Color32[] tintBlueLight = new Color32[5]
+	{
+		new ColorHex("#03a6ea"),	// 500
+		new ColorHex("#4cabe6"),	// 400
+		new ColorHex("#61ade3"),	// 300
+		new ColorHex("#FF00FF"),	// 200
+		new ColorHex("#FF00FF")		// 100
+	};
+	public static readonly Color32[] tintBlue = new Color32[5]
+	{
+		new ColorHex("#217de9"),	// 500
+		new ColorHex("#4d87e6"),	// 400
+		new ColorHex("#5e8de3"),	// 300
+		new ColorHex("#FF00FF"),	// 200
+		new ColorHex("#FF00FF")		// 100
+	};
+	public static readonly Color32[] tintBlueDeep = new Color32[5]
+	{
+		new ColorHex("#4e54cd"),	// 500
+		new ColorHex("#5c60cc"),	// 400
+		new ColorHex("#6c6fcc"),	// 300
+		new ColorHex("#FF00FF"),	// 200
+		new ColorHex("#FF00FF")		// 100
+	};
+	public static readonly Color32[] tintPurpleDeep = new Color32[5]
+	{
+		new ColorHex("#7b40dc"),	// 500
+		new ColorHex("#8151db"),	// 400
+		new ColorHex("#8a63d9"),	// 300
+		new ColorHex("#FF00FF"),	// 200
+		new ColorHex("#FF00FF")		// 100
+	};
+	public static readonly Color32[] tintPurple = new Color32[5]
+	{
+		new ColorHex("#b039bf"),	// 500
+		new ColorHex("#b24cbf"),	// 400
+		new ColorHex("#b45dc0"),	// 300
+		new ColorHex("#FF00FF"),	// 200
+		new ColorHex("#FF00FF")		// 100
+	};
+	public static readonly Color32[] tintPink = new Color32[5]
+	{
+		new ColorHex("#e94076"),	// 500
+		new ColorHex("#e7567e"),	// 400
+		new ColorHex("#e56385"),	// 300
+		new ColorHex("#FF00FF"),	// 200
+		new ColorHex("#FF00FF")		// 100
+	};
+	public static readonly Color32[] tintGray = new Color32[5]
+	{
+		new ColorHex("#878684"),	// 500
+		new ColorHex("#8f8e8b"),	// 400
+		new ColorHex("#969592"),	// 300
+		new ColorHex("#FF00FF"),	// 200
+		new ColorHex("#FF00FF")		// 100
+	};
 
-	// 300 Tint Colors ---------------------------------------------------------
-	public static readonly Color32 tintRed300 = new ColorHex("#ea6f68");
-	public static readonly Color32 tintOrangeDeep300 = new ColorHex("#f28366");
-	public static readonly Color32 tintOrange300 = new ColorHex("#f1a366");
-	public static readonly Color32 tintAmber300 = new ColorHex("#f0c06c");
-	public static readonly Color32 tintYellow300 = new ColorHex("#eddc80");
-	public static readonly Color32 tintGreenLight300 = new ColorHex("#b8d37d");
-	public static readonly Color32 tintGreen300 = new ColorHex("#79b377");
-	public static readonly Color32 tintTeal300 = new ColorHex("#5ca99c");
-	public static readonly Color32 tintCyan300 = new ColorHex("#63bcca");
-	public static readonly Color32 tintBlueLight300 = new ColorHex("#61ade3");
-	public static readonly Color32 tintBlue300 = new ColorHex("#5e8de3");
-	public static readonly Color32 tintBlueDeep300 = new ColorHex("#6c6fcc");
-	public static readonly Color32 tintPurpleDeep300 = new ColorHex("#8a63d9");
-	public static readonly Color32 tintPurple300 = new ColorHex("#b45dc0");
-	public static readonly Color32 tintPink300 = new ColorHex("#e56385");
-	public static readonly Color32 tintGray300 = new ColorHex("#969592");
+	// Full ----------------------------------------------------------------------------------------
+	public static readonly Color32[] baseRed = new Color32[5]
+	{
+		new ColorHex("#c1352a"),	// 500
+		new ColorHex("#c2524b"),	// 400
+		new ColorHex("#c36a65"),	// 300
+		new ColorHex("#FF00FF"),	// 200
+		new ColorHex("#FF00FF")		// 100
+	};
+	public static readonly Color32[] baseOrangeDeep = new Color32[5]
+	{
+		new ColorHex("#ca501a"),	// 500
+		new ColorHex("#ca6548"),	// 400
+		new ColorHex("#ca7865"),	// 300
+		new ColorHex("#FF00FF"),	// 200
+		new ColorHex("#FF00FF")		// 100
+	};
+	public static readonly Color32[] baseOrange = new Color32[5]
+	{
+		new ColorHex("#ca7700"),	// 500
+		new ColorHex("#ca8449"),	// 400
+		new ColorHex("#ca9066"),	// 300
+		new ColorHex("#FF00FF"),	// 200
+		new ColorHex("#FF00FF")		// 100
+	};
+	public static readonly Color32[] baseAmber = new Color32[5]
+	{
+		new ColorHex("#ca9705"),	// 500
+		new ColorHex("#ca9f50"),	// 400
+		new ColorHex("#caa66c"),	// 300
+		new ColorHex("#FF00FF"),	// 200
+		new ColorHex("#FF00FF")		// 100
+	};
+	public static readonly Color32[] baseYellow = new Color32[5]
+	{
+		new ColorHex("#cab82d"),	// 500
+		new ColorHex("#cabb63"),	// 400
+		new ColorHex("#cabe7d"),	// 300
+		new ColorHex("#FF00FF"),	// 200
+		new ColorHex("#FF00FF")		// 100
+	};
+	public static readonly Color32[] baseGreenLight = new Color32[5]
+	{
+		new ColorHex("#8bad2c"),	// 500
+		new ColorHex("#97b15b"),	// 400
+		new ColorHex("#a3b67a"),	// 300
+		new ColorHex("#FF00FF"),	// 200
+		new ColorHex("#FF00FF")		// 100
+	};
+	public static readonly Color32[] baseGreen = new Color32[5]
+	{
+		new ColorHex("#3c893d"),	// 500
+		new ColorHex("#599158"),	// 400
+		new ColorHex("#739b70"),	// 300
+		new ColorHex("#FF00FF"),	// 200
+		new ColorHex("#FF00FF")		// 100
+	};
+	public static readonly Color32[] baseTeal = new Color32[5]
+	{
+		new ColorHex("#158175"),	// 500
+		new ColorHex("#41887e"),	// 400
+		new ColorHex("#5c9087"),	// 300
+		new ColorHex("#FF00FF"),	// 200
+		new ColorHex("#FF00FF")		// 100
+	};
+	public static readonly Color32[] baseCyan = new Color32[5]
+	{
+		new ColorHex("#0093a3"),	// 500
+		new ColorHex("#489aa7"),	// 400
+		new ColorHex("#63a0ab"),	// 300
+		new ColorHex("#FF00FF"),	// 200
+		new ColorHex("#FF00FF")		// 100
+	};
+	public static readonly Color32[] baseBlueLight = new Color32[5]
+	{
+		new ColorHex("#0285bc"),	// 500
+		new ColorHex("#4c8fbd"),	// 400
+		new ColorHex("#6196be"),	// 300
+		new ColorHex("#FF00FF"),	// 200
+		new ColorHex("#FF00FF")		// 100
+	};
+	public static readonly Color32[] baseBlue = new Color32[5]
+	{
+		new ColorHex("#1a64bb"),	// 500
+		new ColorHex("#4b74bc"),	// 400
+		new ColorHex("#5c7dbd"),	// 300
+		new ColorHex("#FF00FF"),	// 200
+		new ColorHex("#FF00FF")		// 100
+	};
+	public static readonly Color32[] baseBlueDeep = new Color32[5]
+	{
+		new ColorHex("#3f43a4"),	// 500
+		new ColorHex("#5153a6"),	// 400
+		new ColorHex("#6365a9"),	// 300
+		new ColorHex("#FF00FF"),	// 200
+		new ColorHex("#FF00FF")		// 100
+	};
+	public static readonly Color32[] basePurpleDeep = new Color32[5]
+	{
+		new ColorHex("#6233b0"),	// 500
+		new ColorHex("#6c48b1"),	// 400
+		new ColorHex("#785db3"),	// 300
+		new ColorHex("#FF00FF"),	// 200
+		new ColorHex("#FF00FF")		// 100
+	};
+	public static readonly Color32[] basePurple = new Color32[5]
+	{
+		new ColorHex("#8d2d99"),	// 500
+		new ColorHex("#92459c"),	// 400
+		new ColorHex("#97589f"),	// 300
+		new ColorHex("#FF00FF"),	// 200
+		new ColorHex("#FF00FF")		// 100
+	};
+	public static readonly Color32[] basePink = new Color32[5]
+	{
+		new ColorHex("#bb335f"),	// 500
+		new ColorHex("#bc4e6c"),	// 400
+		new ColorHex("#bd5d74"),	// 300
+		new ColorHex("#FF00FF"),	// 200
+		new ColorHex("#FF00FF")		// 100
+	};
+	public static readonly Color32[] cardGray = new Color32[5]
+	{
+		new ColorHex("#6d6b69"),	// 500
+		new ColorHex("#797775"),	// 400
+		new ColorHex("#848280"),	// 300
+		new ColorHex("#FF00FF"),	// 200
+		new ColorHex("#FF00FF")		// 100
+	};
 
-	// 500 Card Colors ----------------------------------------------------------
-	public static readonly Color32 cardOrangeDeep500 = new ColorHex("#c1352a");
-	public static readonly Color32 cardRed500 = new ColorHex("#ca501a");
-	public static readonly Color32 cardOrange500 = new ColorHex("#ca7700");
-	public static readonly Color32 cardAmber500 = new ColorHex("#ca9705");
-	public static readonly Color32 cardYellow500 = new ColorHex("#cab82d");
-	public static readonly Color32 cardGreenLight500 = new ColorHex("#8bad2c");
-	public static readonly Color32 cardGreen500 = new ColorHex("#3c893d");
-	public static readonly Color32 cardTeal500 = new ColorHex("#158175");
-	public static readonly Color32 cardCyan500 = new ColorHex("#0093a3");
-	public static readonly Color32 cardBlueLight500 = new ColorHex("#0285bc");
-	public static readonly Color32 cardBlue500 = new ColorHex("#1a64bb");
-	public static readonly Color32 cardBlueDeep500 = new ColorHex("#3f43a4");
-	public static readonly Color32 cardPurpleDeep500 = new ColorHex("#6233b0");
-	public static readonly Color32 cardPurple500 = new ColorHex("#8d2d99");
-	public static readonly Color32 cardPink500 = new ColorHex("#bb335f");
-	public static readonly Color32 cardGray500 = new ColorHex("#6d6b69");
-
-	#endregion
-
-	#region METHODS
 	// METHODS #####################################################################################
+
+	// Returns a color from the Newlands palette based on its name, strength (500, 400, etc.),
+	// and whether or not it's a tint.
+	public static Color32 GetNewlandsColor(string name, int strength, bool isTint)
+	{
+		Color32 color = tintCard;
+		int strengthIndex;
+
+		switch (strength)
+		{
+			case 500:
+				strengthIndex = 0; break;
+			case 400:
+				strengthIndex = 1; break;
+			case 300:
+				strengthIndex = 2; break;
+			case 200:
+				strengthIndex = 3; break;
+			case 100:
+				strengthIndex = 4; break;
+			default:
+				strengthIndex = 0; break;
+		}
+
+		switch (name)
+		{
+			case "Red":
+				if (isTint)
+					color = tintRed[strengthIndex];
+				else
+					color = baseRed[strengthIndex]; break;
+			case "Orange Deep":
+			case "Deep Orange":
+				if (isTint)
+					color = tintOrangeDeep[strengthIndex];
+				else
+					color = baseOrangeDeep[strengthIndex]; break;
+			case "Amber":
+				if (isTint)
+					color = tintAmber[strengthIndex];
+				else
+					color = baseAmber[strengthIndex]; break;
+			case "Yellow":
+				if (isTint)
+					color = tintYellow[strengthIndex];
+				else
+					color = baseYellow[strengthIndex]; break;
+			case "Green Light":
+			case "Light Green":
+				if (isTint)
+					color = tintGreenLight[strengthIndex];
+				else
+					color = baseGreenLight[strengthIndex]; break;
+			case "Green":
+				if (isTint)
+					color = tintGreen[strengthIndex];
+				else
+					color = baseGreen[strengthIndex]; break;
+			case "Teal":
+				if (isTint)
+					color = tintTeal[strengthIndex];
+				else
+					color = baseTeal[strengthIndex]; break;
+			case "Cyan":
+				if (isTint)
+					color = tintCyan[strengthIndex];
+				else
+					color = baseCyan[strengthIndex]; break;
+			case "Blue Light":
+			case "Light Blue":
+				if (isTint)
+					color = tintBlueLight[strengthIndex];
+				else
+					color = baseBlueLight[strengthIndex]; break;
+			case "Blue":
+				if (isTint)
+					color = tintBlue[strengthIndex];
+				else
+					color = baseBlue[strengthIndex]; break;
+			case "Blue Deep":
+			case "Deep Blue":
+				if (isTint)
+					color = tintBlueDeep[strengthIndex];
+				else
+					color = baseBlueDeep[strengthIndex]; break;
+			case "Purple Deep":
+			case "Deep Purple":
+				if (isTint)
+					color = tintPurpleDeep[strengthIndex];
+				else
+					color = basePurpleDeep[strengthIndex]; break;
+			case "Purple":
+				if (isTint)
+					color = tintPurple[strengthIndex];
+				else
+					color = basePurple[strengthIndex]; break;
+			case "Pink":
+				if (isTint)
+					color = tintPink[strengthIndex];
+				else
+					color = basePink[strengthIndex]; break;
+			case "Gray":
+			case "Grey":
+				if (isTint)
+					color = tintGray[strengthIndex];
+				else
+					color = cardGray[strengthIndex]; break;
+			case "Black":
+				color = cardDark; break;
+			case "Card":
+			case "White":
+				if (isTint)
+					color = tintCard;
+				else
+					color = cardLight; break;
+			default: break;
+		}
+
+		return color;
+	}
+
+	// Returns a color based on the Player's ID.
+	// Used if players aren't allowed to choose their own colors.
+	public static Color32 GetDefaultPlayerColor(int id, int strength, bool isTint)
+	{
+		Color32 color = tintCard;
+
+		switch (id)
+		{
+			case 1: color = GetNewlandsColor("Red", strength, isTint); break;
+			case 2: color = GetNewlandsColor("Blue", strength, isTint); break;
+			case 3: color = GetNewlandsColor("Amber", strength, isTint); break;
+			case 4: color = GetNewlandsColor("Green", strength, isTint); break;
+			case 5: color = GetNewlandsColor("Orange", strength, isTint); break;
+			case 6: color = GetNewlandsColor("Cyan", strength, isTint); break;
+			case 7: color = GetNewlandsColor("Pink", strength, isTint); break;
+			case 8: color = GetNewlandsColor("Deep Purple", strength, isTint); break;
+			default: break;
+		}
+
+		return color;
+	}
 
 	// Outputs a hex color tag from a Color32
 	public static string Color32ToTag(Color32 color)
@@ -128,151 +430,6 @@ public class ColorPalette
 			+ color.b.ToString("X2")
 			+ ">";
 		return hex;
-	} // color32ToHex()
-
-	#endregion
-
-} // class ColorPalette
-
-// ColorHex struct - Mainly used as a way to create a Color32 using a hex code
-// @Author: Travis Abendshien (https://github.com/CyanVoxel)
-public struct ColorHex
-{
-	byte r;
-	byte g;
-	byte b;
-	byte a;
-
-	public ColorHex(byte r, byte g, byte b, byte a)
-	{
-		this.r = r;
-		this.g = g;
-		this.b = b;
-		this.a = a;
-
-	} // ColorHex(byte r, byte g, byte b, byte a)
-
-	public ColorHex(string hex)
-	{
-		string h = hex;
-
-		if (h.Contains("#"))
-		{
-			h = h.Remove(hex.IndexOf("#"), 1);
-		}
-
-		switch (h.Length)
-		{
-			case 6:
-				this.r = byte.Parse(h.Substring(0, 2), System.Globalization.NumberStyles.HexNumber);
-				this.g = byte.Parse(h.Substring(2, 2), System.Globalization.NumberStyles.HexNumber);
-				this.b = byte.Parse(h.Substring(4, 2), System.Globalization.NumberStyles.HexNumber);
-				this.a = 255;
-				break;
-
-			case 8:
-				this.r = byte.Parse(h.Substring(0, 2), System.Globalization.NumberStyles.HexNumber);
-				this.g = byte.Parse(h.Substring(2, 2), System.Globalization.NumberStyles.HexNumber);
-				this.b = byte.Parse(h.Substring(4, 2), System.Globalization.NumberStyles.HexNumber);
-				this.a = byte.Parse(h.Substring(6, 2), System.Globalization.NumberStyles.HexNumber);
-				break;
-
-			default:
-				this.r = 0;
-				this.g = 0;
-				this.b = 0;
-				this.a = 0;
-				break;
-		} // switch (hex.Length)
-	} // ColorHex(byte r, byte g, byte b, byte a)
-
-	public override bool Equals(object obj)
-	{
-		bool typeCheck = false;
-
-		if (this.GetType().Equals(obj.GetType()) || obj is UnityEngine.Color32)
-		{
-			typeCheck = true;
-		}
-
-		if (obj == null || !typeCheck)
-		{
-			return false;
-		}
-		else
-		{
-			ColorHex c = (ColorHex)obj;
-			return (r == c.r && g == c.g && b == c.b && a == c.a);
-		}
-	} // override Equals()
-
-	public static bool operator ==(UnityEngine.Color32 left, ColorHex right)
-	{
-		if (left.r == right.r
-			&& left.g == right.g
-			&& left.b == right.b
-			&& left.a == right.a)
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	} // operator ==
-
-	public static bool operator ==(ColorHex left, ColorHex right)
-	{
-		if (left.r == right.r
-			&& left.g == right.g
-			&& left.b == right.b
-			&& left.a == right.a)
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	} // operator ==
-
-	public static bool operator !=(UnityEngine.Color32 left, ColorHex right)
-	{
-		if (left.r != right.r
-			|| left.g != right.g
-			|| left.b != right.b
-			|| left.a != right.a)
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	} // operator !=
-
-	public static bool operator !=(ColorHex left, ColorHex right)
-	{
-		if (left.r != right.r
-			|| left.g != right.g
-			|| left.b != right.b
-			|| left.a != right.a)
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	} // operator !=
-
-	public static implicit operator UnityEngine.Color32(ColorHex c)
-	{
-		return new UnityEngine.Color32(c.r, c.g, c.b, c.a);
 	}
 
-	public override int GetHashCode()
-	{
-		return r ^ g ^ b ^ a;
-	} // override GetHashCode()
-} // struct ColorHex
+}

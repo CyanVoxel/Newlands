@@ -1,0 +1,16 @@
+{
+	"category": "Game Card",
+	"title": "Tile Mod",
+	"subtitle": "Investment",
+	"body": "Place this under **Any** Tile. This decreases the **Total Value** of the Tile.",
+	"footer": "**<x>** in Value",
+	"footerColor": "Red",
+	"resource": "None",
+	"target": "Tile",
+	"footerOpr": "-",
+	"footerValue": 100,
+	"colorCornerFlag": false,
+	"percFlag": false,
+	"moneyFlag": true,
+	"discardFlag": false
+}

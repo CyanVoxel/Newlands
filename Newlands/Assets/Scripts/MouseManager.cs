@@ -10,11 +10,18 @@ using UnityEngine.EventSystems;
 
 public class MouseManager : NetworkBehaviour
 {
-	private static DebugTag debug = new DebugTag("MouseManager", "AA00FF");
+	private static DebugTag debugTag = new DebugTag("MouseManager", "AA00FF");
 
-	private GameManager gameMan;
+	private MatchController matchController;
+	private MatchDataBroadcaster matchDataBroadcaster;
+
+	private MatchConfig config;
+	private MatchData matchData;
+	private string matchDataStr;
+
+	// private GameManager gameMan;
 	// public GuiManager guiMan;
-	private GridManager gridMan;
+	// private GridManager gridMan;
 	public int selection = -1;
 	// TODO: Create a dictionary of flags
 	private int purchaseSuccessFlag = -1; // -1: Reset | 0: False | 1: True
@@ -39,57 +46,49 @@ public class MouseManager : NetworkBehaviour
 	private float objRotY;
 	private float objRotZ;
 
-	void Start()
+	void Awake()
 	{
-		gridMan = FindObjectOfType<GridManager>();
-		gameMan = FindObjectOfType<GameManager>();
-	} // Start()
+		if (this.matchController == null)
+			this.matchController = FindObjectOfType<MatchController>();
+		if (this.matchDataBroadcaster == null)
+			this.matchDataBroadcaster = FindObjectOfType<MatchDataBroadcaster>();
+	}
 
-	// TODO: Clean this bad boy up and break it up into smaller methods
-	// Update is called once per frame
 	void Update()
 	{
 		// Authority Check -------------------------------------------------------------------------
-		if (!hasAuthority)
-		{
-			// Debug.LogWarning(debug.warning + "No Authority!");
+		if (!isLocalPlayer)
 			return;
+
+		if (config == null)
+			config = JsonUtility.FromJson<MatchConfig>(matchDataBroadcaster.MatchConfigStr);
+
+		if (matchDataBroadcaster.MatchDataStr != matchDataStr)
+		{
+			matchDataStr = matchDataBroadcaster.MatchDataStr;
+			matchData = JsonUtility.FromJson<MatchData>(matchDataStr);
 		}
 
 		// Debug.Log(debug.head + this.selection);
-
-		// Component Grabbers if null --------------------------------------------------------------
-		if (gameMan == null)
-		{
-			gameMan = FindObjectOfType<GameManager>();
-			Debug.Log(debug.head + "GameManager was set during update");
-		}
-
-		if (gridMan == null)
-		{
-			gridMan = FindObjectOfType<GridManager>();
-			Debug.Log(debug.head + "GridManager was set during update");
-		}
 
 		// Flag Checkers ---------------------------------------------------------------------------
 		CheckPurchaseSuccess();
 		CheckPlaySuccess();
 
 		// Raycast Handler -------------------------------------------------------------------------
-		// If 'P' is pressed, end the phase - Debugging only
-		if (Input.GetKeyDown(KeyCode.P))
-		{
-			gameMan.EndPhase();
-			// guiMan.CmdUpdateUI();
-		}
+
+		// // If 'P' is pressed, end the phase - Debugging only
+		// if (Input.GetKeyDown(KeyCode.P))
+		// {
+		// 	gameMan.EndPhase();
+		// 	// guiMan.CmdUpdateUI();
+		// }
 
 		// If the cursor is over a UI element, return from Update()
 		// NOTE: In order for Canvases on objects such as Cards to be ignored,
 		//	they must contain a "Canvas Group" and have "Block Raycasts" turned off
 		if (EventSystem.current.IsPointerOverGameObject())
-		{
 			return;
-		}
 
 		// Initialize ray
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -100,17 +99,18 @@ public class MouseManager : NetworkBehaviour
 		{
 			// Checks if the object hit has a parent before assinging it to a local var.
 			if (hitInfo.collider.transform.parent != null)
-			{
 				objectHit = hitInfo.collider.transform.parent.gameObject;
-			}
 			else
-			{
 				objectHit = hitInfo.collider.transform.gameObject;
-			}
 
 			HandleObjectHit(objectHit);
+			// Debug.Log(debugTag + objectHit.transform.parent.name);
+		}
+	}
 
-		} // If an object was hit
+	public void SetId(int id)
+	{
+		this.ownerId = id;
 	}
 
 	private void CheckPurchaseSuccess()
@@ -122,19 +122,19 @@ public class MouseManager : NetworkBehaviour
 
 			case 0:
 				// False
-				Debug.Log(debug.head + "Purchase Unsuccessful!");
+				Debug.Log(debugTag.head + "Purchase Unsuccessful!");
 				this.purchaseSuccessFlag = -1;
 				break;
 
 			case 1:
 				// True
-				Debug.Log(debug.head + "Purchase Successful!");
-				CmdFlipCard("Tile", this.purchaseBufferX, this.purchaseBufferY);
+				Debug.Log(debugTag.head + "Purchase Successful!");
+				// CmdFlipCard("Tile", this.purchaseBufferX, this.purchaseBufferY);
 				this.purchaseSuccessFlag = -1;
 				break;
 
 			default:
-				Debug.LogWarning(debug.head + "PurchaseSuccessFlag was set to " + this.purchaseSuccessFlag);
+				Debug.LogWarning(debugTag.head + "PurchaseSuccessFlag was set to " + this.purchaseSuccessFlag);
 				this.purchaseSuccessFlag = -1;
 				break;
 		} // switch (purchaseSuccessFlag)
@@ -149,20 +149,20 @@ public class MouseManager : NetworkBehaviour
 
 			case 0:
 				// False
-				Debug.Log(debug.head + "Play Unsuccessful!");
+				Debug.Log(debugTag.head + "Play Unsuccessful!");
 				this.playSuccessFlag = -1;
 				break;
 
 			case 1:
 				// True
-				Debug.Log(debug.head + "Play Successful!");
+				Debug.Log(debugTag.head + "Play Successful!");
 				// CmdFlipCard("Tile", this.purchaseBufferX, this.purchaseBufferY);
 				// this.purchaseSuccessRound = gameMan.round;
 				this.playSuccessFlag = -1;
 				break;
 
 			default:
-				Debug.LogWarning(debug.head + "PlaySuccessFlag was set to " + this.playSuccessFlag);
+				Debug.LogWarning(debugTag.head + "PlaySuccessFlag was set to " + this.playSuccessFlag);
 				this.playSuccessFlag = -1;
 				break;
 		} // switch (purchaseSuccessFlag)
@@ -187,8 +187,8 @@ public class MouseManager : NetworkBehaviour
 		// Primary Click =======================================================
 		if (Input.GetMouseButtonDown(0) && nameArr != null)
 		{
-			Debug.Log(debug + "Clicked on " + type + ", x: " + x + ", y: " + y);
-			switch (gameMan.phase)
+			Debug.Log(debugTag + "Clicked on " + type + ", x: " + x + ", y: " + y);
+			switch (matchData.Phase)
 			{
 				case 1:
 					BuyingPhasePrimaryClick(type, x, y);
@@ -207,21 +207,21 @@ public class MouseManager : NetworkBehaviour
 	{
 		this.selection = -1;
 		// If the tile can be bought
-		if (gameMan.turn == this.ownerId)
+		if (matchData.Turn == this.ownerId && type == "Tile")
 		{
-			Debug.Log(debug.head + "Trying to buy tile!");
+			Debug.Log(debugTag.head + "Trying to buy tile!");
 			CmdBuyTile(x, y);
 			this.purchaseBufferX = x;
 			this.purchaseBufferY = y;
 		}
 		else if (this.ownerId == -1)
 		{
-			Debug.LogWarning(debug.warning + "This MouseManager has an ownerID of -1!");
+			Debug.LogWarning(debugTag.warning + "This MouseManager has an ownerID of -1!");
 		}
 		else
 		{
-			Debug.Log(debug.head + "Player " + this.ownerId
-				+ " can't buy a tile on Player " + gameMan.turn + "'s Turn!");
+			Debug.Log(debugTag.head + "Player " + this.ownerId
+				+ " can't buy a tile on Player " + matchData.Turn + "'s Turn!");
 		}
 	} // BuyingPhasePrimaryClick()
 
@@ -232,15 +232,15 @@ public class MouseManager : NetworkBehaviour
 		{
 			case "Tile":
 			case "MarketCard":
-				if (selection >= 0 && gameMan.turn == this.ownerId)
+				if (selection >= 0 && matchData.Turn == this.ownerId)
 				{
-					Debug.Log(debug.head + "Trying to play card " + selection
+					Debug.Log(debugTag.head + "Trying to play card " + selection
 						+ " on " + objectHit.transform.parent.name);
 					playIndex = selection;
 					CmdPlayCard(selection, objectHit.transform.parent.name);
 				}
-				Debug.Log(debug + "Trying to find " + GameManager.CreateCardObjectName("GameCard", this.ownerId, selection));
-				oldSelection = GameObject.Find(GameManager.CreateCardObjectName("GameCard", this.ownerId, selection));
+				Debug.Log(debugTag + "Trying to find " + CardUtility.CreateCardObjectName("GameCard", this.ownerId, selection));
+				oldSelection = GameObject.Find(CardUtility.CreateCardObjectName("GameCard", this.ownerId, selection));
 				// oldSelection.transform.parent.position = new Vector3(oldSelection.transform.parent.position.x, oldSelection.transform.parent.position.y, objectHit.transform.parent.position.z);
 				oldSelection.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.tintCard;
 				oldSelection.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.tintCard;
@@ -252,28 +252,28 @@ public class MouseManager : NetworkBehaviour
 				{
 					selection = -1;
 					// objectHit.transform.parent.position = new Vector3(objectHit.transform.parent.position.x, objectHit.transform.parent.position.y, objectHit.transform.parent.position.z);
-					objectHit.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.tintCard;
-					objectHit.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.tintCard;
+					objectHit.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.GetNewlandsColor("Card", 500, true);
+					objectHit.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.GetNewlandsColor("Card", 500, true);
 				}
 				else if (selection >= 0)
 				{
-					Debug.Log(debug + "Trying to find " + GameManager.CreateCardObjectName("GameCard", this.ownerId, selection));
-					oldSelection = GameObject.Find(GameManager.CreateCardObjectName("GameCard", this.ownerId, selection));
+					Debug.Log(debugTag + "Trying to find " + CardUtility.CreateCardObjectName("GameCard", this.ownerId, selection));
+					oldSelection = GameObject.Find(CardUtility.CreateCardObjectName("GameCard", this.ownerId, selection));
 					// oldSelection.transform.parent.position = new Vector3(oldSelection.transform.parent.position.x, oldSelection.transform.parent.position.y, objectHit.transform.parent.position.z);
-					oldSelection.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.tintCard;
-					oldSelection.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.tintCard;
+					oldSelection.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.GetNewlandsColor("Card", 500, true);
+					oldSelection.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.GetNewlandsColor("Card", 500, true);
 
 					selection = y;
 					// objectHit.transform.parent.position = new Vector3(objectHit.transform.parent.position.x, objectHit.transform.parent.position.y, (objectHit.transform.parent.position.z -2f));
-					objectHit.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.tintCyan500;
-					objectHit.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.tintCyan500;
+					objectHit.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.GetNewlandsColor("Cyan", 300, true);
+					objectHit.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.GetNewlandsColor("Cyan", 300, true);
 				}
 				else
 				{
 					selection = y;
 					// objectHit.transform.parent.position = new Vector3(objectHit.transform.parent.position.x, objectHit.transform.parent.position.y, (objectHit.transform.parent.position.z -2f));
-					objectHit.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.tintCyan500;
-					objectHit.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.tintCyan500;
+					objectHit.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.GetNewlandsColor("Cyan", 300, true);
+					objectHit.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.GetNewlandsColor("Cyan", 300, true);
 				}
 				break;
 			default:
@@ -284,11 +284,11 @@ public class MouseManager : NetworkBehaviour
 
 	// COMMANDS ####################################################################################
 
-	[Command]
-	private void CmdFlipCard(string cardType, int locX, int locY)
-	{
-		CardAnimations.FlipCard(cardType, locX, locY);
-	} // CmdFlipCard()
+	// [Command]
+	// private void CmdFlipCard(string cardType, int locX, int locY)
+	// {
+	// 	CardAnimations.FlipCard(cardType, locX, locY);
+	// }
 
 	[Command]
 	private void CmdBuyTile(int locX, int locY)
@@ -296,44 +296,38 @@ public class MouseManager : NetworkBehaviour
 		// Debug.Log(debug.head + "Is Server? " + isServer);
 
 		bool success = false;
-		if (gameMan.BuyTile(locX, locY))
-		{
+		if (matchController.BuyTile(locX, locY))
 			success = true;
-		}
-		Debug.Log(debug.head + "About to call TargetBuyTile with connection: " + myClient);
+
+		Debug.Log(debugTag.head + "About to call TargetBuyTile with connection: " + myClient);
 		TargetBuyTile(myClient, success);
-	} // CmdBuyTile()
+	}
 
 	[Command]
 	private void CmdPlayCard(int selection, string targetTile)
 	{
 		bool success = false;
-		if (gameMan.PlayCard(selection, targetTile))
-		{
+		if (matchController.PlayCard(selection, targetTile))
 			success = true;
-		}
-		Debug.Log(debug.head + "About to call TargetPlay with connection: " + myClient);
+
+		Debug.Log(debugTag.head + "About to call TargetPlay with connection: " + myClient);
 		TargetPlayCard(myClient, success);
-	} // CmdPlayCard()
+	}
 
 	[TargetRpc]
 	private void TargetBuyTile(NetworkConnection target, bool success)
 	{
-		Debug.Log(debug.head + "Called TargetBuyTile!");
+		Debug.Log(debugTag.head + "Called TargetBuyTile!");
 		if (success)
-		{
 			purchaseSuccessFlag = 1;
-		}
 		else
-		{
 			purchaseSuccessFlag = 0;
-		}
-	} // TargetBuyTile()
+	}
 
 	[TargetRpc]
 	private void TargetPlayCard(NetworkConnection target, bool success)
 	{
-		Debug.Log(debug.head + "Called TargetPlay!");
+		Debug.Log(debugTag.head + "Called TargetPlay!");
 		if (success)
 		{
 			playSuccessFlag = 1;
@@ -343,5 +337,5 @@ public class MouseManager : NetworkBehaviour
 		{
 			playSuccessFlag = 0;
 		}
-	} // TargetPlayCard()
-} // class MouseManager
+	}
+}

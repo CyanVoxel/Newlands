@@ -1,0 +1,16 @@
+{
+  "category": "Game Card",
+  "title": "Market Mod",
+  "subtitle": "Sabotage",
+  "body": "Place this under any **Market Card.** This decreases the **Base Price** of the **Resource.**",
+  "footer": "**<x>** in Price",
+  "footerColor": "Red",
+  "resource": "None",
+  "target": "Market",
+  "footerOpr": "-",
+  "footerValue": 20,
+  "colorCornerFlag": true,
+  "percFlag": true,
+  "moneyFlag": false,
+  "discardFlag": false
+}

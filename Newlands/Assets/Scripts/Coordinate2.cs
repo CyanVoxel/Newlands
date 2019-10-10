@@ -10,7 +10,7 @@ public struct Coordinate2
 	{
 		this.x = x;
 		this.y = y;
-	} // Constructor
+	}
 
 	public override bool Equals(object obj)
 	{
@@ -23,12 +23,12 @@ public struct Coordinate2
 			Coordinate2 c = (Coordinate2)obj;
 			return (x == c.x && y == c.y);
 		}
-	} // override Equals()
+	}
 
 	public override string ToString()
 	{
 		return ("[" + this.x + ", " + this.y + "]");
-	} //override ToString()
+	}
 
 	public static bool operator ==(Coordinate2 left, Coordinate2 right)
 	{
@@ -40,7 +40,7 @@ public struct Coordinate2
 		{
 			return false;
 		}
-	} // operator ==
+	}
 
 	public static bool operator !=(Coordinate2 left, Coordinate2 right)
 	{
@@ -52,10 +52,10 @@ public struct Coordinate2
 		{
 			return false;
 		}
-	} // operator !=
+	}
 
 	public override int GetHashCode()
 	{
 		return x ^ y;
-	} // override GetHashCode()
-} // Coordinate2 struct
+	}
+}
