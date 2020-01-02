@@ -20,6 +20,7 @@ public class RuleSet : MonoBehaviour
 
 	// Compares a Game Card against a target Card/Tle to determine if it is allowed to be played
 	// given the scope of the Game Card.
+	// NOTE: This is the devil's work and must be destroyed.
 	public static bool IsLegal(CardData target, Card card)
 	{
 		string[] scopeLevel;

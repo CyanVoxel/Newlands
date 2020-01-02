@@ -390,6 +390,7 @@ public class PlayerConnection : NetworkBehaviour
 		CardData targetCard = JsonUtility.FromJson<CardData>(turnEvent.card);
 
 		Debug.Log(debugTag + "TurnEvent: " + turnEvent);
+		Debug.Log(debugTag + "Target Category: " + targetCard.Category);
 
 		// Check if the message should be addressed by this player
 		// if (turnEvent.phase != phase || turnEvent.playerId != this.id)

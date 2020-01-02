@@ -231,7 +231,7 @@ public class MouseManager : NetworkBehaviour
 		switch (type)
 		{
 			case "Tile":
-			case "MarketCard":
+			case "Market":
 				if (selection >= 0 && matchData.Turn == this.ownerId)
 				{
 					Debug.Log(debugTag.head + "Trying to play card " + selection

@@ -125,7 +125,7 @@ public class GridController : NetworkBehaviour
 						new Vector3(xOff, yOff, 50),
 						Quaternion.identity);
 
-					cardObj.name = (CardUtility.CreateCardObjectName("MarketCard", x, y));
+					cardObj.name = (CardUtility.CreateCardObjectName("Market", x, y));
 					cardObj.transform.SetParent(marketGridParent.transform);
 
 					masterMarketGrid[x, y].CardObject = cardObj;
@@ -209,10 +209,22 @@ public class GridController : NetworkBehaviour
 
 	public CardData GetServerTile(string type, int x, int y)
 	{
-		if (masterGrid[x, y] != null)
-			return masterGrid[x, y];
-		else
-			return null;
+		switch (type)
+		{
+			case "Market":
+				if (masterMarketGrid[x, y] != null)
+					return masterMarketGrid[x, y];
+				else
+					return null;
+			case "Tile":
+				if (masterGrid[x, y] != null)
+					return masterGrid[x, y];
+				else
+					return null;
+			default:
+				return null;
+		}
+
 	}
 
 	public CardData GetClientTile(string type, int x, int y)
@@ -267,6 +279,8 @@ public class GridController : NetworkBehaviour
 		int maxStack = 0;
 		CardData target = GetClientTile(type, x, y);
 
+		Debug.Log(debugTag + "Target Category: " + type);
+
 		switch (type)
 		{
 			case "Tile":
@@ -282,9 +296,9 @@ public class GridController : NetworkBehaviour
 		if (target.CardStack.Count > maxStack)
 		{
 			// IncrementStackSize(y, target.Category);
-			ShiftRow(target.Category, y, 1);
+			ShiftRow(type, y, 1);
 			didShift = true;
-			Debug.Log(debugTag + "Shifting row " + y);
+			Debug.Log(debugTag + "Shifting row " + y + " for category: " + target.Category);
 		}
 		else
 		{
