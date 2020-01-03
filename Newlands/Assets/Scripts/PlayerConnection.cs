@@ -422,6 +422,7 @@ public class PlayerConnection : NetworkBehaviour
 
 					CardData tile = gridController.GetClientTile(targetCard.Category, turnEvent.targetX, turnEvent.targetY);
 
+					Debug.Log(debugTag.head + targetCard.Category);
 					Debug.Log(debugTag.head + targetObject.name + " Stack Size: " + tile.CardStack.Count);
 
 					Vector3 gap = targetObject.transform.position - new Vector3(targetObject.transform.position.x,

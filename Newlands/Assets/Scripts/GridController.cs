@@ -229,8 +229,10 @@ public class GridController : NetworkBehaviour
 
 	public CardData GetClientTile(string type, int x, int y)
 	{
-		if (knownOwnersGrid[x, y] != null)
+		if (type == "Tile" && knownOwnersGrid[x, y] != null)
 			return knownOwnersGrid[x, y];
+		else if (type == "Market" && masterMarketGrid[x, y] != null)
+			return masterMarketGrid[x, y];
 		else
 			return null;
 	}
@@ -348,6 +350,7 @@ public class GridController : NetworkBehaviour
 	}
 
 	// Used by ShiftRow to shift the Master Market Grid rows
+	// TODO: update to use animations
 	private void ShiftMasterMarketGrid(int row, int units)
 	{
 		int marketWidth = Mathf.CeilToInt((float)matchController.MasterDeck.marketCardDeck.Count
