@@ -1,6 +1,5 @@
 ﻿// An object that's used to represent what the GameManger did on a turn.
-// TODO: This might want to be broken up into smaller objects that are more specialized
-// for each operation.
+// TODO: Better names? Builder class? So much room for improvement, but it works for now.
 
 using UnityEngine;
 

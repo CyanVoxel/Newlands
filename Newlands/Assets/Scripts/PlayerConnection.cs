@@ -412,17 +412,18 @@ public class PlayerConnection : NetworkBehaviour
 				// If the card is meant to be stacked
 				if (!turnCard.DiscardFlag)
 				{
-					gridController.AddCardToStack(turnEvent.targetX, turnEvent.targetY, turnCard.Target, turnCard);
+					gridController.AddCardToStack(turnEvent.targetX, turnEvent.targetY, targetCard.Category, turnCard);
 
+					Debug.LogWarning(debugTag + "Running Shift Row Check on " + targetCard.Category + ", " + turnEvent.targetX+ ", " + turnEvent.targetY);
 					if (gridController.ShiftRowCheck(targetCard.Category, turnEvent.targetX, turnEvent.targetY))
-						gridController.IncrementStackSize(turnEvent.targetY, turnCard.Target);
+						gridController.IncrementStackSize(turnEvent.targetY, targetCard.Category);
 
 					Debug.Log(debugTag + "Trying to find " + CardUtility.CreateCardObjectName(targetCard.Category, turnEvent.targetX, turnEvent.targetY));
 					GameObject targetObject = GameObject.Find(CardUtility.CreateCardObjectName(targetCard.Category, turnEvent.targetX, turnEvent.targetY));
 
 					CardData tile = gridController.GetClientTile(targetCard.Category, turnEvent.targetX, turnEvent.targetY);
 
-					Debug.Log(debugTag.head + targetCard.Category);
+					Debug.Log(debugTag.head + "Target Category: " + targetCard.Category);
 					Debug.Log(debugTag.head + targetObject.name + " Stack Size: " + tile.CardStack.Count);
 
 					Vector3 gap = targetObject.transform.position - new Vector3(targetObject.transform.position.x,

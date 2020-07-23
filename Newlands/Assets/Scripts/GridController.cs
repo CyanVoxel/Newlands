@@ -14,6 +14,7 @@ public class GridController : NetworkBehaviour
 	private CardData[, ] masterGrid;
 	private CardData[, ] knownOwnersGrid;
 	private CardData[, ] masterMarketGrid;
+	private CardData[, ] knownMarketOwnersGrid;
 
 	// private MatchData matchData;
 	private TurnEvent lastKnownTurnEvent;
@@ -28,6 +29,7 @@ public class GridController : NetworkBehaviour
 	private static int[] maxMarketStack;
 
 	public CardData[, ] KnownOwnersGrid { get { return knownOwnersGrid; } set { knownOwnersGrid = value; } }
+	// public CardData[, ] KnownMarketOwnersGrid { get { return knownMarketOwnersGrid; } set { knownMarketOwnersGrid = value; } }
 
 	private DebugTag debugTag = new DebugTag("GridController", "00BCD4");
 
@@ -128,7 +130,7 @@ public class GridController : NetworkBehaviour
 					cardObj.name = (CardUtility.CreateCardObjectName("Market", x, y));
 					cardObj.transform.SetParent(marketGridParent.transform);
 
-					masterMarketGrid[x, y].CardObject = cardObj;
+					masterMarketGrid[x, y].CardObject = cardObj; // Physical representation
 				}
 			}
 		}
@@ -161,6 +163,10 @@ public class GridController : NetworkBehaviour
 			/ (float)config.GameGridHeight), config.GameGridHeight];
 		maxMarketStack = new int[config.GameGridHeight];
 
+		knownMarketOwnersGrid = new CardData[(int)Mathf.Ceil((float)ResourceInfo.resources.Count - 1
+			/ (float)config.GameGridHeight), config.GameGridHeight];
+		maxMarketStack = new int[config.GameGridHeight];
+
 		int marketWidth = Mathf.CeilToInt(((float)ResourceInfo.resources.Count - 1)
 			/ (float)config.GameGridHeight);
 		// Debug.Log(debugTag + "x: " + marketWidth
@@ -178,7 +184,8 @@ public class GridController : NetworkBehaviour
 						out card, false))
 				{
 					// Connect the drawn card to the internal grid
-					masterMarketGrid[x, y] = new CardData(card);
+					masterMarketGrid[x, y] = new CardData(card); // Physical cards
+					knownMarketOwnersGrid[x, y] = new CardData(card); // Client Logical representation
 					// Debug.Log(debugTag + "Created Market Card: " + card.Resource);
 				}
 			}
@@ -231,8 +238,8 @@ public class GridController : NetworkBehaviour
 	{
 		if (type == "Tile" && knownOwnersGrid[x, y] != null)
 			return knownOwnersGrid[x, y];
-		else if (type == "Market" && masterMarketGrid[x, y] != null)
-			return masterMarketGrid[x, y];
+		else if (type == "Market" && knownMarketOwnersGrid[x, y] != null)
+			return knownMarketOwnersGrid[x, y];
 		else
 			return null;
 	}
@@ -247,13 +254,18 @@ public class GridController : NetworkBehaviour
 
 	public void IncrementStackSize(int y, string gridType)
 	{
+		Debug.Log(debugTag + "Incrementing card of type: " + gridType);
 		switch (gridType)
 		{
 			case "Market":
 				maxMarketStack[y]++;
+				Debug.Log(debugTag + "[AddCardToStack] MARKET STACK INCREMENTED TO " + maxMarketStack[y]);
+				break;
+			case "Tile":
+				maxGridStack[y]++;
+				Debug.Log(debugTag + "[AddCardToStack] TILE STACK INCREMENTED TO " + maxGridStack[y]);
 				break;
 			default:
-				maxGridStack[y]++;
 				break;
 		}
 	}
@@ -263,13 +275,20 @@ public class GridController : NetworkBehaviour
 		switch (gridType)
 		{
 			case "Market":
+				knownMarketOwnersGrid[x, y].CardStack.Add(card);
 				if (hasAuthority)
+				{
+					Debug.Log(debugTag + "[AddCardToStack] MARKET CARD ADDED TO STACK");
 					masterMarketGrid[x, y].CardStack.Add(card);
+				}
 				break;
 			default:
 				knownOwnersGrid[x, y].CardStack.Add(card);
 				if (hasAuthority)
+				{
+					Debug.Log(debugTag + "[AddCardToStack] GAMECARD ADDED TO STACK");
 					masterGrid[x, y].CardStack.Add(card);
+				}
 				break;
 		}
 	}
@@ -281,7 +300,7 @@ public class GridController : NetworkBehaviour
 		int maxStack = 0;
 		CardData target = GetClientTile(type, x, y);
 
-		Debug.Log(debugTag + "Target Category: " + type);
+		Debug.Log(debugTag + "[Shift Row Check] Target Category: " + type);
 
 		switch (type)
 		{
@@ -295,6 +314,7 @@ public class GridController : NetworkBehaviour
 				break;
 		}
 
+		Debug.Log(debugTag + "[Shift Row Check] Target Card's stack is : " + target.CardStack.Count + ". Known max stack for type " + type + " is " + maxStack);
 		if (target.CardStack.Count > maxStack)
 		{
 			// IncrementStackSize(y, target.Category);
@@ -366,9 +386,13 @@ public class GridController : NetworkBehaviour
 					float oldX = masterMarketGrid[x, y].CardObject.transform.position.x;
 					float oldY = masterMarketGrid[x, y].CardObject.transform.position.y;
 					// float oldZ = masterMarketGrid[x, y].tileObj.transform.position.z;
-					masterMarketGrid[x, y].CardObject.transform.position = new Vector3(oldX,
-						(oldY += (shiftUnit * units)),
-						masterMarketGrid[x, y].CardObject.transform.position.z);
+
+					StartCoroutine(CardAnimations.MoveTileCoroutine(masterMarketGrid[x, y].CardObject,
+					new Vector3(0, shiftUnit, 0), .1f));
+
+					// masterMarketGrid[x, y].CardObject.transform.position = new Vector3(oldX,
+					// 	(oldY += (shiftUnit * units)),
+					// 	masterMarketGrid[x, y].CardObject.transform.position.z);
 				}
 			}
 		}
