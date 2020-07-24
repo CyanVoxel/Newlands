@@ -426,8 +426,8 @@ public class GridController : NetworkBehaviour
 	// Updates Market Card prices.
 	public void UpdateMarketCardValues()
 	{
-		for (int i = 0; i < ResourceInfo.prices.Count; i++)
-		{
+		// for (int i = 0; i < ResourceInfo.prices.Count; i++)
+		// {
 			for (int x = 0; x < masterMarketGrid.GetLength(0); x++)
 			{
 				for (int y = 0; y < masterMarketGrid.GetLength(1); y++)
@@ -436,22 +436,24 @@ public class GridController : NetworkBehaviour
 						CalcCardValue(masterMarketGrid[x, y]);
 				} // for y
 			} // for x
-		}
+		// }
 	}
 
 	private int CalcCardValue(CardData cardData)
 	{
-		int baseValue = 0;
+		double baseValue = 0;
 		int retrievedPrice = 0;
-		int valueMod = 0;
-		int totalValue = 0;
+		double valueMod = 0;
+		double totalValue = 0;
 
 		if (cardData == null)
 		{
 			Debug.LogError(debugTag.error + "[CalcCardValue] Passed CardData was null!");
 		}
 
-		Debug.Log(debugTag + "[CalcCardValue] Category: " + cardData.Category);
+		Debug.Log(debugTag + "[CalcCardValue] Calculating data for  " + cardData.Title + " " + cardData.Resource + " " + cardData.FooterValue);
+
+		// Debug.Log(debugTag + "[CalcCardValue] Category: " + cardData.Category);
 
 		// Calculates the value of the resources built-in to the card
 		if (cardData.Category == "Tile")
@@ -463,20 +465,24 @@ public class GridController : NetworkBehaviour
 		}
 		else if (cardData.Category == "Market")
 		{
-			ResourceInfo.pricesMut.TryGetValue(cardData.Resource, out baseValue);
+			int baseResourcePrice;
+			ResourceInfo.prices.TryGetValue(cardData.Resource, out baseResourcePrice);
+			baseValue = baseResourcePrice;
 		}
 
 		// Calculates the value of the resources and pure cash on cards in the stack, if any.
-		Debug.Log(debugTag + "[CalcCardValue] CardStack Size: " + cardData.CardStack.Count);
+		// Debug.Log(debugTag + "[CalcCardValue] CardStack Size: " + cardData.CardStack.Count);
 		for (int i = 0; i < cardData.CardStack.Count; i++)
 		{
 			retrievedPrice = 0;
+
+			Debug.Log(debugTag + "[CalcCardValue] Found Stack Card #" + i + ", Subtitle:" + cardData.CardStack[i].Subtitle);
+			Debug.Log(debugTag + "[CalcCardValue] Found Stack Card #" + i + ", Old Base Value:" + baseValue);
 
 			// Resources, Additive/Subtractive Cash Modifiers
 			if (cardData.CardStack[i].Subtitle == "Resource")
 			{
 				ResourceInfo.pricesMut.TryGetValue(cardData.CardStack[i].Resource, out retrievedPrice);
-				Debug.Log(debugTag + "[CalcCardValue] Adding $" + (retrievedPrice * cardData.CardStack[i].FooterValue) + " to base value.");
 				baseValue += (retrievedPrice * cardData.CardStack[i].FooterValue);
 			}
 			else if (cardData.CardStack[i].Subtitle == "Investment" && !cardData.CardStack[i].PercFlag)
@@ -488,6 +494,10 @@ public class GridController : NetworkBehaviour
 				baseValue -= cardData.CardStack[i].FooterValue;
 			}
 
+			Debug.Log(debugTag + "[CalcCardValue] Found Stack Card #" + i + ", New Base Value:" + baseValue);
+
+			Debug.Log(debugTag + "[CalcCardValue] Found Stack Card #" + i + ", Old Mod Value:" + valueMod);
+
 			// Percentage Modifiers
 			if (cardData.CardStack[i].Subtitle == "Investment" && cardData.CardStack[i].PercFlag)
 			{
@@ -497,23 +507,31 @@ public class GridController : NetworkBehaviour
 			{
 				valueMod -= cardData.CardStack[i].FooterValue;
 			}
+
+			Debug.Log(debugTag + "[CalcCardValue] Found Stack Card #" + i + ", New Mod Value:" + valueMod);
 		}
 
-		totalValue = baseValue + (baseValue * valueMod / 100);
+		totalValue = baseValue + (baseValue * valueMod / 100d);
 
 		// Update the mutable resource price, if necessary.
 		if (cardData.Category == "Market")
 		{
-			ResourceInfo.pricesMut[cardData.Resource] = totalValue;
+			ResourceInfo.pricesMut[cardData.Resource] = (int)totalValue;
+			Debug.Log(debugTag + "[CalcCardValue] " + cardData.Resource + " Price:  $" + ResourceInfo.pricesMut[cardData.Resource]);
 		}
 
-		// Debug.Log(debugTag + "[CalcCardValue] " + cardData.Title + " base value:  " + baseValue);
-		// Debug.Log(debugTag + "[CalcCardValue] " + cardData.Title + " value mod: " + valueMod);
-		// Debug.Log(debugTag + "[CalcCardValue] " + cardData.Title + " total value: " + totalValue);
+		if (cardData.Category == "Tile")
+		{
+			Debug.Log(debugTag + "[CalcCardValue] " + cardData.CardObject.name + " Base:  $" + baseValue + ", Mod: $" + valueMod + ", Total: $" + totalValue);
+		}
 
-		Debug.Log(debugTag + "[CalcCardValue] Total Value of card found: $" + totalValue);
+		// Debug.Log(debugTag + "[CalcCardValue] " + cardData.CardObject.name + " base value:  " + baseValue);
+		// Debug.Log(debugTag + "[CalcCardValue] " + cardData.CardObject.name + " value mod: " + valueMod);
+		// // Debug.Log(debugTag + "[CalcCardValue] " + cardData.Title + " total value: " + totalValue);
 
-		return totalValue;
+		// Debug.Log(debugTag + "[CalcCardValue] Total Value of card found: $" + totalValue);
+
+		return (int)totalValue;
 	}
 
 	// public void CalcBaseValue()

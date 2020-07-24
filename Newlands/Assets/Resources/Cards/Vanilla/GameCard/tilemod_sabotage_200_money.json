@@ -1,7 +1,7 @@
 {
 	"category": "Game Card",
 	"title": "Tile Mod",
-	"subtitle": "Investment",
+	"subtitle": "Sabotage",
 	"body": "Place this under **Any** Tile. This decreases the **Total Value** of the Tile.",
 	"footer": "**<x>** in Value",
 	"footerColor": "Red",

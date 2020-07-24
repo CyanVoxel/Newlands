@@ -485,8 +485,8 @@ public class MatchController : NetworkBehaviour
 
 		if (!target.IsBankrupt && RuleSet.IsLegal(target, card))
 		{
-			gridController.UpdateMarketCardValues();
-			
+			// gridController.UpdateMarketCardValues();
+
 			gridController.AddCardToStack(locX, locY, target.Category, card);
 			UpdatePlayersInfo();
 
