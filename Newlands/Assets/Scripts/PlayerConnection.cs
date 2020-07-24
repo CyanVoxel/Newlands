@@ -412,9 +412,10 @@ public class PlayerConnection : NetworkBehaviour
 				// If the card is meant to be stacked
 				if (!turnCard.DiscardFlag)
 				{
+					if (!hasAuthority)
 					gridController.AddCardToStack(turnEvent.targetX, turnEvent.targetY, targetCard.Category, turnCard);
 
-					Debug.LogWarning(debugTag + "Running Shift Row Check on " + targetCard.Category + ", " + turnEvent.targetX+ ", " + turnEvent.targetY);
+					// Debug.Log(debugTag + "Running Shift Row Check on " + targetCard.Category + ", " + turnEvent.targetX+ ", " + turnEvent.targetY);
 					if (gridController.ShiftRowCheck(targetCard.Category, turnEvent.targetX, turnEvent.targetY))
 						gridController.IncrementStackSize(turnEvent.targetY, targetCard.Category);
 
@@ -636,7 +637,7 @@ public class PlayerConnection : NetworkBehaviour
 	{
 		this.hand.Add(JsonUtility.FromJson<Card>(hand));
 		string cardString = CardUtility.CreateCardObjectName("GameCard", this.id, index);
-		Debug.Log("Looking for " + cardString);
+		// Debug.Log("Looking for " + cardString);
 		GameObject.Find(cardString).GetComponent<CardViewController>().Card = this.hand[index];
 	}
 }

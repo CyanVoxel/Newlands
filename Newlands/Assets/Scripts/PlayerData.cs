@@ -13,12 +13,12 @@ public class PlayerData
 
 	public int Id { get; set; } = 0;
 	public Deck hand;
-	public GridUnit[] handUnits;
+	// public GridUnit[] handUnits;
 	public List<Coordinate2> ownedTiles = new List<Coordinate2>();
 
-	private double tileMoney = 0;
-	public double baseMoney = 0;
-	public double totalMoney = 0;
+	// private double tileMoney = 0;
+	// private double baseMoney = 0;
+	private double totalMoney = 0;
 
 	private bool initialized = false;
 	public bool shouldSkip = false;
@@ -32,40 +32,54 @@ public class PlayerData
 
 	public double Money { get { return totalMoney; } }
 
+	public void ResetMoney()
+	{
+		totalMoney = 0;
+	}
+
+	public void AddMoney(int money)
+	{
+		totalMoney += money;
+	}
+
 	// void Start() {
 	// 	gridMan = FindObjectOfType<GridManager>();
 	// }
 
-	public void CalcTotalMoney(List<CardData> cards)
-	{
-		this.totalMoney = 0;
-		this.tileMoney = 0; // Reset tile money before recalculating
+	// public void CalcTotalMoney()
+	// {
+	// 	this.totalMoney = 0;
+	// 	this.tileMoney = 0; // Reset tile money before recalculating
 
-		// Checks to see if the object has been initialized. If not, assume it will be afterwards.
-		if (this.initialized)
-		{
-			// Search the grid for owned tiles
-			// TODO: Implement a list of known owned tile coordinates to replace these for loops
-			// for (int x = 0; x < gridWidth; x++)
-			// {
-			// 	for (int y = 0; y < gridHeight; y++)
-			// 	{
-			// 		if (GridManager.grid[x, y].ownerId == this.Id)
-			// 		{
-			// 			GridManager.grid[x, y].CalcTotalValue();
-			// 			this.tileMoney += (GridManager.grid[x, y].totalValue);
-			// 		} // if player owns tile
-			// 	} // for y
-			// } // for x
-		}
-		else
-		{
-			this.initialized = true;
-		} // if initialized
+	// 	// // Checks to see if the object has been initialized. If not, assume it will be afterwards.
+	// 	// if (this.initialized)
+	// 	// {
+	// 	// 	for (int i = 0; i < ownedTiles.Count; i++)
+	// 	// 	{
 
-		this.totalMoney = this.baseMoney + this.tileMoney;
+	// 	// 	}
+	// 	// 	// Search the grid for owned tiles
+	// 	// 	// TODO: Implement a list of known owned tile coordinates to replace these for loops
+	// 	// 	// for (int x = 0; x < gridWidth; x++)
+	// 	// 	// {
+	// 	// 	// 	for (int y = 0; y < gridHeight; y++)
+	// 	// 	// 	{
+	// 	// 	// 		if (GridManager.grid[x, y].ownerId == this.Id)
+	// 	// 	// 		{
+	// 	// 	// 			GridManager.grid[x, y].CalcTotalValue();
+	// 	// 	// 			this.tileMoney += (GridManager.grid[x, y].totalValue);
+	// 	// 	// 		} // if player owns tile
+	// 	// 	// 	} // for y
+	// 	// 	// } // for x
+	// 	// }
+	// 	// else
+	// 	// {
+	// 	// 	this.initialized = true;
+	// 	// } // if initialized
 
-	} // CalcTotalMoney()
+	// 	this.totalMoney = this.baseMoney + this.tileMoney;
+
+	// } // CalcTotalMoney()
 
 	// CONSTRUCTORS ###############################################################################
 

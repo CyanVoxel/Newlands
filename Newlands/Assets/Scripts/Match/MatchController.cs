@@ -160,7 +160,7 @@ public class MatchController : NetworkBehaviour
 			players[i].Id = (i + 1);
 			players[i].hand = DrawHand(config.PlayerHandSize);
 		} // for playerCount
-		UpdatePlayerMoneyStr();
+		UpdatePlayerMoneyStr(true);
 	}
 
 	public string GetHandCard(int id, int index)
@@ -168,18 +168,20 @@ public class MatchController : NetworkBehaviour
 		return JsonUtility.ToJson(players[id - 1].hand[index]);
 	}
 
-	private void UpdatePlayerMoneyStr()
+	private void UpdatePlayerMoneyStr(bool setInitialValues = false)
 	{
 		matchDataBroadcaster.PlayerMoneyStr = "";
 
+		if (!setInitialValues)
+			gridController.UpdatePlayerMoneyValues();
+
 		for (int i = 0; i < config.MaxPlayerCount; i++)
 		{
-			matchDataBroadcaster.PlayerMoneyStr += players[i].totalMoney;
+			matchDataBroadcaster.PlayerMoneyStr += players[i].Money;
 
 			if (config.MaxPlayerCount - i > 1)
-			{
 				matchDataBroadcaster.PlayerMoneyStr += "_";
-			}
+
 		} // for playerCount
 		Debug.Log(debugTag + "Player Money String: " + matchDataBroadcaster.PlayerMoneyStr);
 	}
@@ -453,8 +455,8 @@ public class MatchController : NetworkBehaviour
 	{
 		// TODO: Fix this to work with new systems
 		// gridMan.UpdateResourceValues();
-		// // Things that need to be updated for all players go here
-		// for (int i = 0; i < players.Count; i++)
+		// Things that need to be updated for all players go here
+		// for (int i = 0; i < config.MaxPlayerCount; i++)
 		// {
 		// 	players[i].CalcTotalMoney();
 		// 	// Debug.Log("Player " + (i + 1) + "'s Money: $" + players[i].totalMoney);
@@ -483,6 +485,9 @@ public class MatchController : NetworkBehaviour
 
 		if (!target.IsBankrupt && RuleSet.IsLegal(target, card))
 		{
+			gridController.UpdateMarketCardValues();
+			
+			gridController.AddCardToStack(locX, locY, target.Category, card);
 			UpdatePlayersInfo();
 
 			// // If the card is meant to be stacked
@@ -532,6 +537,7 @@ public class MatchController : NetworkBehaviour
 			if (target.IsBankrupt)
 				gridController.BankruptTile(locX, locY);
 
+			gridController.UpdateMarketCardValues();
 			UpdatePlayersInfo();
 		}
 
