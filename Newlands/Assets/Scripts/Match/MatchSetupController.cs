@@ -106,7 +106,7 @@ public class MatchSetupController : NetworkBehaviour
 		{
 			if (!NetworkClient.active)
 			{
-				networkManager.networkAddress = ipInputField.text; // Does this need to be here when hosting?
+				// networkManager.networkAddress = ipInputField.text; // Does this need to be here when hosting?
 				telepathyTransport.port = ushort.Parse(portInputField.text);
 				networkManager.StartHost();
 				SceneManager.LoadScene("GameMultiplayer", LoadSceneMode.Single);

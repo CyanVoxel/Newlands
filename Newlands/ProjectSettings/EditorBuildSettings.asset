@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/GameMultiplayer.unity
     guid: 2cda990e2423bbf4892e6590ba056729
+  - enabled: 1
+    path: Assets/Scenes/GameJoin.unity
+    guid: b882b38b20e30b348918a20cfb69024a
   m_configObjects: {}

@@ -179,27 +179,32 @@ public class MouseManager : NetworkBehaviour
 	private void HandleObjectHit(GameObject objectHit)
 	{
 		// Grab info from object name
-		string[] nameArr = objectHit.transform.parent.name.Split('_');
-		string type = nameArr[2];
-		int x = int.Parse(nameArr[0].Substring(1));
-		int y = int.Parse(nameArr[1].Substring(1));
-
-		// Primary Click =======================================================
-		if (Input.GetMouseButtonDown(0) && nameArr != null)
+		try
 		{
-			Debug.Log(debugTag + "Clicked on " + type + ", x: " + x + ", y: " + y);
-			switch (matchData.Phase)
+			string[] nameArr = objectHit.transform.parent.name.Split('_');
+			string type = nameArr[2];
+			int x = int.Parse(nameArr[0].Substring(1));
+			int y = int.Parse(nameArr[1].Substring(1));
+
+			// Primary Click =======================================================
+			if (Input.GetMouseButtonDown(0) && nameArr != null)
 			{
-				case 1:
-					BuyingPhasePrimaryClick(type, x, y);
-					break;
-				case 2:
-					PlayingPhasePrimaryClick(type, x, y);
-					break;
-				default:
-					break;
-			}
-		} // Primary Click
+				Debug.Log(debugTag + "Clicked on " + type + ", x: " + x + ", y: " + y);
+				switch (matchData.Phase)
+				{
+					case 1:
+						BuyingPhasePrimaryClick(type, x, y);
+						break;
+					case 2:
+						PlayingPhasePrimaryClick(type, x, y);
+						break;
+					default:
+						break;
+				}
+			} // Primary Click
+		}
+
+		catch {}
 
 	} // HandleObjectHit()
 

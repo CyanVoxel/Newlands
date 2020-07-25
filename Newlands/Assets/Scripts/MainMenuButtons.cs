@@ -5,10 +5,22 @@ using UnityEngine.SceneManagement;
 
 public class MainMenuButtons : MonoBehaviour
 {
-	public void ChangeSceneMultiplayerSetup()
+	public void ChangeSceneHostGame()
 	{
 		Debug.Log("Switching scene to GameSetup");
 		SceneManager.LoadScene("GameSetup");
+	}
+
+	public void ChangeSceneJoinGame()
+	{
+		Debug.Log("Switching scene to GameJoin");
+		SceneManager.LoadScene("GameJoin");
+	}
+
+	public void ChangeSceneMainMenu()
+	{
+		Debug.Log("Switching scene to MainMenu");
+		SceneManager.LoadScene("MainMenu");
 	}
 
 	public void ChangeSceneMultiplayerGame()
