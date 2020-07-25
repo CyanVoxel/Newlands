@@ -48,6 +48,9 @@ public class HudController : MonoBehaviour
 	private List<TMP_Text> playerMoneyText = new List<TMP_Text>();
 	private List<int> playerMoneyAmounts = new List<int>();
 
+	[SerializeField]
+	private TMP_Text debugText;
+
 	private bool initialized = false;
 	private static DebugTag debugTag = new DebugTag("HudController", "4CAF50");
 
@@ -155,6 +158,15 @@ public class HudController : MonoBehaviour
 				yield return null;
 		}
 
+		if (transform.Find("Hud/DebugText") != null
+			&& (transform.Find("Hud/DebugText").GetComponent<TMP_Text>() != null))
+		{
+			debugText = transform.Find("Hud/DebugText").gameObject.GetComponent<TMP_Text>();
+
+			if (debugText == null)
+				yield return null;
+		}
+
 		winnerObject.SetActive(false);
 	}
 
@@ -183,6 +195,7 @@ public class HudController : MonoBehaviour
 			Debug.Log(debugTag + "Updating UI... (" + matchData + ")");
 			UpdatePhaseRoundTurnHud();
 			UpdateMoneyHud();
+			UpdateDebugText();
 		}
 	}
 
@@ -213,9 +226,14 @@ public class HudController : MonoBehaviour
 
 			switch (this.matchData.Phase)
 			{
-				case 1: phaseLabel.text = "<b>Buying</b> Phase"; break;
-				case 2: phaseLabel.text = "<b>Playing</b> Phase"; break;
-				default: break;
+				case 1:
+					phaseLabel.text = "<b>Buying</b> Phase";
+					break;
+				case 2:
+					phaseLabel.text = "<b>Playing</b> Phase";
+					break;
+				default:
+					break;
 			}
 
 			// this.phaseNumberText.text = ("Phase " + this.matchData.Phase);
@@ -230,12 +248,12 @@ public class HudController : MonoBehaviour
 
 		if (this.lastKnownPlayerMoneyStr != "")
 		{
-			string[] playersMoneyStr = this.lastKnownPlayerMoneyStr.Split('_');
+			this.playerMoneyAmounts = MatchController.UnpackPlayerMoneyStr(this.lastKnownPlayerMoneyStr);
+
 			Debug.Log(debugTag + "Player Money String: " + this.lastKnownPlayerMoneyStr);
 
-			for (int i = 0; i < playersMoneyStr.Length; i++)
+			for (int i = 0; i < config.MaxPlayerCount; i++)
 			{
-				this.playerMoneyAmounts.Insert(i, (int)(double.Parse(playersMoneyStr[i])));
 				this.playerMoneyText[i].text = "Player " + (i + 1) + "'s Cash: $" + playerMoneyAmounts[i];
 			}
 		}
@@ -245,6 +263,16 @@ public class HudController : MonoBehaviour
 	{
 		winnerText.text = ("PLAYER " + winnerId + " WINS!");
 		winnerObject.SetActive(true);
+	}
+
+	private void UpdateDebugText()
+	{
+		debugText.text = "";
+		debugText.text += ("GAMECARD DECK SIZE: " + MatchController.MasterDeck.gameCardDeck.Count + "\n");
+		debugText.text += ("CARDS LEFT IN DECK: " + MatchController.MasterDeckMutable.gameCardDeck.Count + "\n");
+		debugText.text += ("# OF CARDS PLAYED: " + MatchController.CardsPlayed + "\n");
+		debugText.text += ("CURRENT CLIENT LEADER: " + MatchController.FindClientsideLeader(lastKnownPlayerMoneyStr) + "\n");
+		// debugText.text += ("CURRENT SERVER LEADER: "
 	}
 
 } // class HudController

@@ -17,8 +17,8 @@ public class MatchController : NetworkBehaviour
 	public MatchConfig Config { get { return config; } }
 	private MatchConnections matchConnections;
 
-	private MasterDeck masterDeck;
-	private MasterDeck masterDeckMutable;
+	private static MasterDeck masterDeck;
+	private static MasterDeck masterDeckMutable;
 
 	private List<PlayerData> players = new List<PlayerData>();
 	public List<PlayerData> Players { get { return players; } }
@@ -27,14 +27,15 @@ public class MatchController : NetworkBehaviour
 	private int playerIndex = 1; // This value increments when a new player joins
 	public int PlayerIndex { get { return playerIndex; } set { playerIndex = value; } }
 
-	public MasterDeck MasterDeck { get { return masterDeck; } }
-	public MasterDeck MasterDeckMutable { get { return masterDeckMutable; } }
+	public static MasterDeck MasterDeck { get { return masterDeck; } }
+	public static MasterDeck MasterDeckMutable { get { return masterDeckMutable; } }
 
 	public GameObject landTilePrefab;
 	public GameObject gameCardPrefab;
 	public GameObject marketCardPrefab;
 
-	private int cardsPlayed = 0;
+	private static int cardsPlayed = 0;
+	public static int CardsPlayed { get { return cardsPlayed; } }
 	private bool winnerChosenFlag = false;
 
 	private DebugTag debugTag = new DebugTag("MatchController", "9C27B0");
@@ -59,8 +60,8 @@ public class MatchController : NetworkBehaviour
 			Debug.Log(debugTag + "Grabbed config for client: " + matchDataBroadcaster.MatchConfigStr);
 
 			Debug.Log(debugTag + "Creating Decks...");
-			this.masterDeck = new MasterDeck(config.DeckFlavor);
-			this.masterDeckMutable = new MasterDeck(config.DeckFlavor);
+			masterDeck = new MasterDeck(config.DeckFlavor);
+			masterDeckMutable = new MasterDeck(config.DeckFlavor);
 
 			return;
 		}
@@ -74,19 +75,56 @@ public class MatchController : NetworkBehaviour
 		if (!hasAuthority)
 			return;
 
-		if (masterDeckMutable.gameCardDeck.Count == 0 && masterDeck.gameCardDeck.Count == cardsPlayed && !winnerChosenFlag)
+		if (masterDeck.gameCardDeck.Count == cardsPlayed && !winnerChosenFlag)
 		{
-			int winnerId = -1;
-			double winnerMoney = -1;
-
-			for (int i = 0; i < config.MaxPlayerCount; i++)
-			{
-				if (Players[i].Money > winnerMoney)
-					winnerId = Players[i].Id;
-			}
-			matchDataBroadcaster.BroadcastWinner(winnerId);
-			winnerChosenFlag = true;
+			matchDataBroadcaster.BroadcastWinner(FindClientsideLeader(matchDataBroadcaster.PlayerMoneyStr));
+			if (FindClientsideLeader(matchDataBroadcaster.PlayerMoneyStr) >= 0)
+				winnerChosenFlag = true;
 		}
+	}
+
+	public int FindServersideLeader()
+	{
+		int winnerId = -1;
+		double winnerMoney = -1;
+
+		for (int i = 0; i < config.MaxPlayerCount; i++)
+		{
+			if (Players[i].Money > winnerMoney)
+				winnerId = Players[i].Id;
+		}
+
+		return winnerId;
+	}
+
+	public static int FindClientsideLeader(string playerMoneyStr)
+	{
+		int winnerId = -1;
+		double winnerMoney = -1;
+
+		List<int> playerMoneyList = UnpackPlayerMoneyStr(playerMoneyStr);
+
+		for (int i = 0; i < playerMoneyList.Count; i++)
+		{
+			if (playerMoneyList[i] > winnerMoney)
+				winnerId = (i + 1);
+		}
+
+		return winnerId;
+	}
+
+	public static List<int> UnpackPlayerMoneyStr(string playerMoneyStr)
+	{
+		List<int> playerMoneyAmounts = new List<int>();
+		string[] playersMoneyStrSplit = playerMoneyStr.Split('_');
+		// Debug.Log(debugTag + "Player Money String: " + this.lastKnownPlayerMoneyStr);
+
+		for (int i = 0; i < playersMoneyStrSplit.Length; i++)
+		{
+			playerMoneyAmounts.Insert(i, (int)(double.Parse(playersMoneyStrSplit[i])));
+		}
+
+		return playerMoneyAmounts;
 	}
 
 	// void Update()
@@ -562,10 +600,9 @@ public class MatchController : NetworkBehaviour
 
 			gridController.UpdateMarketCardValues();
 			UpdatePlayersInfo();
-		}
 
-		if (hasAuthority)
 			cardsPlayed++;
+		}
 
 		Debug.Log(debugTag + "GameCards left: " + masterDeckMutable.gameCardDeck.Count + "/" + masterDeck.gameCardDeck.Count);
 		Debug.Log(debugTag + "Cards Played: " + cardsPlayed);
@@ -587,8 +624,8 @@ public class MatchController : NetworkBehaviour
 
 		Debug.Log(debugTag + "Initializing Match from Config data...");
 
-		this.masterDeck = new MasterDeck(config.DeckFlavor);
-		this.masterDeckMutable = new MasterDeck(config.DeckFlavor);
+		masterDeck = new MasterDeck(config.DeckFlavor);
+		masterDeckMutable = new MasterDeck(config.DeckFlavor);
 
 		// [Server]
 		if (hasAuthority)

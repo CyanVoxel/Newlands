@@ -179,8 +179,8 @@ public class GridController : NetworkBehaviour
 			{
 				// Draw a card from the Market Card deck
 				Card card;
-				if (matchController.DrawCard(matchController.MasterDeckMutable.marketCardDeck,
-						matchController.MasterDeck.marketCardDeck,
+				if (matchController.DrawCard(MatchController.MasterDeckMutable.marketCardDeck,
+						MatchController.MasterDeck.marketCardDeck,
 						out card, false))
 				{
 					// Connect the drawn card to the internal grid
@@ -374,7 +374,7 @@ public class GridController : NetworkBehaviour
 	// TODO: update to use animations
 	private void ShiftMasterMarketGrid(int row, int units)
 	{
-		int marketWidth = Mathf.CeilToInt((float)matchController.MasterDeck.marketCardDeck.Count
+		int marketWidth = Mathf.CeilToInt((float)MatchController.MasterDeck.marketCardDeck.Count
 			/ (float)config.GameGridHeight);
 
 		for (int x = 0; x < marketWidth; x++)
@@ -797,8 +797,8 @@ public class GridController : NetworkBehaviour
 				{
 					Card card;
 
-					if (matchController.DrawCard(matchController.MasterDeckMutable.landTileDeck,
-							matchController.MasterDeck.landTileDeck,
+					if (matchController.DrawCard(MatchController.MasterDeckMutable.landTileDeck,
+							MatchController.MasterDeck.landTileDeck,
 							out card))
 					{
 						// Debug.Log("[GridManager] Tile Draw successful!");
