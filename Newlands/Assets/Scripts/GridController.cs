@@ -254,7 +254,7 @@ public class GridController : NetworkBehaviour
 
 	public void IncrementStackSize(int y, string gridType)
 	{
-		Debug.Log(debugTag + "Incrementing card of type: " + gridType);
+		// Debug.Log(debugTag + "Incrementing card of type: " + gridType);
 		switch (gridType)
 		{
 			case "Market":
@@ -428,14 +428,14 @@ public class GridController : NetworkBehaviour
 	{
 		// for (int i = 0; i < ResourceInfo.prices.Count; i++)
 		// {
-			for (int x = 0; x < masterMarketGrid.GetLength(0); x++)
+		for (int x = 0; x < masterMarketGrid.GetLength(0); x++)
+		{
+			for (int y = 0; y < masterMarketGrid.GetLength(1); y++)
 			{
-				for (int y = 0; y < masterMarketGrid.GetLength(1); y++)
-				{
-					if (masterMarketGrid[x, y] != null)
-						CalcCardValue(masterMarketGrid[x, y]);
-				} // for y
-			} // for x
+				if (masterMarketGrid[x, y] != null)
+					CalcCardValue(masterMarketGrid[x, y]);
+			} // for y
+		} // for x
 		// }
 	}
 
@@ -511,6 +511,9 @@ public class GridController : NetworkBehaviour
 			Debug.Log(debugTag + "[CalcCardValue] Found Stack Card #" + i + ", New Mod Value:" + valueMod);
 		}
 
+		if (baseValue < 0 && valueMod < 0)
+			valueMod = Mathf.Abs((float)valueMod);
+
 		totalValue = baseValue + (baseValue * valueMod / 100d);
 
 		// Update the mutable resource price, if necessary.
@@ -522,7 +525,7 @@ public class GridController : NetworkBehaviour
 
 		if (cardData.Category == "Tile")
 		{
-			Debug.Log(debugTag + "[CalcCardValue] " + cardData.CardObject.name + " Base:  $" + baseValue + ", Mod: $" + valueMod + ", Total: $" + totalValue);
+			Debug.Log(debugTag + "[CalcCardValue] " + cardData.CardObject.name + " Base:  $" + baseValue + ", Mod: %" + valueMod + ", Total: $" + totalValue);
 		}
 
 		// Debug.Log(debugTag + "[CalcCardValue] " + cardData.CardObject.name + " base value:  " + baseValue);

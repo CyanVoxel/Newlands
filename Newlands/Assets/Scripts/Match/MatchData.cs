@@ -18,6 +18,8 @@ public class MatchData
 	private int round;
 	[SerializeField]
 	private int phase;
+	[SerializeField]
+	private int winner;
 
 	private bool initialized = false;
 
@@ -25,6 +27,7 @@ public class MatchData
 	public int Turn { get { return turn; } set { turn = value; } }
 	public int Round { get { return round; } set { round = value; } }
 	public int Phase { get { return phase; } set { phase = value; } }
+	public int Winner { get { return winner; } set { winner = value; } }
 	// public string DeckFlavor { get { return deckFlavor; } }
 	// public string WinCondition { get { return winCondition; } }
 	// public int GameGridHeight { get { return gameGridHeight; } }
@@ -38,6 +41,7 @@ public class MatchData
 		this.turn = 1;
 		this.round = 1;
 		this.phase = 1;
+		this.winner = -1;
 		// this.deckFlavor = config.DeckFlavor;
 		// this.winCondition = config.WinCondition;
 		// this.gameGridHeight = config.GameGridHeight;

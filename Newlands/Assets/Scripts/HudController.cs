@@ -18,6 +18,11 @@ public class HudController : MonoBehaviour
 	private TMP_Text turnNumberText;
 
 	[SerializeField]
+	private GameObject winnerObject;
+	[SerializeField]
+	private TMP_Text winnerText;
+
+	[SerializeField]
 	private TMP_Text roundLabel;
 	[SerializeField]
 	private TMP_Text roundNumber;
@@ -132,6 +137,25 @@ public class HudController : MonoBehaviour
 			if (turnNumberText == null)
 				yield return null;
 		}
+
+		if (transform.Find("Hud/Winner") != null)
+		{
+			winnerObject = transform.Find("Hud/Winner").gameObject;
+
+			if (winnerObject == null)
+				yield return null;
+		}
+
+		if (transform.Find("Hud/Winner/WinnerText") != null
+			&& (transform.Find("Hud/Winner/WinnerText").GetComponent<TMP_Text>() != null))
+		{
+			winnerText = transform.Find("Hud/Winner/WinnerText").gameObject.GetComponent<TMP_Text>();
+
+			if (winnerText == null)
+				yield return null;
+		}
+
+		winnerObject.SetActive(false);
 	}
 
 	private IEnumerator InitMoneyText()
@@ -215,6 +239,12 @@ public class HudController : MonoBehaviour
 				this.playerMoneyText[i].text = "Player " + (i + 1) + "'s Cash: $" + playerMoneyAmounts[i];
 			}
 		}
+	}
+
+	public void DisplayWinner(int winnerId)
+	{
+		winnerText.text = ("PLAYER " + winnerId + " WINS!");
+		winnerObject.SetActive(true);
 	}
 
 } // class HudController

@@ -34,6 +34,9 @@ public class MatchController : NetworkBehaviour
 	public GameObject gameCardPrefab;
 	public GameObject marketCardPrefab;
 
+	private int cardsPlayed = 0;
+	private bool winnerChosenFlag = false;
+
 	private DebugTag debugTag = new DebugTag("MatchController", "9C27B0");
 
 	// METHODS #####################################################################################
@@ -64,6 +67,26 @@ public class MatchController : NetworkBehaviour
 
 		// [Server]
 		InitializeMatch();
+	}
+
+	void Update()
+	{
+		if (!hasAuthority)
+			return;
+
+		if (masterDeckMutable.gameCardDeck.Count == 0 && masterDeck.gameCardDeck.Count == cardsPlayed && !winnerChosenFlag)
+		{
+			int winnerId = -1;
+			double winnerMoney = -1;
+
+			for (int i = 0; i < config.MaxPlayerCount; i++)
+			{
+				if (Players[i].Money > winnerMoney)
+					winnerId = Players[i].Id;
+			}
+			matchDataBroadcaster.BroadcastWinner(winnerId);
+			winnerChosenFlag = true;
+		}
 	}
 
 	// void Update()
@@ -541,7 +564,11 @@ public class MatchController : NetworkBehaviour
 			UpdatePlayersInfo();
 		}
 
-		Debug.Log(debugTag + "GameCards left: " + masterDeckMutable.gameCardDeck.Count);
+		if (hasAuthority)
+			cardsPlayed++;
+
+		Debug.Log(debugTag + "GameCards left: " + masterDeckMutable.gameCardDeck.Count + "/" + masterDeck.gameCardDeck.Count);
+		Debug.Log(debugTag + "Cards Played: " + cardsPlayed);
 
 		return wasPlayed;
 	}

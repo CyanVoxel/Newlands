@@ -134,6 +134,12 @@ public class PlayerConnection : NetworkBehaviour
 			}
 		}
 
+		if (matchData.Winner >= 0)
+		{
+			Debug.Log("WINNER WINNER CHICKED DINNER! CONGRATS PLAYER " + matchData.Winner);
+			this.hudController.DisplayWinner(matchData.Winner);
+		}
+
 		// This is at the bottom so handlers can compare old data with new data
 		UpdateKnownInfo();
 	} // Update()

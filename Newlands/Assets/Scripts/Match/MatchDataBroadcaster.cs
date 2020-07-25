@@ -130,4 +130,11 @@ public class MatchDataBroadcaster : NetworkBehaviour
 	{
 		Debug.Log(debugTag + "The MatchDataBroadcaster has been disbaled/destroyed!");
 	}
+
+	public void BroadcastWinner(int id)
+	{
+		MatchData unpacked = JsonUtility.FromJson<MatchData>(matchDataStr);
+		unpacked.Winner = id;
+		matchDataStr = JsonUtility.ToJson(unpacked);
+	}
 }
