@@ -29,7 +29,7 @@ public class GridController : NetworkBehaviour
 	private static int[] maxMarketStack;
 
 	public CardData[, ] KnownOwnersGrid { get { return knownOwnersGrid; } set { knownOwnersGrid = value; } }
-	// public CardData[, ] KnownMarketOwnersGrid { get { return knownMarketOwnersGrid; } set { knownMarketOwnersGrid = value; } }
+	public CardData[, ] KnownMarketOwnersGrid { get { return knownMarketOwnersGrid; } set { knownMarketOwnersGrid = value; } }
 
 	private DebugTag debugTag = new DebugTag("GridController", "00BCD4");
 
@@ -436,6 +436,24 @@ public class GridController : NetworkBehaviour
 					CalcCardValue(masterMarketGrid[x, y]);
 			} // for y
 		} // for x
+
+		string tempPriceList = "";
+
+		for (int i = 0; i < ResourceInfo.resources.Count; i++)
+		{
+			tempPriceList += ResourceInfo.resources[i];
+			tempPriceList += "=";
+
+			int value;
+			ResourceInfo.pricesMut.TryGetValue(ResourceInfo.resources[i], out value);
+			tempPriceList += value;
+
+			if (ResourceInfo.resources.Count - i > 1)
+				tempPriceList += "_";
+		}
+
+		matchDataBroadcaster.PriceListStr = tempPriceList;
+		Debug.Log("Price List String: " + tempPriceList);
 		// }
 	}
 

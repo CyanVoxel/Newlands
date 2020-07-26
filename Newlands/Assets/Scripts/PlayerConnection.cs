@@ -184,6 +184,8 @@ public class PlayerConnection : NetworkBehaviour
 		for (int i = 0; i < config.MaxPlayerCount; i++)
 			this.knownOwnersList[i] = new List<Coordinate2>();
 
+		InitLocalResourcePrices();
+
 		this.matchData = JsonUtility.FromJson<MatchData>(matchDataBroadcaster.MatchDataStr);
 		this.turnEventStr = matchDataBroadcaster.TurnEventStr;
 
@@ -419,7 +421,7 @@ public class PlayerConnection : NetworkBehaviour
 				if (!turnCard.DiscardFlag)
 				{
 					if (!hasAuthority)
-					gridController.AddCardToStack(turnEvent.targetX, turnEvent.targetY, targetCard.Category, turnCard);
+						gridController.AddCardToStack(turnEvent.targetX, turnEvent.targetY, targetCard.Category, turnCard);
 
 					// Debug.Log(debugTag + "Running Shift Row Check on " + targetCard.Category + ", " + turnEvent.targetX+ ", " + turnEvent.targetY);
 					if (gridController.ShiftRowCheck(targetCard.Category, turnEvent.targetX, turnEvent.targetY))
@@ -626,9 +628,35 @@ public class PlayerConnection : NetworkBehaviour
 
 		for (int i = 0; i < this.localMarketList.Count; i++)
 		{
-			this.localMarketList[i].FooterValue = this.localPrices[this.localResources.IndexOf(this.localMarketList[i].Resource)];
+			// Debug.Log(debugTag.head + this.localMarketList[i].CardObject.name);
+			// this.localMarketList[i].FooterValue = this.localPrices[this.localResources.IndexOf(this.localMarketList[i].Resource)];
+			// this.localMarketList[i].CardObject.GetComponent<CardViewController>().FooterValue = this.localPrices[this.localResources.IndexOf(this.localMarketList[i].Resource)];
+			// this.localMarketList[i].CardObject.GetComponent<CardViewController>().UpdateFooter();
 		}
 	} // UpdateMarketFooters()
+
+	private void InitLocalResourcePrices()
+	{
+		for (int i = 0; i < ResourceInfo.resources.Count; i++)
+		{
+			int tempPrice;
+			ResourceInfo.prices.TryGetValue(ResourceInfo.resources[i], out tempPrice);
+			localPrices.Add(tempPrice);
+
+			localResources.Add(ResourceInfo.resources[i]);
+		}
+
+		for (int x = 0; x < gridController.KnownMarketOwnersGrid.GetLength(0); x++)
+		{
+			for (int y = 0; y < gridController.KnownMarketOwnersGrid.GetLength(1); y++)
+			{
+				if (gridController.KnownMarketOwnersGrid[x,y] != null)
+				{
+					localMarketList.Add(gridController.KnownMarketOwnersGrid[x,y]);
+				}
+			}
+		}
+	}
 
 	// COMMANDS ####################################################################################
 

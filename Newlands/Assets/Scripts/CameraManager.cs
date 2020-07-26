@@ -57,6 +57,14 @@ public class CameraManager : MonoBehaviour
 			uncheckedNewCamPos.x += .75f;
 		}
 
+		uncheckedNewCamPos.x += (Input.GetAxis("DualshockHorizontal") * 1.5f);
+		uncheckedNewCamPos.y += (Input.GetAxis("DualshockVertical") * 1.5f);
+		uncheckedNewCamPos.z += (Input.GetAxis("DualshockZoom") * 2f);
+
+		// Debug.Log("HORIZONTAL: " + Input.GetAxis("DualshockHorizontal")
+		// 	+ " --- VERTICAL: " + Input.GetAxis("DualshockVertical")
+		// 	+ " --- ZOOM: " + Input.GetAxis("DualshockZoom"));
+
 		checkedNewCamPos = uncheckedNewCamPos;
 
 		// Click-and-Drag Camera Movement ------------------------------------------------------------------------------
