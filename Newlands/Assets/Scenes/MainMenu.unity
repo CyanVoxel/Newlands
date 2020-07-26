@@ -712,7 +712,7 @@ GameObject:
   - component: {fileID: 1041224983}
   - component: {fileID: 1041224982}
   m_Layer: 0
-  m_Name: TMP SubMeshUI [Oswald Material + LiberationSans SDF Atlas]
+  m_Name: TMP SubMeshUI [Oswald Material + Oswald Bold Atlas]
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -757,7 +757,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: acd5ec5787b70494a9d537d855c1219c, type: 2}
   m_spriteAsset: {fileID: 0}
   m_material: {fileID: 0}
   m_sharedMaterial: {fileID: 0}
@@ -1983,7 +1983,7 @@ GameObject:
   - component: {fileID: 222783598352605819}
   - component: {fileID: 114202418193942769}
   m_Layer: 0
-  m_Name: TMP SubMeshUI [Oswald Material + Oswald Bold Atlas]
+  m_Name: TMP SubMeshUI [Oswald Material + LiberationSans SDF Atlas]
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2262,7 +2262,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_fontAsset: {fileID: 11400000, guid: acd5ec5787b70494a9d537d855c1219c, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_spriteAsset: {fileID: 0}
   m_material: {fileID: 0}
   m_sharedMaterial: {fileID: 0}
@@ -2332,7 +2332,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_text: <b>v1.1</b> ALPHA
+  m_text: ALPHA <b>v1.2</b>
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5d026042c19f5bc438c7763c2b8a1a52, type: 2}
   m_sharedMaterial: {fileID: 1979364309642615130, guid: 5d026042c19f5bc438c7763c2b8a1a52,
@@ -2367,7 +2367,7 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 16
+  m_fontStyle: 32
   m_textAlignment: 514
   m_characterSpacing: 10
   m_wordSpacing: 0

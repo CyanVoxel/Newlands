@@ -57,6 +57,7 @@ public class CameraManager : MonoBehaviour
 			uncheckedNewCamPos.x += .75f;
 		}
 
+		// Dualshock Controller Camera Movement ------------------------------------------------------------------------
 		uncheckedNewCamPos.x += (Input.GetAxis("DualshockHorizontal") * 1.5f);
 		uncheckedNewCamPos.y += (Input.GetAxis("DualshockVertical") * 1.5f);
 		uncheckedNewCamPos.z += (Input.GetAxis("DualshockZoom") * 2f);
@@ -68,14 +69,14 @@ public class CameraManager : MonoBehaviour
 		checkedNewCamPos = uncheckedNewCamPos;
 
 		// Click-and-Drag Camera Movement ------------------------------------------------------------------------------
-		if (Input.GetMouseButtonDown(1))
+		if (Input.GetMouseButtonDown(1) || Input.GetMouseButtonDown(2))
 		{
 			dragging = true;
 			oldCameraPos = uncheckedNewCamPos;
 			mouseOrigin = Camera.main.ScreenToViewportPoint(Input.mousePosition);
 		}
 
-		if (Input.GetMouseButton(1))
+		if (Input.GetMouseButton(1) || Input.GetMouseButton(2))
 		{
 			Vector3 mouseDisplacement = Camera.main.ScreenToViewportPoint(Input.mousePosition) - mouseOrigin;
 
@@ -90,7 +91,7 @@ public class CameraManager : MonoBehaviour
 				// Debug.Log("Drag Speed: " + dragSpeed + " - Base Drag Speed: " + baseDragSpeed + " - Modifier: -" + (Mathf.Abs(mainCam.transform.position.z) / dragSpeedModifierClamp));
 			}
 
-			if (Input.GetMouseButtonDown(1))
+			if (Input.GetMouseButtonDown(1) || Input.GetMouseButtonDown(2))
 			{
 				dragging = false;
 			}
@@ -100,6 +101,7 @@ public class CameraManager : MonoBehaviour
 		}
 
 		// Position Verification ---------------------------------------------------------------------------------------
+		// These are hard-coded boundaries for the camera.
 		if (uncheckedNewCamPos.x < 0)
 		{
 			checkedNewCamPos.x = 0;
