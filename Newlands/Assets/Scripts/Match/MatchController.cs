@@ -22,6 +22,7 @@ public class MatchController : NetworkBehaviour
 
 	private List<PlayerData> players = new List<PlayerData>();
 	public List<PlayerData> Players { get { return players; } }
+	private List<string> usernameCache = new List<string>();
 
 	[SyncVar]
 	private int playerIndex = 1; // This value increments when a new player joins
@@ -83,18 +84,51 @@ public class MatchController : NetworkBehaviour
 		}
 	}
 
-	public int FindServersideLeader()
-	{
-		int winnerId = -1;
-		double winnerMoney = -1;
+	// public int FindServersideLeader()
+	// {
+	// 	int winnerId = -1;
+	// 	double winnerMoney = -1;
 
-		for (int i = 0; i < config.MaxPlayerCount; i++)
+	// 	for (int i = 0; i < config.MaxPlayerCount; i++)
+	// 	{
+	// 		if (Players[i].Money > winnerMoney)
+	// 			winnerId = Players[i].Id;
+	// 	}
+
+	// 	return winnerId;
+	// }
+
+	public void AssignUsername(string name)
+	{
+		Debug.Log(debugTag + "I've been told to assign a username! " + name);
+
+		usernameCache.Add(name);
+
+		UpdateUsernames();
+
+		// players[playerIndex - 1].Username = name;
+		// Debug.Log(debugTag + "Assigned Player " + Players[playerIndex - 1].Id + " username of " + name);
+
+		// for (int i = 0; i < Players.Count; i++)
+		// {
+		// 	if (Players[i].Username == "")
+		// 	{
+		// 		Players[i].Username = name;
+		// 		Debug.Log(debugTag + "Assigned Player " + Players[i].Id + " username of " + name);
+		// 		i = players.Count;
+		// 	}
+		// }
+	}
+
+	public void UpdateUsernames()
+	{
+		for (int i = 0; i < usernameCache.Count; i++)
 		{
-			if (Players[i].Money > winnerMoney)
-				winnerId = Players[i].Id;
+			Players[i].Username = usernameCache[i];
+			Debug.Log(debugTag + "I updated Player " + Players[i].Id + " to the name " + usernameCache[i]);
 		}
 
-		return winnerId;
+		matchDataBroadcaster.UsernameListStr = MatchDataBroadcaster.PackData(usernameCache);
 	}
 
 	public static int FindClientsideLeader(string playerMoneyStr)
@@ -222,6 +256,8 @@ public class MatchController : NetworkBehaviour
 			players[i].hand = DrawHand(config.PlayerHandSize);
 		} // for playerCount
 		UpdatePlayerMoneyStr(true);
+
+		UpdateUsernames();
 	}
 
 	public string GetHandCard(int id, int index)

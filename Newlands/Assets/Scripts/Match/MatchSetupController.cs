@@ -20,6 +20,8 @@ public class MatchSetupController : NetworkBehaviour
 	private TMP_Dropdown winConditionDropdown;
 	private TMP_InputField ipInputField;
 	private TMP_InputField portInputField;
+	private TMP_InputField usernameInputField;
+	private TMP_Text usernamePlaceholder;
 	private Image noIpWarning;
 
 	[SerializeField]
@@ -32,6 +34,8 @@ public class MatchSetupController : NetworkBehaviour
 	public MatchConfig InitialConfig { get { return initialConfig; } }
 	public bool Ready { get { return ready; } }
 
+	private string username;
+
 	private DebugTag debugTag = new DebugTag("MatchSetupController", "f44336");
 
 	void Start()
@@ -43,6 +47,9 @@ public class MatchSetupController : NetworkBehaviour
 		telepathyTransport = networkManagerObj.GetComponent<TelepathyTransport>();
 
 		GrabGuiComponents();
+
+		if (usernamePlaceholder != null)
+			usernamePlaceholder.text = GeneratePlaceholerUsername();
 	}
 
 	void Update()
@@ -92,11 +99,26 @@ public class MatchSetupController : NetworkBehaviour
 		else
 			Debug.Log(debugTag.warning + "Could not find PortInputField!");
 
+		// Grab the little red arrow that shows up when you don't type in an ip
 		GameObject noIpWarningObj = GameObject.Find("NoIpWarning");
 		if (noIpWarningObj != null)
 			noIpWarning = noIpWarningObj.GetComponent<Image>();
 		else
 			Debug.Log(debugTag.warning + "Could not find NoIpWarning!");
+
+		// Grab the Username Input Field
+		GameObject usernameInputFieldObj = GameObject.Find("UsernameInputField");
+		if (usernameInputFieldObj != null)
+			usernameInputField = usernameInputFieldObj.GetComponent<TMP_InputField>();
+		else
+			Debug.Log(debugTag.warning + "Could not find UsernameInputField!");
+
+		// Grab the Username Placeholder
+		GameObject usernamePlaceholderObj = GameObject.Find("UsernamePlaceholder");
+		if (usernamePlaceholderObj != null)
+			usernamePlaceholder = usernamePlaceholderObj.GetComponent<TMP_Text>();
+		else
+			Debug.Log(debugTag.warning + "Could not find UsernamePlaceholder!");
 	}
 
 	public void HostGameButtonClick()
@@ -113,6 +135,9 @@ public class MatchSetupController : NetworkBehaviour
 			}
 		}
 		CreateMatchManager();
+
+		FinalizeUsername();
+		// CmdRetrieveUsername(username);
 	}
 
 	public void JoinGameButtonClick()
@@ -136,6 +161,9 @@ public class MatchSetupController : NetworkBehaviour
 
 			}
 		}
+
+		FinalizeUsername();
+		// CmdRetrieveUsername(username);
 	}
 
 	private void CreateInitialConfig()
@@ -182,4 +210,76 @@ public class MatchSetupController : NetworkBehaviour
 			matchController = matchManagerReference.GetComponent<MatchController>();
 		}
 	}
+
+	private void FinalizeUsername()
+	{
+		// If PlayerDataContainer works, then setting the internal username is now useless.
+		if (usernameInputField.text != "")
+			username = usernameInputField.text;
+		else
+			username = usernamePlaceholder.text;
+
+		// Ship that bad boy off to the PlayerDataContainer, and wish it good luck.
+		PlayerDataContainer.Username = username;
+	}
+
+	private string GeneratePlaceholerUsername()
+	{
+		List<string> prefixes = new List<string>();
+		List<string> suffixes = new List<string>();
+		string generatedName = "";
+
+		prefixes.Add("Atom");
+		prefixes.Add("Graceful");
+		prefixes.Add("Angry");
+		prefixes.Add("Happy");
+		prefixes.Add("Sad");
+		prefixes.Add("Smart");
+		prefixes.Add("Mighty");
+		prefixes.Add("Cool");
+		prefixes.Add("Hot");
+		prefixes.Add("Sweaty");
+		prefixes.Add("Calm");
+		prefixes.Add("Cheesy");
+		prefixes.Add("Weird");
+		prefixes.Add("Spicy");
+		prefixes.Add("Sleepy");
+		prefixes.Add("Epic");
+
+		suffixes.Add("Gamer");
+		suffixes.Add("Thinker");
+		suffixes.Add("Sauce");
+		suffixes.Add("Player");
+		suffixes.Add("Newlandian");
+		suffixes.Add("Void");
+		suffixes.Add("Turtle");
+		suffixes.Add("Cat");
+		suffixes.Add("Dog");
+		suffixes.Add("Hamster");
+		suffixes.Add("Champ");
+		suffixes.Add("Peperoni");
+		suffixes.Add("Pizza");
+		suffixes.Add("Calzone");
+		suffixes.Add("Noodle");
+		suffixes.Add("Cannoli");
+
+		generatedName += prefixes[Random.Range(0, prefixes.Count)];
+		generatedName += suffixes[Random.Range(0, suffixes.Count)];
+		generatedName += Random.Range(0, 100);
+
+		return generatedName;
+	}
+
+	// [Command]
+	// public void CmdRetrieveUsername(string name)
+	// {
+	// 	Debug.Log("I've been told to grab a username.");
+	// 	matchController.AssignUsername(name);
+	// }
+
+	// [TargetRpc]
+	// public void TargetGetUsername()
+	// {
+	// 	Debug.Log("Giving up my username of " + username);
+	// }
 }

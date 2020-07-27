@@ -13,6 +13,7 @@ public class PlayerData
 
 	public int Id { get; set; } = 0;
 	public Deck hand;
+	private string username = "";
 	// public GridUnit[] handUnits;
 	public List<Coordinate2> ownedTiles = new List<Coordinate2>();
 
@@ -31,6 +32,7 @@ public class PlayerData
 	// METHODS ####################################################################################
 
 	public double Money { get { return totalMoney; } }
+	public string Username { get { return username; } set { username = value; } }
 
 	public void ResetMoney()
 	{

@@ -40,9 +40,12 @@ public class HudController : MonoBehaviour
 	private MatchConfig config;
 	private string matchDataStr;
 	private string lastKnownPlayerMoneyStr = "";
+	private string lastKnownUsernameStr = "";
 
 	private int thisPlayerId = 0;
 	public int ThisPlayerId { get { return thisPlayerId; } set { thisPlayerId = value; } }
+
+	private List<string> usernames = new List<string>();
 
 	[SerializeField]
 	private List<TMP_Text> playerMoneyText = new List<TMP_Text>();
@@ -179,7 +182,9 @@ public class HudController : MonoBehaviour
 			{
 				TMP_Text newPlayerMoneyText = transform.Find("Hud/Money/Player (" + (i + 1) + ")").gameObject.GetComponent<TMP_Text>();
 				playerMoneyText.Insert(i, newPlayerMoneyText);
-				playerMoneyText[i].text = "Player " + (i + 1) + "'s Cash: $0";
+				// playerMoneyText[i].text = "Player " + (i + 1) + "'s Cash: $0";
+				playerMoneyText[i].text = "<i>Waiting on Player " + (i + 1) + "...</i>";
+				playerMoneyText[i].color = ColorPalette.GetDefaultPlayerColor(i + 1, 500, false);
 
 				if (newPlayerMoneyText == null)
 					yield return null;
@@ -246,15 +251,31 @@ public class HudController : MonoBehaviour
 	{
 		this.lastKnownPlayerMoneyStr = matchDataBroadcaster.PlayerMoneyStr;
 
+		if (this.lastKnownUsernameStr != matchDataBroadcaster.UsernameListStr)
+		{
+			this.lastKnownUsernameStr = matchDataBroadcaster.UsernameListStr;
+			this.usernames = MatchDataBroadcaster.UnpackStringData(this.lastKnownUsernameStr);
+		}
+
 		if (this.lastKnownPlayerMoneyStr != "")
 		{
 			this.playerMoneyAmounts = MatchController.UnpackPlayerMoneyStr(this.lastKnownPlayerMoneyStr);
 
 			Debug.Log(debugTag + "Player Money String: " + this.lastKnownPlayerMoneyStr);
 
-			for (int i = 0; i < config.MaxPlayerCount; i++)
+			for (int i = 0; i < usernames.Count; i++)
 			{
-				this.playerMoneyText[i].text = "Player " + (i + 1) + "'s Cash: $" + playerMoneyAmounts[i];
+				string username;
+
+				if (usernames[i] != null)
+				{
+					username = usernames[i];
+				}
+				else
+				{
+					username = "Player " + (i + 1);
+				}
+				this.playerMoneyText[i].text = "<b>" + username + "</b>'s Cash: <b>$" + playerMoneyAmounts[i] + "</b>";
 			}
 		}
 	}

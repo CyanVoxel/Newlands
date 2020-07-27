@@ -38,6 +38,8 @@ public class PlayerConnection : NetworkBehaviour
 	// 	[SerializeField]
 	[SyncVar]
 	private int id = -1;
+	[SyncVar]
+	private string username;
 	// 	[SyncVar]
 	// private bool initIdFlag = false;
 	// private int lastKnownTurn = -1;
@@ -161,6 +163,9 @@ public class PlayerConnection : NetworkBehaviour
 		CmdInitId(address);
 		while (this.id == -1)
 			yield return null;
+
+		// Fetch username from PlayerDataController and send it serverside to MatchController
+		InitUsername();
 
 		// Send our ID to the HudController, then force an update from it.
 		this.hudController.GetComponent<HudController>().ThisPlayerId = this.id;
@@ -650,9 +655,9 @@ public class PlayerConnection : NetworkBehaviour
 		{
 			for (int y = 0; y < gridController.KnownMarketOwnersGrid.GetLength(1); y++)
 			{
-				if (gridController.KnownMarketOwnersGrid[x,y] != null)
+				if (gridController.KnownMarketOwnersGrid[x, y] != null)
 				{
-					localMarketList.Add(gridController.KnownMarketOwnersGrid[x,y]);
+					localMarketList.Add(gridController.KnownMarketOwnersGrid[x, y]);
 				}
 			}
 		}
@@ -674,4 +679,25 @@ public class PlayerConnection : NetworkBehaviour
 		// Debug.Log("Looking for " + cardString);
 		GameObject.Find(cardString).GetComponent<CardViewController>().Card = this.hand[index];
 	}
+
+	// Fetches the username stored in PlayerDataContainer and ships it off to the server.
+	private void InitUsername()
+	{
+		username = PlayerDataContainer.Username;
+		CmdFetchUsername(id, username);
+	}
+
+	// Commands the Server to associate the player's requested username with their id.
+	[Command]
+	private void CmdFetchUsername(int id, string name)
+	{
+		Debug.Log(debugTag + "I've been told to assign matchController my username! : " + name);
+		FindObjectOfType<MatchController>().AssignUsername(name);
+	}
+
+	// [TargetRpc]
+	// public void TargetGetUsername()
+	// {
+	// 	Debug.Log("Giving up my username of " + username);
+	// }
 }

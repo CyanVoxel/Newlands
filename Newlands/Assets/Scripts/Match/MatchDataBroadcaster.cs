@@ -1,4 +1,8 @@
-﻿using Mirror;
+﻿// Acts as a cobbled-together internal API. In the future I would LOVE to rework this
+// after knowing the limitations I was up against.
+
+using System.Collections.Generic;
+using Mirror;
 using UnityEngine;
 
 public class MatchDataBroadcaster : NetworkBehaviour
@@ -14,13 +18,15 @@ public class MatchDataBroadcaster : NetworkBehaviour
 	private string playerMoneyStr = "";
 	[SyncVar]
 	private string priceListStr = "";
+	[SyncVar]
+	private string usernameListStr = "";
 	// NOTE: In the future, it would be best to use a different implementation.
 	[SyncVar]
 	private string topCardStr = "";
 	private SyncListString updatedCardsStr;
 	private SyncListString playerStartingHands;
 
-	private DebugTag debugTag = new DebugTag("MatchDataBroadcaster", "2196F3");
+	private static DebugTag debugTag = new DebugTag("MatchDataBroadcaster", "2196F3");
 
 	// PROPERTIES ##################################################################################
 	public string MatchConfigStr
@@ -95,6 +101,18 @@ public class MatchDataBroadcaster : NetworkBehaviour
 		}
 	}
 
+	public string UsernameListStr
+	{
+		get { return usernameListStr; }
+		set
+		{
+			if (hasAuthority)
+				usernameListStr = value;
+			else
+				Debug.Log(debugTag + "You don't have authority to change UsernameListStr!");
+		}
+	}
+
 	public SyncListString UpdatedCardsStr
 	{
 		get { return updatedCardsStr; }
@@ -136,5 +154,48 @@ public class MatchDataBroadcaster : NetworkBehaviour
 		MatchData unpacked = JsonUtility.FromJson<MatchData>(matchDataStr);
 		unpacked.Winner = id;
 		matchDataStr = JsonUtility.ToJson(unpacked);
+	}
+
+	public static string PackData<T>(List<T> list)
+	{
+		string formattedOutput = "";
+
+		for (int i = 0; i < list.Count; i++)
+		{
+			formattedOutput += list[i].ToString();
+
+			if (list.Count - i > 1)
+				formattedOutput += "_";
+		}
+		Debug.Log(debugTag + "[PackData] Packed new string: " + formattedOutput);
+
+		return formattedOutput;
+	}
+
+	// NOTE: Not sure if there's a way to get away with generics here...
+	public static List<string> UnpackStringData(string packedData)
+	{
+		List<string> unpackedData = new List<string>();
+		string[] unpackedDataSplit = packedData.Split('_');
+
+		for (int i = 0; i < unpackedDataSplit.Length; i++)
+		{
+			unpackedData.Add(unpackedDataSplit[i]);
+		}
+
+		return unpackedData;
+	}
+
+	public static List<int> UnpackIntData(string packedData)
+	{
+		List<int> unpackedData = new List<int>();
+		string[] unpackedDataSplit = packedData.Split('_');
+
+		for (int i = 0; i < unpackedDataSplit.Length; i++)
+		{
+			unpackedData.Add(int.Parse(unpackedDataSplit[i]));
+		}
+
+		return unpackedData;
 	}
 }
