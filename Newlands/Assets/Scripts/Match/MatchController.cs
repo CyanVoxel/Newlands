@@ -134,7 +134,7 @@ public class MatchController : NetworkBehaviour
 
 	void OnDisable()
 	{
-		Debug.Log(debugTag + "The MatchController has been disbaled/destroyed!");
+		Debug.Log(debugTag + "The MatchController has been disabled/destroyed!");
 	}
 
 	// Returns an ID to a player based on their address

@@ -62,41 +62,41 @@ public class MatchSetupController : NetworkBehaviour
 		if (playerCountDropdownObj != null)
 			playerCountDropdown = playerCountDropdownObj.GetComponent<TMP_Dropdown>();
 		else
-			Debug.LogError(debugTag.error + "Could not find PlayersDropdown!");
+			Debug.Log(debugTag.warning + "Could not find PlayersDropdown!");
 
 		// Grab the Grid Size Dropdown
 		GameObject gridSizeDropdownObj = GameObject.Find("GridSizeDropdown");
 		if (gridSizeDropdownObj != null)
 			gridSizeDropdown = gridSizeDropdownObj.GetComponent<TMP_Dropdown>();
 		else
-			Debug.LogError(debugTag.error + "Could not find GridSizeDropdown!");
+			Debug.Log(debugTag.warning + "Could not find GridSizeDropdown!");
 
 		// Grab the Win Condition Dropdown
 		GameObject winConditionDropdownObj = GameObject.Find("WinConditionDropdown");
 		if (winConditionDropdownObj != null)
 			winConditionDropdown = winConditionDropdownObj.GetComponent<TMP_Dropdown>();
 		else
-			Debug.LogError(debugTag.error + "Could not find WinConditionDropdown!");
+			Debug.Log(debugTag.warning + "Could not find WinConditionDropdown!");
 
 		// Grab the IP Input Field
 		GameObject ipInputFieldObj = GameObject.Find("IpInputField");
 		if (ipInputFieldObj != null)
 			ipInputField = ipInputFieldObj.GetComponent<TMP_InputField>();
 		else
-			Debug.LogError(debugTag.error + "Could not find IpInputField!");
+			Debug.Log(debugTag.warning + "Could not find IpInputField!");
 
-		// Grab the IP Input Field
+		// Grab the Port Input Field
 		GameObject portInputFieldObj = GameObject.Find("PortInputField");
 		if (portInputFieldObj != null)
 			portInputField = portInputFieldObj.GetComponent<TMP_InputField>();
 		else
-			Debug.LogError(debugTag.error + "Could not find PortInputField!");
+			Debug.Log(debugTag.warning + "Could not find PortInputField!");
 
 		GameObject noIpWarningObj = GameObject.Find("NoIpWarning");
 		if (noIpWarningObj != null)
 			noIpWarning = noIpWarningObj.GetComponent<Image>();
 		else
-			Debug.LogError(debugTag.error + "Could not find NoIpWarning!");
+			Debug.Log(debugTag.warning + "Could not find NoIpWarning!");
 	}
 
 	public void HostGameButtonClick()

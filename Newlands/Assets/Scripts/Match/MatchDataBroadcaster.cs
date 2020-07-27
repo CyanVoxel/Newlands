@@ -128,7 +128,7 @@ public class MatchDataBroadcaster : NetworkBehaviour
 
 	void OnDisable()
 	{
-		Debug.Log(debugTag + "The MatchDataBroadcaster has been disbaled/destroyed!");
+		Debug.Log(debugTag + "The MatchDataBroadcaster has been disabled/destroyed!");
 	}
 
 	public void BroadcastWinner(int id)

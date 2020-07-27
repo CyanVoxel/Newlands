@@ -60,7 +60,7 @@ public class GridController : NetworkBehaviour
 
 	void OnDisable()
 	{
-		Debug.Log(debugTag + "The GridController has been disbaled/destroyed!");
+		Debug.Log(debugTag + "The GridController has been disabled/destroyed!");
 	}
 
 	// [Client/Server] Parses the Match Data from MatchDataBroadcaster
