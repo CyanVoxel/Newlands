@@ -55,7 +55,7 @@ public class PurgeMatchData : MonoBehaviour
 		}
 		else
 		{
-			Debug.LogError("COULD NOT DESTROY AN OBJECT!");
+			Debug.LogWarning("COULD NOT DESTROY AN OBJECT! (This may happen on first startup as well)");
 		}
 	}
 }

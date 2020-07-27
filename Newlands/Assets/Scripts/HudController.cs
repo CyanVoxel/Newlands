@@ -267,12 +267,12 @@ public class HudController : MonoBehaviour
 
 	private void UpdateDebugText()
 	{
-		debugText.text = "";
-		debugText.text += ("GAMECARD DECK SIZE: " + MatchController.MasterDeck.gameCardDeck.Count + "\n");
-		debugText.text += ("CARDS LEFT IN DECK: " + MatchController.MasterDeckMutable.gameCardDeck.Count + "\n");
-		debugText.text += ("# OF CARDS PLAYED: " + MatchController.CardsPlayed + "\n");
-		debugText.text += ("CURRENT CLIENT LEADER: " + MatchController.FindClientsideLeader(lastKnownPlayerMoneyStr) + "\n");
-		// debugText.text += ("CURRENT SERVER LEADER: "
+		// debugText.text = "";
+		// debugText.text += ("GAMECARD DECK SIZE: " + MatchController.MasterDeck.gameCardDeck.Count + "\n");
+		// debugText.text += ("CARDS LEFT IN DECK: " + MatchController.MasterDeckMutable.gameCardDeck.Count + "\n");
+		// debugText.text += ("# OF CARDS PLAYED: " + MatchController.CardsPlayed + "\n");
+		// debugText.text += ("CURRENT CLIENT LEADER: " + MatchController.FindClientsideLeader(lastKnownPlayerMoneyStr) + "\n");
+		// // debugText.text += ("CURRENT SERVER LEADER: "
 	}
 
 } // class HudController

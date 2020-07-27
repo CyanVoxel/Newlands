@@ -309,6 +309,11 @@ public class ColorPalette
 					color = tintRed[strengthIndex];
 				else
 					color = baseRed[strengthIndex]; break;
+			case "Orange":
+				if (isTint)
+					color = tintOrange[strengthIndex];
+				else
+					color = baseOrange[strengthIndex]; break;
 			case "Orange Deep":
 			case "Deep Orange":
 				if (isTint)
