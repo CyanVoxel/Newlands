@@ -5,23 +5,37 @@ using UnityEngine;
 
 public class RuleSet : MonoBehaviour
 {
-	private static string debugH = "<color=#0091EAFF><b>[RuleSet] </b></color>";
+	private static DebugTag debugTag = new DebugTag("RuleSet", "91EAFF");
 
-	private GridManager gridMan;
-	private GameManager gameMan;
+	// private GridManager gridMan;
+	// private GameManager gameMan;
 
 	// METHODS ####################################################################################
 
 	void Start()
 	{
-		gridMan = FindObjectOfType<GridManager>();
-		gameMan = FindObjectOfType<GameManager>();
+		// gridMan = FindObjectOfType<GridManager>();
+		// gameMan = FindObjectOfType<GameManager>();
 	}
 
 	// Compares a Game Card against a target Card/Tle to determine if it is allowed to be played
 	// given the scope of the Game Card.
 	// NOTE: This is the devil's work and must be destroyed.
-	public static bool IsLegal(CardData target, Card card)
+
+	// Previously routed to what's not MatchAllScopes().
+	// Determines if the card should be allowed to be played on your own or other player's tiles,
+	// then verifies the scope is valid.
+	public static bool IsLegal(CardData target, Card card, int playerId)
+	{
+		if (IsOwnerValidated(target, card, playerId) && MatchesAllScopes(target, card, playerId))
+			return true;
+		else
+			return false;
+	}
+
+	// Descides if a Card's target matches the scope of the Tile it's trying to be played on.
+	// NOTE: A REFACTOR WOULD BE SOOOOOO NICE!
+	private static bool MatchesAllScopes(CardData target, Card card, int playerId)
 	{
 		string[] scopeLevel;
 		string[] targetLevel = new string[3];
@@ -34,7 +48,7 @@ public class RuleSet : MonoBehaviour
 		}
 		else
 		{
-			Debug.Log(debugH + "The card's target is null!");
+			Debug.Log(debugTag + "The card's target is null!");
 			return false;
 		}
 
@@ -42,7 +56,7 @@ public class RuleSet : MonoBehaviour
 		targetLevel[1] = target.Subtitle;
 		targetLevel[2] = target.Title;
 
-		Debug.Log("<b>[RuleSet]</b> " + "\n"
+		Debug.Log(debugTag + "\n"
 			+ "Scope:" + card.Target + "\n"
 			+ "Target:" + targetLevel[0] + "_" + targetLevel[1] + "_" + targetLevel[2] + "\n");
 
@@ -87,7 +101,7 @@ public class RuleSet : MonoBehaviour
 			return false;
 		}
 
-		Debug.Log("<b>[RuleSet]</b> Default return of False");
+		Debug.Log(debugTag + "Default return of False");
 		return false;
 
 		// Local Methods =======================================================
@@ -113,7 +127,7 @@ public class RuleSet : MonoBehaviour
 						if (targetLevel[0] == "Market") { return true; }
 						break;
 					default:
-						Debug.Log("<b>[RuleSet]</b> "
+						Debug.Log(debugTag
 							+ "The target " + card.Target
 							+ " is out of scope for the card "
 							+ target.Category + " at scope level 0");
@@ -145,7 +159,7 @@ public class RuleSet : MonoBehaviour
 						if (targetLevel[1] == "Coast") { return true; }
 						break;
 					default:
-						Debug.Log("<b>[RuleSet]</b> "
+						Debug.Log(debugTag
 							+ "The target " + card.Target
 							+ " is out of scope for the card "
 							+ target.Category + " at scope level 1");
@@ -207,7 +221,7 @@ public class RuleSet : MonoBehaviour
 						break;
 
 					default:
-						Debug.Log("<b>[RuleSet]</b> "
+						Debug.Log(debugTag
 							+ "The target " + card.Target
 							+ " is out of scope for the card "
 							+ target.Category + " at scope level 2");
@@ -283,65 +297,65 @@ public class RuleSet : MonoBehaviour
 	} // IsLegal
 
 	// Carries out the action that a legal Game Card intends
-	public void PlayCard(GridUnit target, Card cardToPlay)
-	{
-		string action = cardToPlay.Subtitle;
-		// NOTE: Cards promting tile value calculation have their calculations offset to
-		// the GridUnit class. When adding a new case here, you'll need to also add one
-		// in GridUnit so it knows how to do the calculations based on the card info.
+	// public void PlayCard(GridUnit target, Card cardToPlay)
+	// {
+	// 	string action = cardToPlay.Subtitle;
+	// 	// NOTE: Cards promting tile value calculation have their calculations offset to
+	// 	// the GridUnit class. When adding a new case here, you'll need to also add one
+	// 	// in GridUnit so it knows how to do the calculations based on the card info.
 
-		// Debug.Log("<b>[RuleSet]</b> Playing a card...");
+	// 	// Debug.Log("<b>[RuleSet]</b> Playing a card...");
 
-		switch (action)
-		{
-			case "Investment":
-				target.CalcTotalValue();
-				// gameMan.UpdatePlayersInfo();
-				break;
+	// 	switch (action)
+	// 	{
+	// 		case "Investment":
+	// 			target.CalcTotalValue();
+	// 			// gameMan.UpdatePlayersInfo();
+	// 			break;
 
-			case "Sabotage":
-				target.CalcTotalValue();
-				// gameMan.UpdatePlayersInfo();
-				break;
+	// 		case "Sabotage":
+	// 			target.CalcTotalValue();
+	// 			// gameMan.UpdatePlayersInfo();
+	// 			break;
 
-			case "Resource":
-				target.CalcTotalValue();
-				// gameMan.UpdatePlayersInfo();
-				break;
+	// 		case "Resource":
+	// 			target.CalcTotalValue();
+	// 			// gameMan.UpdatePlayersInfo();
+	// 			break;
 
-			case "Foreclosure":
-				target.bankrupt = true;
-				// GameManager.BankruptTile(target);
-				// gameMan.UpdatePlayersInfo();
-				break;
-			case "Upgrade":
-				if (GetScope(cardToPlay, 2) == "Plains" && target.subScope != "Farmland")
-				{
-					// Card newCard = Card.CreateInstance<Card>();
-					// CardData newCard;
-					// CardData newCard = new CardData(Resources.Load<CardTemplate>("Cards/Tiles/Land/farmland_cashcrops_5"));
-					// target.tileObj.SendMessage("DisplayCard", newCard);
+	// 		case "Foreclosure":
+	// 			target.bankrupt = true;
+	// 			// GameManager.BankruptTile(target);
+	// 			// gameMan.UpdatePlayersInfo();
+	// 			break;
+	// 		case "Upgrade":
+	// 			if (GetScope(cardToPlay, 2) == "Plains" && target.subScope != "Farmland")
+	// 			{
+	// 				// Card newCard = Card.CreateInstance<Card>();
+	// 				// CardData newCard;
+	// 				// CardData newCard = new CardData(Resources.Load<CardTemplate>("Cards/Tiles/Land/farmland_cashcrops_5"));
+	// 				// target.tileObj.SendMessage("DisplayCard", newCard);
 
-					// GridManager.grid[target.x, target.y].LoadNewCard(newCard, target.tileObj);
-					// target = GridManager.grid[target.x, target.y];
+	// 				// GridManager.grid[target.x, target.y].LoadNewCard(newCard, target.tileObj);
+	// 				// target = GridManager.grid[target.x, target.y];
 
-					// target.CalcTotalValue();
-					// gameMan.UpdatePlayersInfo();
-				} // if Plains
-				break;
-			default:
-				Debug.LogWarning("<b>[RuleSet]</b> Warning:"
-					+ "No actions found for " + action + "!");
-				break;
-		} // switch
+	// 				// target.CalcTotalValue();
+	// 				// gameMan.UpdatePlayersInfo();
+	// 			} // if Plains
+	// 			break;
+	// 		default:
+	// 			Debug.LogWarning(debugTag.warning
+	// 				+ "No actions found for " + action + "!");
+	// 			break;
+	// 	} // switch
 
-	} // PlayCard(Card, GridUnit)
+	// } // PlayCard(Card, GridUnit)
 
-	// Carries out the action that a legal Game Card intends (Override)
-	public void PlayCard(GridUnit target, GridUnit cardToPlay)
-	{
-		PlayCard(target, cardToPlay.card);
-	} // PlayCard(GridUnit, GridUnit)
+	// // Carries out the action that a legal Game Card intends (Override)
+	// public void PlayCard(GridUnit target, GridUnit cardToPlay)
+	// {
+	// 	PlayCard(target, cardToPlay.card);
+	// } // PlayCard(GridUnit, GridUnit)
 
 	private static string GetScope(Card card, int level = -1)
 	{
@@ -353,7 +367,7 @@ public class RuleSet : MonoBehaviour
 		}
 		else
 		{
-			Debug.Log("Hey, that card's target is null!");
+			Debug.Log(debugTag + "Hey, that card's target is null!");
 			return "error";
 		}
 
@@ -369,4 +383,35 @@ public class RuleSet : MonoBehaviour
 				return card.Target;
 		}
 	} // GetScope()
-} // RuleSet()
+
+	// Determines if the Target is valid based on the type of Target Tile and
+	// the person playing it.
+	private static bool IsOwnerValidated(CardData target, Card card, int playerId)
+	{
+		bool result = false;
+
+		// Market Tiles are except (for now?)
+		if (target.Category != "Market")
+		{
+			// If it's a NEGATIVE Card (currently only Sabotage),
+			if (card.Subtitle == "Sabotage")
+			{
+				// Then it's only okay to play on OTHER PEOPLE's Tiles.
+				if (target.OwnerId != playerId)
+					result = true;
+			}
+			else // Or if it's any other (POSITIVE) Card,
+			{
+				// Then it's only okay to play on YOUR OWN Tiles.
+				if (target.OwnerId == playerId)
+					result = true;
+			}
+		}
+		else // Market Tiles get a free pass.
+		{
+			result = true;
+		}
+
+		return result;
+	}
+}

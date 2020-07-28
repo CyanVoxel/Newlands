@@ -288,7 +288,7 @@ public class GridController : NetworkBehaviour
 				{
 					// Debug.Log(debugTag + "[AddCardToStack] GAMECARD ADDED TO STACK");
 					masterGrid[x, y].CardStack.Add(card);
-					Debug.Log("[AddCardToStack] REAL Card Stack Size: " + masterGrid[x, y].CardStack.Count);
+					// Debug.Log("[AddCardToStack] REAL Card Stack Size: " + masterGrid[x, y].CardStack.Count);
 				}
 				break;
 		}

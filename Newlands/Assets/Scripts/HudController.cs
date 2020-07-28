@@ -253,6 +253,7 @@ public class HudController : MonoBehaviour
 
 		if (this.lastKnownUsernameStr != matchDataBroadcaster.UsernameListStr)
 		{
+			// TODO: Sanitize this!!!
 			this.lastKnownUsernameStr = matchDataBroadcaster.UsernameListStr;
 			this.usernames = MatchDataBroadcaster.UnpackStringData(this.lastKnownUsernameStr);
 		}

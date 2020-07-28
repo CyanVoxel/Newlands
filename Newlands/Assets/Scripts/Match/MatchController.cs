@@ -580,7 +580,7 @@ public class MatchController : NetworkBehaviour
 
 		target = gridController.GetServerTile(tileType, locX, locY);
 
-		if (!target.IsBankrupt && RuleSet.IsLegal(target, card))
+		if (!target.IsBankrupt && RuleSet.IsLegal(target, card, turn))
 		{
 			// gridController.UpdateMarketCardValues();
 
