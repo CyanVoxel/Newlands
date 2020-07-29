@@ -39,7 +39,7 @@ public class MatchController : NetworkBehaviour
 	public static int CardsPlayed { get { return cardsPlayed; } }
 	private bool winnerChosenFlag = false;
 
-	private DebugTag debugTag = new DebugTag("MatchController", "9C27B0");
+	private static DebugTag debugTag = new DebugTag("MatchController", "9C27B0");
 
 	// METHODS #####################################################################################
 
@@ -141,7 +141,12 @@ public class MatchController : NetworkBehaviour
 		for (int i = 0; i < playerMoneyList.Count; i++)
 		{
 			if (playerMoneyList[i] > winnerMoney)
+			{
 				winnerId = (i + 1);
+				winnerMoney = playerMoneyList[i];
+			}
+
+			Debug.Log(debugTag + "[FindLeader] Player " + (i + 1) + " has " + playerMoneyList[i]);
 		}
 
 		return winnerId;

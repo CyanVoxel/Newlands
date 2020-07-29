@@ -138,7 +138,7 @@ public class PlayerConnection : NetworkBehaviour
 
 		if (matchData.Winner >= 0)
 		{
-			Debug.Log("WINNER WINNER CHICKED DINNER! CONGRATS PLAYER " + matchData.Winner);
+			// Debug.Log("WINNER WINNER CHICKED DINNER! CONGRATS PLAYER " + matchData.Winner);
 			this.hudController.DisplayWinner(matchData.Winner);
 		}
 
@@ -437,8 +437,8 @@ public class PlayerConnection : NetworkBehaviour
 
 					CardData tile = gridController.GetClientTile(targetCard.Category, turnEvent.targetX, turnEvent.targetY);
 
-					Debug.Log(debugTag.head + "Target Category: " + targetCard.Category);
-					Debug.Log(debugTag.head + targetObject.name + " Stack Size: " + tile.CardStack.Count);
+					// Debug.Log(debugTag.head + "Target Category: " + targetCard.Category);
+					// Debug.Log(debugTag.head + targetObject.name + " Stack Size: " + tile.CardStack.Count);
 
 					Vector3 gap = targetObject.transform.position - new Vector3(targetObject.transform.position.x,
 						targetObject.transform.position.y
@@ -471,6 +471,16 @@ public class PlayerConnection : NetworkBehaviour
 						otherPlayersCard.transform.name = CardUtility.CreateCardObjectName("Stacked", turnEvent.x, tile.CardStack.Count - 1);
 						otherPlayersCard.transform.SetParent(targetObject.transform);
 						StartCoroutine(CardAnimations.MoveCardCoroutine(otherPlayersCard, targetObject, gap, .1f));
+					}
+				}
+				else // Cards that don't get stacked (like discards)
+				{
+					if (turnEvent.playerId == this.id)
+					{
+						cardObj = GameObject.Find(CardUtility.CreateCardObjectName(turnEvent.cardType,
+							turnEvent.x, turnEvent.y));
+						Destroy(cardObj);
+						CreateNewCardObject(turnEvent.y, turnEvent.topCard);
 					}
 				}
 
@@ -525,33 +535,36 @@ public class PlayerConnection : NetworkBehaviour
 
 	private void CreateNewCardObject(int index, string cardStr)
 	{
-		float xOff = index * 11 + (((config.GameGridWidth - config.PlayerHandSize) / 2f) * 11);
-		float yOff = -10;
-
-		Vector3 finalPosition = new Vector3(xOff, yOff, 40);
-
-		// If old card exists, destroy it
-		GameObject oldCardObj = GameObject.Find(CardUtility.CreateCardObjectName("GameCard",
-			this.id, index));
-
-		if (oldCardObj != null)
+		if (cardStr != null)
 		{
-			Debug.Log(debugTag + "Trying to destroy " + oldCardObj.name);
-			Destroy(oldCardObj);
+			float xOff = index * 11 + (((config.GameGridWidth - config.PlayerHandSize) / 2f) * 11);
+			float yOff = -10;
+
+			Vector3 finalPosition = new Vector3(xOff, yOff, 40);
+
+			// If old card exists, destroy it
+			GameObject oldCardObj = GameObject.Find(CardUtility.CreateCardObjectName("GameCard",
+				this.id, index));
+
+			if (oldCardObj != null)
+			{
+				Debug.Log(debugTag + "Trying to destroy " + oldCardObj.name);
+				Destroy(oldCardObj);
+			}
+
+			// Create new card
+			// NOTE: In the future when there is an actual deck model, have it originate from that.
+			GameObject cardObj = (GameObject)Instantiate(matchController.gameCardPrefab,
+				new Vector3(0, -40, 40),
+				Quaternion.identity);
+
+			cardObj.GetComponent<CardViewController>().Card = JsonUtility.FromJson<Card>(cardStr);
+			cardObj.transform.SetParent(GameObject.Find("PlayerHand").transform);
+
+			StartCoroutine(CardAnimations.MoveCardCoroutine(cardObj, finalPosition, 0.1f));
+
+			cardObj.name = (CardUtility.CreateCardObjectName("GameCard", this.id, index));
 		}
-
-		// Create new card
-		// NOTE: In the future when there is an actual deck model, have it originate from that.
-		GameObject cardObj = (GameObject)Instantiate(matchController.gameCardPrefab,
-			new Vector3(0, -40, 40),
-			Quaternion.identity);
-
-		cardObj.GetComponent<CardViewController>().Card = JsonUtility.FromJson<Card>(cardStr);
-		cardObj.transform.SetParent(GameObject.Find("PlayerHand").transform);
-
-		StartCoroutine(CardAnimations.MoveCardCoroutine(cardObj, finalPosition, 0.1f));
-
-		cardObj.name = (CardUtility.CreateCardObjectName("GameCard", this.id, index));
 	}
 
 	// private void InitLocalMarketGrid()

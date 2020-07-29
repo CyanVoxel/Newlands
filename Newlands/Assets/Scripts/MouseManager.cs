@@ -178,10 +178,26 @@ public class MouseManager : NetworkBehaviour
 	// Handles what to do when the pointer is over an object
 	private void HandleObjectHit(GameObject objectHit)
 	{
+		// if (objectHit.name == "Cube")
+		// return;
+
+		// Debug.Log(debugTag + "About to process click for " + objectHit.name);
+		// Debug.Log(debugTag + "objectHit.name:  " + objectHit.name);
+		// Debug.Log(debugTag + "objectHit.transform.name:  " + objectHit.transform.name);
+		// Debug.Log(debugTag + "objectHit.transform.parent.name:  " + objectHit.transform.parent.name);
+
 		// Grab info from object name
+		// (ex.) x00_y00_Tile
 		try
 		{
-			string[] nameArr = objectHit.transform.parent.name.Split('_');
+			string[] nameArr;
+
+			// This block is where an error could occur.
+			if (objectHit.transform.parent != null)
+				nameArr = objectHit.transform.parent.name.Split('_');
+			else
+				nameArr = objectHit.name.Split('_');
+
 			string type = nameArr[2];
 			int x = int.Parse(nameArr[0].Substring(1));
 			int y = int.Parse(nameArr[1].Substring(1));
@@ -204,7 +220,10 @@ public class MouseManager : NetworkBehaviour
 			} // Primary Click
 		}
 
-		catch {}
+		catch
+		{
+			// Debug.Log(debugTag.error + "Could not parse object hit with name: " + objectHit.name);
+		}
 
 	} // HandleObjectHit()
 
@@ -280,6 +299,20 @@ public class MouseManager : NetworkBehaviour
 					objectHit.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.GetNewlandsColor("Cyan", 300, true);
 					objectHit.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.GetNewlandsColor("Cyan", 300, true);
 				}
+				break;
+			case "Discard":
+				if (selection >= 0 && matchData.Turn == this.ownerId)
+				{
+					Debug.Log(debugTag.head + "Trying to play card " + selection
+						+ " on " + objectHit.name);
+					playIndex = selection;
+					CmdPlayCard(selection, objectHit.name);
+				}
+				Debug.Log(debugTag + "Trying to find " + CardUtility.CreateCardObjectName("GameCard", this.ownerId, selection));
+				oldSelection = GameObject.Find(CardUtility.CreateCardObjectName("GameCard", this.ownerId, selection));
+				oldSelection.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.tintCard;
+				oldSelection.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.tintCard;
+				selection = -1;
 				break;
 			default:
 				break;

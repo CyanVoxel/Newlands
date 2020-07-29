@@ -23,7 +23,7 @@ public class GridController : NetworkBehaviour
 	public readonly float cardThickness = 0.2f;
 	public readonly float shiftUnit = 1.2f;
 	private readonly float cardOffX = 11f;
-	private readonly float cardOffY = 8f;
+	private readonly float cardOffY = 8.5f;
 	private static float[] rowPosition;
 	private static int[] maxGridStack;
 	private static int[] maxMarketStack;
@@ -228,6 +228,12 @@ public class GridController : NetworkBehaviour
 					return masterGrid[x, y];
 				else
 					return null;
+			case "Discard":
+				// Creates a new card with Category "Discard" to be interpreted elsewhere.
+				CardData tempCard = new CardData();
+				tempCard.Category = "Discard";
+				tempCard.DiscardFlag = true;
+				return tempCard;
 			default:
 				return null;
 		}
@@ -282,7 +288,7 @@ public class GridController : NetworkBehaviour
 					masterMarketGrid[x, y].CardStack.Add(card);
 				}
 				break;
-			default:
+			case "Tile":
 				knownOwnersGrid[x, y].CardStack.Add(card);
 				if (hasAuthority)
 				{
@@ -291,6 +297,8 @@ public class GridController : NetworkBehaviour
 					// Debug.Log("[AddCardToStack] REAL Card Stack Size: " + masterGrid[x, y].CardStack.Count);
 				}
 				break;
+			default:
+				break;
 		}
 	}
 
@@ -298,34 +306,38 @@ public class GridController : NetworkBehaviour
 	public bool ShiftRowCheck(string type, int x, int y)
 	{
 		bool didShift = false;
-		int maxStack = 0;
-		CardData target = GetClientTile(type, x, y);
 
-		// Debug.Log(debugTag + "[Shift Row Check] Target Category: " + type);
+		if (type != "Discard")
+		{
+			int maxStack = 0;
+			CardData target = GetClientTile(type, x, y);
 
-		switch (type)
-		{
-			case "Tile":
-				maxStack = maxGridStack[y];
-				break;
-			case "Market":
-				maxStack = maxMarketStack[y];
-				break;
-			default:
-				break;
-		}
+			// Debug.Log(debugTag + "[Shift Row Check] Target Category: " + type);
 
-		// Debug.Log(debugTag + "[Shift Row Check] Target Card's stack is : " + target.CardStack.Count + ". Known max stack for type " + type + " is " + maxStack);
-		if (target.CardStack.Count > maxStack)
-		{
-			// IncrementStackSize(y, target.Category);
-			ShiftRow(type, y, 1);
-			didShift = true;
-			Debug.Log(debugTag + "Shifting row " + y + " for category: " + target.Category);
-		}
-		else
-		{
-			Debug.Log(debugTag + "Card stack of  " + target.CardStack.Count + " was not greater than " + maxStack);
+			switch (type)
+			{
+				case "Tile":
+					maxStack = maxGridStack[y];
+					break;
+				case "Market":
+					maxStack = maxMarketStack[y];
+					break;
+				default:
+					break;
+			}
+
+			// Debug.Log(debugTag + "[Shift Row Check] Target Card's stack is : " + target.CardStack.Count + ". Known max stack for type " + type + " is " + maxStack);
+			if (target.CardStack.Count > maxStack)
+			{
+				// IncrementStackSize(y, target.Category);
+				ShiftRow(type, y, 1);
+				didShift = true;
+				Debug.Log(debugTag + "Shifting row " + y + " for category: " + target.Category);
+			}
+			else
+			{
+				Debug.Log(debugTag + "Card stack of  " + target.CardStack.Count + " was not greater than " + maxStack);
+			}
 		}
 
 		return didShift;
@@ -469,7 +481,7 @@ public class GridController : NetworkBehaviour
 			Debug.LogError(debugTag.error + "[CalcCardValue] Passed CardData was null!");
 		}
 
-		Debug.Log(debugTag + "[CalcCardValue] Calculating data for  " + cardData.Title + " " + cardData.Resource + " " + cardData.FooterValue);
+		// Debug.Log(debugTag + "[CalcCardValue] Calculating data for  " + cardData.Title + " " + cardData.Resource + " " + cardData.FooterValue);
 
 		// Debug.Log(debugTag + "[CalcCardValue] Category: " + cardData.Category);
 
@@ -479,7 +491,7 @@ public class GridController : NetworkBehaviour
 			ResourceInfo.pricesMut.TryGetValue(cardData.Resource, out retrievedPrice);
 			baseValue = (retrievedPrice * cardData.FooterValue); //Could be 0, that's okay
 
-			Debug.Log(debugTag + "[CalcCardValue] Found price of " + cardData.Resource + ": $" + retrievedPrice);
+			// Debug.Log(debugTag + "[CalcCardValue] Found price of " + cardData.Resource + ": $" + retrievedPrice);
 		}
 		else if (cardData.Category == "Market")
 		{
@@ -494,8 +506,8 @@ public class GridController : NetworkBehaviour
 		{
 			retrievedPrice = 0;
 
-			Debug.Log(debugTag + "[CalcCardValue] Found Stack Card #" + i + ", Subtitle:" + cardData.CardStack[i].Subtitle);
-			Debug.Log(debugTag + "[CalcCardValue] Found Stack Card #" + i + ", Old Base Value:" + baseValue);
+			// Debug.Log(debugTag + "[CalcCardValue] Found Stack Card #" + i + ", Subtitle:" + cardData.CardStack[i].Subtitle);
+			// Debug.Log(debugTag + "[CalcCardValue] Found Stack Card #" + i + ", Old Base Value:" + baseValue);
 
 			// Resources, Additive/Subtractive Cash Modifiers
 			if (cardData.CardStack[i].Subtitle == "Resource")
@@ -512,9 +524,9 @@ public class GridController : NetworkBehaviour
 				baseValue -= cardData.CardStack[i].FooterValue;
 			}
 
-			Debug.Log(debugTag + "[CalcCardValue] Found Stack Card #" + i + ", New Base Value:" + baseValue);
+			// Debug.Log(debugTag + "[CalcCardValue] Found Stack Card #" + i + ", New Base Value:" + baseValue);
 
-			Debug.Log(debugTag + "[CalcCardValue] Found Stack Card #" + i + ", Old Mod Value:" + valueMod);
+			// Debug.Log(debugTag + "[CalcCardValue] Found Stack Card #" + i + ", Old Mod Value:" + valueMod);
 
 			// Percentage Modifiers
 			if (cardData.CardStack[i].Subtitle == "Investment" && cardData.CardStack[i].PercFlag)
@@ -526,7 +538,7 @@ public class GridController : NetworkBehaviour
 				valueMod -= cardData.CardStack[i].FooterValue;
 			}
 
-			Debug.Log(debugTag + "[CalcCardValue] Found Stack Card #" + i + ", New Mod Value:" + valueMod);
+			// Debug.Log(debugTag + "[CalcCardValue] Found Stack Card #" + i + ", New Mod Value:" + valueMod);
 		}
 
 		if (baseValue < 0 && valueMod < 0)
@@ -538,12 +550,12 @@ public class GridController : NetworkBehaviour
 		if (cardData.Category == "Market")
 		{
 			ResourceInfo.pricesMut[cardData.Resource] = (int)totalValue;
-			Debug.Log(debugTag + "[CalcCardValue] " + cardData.Resource + " Price:  $" + ResourceInfo.pricesMut[cardData.Resource]);
+			// Debug.Log(debugTag + "[CalcCardValue] " + cardData.Resource + " Price:  $" + ResourceInfo.pricesMut[cardData.Resource]);
 		}
 
 		if (cardData.Category == "Tile")
 		{
-			Debug.Log(debugTag + "[CalcCardValue] " + cardData.CardObject.name + " Base:  $" + baseValue + ", Mod: %" + valueMod + ", Total: $" + totalValue);
+			// Debug.Log(debugTag + "[CalcCardValue] " + cardData.CardObject.name + " Base:  $" + baseValue + ", Mod: %" + valueMod + ", Total: $" + totalValue);
 		}
 
 		// Debug.Log(debugTag + "[CalcCardValue] " + cardData.CardObject.name + " base value:  " + baseValue);

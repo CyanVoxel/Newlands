@@ -111,9 +111,9 @@ public class CameraManager : MonoBehaviour
 			checkedNewCamPos.x = 100;
 		}
 
-		if (uncheckedNewCamPos.y < -15)
+		if (uncheckedNewCamPos.y < -10)
 		{
-			checkedNewCamPos.y = -15;
+			checkedNewCamPos.y = -10;
 		}
 		else if (uncheckedNewCamPos.y > 100)
 		{

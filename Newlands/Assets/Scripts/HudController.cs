@@ -283,7 +283,11 @@ public class HudController : MonoBehaviour
 
 	public void DisplayWinner(int winnerId)
 	{
-		winnerText.text = ("PLAYER " + winnerId + " WINS!");
+		string username = MatchDataBroadcaster.UnpackStringData(matchDataBroadcaster.UsernameListStr)[winnerId - 1];
+		Debug.Log(debugTag + "PLAYER " + winnerId + " WINS!");
+
+		winnerText.text = ("<b>" + username + "</b> WINS!");
+		winnerText.color = ColorPalette.GetDefaultPlayerColor(winnerId, 500, false);
 		winnerObject.SetActive(true);
 	}
 

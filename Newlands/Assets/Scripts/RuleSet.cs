@@ -27,10 +27,18 @@ public class RuleSet : MonoBehaviour
 	// then verifies the scope is valid.
 	public static bool IsLegal(CardData target, Card card, int playerId)
 	{
-		if (IsOwnerValidated(target, card, playerId) && MatchesAllScopes(target, card, playerId))
-			return true;
+		if (target.Category != "Discard")
+		{
+			if (IsOwnerValidated(target, card, playerId) && MatchesAllScopes(target, card, playerId))
+				return true;
+			else
+				return false;
+		}
 		else
-			return false;
+		{
+			Debug.Log(debugTag + "A card was played on the Discard pile!");
+			return true;
+		}
 	}
 
 	// Descides if a Card's target matches the scope of the Tile it's trying to be played on.
@@ -118,6 +126,8 @@ public class RuleSet : MonoBehaviour
 			if (scopeLevel.Length >= 1)
 			{
 				// Checks the Scope Level 0 (Category)
+				// if (target.Category != "Discard") // Meant for the discard pile?
+				// {
 				switch (finalScope)
 				{
 					case "Tile":
@@ -132,9 +142,17 @@ public class RuleSet : MonoBehaviour
 							+ " is out of scope for the card "
 							+ target.Category + " at scope level 0");
 						break;
-				} // switch
+				}
+				// }
+				// else
+				// {
+				// 	// The card is destined for the discard pile. We will not stop it.
+				// 	return true;
+				// }
+
 			}
 
+			// Out of scope for the target.
 			return false;
 		} // MatchScope0
 
