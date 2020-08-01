@@ -23,8 +23,8 @@ public class MatchDataBroadcaster : NetworkBehaviour
 	// NOTE: In the future, it would be best to use a different implementation.
 	[SyncVar]
 	private string topCardStr = "";
-	private SyncListString updatedCardsStr;
-	private SyncListString playerStartingHands;
+	// private SyncListString updatedCardsStr;
+	// private SyncListString playerStartingHands;
 
 	private static DebugTag debugTag = new DebugTag("MatchDataBroadcaster", "2196F3");
 
@@ -113,29 +113,29 @@ public class MatchDataBroadcaster : NetworkBehaviour
 		}
 	}
 
-	public SyncListString UpdatedCardsStr
-	{
-		get { return updatedCardsStr; }
-		set
-		{
-			if (hasAuthority)
-				updatedCardsStr = value;
-			else
-				Debug.Log(debugTag + "You don't have authority to change UpdatedCardsStr!");
-		}
-	}
+	// public SyncListString UpdatedCardsStr
+	// {
+	// 	get { return updatedCardsStr; }
+	// 	set
+	// 	{
+	// 		if (hasAuthority)
+	// 			updatedCardsStr = value;
+	// 		else
+	// 			Debug.Log(debugTag + "You don't have authority to change UpdatedCardsStr!");
+	// 	}
+	// }
 
-	public SyncListString PlayerStartingHands
-	{
-		get { return playerStartingHands; }
-		set
-		{
-			if (hasAuthority)
-				playerStartingHands = value;
-			else
-				Debug.Log(debugTag + "You don't have authority to change PlayerStartingHands!");
-		}
-	}
+	// public SyncListString PlayerStartingHands
+	// {
+	// 	get { return playerStartingHands; }
+	// 	set
+	// 	{
+	// 		if (hasAuthority)
+	// 			playerStartingHands = value;
+	// 		else
+	// 			Debug.Log(debugTag + "You don't have authority to change PlayerStartingHands!");
+	// 	}
+	// }
 
 	void Awake()
 	{

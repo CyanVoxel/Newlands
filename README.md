@@ -8,29 +8,33 @@ Newlands is played in two main phases. During the "Buying" phase, players take t
 
 The main gameplay of Newlands revolves around trying to balance maximizing the number of resources on your land, sabotaging other player's land, and manipulating the market to swing in your favor. So how does this work? The tiles a player owns can only support certain resources. Most tiles even come with their own resources embedded in them, and valuable ones if you're lucky! By playing modifier cards that add resources on to tiles, you can quickly increase your cash total! The catch, however, is that a resource's value isn't set in stone. Players can also play modifier cards on the resource market, and can quickly make the price of all that gold you found plummet! The idea of the game is the need to balance the types of tiles you've got with the resources that work with it, diversify your investments as much as you can, play the market in your favor, and sabotage other players to make sure they don't come out on top!
 
-## Progress Report: October 2019
+## Progress Report: July 2020
 
-Progress on my October sprint checklist has been going very well. Many old systems have been successfully converted to the new flexible multiplayer setup, and I've even managed to sneak in some nice polish on some things!
+With all of the previous new systems up and running, progress in the Alpha builds has been building very quickly! I'm currently working on listening to player and playtest feedback, putting final touches on core systems, and developing the final art style for the Beta.
 
-#### Sprint Checklist:
-- [x] Cards stack in new systems
-- [x] Cards are redrawn in new systems
-- [x] Clients are able to parse the new broadcasting system
-- [x] The Game Setup screen now allows for more diverse game configurations
-- [x] The "official" max player cap has been raised to 8
-- [ ] Market cards are now functional in the new systems
-- [ ] Player cash is calculated in the new systems
+## July Alpha Progress:
 
-#### Stretch Goals:
-- [ ] Reintroduce Card Foreclosures
-- [ ] Reintroduce Card Upgrades
+#### Features:
+- [x] Usernames can be entered upon joining a match to be displayed in-game
+- [x] Card rules have changed slightly, only allowing "positive" cards to be played on your own tiles, and "negative" cards on other's tiles
+- [x] Better camera movement via right/middle-click and drag, as well as camera bounds
+- [x] A new Discard Pile allows player to throw away an unwanted card for their turn
+- [ ] Player Lobby + Ready-Up system
+- [ ] "Pause" Menu
 
-#### Extra Progress:
-- [x] Cards and Tiles have animations!
-- [x] New Turn/Round/Phase indicator GUI! I'm coming for the cash list next...
-- [x] Aspect ratio tests with the new GUI that will influence later designs
+#### Improvements:
+- [x] Join/Host screens are now separate, only containing relevant info
+- [x] A winner is now calculated when all cards are played, and players can return to the main menu
 
-<img src="progress_report_october_2019.jpg">
+#### Bug Fixes:
+- Market system and resource calculations working again after refactor
+- ame data is reset upon exiting a match, no longer requiring a game restart
+
+#### Experimental:
+- Dualshock controller camera movement
+- 8-Player mode support
+
+<img src="progress_report_july_2020.jpg">
 
 #### Goals for the Future (Beta and Beyond):
 - Dress up the game grid with a magically-expanding table and props that play into the "tabletop" design
@@ -40,7 +44,6 @@ Progress on my October sprint checklist has been going very well. Many old syste
 - Nicer final animations, especially for flipping cards
 - Coast Tiles and a Fish Resource! These tiles will appear only on the edge of the grid, and will (hopefully) create interesting conflicts when choosing which tiles to purchase during the first phase
 - Sound effects, and possibly a soundtrack?
-- Usernames and the ability to rejoin a match in the case of an unexpected disconnect
 - And more!
 
 ## Thanks for checking in on the progress of Newlands!
