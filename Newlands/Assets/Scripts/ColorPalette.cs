@@ -277,6 +277,16 @@ public class ColorPalette
 		new ColorHex("#FF00FF")		// 100
 	};
 
+	public static readonly Color32 baseOil = new ColorHex("#333333");
+	public static readonly Color32 baseLumber = new ColorHex("#b36f27");
+	public static readonly Color32 baseCashCrops = new ColorHex("#d9af45");
+	public static readonly Color32 baseFish = new ColorHex("#8fc1c9");
+	public static readonly Color32 baseGems = new ColorHex("#d16676");
+	public static readonly Color32 baseIron = new ColorHex("#777777");
+	public static readonly Color32 baseSilver = new ColorHex("#cdd3d4");
+	public static readonly Color32 baseGold = new ColorHex("#f0b618");
+	public static readonly Color32 basePlatinum = new ColorHex("#a3bcbf");
+
 	// METHODS #####################################################################################
 
 	// Returns a color from the Newlands palette based on its name, strength (500, 400, etc.),
@@ -398,6 +408,24 @@ public class ColorPalette
 					color = tintCard;
 				else
 					color = cardLight; break;
+			case "Lumber":
+				color = baseLumber; break;
+			case "Oil":
+				color = baseOil; break;
+			case "Cash Crops":
+				color = baseCashCrops; break;
+			case "Fish":
+				color = baseFish; break;
+			case "Iron":
+				color = baseIron; break;
+			case "Gems":
+				color = baseGems; break;
+			case "Silver":
+				color = baseSilver; break;
+			case "Gold":
+				color = baseGold; break;
+			case "Platinum":
+				color = basePlatinum; break;
 			default: break;
 		}
 
@@ -425,6 +453,27 @@ public class ColorPalette
 
 		return color;
 	}
+
+	// public static Color32 GetResourceColor(string resourceName)
+	// {
+	// 	Color32 color = tintCard;
+
+	// 	switch (resourceName)
+	// 	{
+	// 		case "Lumber": color = baseLumber; break;
+	// 		case "Oil": color = baseOil; break;
+	// 		case "Cash Crops": color = baseCashCrops; break;
+	// 		case "Fish": color = baseFish; break;
+	// 		case "Iron": color = baseIron; break;
+	// 		case "Gems": color = baseGems; break;
+	// 		case "Silver": color = baseSilver; break;
+	// 		case "Gold": color = baseGold; break;
+	// 		case "Platinum": color = basePlatinum; break;
+	// 		default: break;
+	// 	}
+
+	// 	return color;
+	// }
 
 	// Outputs a hex color tag from a Color32
 	public static string Color32ToTag(Color32 color)

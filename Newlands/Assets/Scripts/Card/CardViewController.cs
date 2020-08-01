@@ -427,6 +427,8 @@ public class CardViewController : MonoBehaviour
 					}
 				}
 
+				footerBorder.color = ColorPalette.GetNewlandsColor(card.FooterColor, 500, true);
+
 				break;
 
 			case "Game Card":
@@ -451,14 +453,29 @@ public class CardViewController : MonoBehaviour
 				footerBorderL.color = ColorPalette.alpha;
 				footerBorderR.color = ColorPalette.alpha;
 
-				if (card.ColorCornerFlag)
+				if (card.Subtitle == "Resource")
 				{
-					footerBorderL.color = ColorPalette.GetNewlandsColor(card.FooterColor, 500, true);
-					footerBorderR.color = ColorPalette.GetNewlandsColor(card.FooterColor, 500, true);
+					if (card.ColorCornerFlag)
+					{
+						footerBorderL.color = ColorPalette.GetNewlandsColor(card.Resource, 500, true);
+						footerBorderR.color = ColorPalette.GetNewlandsColor(card.Resource, 500, true);
+					}
+					else
+					{
+						footerBorder.color = ColorPalette.GetNewlandsColor(card.Resource, 500, true);
+					}
 				}
 				else
 				{
-					footerBorder.color = ColorPalette.GetNewlandsColor(card.FooterColor, 500, true);
+					if (card.ColorCornerFlag)
+					{
+						footerBorderL.color = ColorPalette.GetNewlandsColor(card.FooterColor, 500, true);
+						footerBorderR.color = ColorPalette.GetNewlandsColor(card.FooterColor, 500, true);
+					}
+					else
+					{
+						footerBorder.color = ColorPalette.GetNewlandsColor(card.FooterColor, 500, true);
+					}
 				}
 
 				break;
