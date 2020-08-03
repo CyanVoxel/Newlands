@@ -1,4 +1,8 @@
-﻿// Responsible for storing the state values of a Card, as well as updating it's GUI when changed.
+﻿// NOTICE OF FUTURE DEPRECATION: When the final art style goes into effect, this specific ViewController will no longer
+// be associated with anything. New ViewController(s) will be created for any future card "theme", the first being
+// the new "default" theme. In the future, I may add a "classic" theme that replicates the look of these original cards.
+
+// Responsible for storing the state values of a Card, as well as updating it's GUI when changed.
 
 using System.Collections;
 using System.Collections.Generic;
@@ -488,7 +492,7 @@ public class CardViewController : MonoBehaviour
 				ResourceInfo.prices.TryGetValue(card.Resource, out tempFooterValue);
 				card.FooterValue = tempFooterValue;
 				// Footer Border -----------------------------------------------
-				footerBorder.color = ColorPalette.cardDark;
+				footerBorder.color = ColorPalette.GetNewlandsColor(card.Resource, 500, true);
 				break;
 
 			default:
