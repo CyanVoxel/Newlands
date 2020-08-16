@@ -5,9 +5,9 @@ using System.Collections.Generic;
 using Mirror;
 using UnityEngine;
 
-public class MatchConnections : NetworkManager
+public class NewlandsNetworkManager : NetworkManager
 {
-	private static DebugTag debugTag = new DebugTag("MatchConnections", "8BC34A");
+	private static DebugTag debugTag = new DebugTag("NewlandsNetworkManager", "8BC34A");
 	private int index = 0;
 
 	private Dictionary<string, int> playerAddresses = new Dictionary<string, int>();
@@ -40,5 +40,23 @@ public class MatchConnections : NetworkManager
 		{
 			Debug.Log(debugTag.head + kvp.Key + ", " + kvp.Value);
 		}
+	}
+
+	public override void OnClientConnect(NetworkConnection conn)
+	{
+		if (!clientLoadedScene)
+		{
+			// Ready/AddPlayer is usually triggered by a scene load completing. if no scene was loaded, then Ready/AddPlayer it here instead.
+			ClientScene.Ready(conn);
+			if (autoCreatePlayer)
+			{
+				ClientScene.AddPlayer();
+			}
+		}
+	}
+
+	public override void OnClientDisconnect(NetworkConnection conn)
+	{
+		StopClient();
 	}
 }

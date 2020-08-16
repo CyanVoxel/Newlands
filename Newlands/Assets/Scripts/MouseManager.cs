@@ -28,12 +28,12 @@ public class MouseManager : NetworkBehaviour
 	public int playIndex = -1;
 	public int playSuccessFlag = -1; // -1: Reset | 0: False | 1: True
 	private static GameObject objectHit;
-	[SyncVar]
-	public int ownerId = -1;
+	// [SyncVar]
+	public static int ownerId = -1;
 
 	// [SyncVar]
 	public NetworkConnection myClient;
-	public GameObject myPlayerObj;
+	// public GameObject myPlayerObj;
 
 	private int purchaseBufferX = -1;
 	private int purchaseBufferY = -1;
@@ -60,10 +60,15 @@ public class MouseManager : NetworkBehaviour
 		if (!isLocalPlayer)
 			return;
 
-		if (config == null)
+		if (this.matchController == null)
+			this.matchController = FindObjectOfType<MatchController>();
+		if (this.matchDataBroadcaster == null)
+			this.matchDataBroadcaster = FindObjectOfType<MatchDataBroadcaster>();
+
+		if (config == null && this.matchDataBroadcaster != null)
 			config = JsonUtility.FromJson<MatchConfig>(matchDataBroadcaster.MatchConfigStr);
 
-		if (matchDataBroadcaster.MatchDataStr != matchDataStr)
+		if (this.matchDataBroadcaster != null && matchDataBroadcaster.MatchDataStr != matchDataStr)
 		{
 			matchDataStr = matchDataBroadcaster.MatchDataStr;
 			matchData = JsonUtility.FromJson<MatchData>(matchDataStr);
@@ -108,9 +113,9 @@ public class MouseManager : NetworkBehaviour
 		}
 	}
 
-	public void SetId(int id)
+	public static void SetId(int id)
 	{
-		this.ownerId = id;
+		ownerId = id;
 	}
 
 	private void CheckPurchaseSuccess()
@@ -231,20 +236,20 @@ public class MouseManager : NetworkBehaviour
 	{
 		this.selection = -1;
 		// If the tile can be bought
-		if (matchData.Turn == this.ownerId && type == "Tile")
+		if (matchData.Turn == ownerId && type == "Tile")
 		{
 			Debug.Log(debugTag.head + "Trying to buy tile!");
 			CmdBuyTile(x, y);
 			this.purchaseBufferX = x;
 			this.purchaseBufferY = y;
 		}
-		else if (this.ownerId == -1)
+		else if (ownerId == -1)
 		{
 			Debug.LogWarning(debugTag.warning + "This MouseManager has an ownerID of -1!");
 		}
 		else
 		{
-			Debug.Log(debugTag.head + "Player " + this.ownerId
+			Debug.Log(debugTag.head + "Player " + ownerId
 				+ " can't buy a tile on Player " + matchData.Turn + "'s Turn!");
 		}
 	} // BuyingPhasePrimaryClick()
@@ -256,15 +261,15 @@ public class MouseManager : NetworkBehaviour
 		{
 			case "Tile":
 			case "Market":
-				if (selection >= 0 && matchData.Turn == this.ownerId)
+				if (selection >= 0 && matchData.Turn == ownerId)
 				{
 					Debug.Log(debugTag.head + "Trying to play card " + selection
 						+ " on " + objectHit.transform.parent.name);
 					playIndex = selection;
 					CmdPlayCard(selection, objectHit.transform.parent.name);
 				}
-				Debug.Log(debugTag + "Trying to find " + CardUtility.CreateCardObjectName("GameCard", this.ownerId, selection));
-				oldSelection = GameObject.Find(CardUtility.CreateCardObjectName("GameCard", this.ownerId, selection));
+				Debug.Log(debugTag + "Trying to find " + CardUtility.CreateCardObjectName("GameCard", ownerId, selection));
+				oldSelection = GameObject.Find(CardUtility.CreateCardObjectName("GameCard", ownerId, selection));
 				// oldSelection.transform.parent.position = new Vector3(oldSelection.transform.parent.position.x, oldSelection.transform.parent.position.y, objectHit.transform.parent.position.z);
 				oldSelection.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.tintCard;
 				oldSelection.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.tintCard;
@@ -281,8 +286,8 @@ public class MouseManager : NetworkBehaviour
 				}
 				else if (selection >= 0)
 				{
-					Debug.Log(debugTag + "Trying to find " + CardUtility.CreateCardObjectName("GameCard", this.ownerId, selection));
-					oldSelection = GameObject.Find(CardUtility.CreateCardObjectName("GameCard", this.ownerId, selection));
+					Debug.Log(debugTag + "Trying to find " + CardUtility.CreateCardObjectName("GameCard", ownerId, selection));
+					oldSelection = GameObject.Find(CardUtility.CreateCardObjectName("GameCard", ownerId, selection));
 					// oldSelection.transform.parent.position = new Vector3(oldSelection.transform.parent.position.x, oldSelection.transform.parent.position.y, objectHit.transform.parent.position.z);
 					oldSelection.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.GetNewlandsColor("Card", 500, true);
 					oldSelection.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.GetNewlandsColor("Card", 500, true);
@@ -301,15 +306,15 @@ public class MouseManager : NetworkBehaviour
 				}
 				break;
 			case "Discard":
-				if (selection >= 0 && matchData.Turn == this.ownerId)
+				if (selection >= 0 && matchData.Turn == ownerId)
 				{
 					Debug.Log(debugTag.head + "Trying to play card " + selection
 						+ " on " + objectHit.name);
 					playIndex = selection;
 					CmdPlayCard(selection, objectHit.name);
 				}
-				Debug.Log(debugTag + "Trying to find " + CardUtility.CreateCardObjectName("GameCard", this.ownerId, selection));
-				oldSelection = GameObject.Find(CardUtility.CreateCardObjectName("GameCard", this.ownerId, selection));
+				Debug.Log(debugTag + "Trying to find " + CardUtility.CreateCardObjectName("GameCard", ownerId, selection));
+				oldSelection = GameObject.Find(CardUtility.CreateCardObjectName("GameCard", ownerId, selection));
 				oldSelection.GetComponentsInChildren<Renderer>()[0].material.color = ColorPalette.tintCard;
 				oldSelection.GetComponentsInChildren<Renderer>()[1].material.color = ColorPalette.tintCard;
 				selection = -1;

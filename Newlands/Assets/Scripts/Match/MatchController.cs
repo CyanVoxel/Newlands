@@ -15,7 +15,7 @@ public class MatchController : NetworkBehaviour
 	// public MatchData MatchData { get { return matchData; } }
 	private MatchConfig config;
 	public MatchConfig Config { get { return config; } }
-	private MatchConnections matchConnections;
+	private NewlandsNetworkManager matchConnections;
 
 	private static MasterDeck masterDeck;
 	private static MasterDeck masterDeckMutable;
@@ -234,15 +234,15 @@ public class MatchController : NetworkBehaviour
 		GrabGridController();
 
 		// TODO: Wrap this in a method like data broadcaster
-		this.matchConnections = GameObject.Find("NetworkManager").GetComponent<MatchConnections>();
+		this.matchConnections = GameObject.Find("NetworkManager").GetComponent<NewlandsNetworkManager>();
 
-		GameObject matchSetupManager = GameObject.Find("SetupManager");
+		GameObject matchSetupManager = GameObject.Find("LobbyManager");
 		if (matchSetupManager != null)
 		{
-			Debug.Log(debugTag + "SetupManager (our dad) was found!");
+			Debug.Log(debugTag + "LobbyManager was found!");
 
-			MatchSetupController setupController = matchSetupManager.GetComponent<MatchSetupController>();
-			StartCoroutine(LoadMatchConfigCoroutine(setupController));
+			LobbyController lobbyController = matchSetupManager.GetComponent<LobbyController>();
+			StartCoroutine(LoadMatchConfigCoroutine(lobbyController));
 			StartCoroutine(InitializeMatchCoroutine());
 		}
 		else
@@ -682,16 +682,19 @@ public class MatchController : NetworkBehaviour
 	}
 
 	// [Server] Loads this MatchManager's config from the MatchSetupController's final config.
-	private IEnumerator LoadMatchConfigCoroutine(MatchSetupController controller)
+	private IEnumerator LoadMatchConfigCoroutine(LobbyController controller)
 	{
-		Debug.Log(debugTag + "Grabbing config from MatchSetupController...");
+		Debug.Log(debugTag + "Grabbing config from LobbyController...");
 
-		while (!controller.Ready)
+		while (!controller.ConfigCreated)
 			yield return null;
 
 		this.config = controller.InitialConfig;
 		Debug.Log(debugTag + "Config loaded! Sending to Broadcaster...");
 		matchDataBroadcaster.MatchConfigStr = JsonUtility.ToJson(controller.InitialConfig);
+
+		Debug.Log(debugTag + "Destroying LobbyController.");
+		Destroy(controller.gameObject);
 	}
 
 	public void RefreshDeck(string type)

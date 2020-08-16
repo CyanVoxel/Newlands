@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Mirror;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 // public class SyncListCard : SyncList<Card> { }
 
@@ -23,7 +24,7 @@ public class PlayerConnection : NetworkBehaviour
 	// 	public GridManager gridMan;
 	// 	// public MouseManager localMouseMan;
 	// 	// public GuiManager guiMan;
-	public GameObject mouseManPrefab;
+	// public GameObject mouseManPrefab;
 	// public SyncListCard hand;
 	private List<Card> hand = new List<Card>();
 
@@ -148,6 +149,10 @@ public class PlayerConnection : NetworkBehaviour
 
 	private IEnumerator InitPlayer(string address)
 	{
+		// While we're NOT in the game board scene yet, aka if we're probably in the lobby
+		while (SceneManager.GetActiveScene().name != "GameMultiplayer")
+			yield return null;
+
 		// Grab Components
 		yield return StartCoroutine(GrabComponentsCoroutine());
 
@@ -327,7 +332,8 @@ public class PlayerConnection : NetworkBehaviour
 		else
 			this.id = GameObject.Find("MatchManager(Clone)").GetComponent<MatchController>().GetPlayerId(address);
 
-		transform.GetComponent<MouseManager>().SetId(this.id);
+		MouseManager.SetId(this.id);
+		// transform.GetComponent<MouseManager>().SetId(this.id);
 
 		Debug.Log(debugTag + "Assigned ID of " + this.id);
 		this.transform.name = "Player (" + this.id + ")";

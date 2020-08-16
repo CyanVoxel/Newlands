@@ -9,12 +9,18 @@ EditorBuildSettings:
     path: Assets/Scenes/MainMenu.unity
     guid: 124151561d12bdb4d96addbfcc098cf1
   - enabled: 1
-    path: Assets/Scenes/GameSetup.unity
+    path: Assets/Scenes/HostGame.unity
     guid: 8b49da94f6f99a346b2867c78a775bce
   - enabled: 1
     path: Assets/Scenes/GameMultiplayer.unity
     guid: 2cda990e2423bbf4892e6590ba056729
   - enabled: 1
-    path: Assets/Scenes/GameJoin.unity
+    path: Assets/Scenes/JoinGame.unity
     guid: b882b38b20e30b348918a20cfb69024a
+  - enabled: 1
+    path: Assets/Scenes/Lobby.unity
+    guid: 73d0ca649373f7945966677de85b500f
+  - enabled: 1
+    path: Assets/Scenes/Disconnected.unity
+    guid: 29b9bc50223c0db439808c908a411811
   m_configObjects: {}

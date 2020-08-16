@@ -3,18 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class MainMenuButtons : MonoBehaviour
+public class SceneButtonController : MonoBehaviour
 {
+
 	public void ChangeSceneHostGame()
 	{
-		Debug.Log("Switching scene to GameSetup");
-		SceneManager.LoadScene("GameSetup");
+		Debug.Log("Switching scene to HostGame");
+		SceneManager.LoadScene("HostGame");
 	}
 
 	public void ChangeSceneJoinGame()
 	{
-		Debug.Log("Switching scene to GameJoin");
-		SceneManager.LoadScene("GameJoin");
+		Debug.Log("Switching scene to JoinGame");
+		SceneManager.LoadScene("JoinGame");
 	}
 
 	public void ChangeSceneMainMenu()
