@@ -7,6 +7,11 @@ using UnityEngine;
 
 public class NewlandsNetworkManager : NetworkManager
 {
+	[SerializeField]
+	private GameObject matchManagerPrefab;
+	private GameObject matchManagerReference;
+	private MatchController matchController;
+
 	private static DebugTag debugTag = new DebugTag("NewlandsNetworkManager", "8BC34A");
 	private int index = 0;
 
@@ -42,21 +47,40 @@ public class NewlandsNetworkManager : NetworkManager
 		}
 	}
 
-	public override void OnClientConnect(NetworkConnection conn)
-	{
-		if (!clientLoadedScene)
-		{
-			// Ready/AddPlayer is usually triggered by a scene load completing. if no scene was loaded, then Ready/AddPlayer it here instead.
-			ClientScene.Ready(conn);
-			if (autoCreatePlayer)
-			{
-				ClientScene.AddPlayer();
-			}
-		}
-	}
-
 	public override void OnClientDisconnect(NetworkConnection conn)
 	{
 		StopClient();
+	}
+
+	public override void OnServerSceneChanged(string sceneName)
+	{
+		if (sceneName == "GameMultiplayer")
+		{
+			Debug.Log(debugTag + "[Server] Creating Match Manager...");
+			CreateMatchManager();
+		}
+
+		base.OnServerSceneChanged(sceneName);
+	}
+
+	public override void OnClientChangeScene(string newSceneName)
+	{
+		if (newSceneName == "GameMultiplayer")
+		{
+			Debug.Log(debugTag + "[Client] Creating Match Manager...");
+			CreateMatchManager();
+		}
+	}
+
+	public void CreateMatchManager()
+	{
+		// Create the Match Manager
+		matchManagerReference = Instantiate(matchManagerPrefab,
+			new Vector3(0, 0, 0), Quaternion.identity);
+		if (matchManagerReference != null)
+		{
+			NetworkServer.Spawn(matchManagerReference);
+			matchController = matchManagerReference.GetComponent<MatchController>();
+		}
 	}
 }

@@ -82,25 +82,41 @@ public class HudController : MonoBehaviour
 
 	private IEnumerator Initialize()
 	{
+		// Grab the Match Text
+		yield return StartCoroutine(InitMatchText());
+
+		winnerObject.SetActive(true);
+		winnerText.text = "Looking for MatchDataBroadcaster...";
+
 		// Grab the MatchDataBroadcaster
 		while (matchDataBroadcaster == null)
 		{
+			Debug.Log(debugTag + "MatchDataBroadcaster is null, finding it...");
 			matchDataBroadcaster = FindObjectOfType<MatchDataBroadcaster>();
 			yield return null;
 		}
 
-		// Grab the Match Text
-		yield return StartCoroutine(InitMatchText());
+		winnerText.text = "Looking for MatchConfigStr...";
 
 		// Get the match config
 		while (matchDataBroadcaster.MatchConfigStr == null)
+		{
+			Debug.Log(debugTag + "MatchDataBroadcaster.MatchConfigStr is null, waiting...");
 			yield return null;
+		}
 
 		config = JsonUtility.FromJson<MatchConfig>(matchDataBroadcaster.MatchConfigStr);
 
+		winnerText.text = "Looking for MatchDataStr...";
+
 		// Get the current match data
 		while (matchDataBroadcaster.MatchDataStr == null)
+		{
+			Debug.Log(debugTag + "MatchDataBroadcaster.MatchDataStr is null, waiting...");
 			yield return null;
+		}
+
+		winnerObject.SetActive(false);
 
 		this.matchData = JsonUtility.FromJson<MatchData>(matchDataBroadcaster.MatchDataStr);
 		this.matchDataStr = matchDataBroadcaster.MatchDataStr;
@@ -123,7 +139,10 @@ public class HudController : MonoBehaviour
 			phaseNumberText = transform.Find("Hud/PhaseNumber").gameObject.GetComponent<TMP_Text>();
 
 			if (phaseNumberText == null)
+			{
+				Debug.Log(debugTag.warning + "Couldn't find UI element. See log for line.");
 				yield return null;
+			}
 		}
 
 		if (transform.Find("Hud/RoundNumber") != null
@@ -132,7 +151,10 @@ public class HudController : MonoBehaviour
 			roundNumberText = transform.Find("Hud/RoundNumber").gameObject.GetComponent<TMP_Text>();
 
 			if (roundNumberText == null)
+			{
+				Debug.Log(debugTag.warning + "Couldn't find UI element. See log for line.");
 				yield return null;
+			}
 		}
 
 		if (transform.Find("Hud/TurnNumber") != null
@@ -141,7 +163,10 @@ public class HudController : MonoBehaviour
 			turnNumberText = transform.Find("Hud/TurnNumber").gameObject.GetComponent<TMP_Text>();
 
 			if (turnNumberText == null)
+			{
+				Debug.Log(debugTag.warning + "Couldn't find UI element. See log for line.");
 				yield return null;
+			}
 		}
 
 		if (transform.Find("Hud/Winner") != null)
@@ -149,7 +174,10 @@ public class HudController : MonoBehaviour
 			winnerObject = transform.Find("Hud/Winner").gameObject;
 
 			if (winnerObject == null)
+			{
+				Debug.Log(debugTag.warning + "Couldn't find UI element. See log for line.");
 				yield return null;
+			}
 		}
 
 		if (transform.Find("Hud/Winner/WinnerText") != null
@@ -158,7 +186,10 @@ public class HudController : MonoBehaviour
 			winnerText = transform.Find("Hud/Winner/WinnerText").gameObject.GetComponent<TMP_Text>();
 
 			if (winnerText == null)
+			{
+				Debug.Log(debugTag.warning + "Couldn't find UI element. See log for line.");
 				yield return null;
+			}
 		}
 
 		if (transform.Find("Hud/DebugText") != null
@@ -167,7 +198,10 @@ public class HudController : MonoBehaviour
 			debugText = transform.Find("Hud/DebugText").gameObject.GetComponent<TMP_Text>();
 
 			if (debugText == null)
+			{
+				Debug.Log(debugTag.warning + "Couldn't find UI element. See log for line.");
 				yield return null;
+			}
 		}
 
 		winnerObject.SetActive(false);
@@ -187,7 +221,10 @@ public class HudController : MonoBehaviour
 				playerMoneyText[i].color = ColorPalette.GetDefaultPlayerColor(i + 1, 500, false);
 
 				if (newPlayerMoneyText == null)
+				{
+					Debug.Log(debugTag + "newPlayerMoneyText is null, waiting...");
 					yield return null;
+				}
 			}
 		}
 	}

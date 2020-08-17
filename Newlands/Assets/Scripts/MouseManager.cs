@@ -28,8 +28,8 @@ public class MouseManager : NetworkBehaviour
 	public int playIndex = -1;
 	public int playSuccessFlag = -1; // -1: Reset | 0: False | 1: True
 	private static GameObject objectHit;
-	// [SyncVar]
-	public static int ownerId = -1;
+	[SyncVar]
+	public int ownerId = -1;
 
 	// [SyncVar]
 	public NetworkConnection myClient;
@@ -113,7 +113,7 @@ public class MouseManager : NetworkBehaviour
 		}
 	}
 
-	public static void SetId(int id)
+	public void SetId(int id)
 	{
 		ownerId = id;
 	}

@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Mirror;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class MatchController : NetworkBehaviour
 {
@@ -26,7 +27,7 @@ public class MatchController : NetworkBehaviour
 
 	[SyncVar]
 	private int playerIndex = 1; // This value increments when a new player joins
-	public int PlayerIndex { get { return playerIndex; } set { playerIndex = value; } }
+	public int PlayerIndex { get { return playerIndex; } private set { playerIndex = value; } }
 
 	public static MasterDeck MasterDeck { get { return masterDeck; } }
 	public static MasterDeck MasterDeckMutable { get { return masterDeckMutable; } }
@@ -38,6 +39,9 @@ public class MatchController : NetworkBehaviour
 	private static int cardsPlayed = 0;
 	public static int CardsPlayed { get { return cardsPlayed; } }
 	private bool winnerChosenFlag = false;
+
+	private bool initialized = false;
+	public bool Initialized { get { return initialized; } private set { initialized = value; } }
 
 	private static DebugTag debugTag = new DebugTag("MatchController", "9C27B0");
 
@@ -54,21 +58,10 @@ public class MatchController : NetworkBehaviour
 	{
 		Debug.Log(debugTag + "Initializing...");
 
-		// [Client/Server]
-		if (!hasAuthority)
-		{
-			this.config = JsonUtility.FromJson<MatchConfig>(matchDataBroadcaster.MatchConfigStr);
-			Debug.Log(debugTag + "Grabbed config for client: " + matchDataBroadcaster.MatchConfigStr);
-
-			Debug.Log(debugTag + "Creating Decks...");
-			masterDeck = new MasterDeck(config.DeckFlavor);
-			masterDeckMutable = new MasterDeck(config.DeckFlavor);
-
-			return;
-		}
+		// StartCoroutine(InitializeDecksCoroutine());
 
 		// [Server]
-		InitializeMatch();
+		StartCoroutine(InitializeMatchCoroutine());
 	}
 
 	void Update()
@@ -76,7 +69,17 @@ public class MatchController : NetworkBehaviour
 		if (!hasAuthority)
 			return;
 
-		if (masterDeck.gameCardDeck.Count == cardsPlayed && !winnerChosenFlag)
+		// if (System.String.IsNullOrEmpty(config.DeckFlavor))
+		// {
+		// 	Debug.Log(debugTag + "CONFIG NULL! ##########################################################");
+		// }
+		// else if (masterDeck == null || masterDeckMutable == null)
+		// {
+		// 	masterDeck = new MasterDeck(config.DeckFlavor);
+		// 	masterDeckMutable = new MasterDeck(config.DeckFlavor);
+		// }
+
+		if (masterDeck != null && masterDeck.gameCardDeck.Count == cardsPlayed && !winnerChosenFlag)
 		{
 			matchDataBroadcaster.BroadcastWinner(FindClientsideLeader(matchDataBroadcaster.PlayerMoneyStr));
 			if (FindClientsideLeader(matchDataBroadcaster.PlayerMoneyStr) >= 0)
@@ -224,30 +227,6 @@ public class MatchController : NetworkBehaviour
 		else
 		{
 			Debug.LogError(debugTag.error + "GridController was NOT found!");
-		}
-	}
-
-	// [Server] Loads the config from MatchSetupController and initializes the match.
-	private void InitializeMatch()
-	{
-		GrabMatchDataBroadCaster();
-		GrabGridController();
-
-		// TODO: Wrap this in a method like data broadcaster
-		this.matchConnections = GameObject.Find("NetworkManager").GetComponent<NewlandsNetworkManager>();
-
-		GameObject matchSetupManager = GameObject.Find("LobbyManager");
-		if (matchSetupManager != null)
-		{
-			Debug.Log(debugTag + "LobbyManager was found!");
-
-			LobbyController lobbyController = matchSetupManager.GetComponent<LobbyController>();
-			StartCoroutine(LoadMatchConfigCoroutine(lobbyController));
-			StartCoroutine(InitializeMatchCoroutine());
-		}
-		else
-		{
-			Debug.LogError(debugTag.error + "SetupManager (our dad) was NOT found!");
 		}
 	}
 
@@ -655,18 +634,23 @@ public class MatchController : NetworkBehaviour
 
 	// [Client/Server] The main initialization coroutine for the match.
 	// Dependant on LoadMatchConfigCoroutine finishing.
-	private IEnumerator InitializeMatchCoroutine()
+	public IEnumerator InitializeDeckCoroutine()
 	{
 		// Will not run if LoadMatchConfigCoroutine() has not been run.
 		// This gives the functionality of yield return LoadMatchConfigCoroutine()
 		// without needing to pass this/it the MatchSetupController.
-		while (this.config == null)
+		while (this.config != null && System.String.IsNullOrEmpty(this.config.DeckFlavor))
+		{
+			Debug.Log(debugTag + "I NEED FLAVOR");
 			yield return null;
+		}
 
-		Debug.Log(debugTag + "Initializing Match from Config data...");
+		Debug.Log(debugTag + "Initializing Match from Config data. Flavor: " + config.DeckFlavor);
 
 		masterDeck = new MasterDeck(config.DeckFlavor);
 		masterDeckMutable = new MasterDeck(config.DeckFlavor);
+
+		Debug.Log(debugTag + "I made the deck!");
 
 		// [Server]
 		if (hasAuthority)
@@ -679,23 +663,103 @@ public class MatchController : NetworkBehaviour
 			matchDataBroadcaster.MatchDataStr = JsonUtility.ToJson(this.matchData);
 		}
 
+		Initialized = true;
 	}
 
-	// [Server] Loads this MatchManager's config from the MatchSetupController's final config.
-	private IEnumerator LoadMatchConfigCoroutine(LobbyController controller)
+	// [Server] Loads the config from MatchSetupController and initializes the match.
+	private IEnumerator InitializeMatchCoroutine()
 	{
-		Debug.Log(debugTag + "Grabbing config from LobbyController...");
-
-		while (!controller.ConfigCreated)
+		if (SceneManager.GetActiveScene().name != "GameMultiplayer")
 			yield return null;
 
-		this.config = controller.InitialConfig;
-		Debug.Log(debugTag + "Config loaded! Sending to Broadcaster...");
-		matchDataBroadcaster.MatchConfigStr = JsonUtility.ToJson(controller.InitialConfig);
+		GrabMatchDataBroadCaster();
+		GrabGridController();
 
-		Debug.Log(debugTag + "Destroying LobbyController.");
-		Destroy(controller.gameObject);
+		// TODO: Wrap this in a method like data broadcaster
+		this.matchConnections = GameObject.Find("NetworkManager").GetComponent<NewlandsNetworkManager>();
+
+		GameObject matchSetupManager = GameObject.Find("LobbyManager");
+
+		while (matchSetupManager == null)
+			yield return null;
+
+		// if (matchSetupManager != null)
+		// {
+		Debug.Log(debugTag + "LobbyManager was found!");
+
+		LobbyController lobbyController = matchSetupManager.GetComponent<LobbyController>();
+
+		if (hasAuthority)
+			yield return StartCoroutine(ServerLoadMatchConfigCoroutine(lobbyController));
+		else
+			yield return StartCoroutine(ClientLoadMatchConfigCoroutine());
+
+		Debug.Log(debugTag + "Done with LobbyController. Destroying it...");
+		Destroy(lobbyController.gameObject);
+
+		yield return StartCoroutine(InitializeDeckCoroutine());
+		// }
+		// else
+		// {
+		// 	Debug.LogError(debugTag.error + "SetupManager (our dad) was NOT found!");
+		// }
 	}
+
+	// [Server/Client] Loads this MatchManager's config from the MatchSetupController's final config.
+	private IEnumerator ClientLoadMatchConfigCoroutine()
+	{
+		if (!hasAuthority)
+		{
+			Debug.Log(debugTag + "[Client] Trying to grab config from the broadcaster...");
+			while (System.String.IsNullOrEmpty(matchDataBroadcaster.MatchConfigStr))
+			{
+				Debug.Log(debugTag + "[Client] So far the data broadcaster's config is empty...");
+				yield return null;
+			}
+			this.config = JsonUtility.FromJson<MatchConfig>(matchDataBroadcaster.MatchConfigStr);
+		}
+		else
+		{
+			Debug.LogWarning(debugTag.warning + "Code intended for the Client just tried to be run by the Server.");
+		}
+	}
+
+	private IEnumerator ServerLoadMatchConfigCoroutine(LobbyController controller)
+	{
+		if (hasAuthority)
+		{
+			Debug.Log(debugTag + "[Server] Grabbing config from LobbyController...");
+
+			while (!controller.ConfigCreated)
+				yield return null;
+
+			this.config = controller.InitialConfig;
+			Debug.Log(debugTag + "[Server] Config loaded! Sending to Broadcaster...");
+			matchDataBroadcaster.MatchConfigStr = JsonUtility.ToJson(controller.InitialConfig);
+		}
+		else
+		{
+			Debug.LogWarning(debugTag.warning + "Code intended for the Server just tried to be run by the Client.");
+		}
+	}
+
+	// private IEnumerator InitializeDecksCoroutine()
+	// {
+	// 	while (config != null && System.String.IsNullOrEmpty(config.DeckFlavor))
+	// 		yield return null;
+
+	// 	// [Client/Server]
+	// 	if (!hasAuthority)
+	// 	{
+	// 		// 	// this.config = JsonUtility.FromJson<MatchConfig>(matchDataBroadcaster.MatchConfigStr);
+	// 		// 	// Debug.Log(debugTag + "Grabbed config for client: " + matchDataBroadcaster.MatchConfigStr);
+
+	// 		Debug.Log(debugTag + "Creating Decks. Flavor: " + config.DeckFlavor);
+	// 		masterDeck = new MasterDeck(config.DeckFlavor);
+	// 		masterDeckMutable = new MasterDeck(config.DeckFlavor);
+	// 	}
+
+	// }
 
 	public void RefreshDeck(string type)
 	{

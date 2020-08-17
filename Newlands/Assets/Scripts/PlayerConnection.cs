@@ -19,6 +19,7 @@ public class PlayerConnection : NetworkBehaviour
 	private GridController gridController;
 	private MatchController matchController;
 	private HudController hudController;
+	// private MouseManager mouseManager;
 
 	// 	public GameManager gameMan;
 	// 	public GridManager gridMan;
@@ -166,8 +167,8 @@ public class PlayerConnection : NetworkBehaviour
 
 		// Get ID from MatchManager
 		CmdInitId(address);
-		while (this.id == -1)
-			yield return null;
+
+		Debug.Log(debugTag + "Our ID is now " + this.id);
 
 		// Fetch username from PlayerDataController and send it serverside to MatchController
 		InitUsername();
@@ -257,6 +258,12 @@ public class PlayerConnection : NetworkBehaviour
 			yield return null;
 		}
 
+		// while (this.mouseManager == null)
+		// {
+		// 	this.mouseManager = transform.GetComponent<MouseManager>();
+		// 	yield return null;
+		// }
+
 		while (this.hudController == null)
 		{
 			this.hudController = FindObjectOfType<HudController>();
@@ -327,16 +334,64 @@ public class PlayerConnection : NetworkBehaviour
 	[Command]
 	private void CmdInitId(string address)
 	{
-		if (GameObject.Find("MatchManager") != null)
-			this.id = GameObject.Find("MatchManager").GetComponent<MatchController>().GetPlayerId(address);
-		else
-			this.id = GameObject.Find("MatchManager(Clone)").GetComponent<MatchController>().GetPlayerId(address);
+		StartCoroutine(WaitForServersideMatchManager(address));
+		// if (GameObject.Find("MatchManager") != null)
+		// 	this.id = GameObject.Find("MatchManager").GetComponent<MatchController>().GetPlayerId(address);
+		// else if (GameObject.Find("MatchManager(Clone)") != null)
+		// 	this.id = GameObject.Find("MatchManager(Clone)").GetComponent<MatchController>().GetPlayerId(address);
+		// else
+		// {
+		// 	Debug.LogError(debugTag.error + "The MatchController didn't exist at this time!");
+		// }
 
-		MouseManager.SetId(this.id);
+		// // if (matchController != null)
+		// // {
+		// // 	this.id = matchController.GetPlayerId(address);
+		// // }
+		// // else
+		// // {
+		// // 	Debug.LogError(debugTag.error + "MatchController was null at this time!");
+		// // }
+
+		// // mouseManager.SetId(this.id);
 		// transform.GetComponent<MouseManager>().SetId(this.id);
 
-		Debug.Log(debugTag + "Assigned ID of " + this.id);
+		// Debug.Log(debugTag + "Assigned MouseManager ID of " + this.id);
+		// this.transform.name = "Player (" + this.id + ")";
+	}
+
+	private IEnumerator WaitForServersideMatchManager(string address)
+	{
+		if (GameObject.Find("MatchManager") != null && GameObject.Find("MatchManager(Clone)") != null)
+		{
+			Debug.Log(debugTag + "The MatchController doesn't exist yet...");
+			yield return null;
+		}
+
+		if (GameObject.Find("MatchManager") != null)
+			this.id = GameObject.Find("MatchManager").GetComponent<MatchController>().GetPlayerId(address);
+		else if (GameObject.Find("MatchManager(Clone)") != null)
+			this.id = GameObject.Find("MatchManager(Clone)").GetComponent<MatchController>().GetPlayerId(address);
+		else
+		{
+			Debug.LogError(debugTag.error + "The MatchController didn't exist at this time!");
+		}
+
+		// if (matchController != null)
+		// {
+		// 	this.id = matchController.GetPlayerId(address);
+		// }
+		// else
+		// {
+		// 	Debug.LogError(debugTag.error + "MatchController was null at this time!");
+		// }
+
+		// mouseManager.SetId(this.id);
+		transform.GetComponent<MouseManager>().SetId(this.id);
+
+		Debug.Log(debugTag + "Assigned MouseManager ID of " + this.id);
 		this.transform.name = "Player (" + this.id + ")";
+
 	}
 
 	// public void DestroyCard(string objectName)

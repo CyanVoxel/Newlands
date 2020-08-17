@@ -39,6 +39,7 @@ public class HostGameController : MonoBehaviour
 
 				networkManager.StartHost();
 				SceneManager.LoadScene("Lobby", LoadSceneMode.Single);
+				// SceneManager.LoadScene("GameMultiplayer", LoadSceneMode.Additive);
 			}
 		}
 		// CreateMatchManager();

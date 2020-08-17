@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Mirror;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GridController : NetworkBehaviour
 {
@@ -179,6 +180,22 @@ public class GridController : NetworkBehaviour
 			{
 				// Draw a card from the Market Card deck
 				Card card;
+
+				if (matchController == null)
+					Debug.Log(debugTag + "MatchController is null!");
+
+				if (MatchController.MasterDeckMutable == null)
+				{
+					Debug.Log(debugTag + "MatchController.MasterDeckMutable is null!");
+					// StartCoroutine(matchController.InitializeDeckCoroutine());
+				}
+
+				if (MatchController.MasterDeck.marketCardDeck == null)
+				{
+					Debug.Log(debugTag + "MatchController.MasterDeck.marketCardDeck is null!");
+					// StartCoroutine(matchController.InitializeDeckCoroutine());
+				}
+
 				if (matchController.DrawCard(MatchController.MasterDeckMutable.marketCardDeck,
 						MatchController.MasterDeck.marketCardDeck,
 						out card, false))
@@ -715,12 +732,14 @@ public class GridController : NetworkBehaviour
 
 		while (this.config == null)
 		{
-			Debug.Log(debugTag + "Parsing Config...");
+			// Debug.Log(debugTag + "Parsing Config...");
 			this.config = JsonUtility.FromJson<MatchConfig>(matchDataBroadcaster.MatchConfigStr);
-			Debug.Log(debugTag + "Config parsed as: " + this.config);
+			// Debug.Log(debugTag + "Config parsed as: " + this.config);
 
 			if (this.config == null)
 				yield return null;
+			else
+				Debug.Log(debugTag + "Config parsed as: " + this.config);
 		}
 	}
 
@@ -777,6 +796,9 @@ public class GridController : NetworkBehaviour
 	// [Client/Server] Create the Tile GameObjects for the Main Game Grid.
 	private IEnumerator CreateMainGridCoroutine()
 	{
+		if (SceneManager.GetActiveScene().name != "GameMultiplayer")
+			yield return null;
+
 		yield return StartCoroutine(ParseMatchConfigCoroutine());
 		yield return StartCoroutine(GrabMatchControllerCoroutine());
 
@@ -790,11 +812,30 @@ public class GridController : NetworkBehaviour
 	// [Client/Server] Create the Tile GameObjects for the Market Game Grid.
 	private IEnumerator CreateMarketGridCoroutine()
 	{
+		if (SceneManager.GetActiveScene().name != "GameMultiplayer")
+			yield return null;
+
 		yield return StartCoroutine(ParseMatchConfigCoroutine());
 		yield return StartCoroutine(GrabMatchControllerCoroutine());
 
+		// while (config != null && System.String.IsNullOrEmpty(config.DeckFlavor))
+		// 	yield return null;
+
+		yield return StartCoroutine(WaitForMatchInitializationCoroutine());
+
 		Debug.Log(debugTag + "Creating Market Grid objects...");
 		CreateMarketGridObjects();
+	}
+
+	private IEnumerator WaitForMatchInitializationCoroutine()
+	{
+		while (!matchController.Initialized)
+		{
+			Debug.Log(debugTag + "The MatchController hasn't made the deck yet...");
+			yield return null;
+		}
+
+		Debug.Log(debugTag + "I think the MatchController made the deck!");
 	}
 
 	// // [Client/Server] Create the Tile GameObjects for the Market Game Grid.
